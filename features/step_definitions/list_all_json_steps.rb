@@ -12,20 +12,23 @@ Given /^there (?:is|are) (\d+) (?:story|stories) available$/ do |story_count|
   pending
 end
 
+Then /^I should see an empty table$/ do
+  wait_for_element_exists( 'tableView', :timeout => 2 )
+  res = query( 'tableView', numberOfRowsInSection:0 )
+
+  if res.empty? or res.first != 0
+    screenshot_and_raise 'The table view is not empty!'
+  end
+end
+
 Then /^I should see a table with (no|\d+) (?:entries|entry)$/ do |story_count|
   wait_for_element_exists( 'tableView', :timeout => 2 )
   res = query( 'tableView', numberOfRowsInSection:0 )
 
-  if story_count == 'no'
-    if res.empty? or res.first != 0
-      screenshot_and_raise 'The table view is not empty!'
-    end
-  else
-    if res.empty?
-      screenshot_and_raise 'The table view is empty!'
-    elsif res.first != story_count.to_i
-      screenshot_and_raise "Table view contains #{res.first} rows but should contain #{story_count} !"
-    end
+  if res.empty?
+    screenshot_and_raise 'The table view is empty!'
+  elsif res.first != story_count.to_i
+    screenshot_and_raise "Table view contains #{res.first} rows but should contain #{story_count} !"
   end
 end
 
