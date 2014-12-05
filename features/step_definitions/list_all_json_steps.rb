@@ -4,11 +4,26 @@ end
 
 Given /^there are no stories available/ do
   # nothing to do in this case
+  fixture_remove( 'Bundles', :NSDocumentDirectory )
+  fixture_remove( 'Categories', :NSDocumentDirectory )
 end
 
 Given /^there (?:is|are) (\d+) (?:story|stories) available$/ do |story_count|
-  # TODO: tell UIApplicationDelegate we're in test-mode and to load the required stories
-  pending
+  fixture_dir = File.absolute_path( File.join( Dir.pwd, 'features', 'data' ) )
+  puts fixture_dir
+  puts "#{File.join( fixture_dir, 'list_all_json_files', '26027f33004ef3dc1cef11420d0f5676.babbo' ) }"
+  case story_count.to_i
+    when 1
+      fixture_install( "#{File.join( fixture_dir, 'list_all_json_files', '26027f33004ef3dc1cef11420d0f5676.babbo' ) }",
+                       'Bundles/26027f33004ef3dc1cef11420d0f5676.babbo', :NSDocumentDirectory )
+    when 2
+      fixture_install( "#{File.join( fixture_dir, 'list_all_json_files', '26027f33004ef3dc1cef11420d0f5676.babbo' ) }",
+                       'Bundles/26027f33004ef3dc1cef11420d0f5676.babbo', :NSDocumentDirectory )
+      fixture_install( "#{File.join( fixture_dir, 'list_all_json_files', '003d3dce9ad05f78b01f52d4a205c550.babbo' ) }",
+                       '003d3dce9ad05f78b01f52d4a205c550.babbo', :NSDocumentDirectory )
+    else
+      raise "Unsupported story_count '#{story_count}'"
+  end
 end
 
 Then /^I should see an empty table$/ do
