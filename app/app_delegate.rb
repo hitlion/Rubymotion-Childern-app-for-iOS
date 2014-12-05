@@ -4,8 +4,4 @@ class AppDelegate
     @window.makeKeyAndVisible
     true
   end
-
-  def cucumber_salat
-    puts "Oh, look - salad!"
-  end
 end

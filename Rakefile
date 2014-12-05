@@ -10,8 +10,6 @@ rescue LoadError
   App.warn 'Failed to require \'bundler\'!'
 end
 
-require 'motion-calabash-wrapper'
-
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
 
@@ -26,10 +24,9 @@ Motion::Project::App.setup do |app|
   end
 
   app.name = 'Babbo-Voco'
-  app.identifier = 'de.thulu-tec.babbo-voco'
+  app.identifier = 'de.tuluh-tec.babbo-voco'
   app.short_version = app.version = '1.0'
 
   app.sdk_version = '8.1'
   app.deployment_target = '7.1'
-
 end

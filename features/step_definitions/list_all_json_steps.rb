@@ -1,6 +1,5 @@
 Given /^I am on the Story List screen/ do
   # TODO: check that this is actually the correct screen!
-  pending
 end
 
 Given /^there are no stories available/ do
