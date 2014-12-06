@@ -1,0 +1,65 @@
+{
+
+	
+	"meta":
+	{
+		"dataset_id": 2, 
+		"editor_id": 4, 
+		"set_name": "Teil1-3", 
+		"thumbnail": "../Thumbnail.jpg", 
+		"timestamp": "2014-11-28t19:21:54+00:00",
+	},
+
+	"body": {
+		"levels" : [
+			{
+				"level_id": 2,
+				"screens": [
+					{
+						"screen_id": 1,
+						"objects": [
+							{
+								"object_id": 1,
+								"object_content": "../content/Video2.mp4"
+								"object_slot": [
+									{
+										"variables": [
+											{
+												"name": "var1",
+												"content": ":level[level_id=3]:screen[screen_id=1]"
+											}
+										]
+									}
+								]
+							},
+						],
+					},
+				]
+			},
+			{
+				"level_id": 3,
+				"screens": [
+					{
+						"screen_id": 1,
+						"objects": [
+							{
+								"object_id": 1,
+								"object_content": "../content/Video3.mp4"
+								"object_slot": [
+									{
+										"variables": [
+											{
+												"name": "var1",
+												"content": ":level[level_id=4]:screen[screen_id=1]"
+											}
+										]
+									}
+								]
+							},
+						],
+					},
+				]
+			}
+		],
+	}
+}

@@ -1,0 +1,117 @@
+{
+
+	
+	"meta":
+	{
+		"dataset_id": 2, 
+		"editor_id": 2, 
+		"set_name": "Mein erster Versuch", 
+		"thumbnail": "../Thumbnail.jpg", 
+		"timestamp": "2014-11-07t19:21:54+00:00"
+	},
+
+	"body": {
+		"levels" : [
+			{
+				"level_id": 1,
+				"screens": [
+					{
+						"screen_id": 1,
+						"objects": [
+							{
+								"object_id": 1,
+								"object_content": "../content/startVideo.mp4"
+							},
+							{
+								"object_id": 2,
+								"object_content": "../content/hund.jpg"
+							},
+							{
+								"object_id": 3,
+								"object_content": "../content/delphin.jpg"
+							}
+						]
+					},
+					{
+						"screen_id": 2,
+						"objects": [
+							{
+								"object_id": 1,
+								"object_content": "../content/rightAnswerVideo.mp4"
+							}
+						]
+					},
+					{
+						"screen_id": 3,
+						"objects": [
+							{
+								"object_id": 1,
+								"object_content": "../content/wrongAnswerVideo.mp4"
+							}
+						]
+					}
+				]
+			},
+			{
+				"level_id": 2,
+				"screens": [
+					{
+						"screen_id": 1,
+						"objects": [
+							{
+								"object_id": 1,
+								"object_content": "../content/startVideo2.mp4"
+							},
+							{
+								"object_id": 2,
+								"object_content": "../content/xy.jpg",
+								"object_slot": [
+									{
+										"variables": [
+											{
+												"name": "var1",
+												"content": ":level[level_id=2]:screen[screen_id=2]:object[object_id=1]"
+											}
+										]
+									}
+								]
+							},
+							{
+								"object_id": 3,
+								"object_content": "../content/z.jpg",
+								"object_slot": [
+									{
+										"variables": [
+											{
+												"name": "var1",
+												"content": ":level[level_id=2]:screen[screen_id=2]:object[object_id=1]"
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"screen_id": 2,
+						"objects": [
+							{
+								"object_id": 1,
+								"object_content": "../content/rightAnswerVideo2.mp4"
+							}
+						]
+					},
+					{
+						"screen_id": 3,
+						"objects": [
+							{
+								"object_id": 1,
+								"object_content": "../content/wrongAnswerVideo2.mp4"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

@@ -10,6 +10,8 @@ rescue LoadError
   App.warn 'Failed to require \'bundler\'!'
 end
 
+task 'crescentia:run' => 'build:simulator'
+
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
 
