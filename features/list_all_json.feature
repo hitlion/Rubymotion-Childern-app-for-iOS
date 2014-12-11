@@ -14,12 +14,10 @@ Feature: List All JSON Files
   Scenario: Single story available
     Given there is 1 story available
     Then I should see a table with 1 entry
-      # TODO: replace with actual story names from the test data
       And table entry 1 should read "Mein erster Versuch"
 
   Scenario: Multiple stories available
     And there are 2 stories available
     Then I should see a table with 2 entries
-      # TODO: replace with actual story names from the test data
       And table entry 1 should read "Mein erster Versuch"
       And table entry 2 should read "Teil1"

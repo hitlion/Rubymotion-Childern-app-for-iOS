@@ -18,13 +18,16 @@ Given /^there (?:is|are) (\d+) (?:story|stories) available$/ do |story_count|
       fixture_install( "#{File.join( fixture_dir, 'list_all_json_files', '26027f33004ef3dc1cef11420d0f5676.babbo' ) }",
                        'Bundles/26027f33004ef3dc1cef11420d0f5676.babbo', :NSDocumentDirectory )
       fixture_install( "#{File.join( fixture_dir, 'list_all_json_files', '003d3dce9ad05f78b01f52d4a205c550.babbo' ) }",
-                       '003d3dce9ad05f78b01f52d4a205c550.babbo', :NSDocumentDirectory )
+                       'Bundles/003d3dce9ad05f78b01f52d4a205c550.babbo', :NSDocumentDirectory )
     else
       fail( "Unsupported story_count '#{story_count}'" )
   end
 end
 
 Then /^I should see an empty table$/ do
+  element_exists( 'tableView' )
+  uia( 'target.shake()' )
+
   res = query( 'tableView', numberOfRowsInSection:0 )
 
   if res.empty? or res.first != 0
@@ -33,6 +36,9 @@ Then /^I should see an empty table$/ do
 end
 
 Then /^I should see a table with (no|\d+) (?:entries|entry)$/ do |story_count|
+  element_exists( 'tableView' )
+  uia( 'target.shake()' )
+
   res = query( 'tableView', numberOfRowsInSection:0 )
 
   if res.empty?
