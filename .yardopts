@@ -1,2 +1,6 @@
 --no-private
 --exclude .*\\+devel\.rb
+app/**/*.rb
+spec/**/*.rb
+features/**/*.feature
+features/**/*.rb
