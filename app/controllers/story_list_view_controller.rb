@@ -1,7 +1,11 @@
+# The main list of all available story bundles on the device.
 class StoryListViewController < UITableViewController
+  # Root path inside the +Documents+ folder which will hold all *.babbo-bundles.
   STORY_ROOT = 'Bundles'
+  # Reuse-identifier for the cells in this table.
   STORY_LIST_VIEW_CELL_IDENTIFIER = 'StoryListViewCell'
 
+  # @return [Array<Hash>] An +Array+ containing one +Hash+ for each loaded story bundle.
   attr_reader :stories
 
   def viewDidLoad
@@ -60,6 +64,8 @@ class StoryListViewController < UITableViewController
 
   private
   # Check the available stories in the Applications NSDocumentDirectory
+  # @return [Array<Hash>] An +Array+ containing +Hash+ objects each of which represents the +control.json+ of a story bundle.
+  # @return [Array] An empty +Array+ if any errors occur. The specific error will be reported via NSLog.
   def load_available_stories
     error_ptr = Pointer.new( :object )
     file_manager = NSFileManager.defaultManager
@@ -85,7 +91,7 @@ class StoryListViewController < UITableViewController
       return []
     end
 
-    # fetch a list of all files and directories inside STORY_ROOT and load their JSON
+    # fetch a list of all .babbo bundles inside STORY_ROOT and load their JSON
     res = []
     Dir.glob( File.join( @@STORY_ROOT.fileSystemRepresentation, '*.babbo' ) ).each do |bundle_path|
       # skip all uninteresting entries

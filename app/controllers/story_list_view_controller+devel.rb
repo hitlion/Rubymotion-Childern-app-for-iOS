@@ -7,6 +7,7 @@ class StoryListViewController
     becomeFirstResponder
   end
 
+  # override +canBecomeFirstResponder+ and actually accept the role
   def canBecomeFirstResponder
     true
   end
