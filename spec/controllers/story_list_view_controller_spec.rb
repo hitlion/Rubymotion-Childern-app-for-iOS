@@ -25,7 +25,7 @@ describe 'The Story-List View Controller' do
     end
 
     after do
-      fixture_remove( 'Stories', :NSDocumentDirectory )
+      fixture_remove( 'Bundles', :NSDocumentDirectory )
     end
 
     it 'has one entry for each story in it\'s list' do
