@@ -37,6 +37,7 @@ class StoryListViewController < UITableViewController
   end
 
   def tableView( table, cellForRowAtIndexPath: path )
+    # @type [UITableViewCell] cell
     cell = table.dequeueReusableCellWithIdentifier( STORY_LIST_VIEW_CELL_IDENTIFIER )
     cell.textLabel.text = @stories[path.row]['meta']['set_name']
     cell
@@ -94,10 +95,17 @@ class StoryListViewController < UITableViewController
       main_json = File.join( bundle_path, 'SMIL', 'control.json' )
       next unless File.exists?( main_json )
 
-      raw  = NSData.dataWithContentsOfFile( main_json ) #FIXME: use options: error: version!
-      data = NSJSONSerialization.JSONObjectWithData( raw, options: NSJSONReadingMutableLeaves, error: nil) #FIXME: handle errors!
-
-      res << data unless data.nil?
+      raw = NSData.dataWithContentsOfFile( main_json, options: NSDataReadingMappedIfSafe, error: error_ptr)
+      if raw.nil?
+        NSLog( "Error while trying to read #{File.basename( main_json )}: #{error_ptr[0].localizedDescription}" )
+      else
+        data = NSJSONSerialization.JSONObjectWithData( raw, options: NSJSONReadingMutableLeaves, error: error_ptr)
+        if data.nil?
+          NSLog( "Error while trying to parse #{File.basename( main__json )}: #{error_ptr[0].localizedDescription}" )
+        else
+          res << data
+        end
+      end
     end
     # simple way to get a sortable number from the timestamp
     res.sort_by { |x| x['meta']['timestamp'] }
