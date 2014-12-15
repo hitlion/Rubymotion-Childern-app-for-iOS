@@ -1,5 +1,7 @@
 --no-private
 --exclude .*\\+devel\.rb
+--plugin rspec
+--plugin cucumber
 app/**/*.rb
 spec/**/*.rb
 features/**/*.feature
