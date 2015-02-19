@@ -1,0 +1,433 @@
+{
+  "title": "Babbo SMIL validation root",
+
+  "version": {
+    "type": "string",
+    "pattern": "\\d+(\\.\\d+)*"
+  },
+  "object_id": {
+    "type": "string",
+    "pattern": "(:|\\w+)"
+  },
+  "media": {
+    "type": "string",
+    "enum": [
+      "video",
+      "audio",
+      "image"
+    ]
+  },
+  "mutability": {
+    "type": "string",
+    "enum": [
+      "client_only",
+      "server_only",
+      "client_server",
+      "immutable",
+      "inherit"
+    ]
+  },
+  "mergeability": {
+    "type": "string",
+    "enum": [
+      "keep_original",
+      "keep_modified",
+      "discard",
+      "inherit"
+    ]
+  },
+  "processability": {
+    "type": "string",
+    "enum": [
+      "local",
+      "remote"
+    ]
+  },
+  "smil_property": {
+    "type": "object",
+    "properties": {
+      "modify": {
+        "type": "mutability",
+        "optional": true,
+        "default": "inherit"
+      },
+      "merge": {
+        "type": "mergeability",
+        "optional": true,
+        "default": "inherit"
+      },
+      "merge_ref": {
+          "type": "string",
+          "pattern": "(:?\\w(?:\\[\\w+(?:[<>=]|[<>]=)(?:\\w+|\\*)(,\\w+(?:[<>=]|[<>]=)(\\w+|\\*))*\\])?)+",
+          "optional": true,
+          "default": ":self"
+      },
+      "selector": {
+        "type": "string",
+        "pattern": "(:?\\w(?:\\[\\w+(?:[<>=]|[<>]=)(?:\\w+|\\*)(,\\w+(?:[<>=]|[<>]=)(\\w+|\\*))*\\])?)+",
+        "optional": true,
+        "default": ":self"
+      },
+      "require": {
+        "type": "object_id",
+        "optional": true
+      }
+    }
+  },
+  "smil_base": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "parent": {
+        "type": "object_id"
+      }
+    },
+    "property_meta": "smil_property"
+  },
+  "smil_array_meta": {
+    "type": "smil_property",
+    "properties": {
+      "name" : {
+        "type": "string"
+      },
+      "parent": {
+        "type": "object_id"
+      }
+    }
+  },
+
+  "smil_array": {
+    "type": "array",
+    "property_meta": "smil_array_meta"
+  },
+
+  "# --- SMIL rules for all valid SMIL objects --- #" : "#",
+
+  "smil_head" : {
+      "name"  : "head",
+      "type"  : "smil_base",
+      "parent": ":",
+      "modify": "immutable",
+      "properties": {
+          "data_language": {
+              "type" : "string"
+          },
+          "data_language_version" : {
+              "type" : "version"
+          },
+          "template_id": {
+              "type" : "version"
+          }
+      }
+  },
+  "smil_meta" : {
+      "name"  : "meta",
+      "type"  : "smil_base",
+      "parent": ":",
+      "modify": "immutable",
+      "properties": {
+          "document_id": {
+              "type" : "integer"
+          },
+          "dataset_id": {
+              "type" : "integer",
+              "modify": "client_server",
+              "merge": "keep_modified"
+          },
+          "branch_creator_id": {
+              "type" : "integer"
+          },
+          "branch_name": {
+              "type" : "string"
+          },
+          "creator_impressum": {
+              "type" : "string"
+          },
+          "editor_id": {
+              "type" : "integer",
+              "modify": "client_server",
+              "merge": "keep_modified"
+          },
+          "set_name": {
+              "type" : "string",
+              "modify": "client_server",
+              "merge": "keep_modified"
+          },
+          "thumbnail": {
+              "type" : "string",
+              "modify": "client_server",
+              "merge": "keep_modified"
+          },
+          "status": {
+              "type" : "string"
+          },
+          "modified_conveyable": {
+              "type" : "boolean"
+          },
+          "timestamp": {
+              "type"   : "string",
+              "pattern": "\\d{4}-\\d{2}-\\d{2}t\\d{2}:\\d{2}:\\d{2}(\\+\\d{2}:\\d{2})?",
+              "merge": "keep_modified",
+              "modify" : "client_only"
+          }
+      }
+  },
+  "smil_body" : {
+      "name"  : "body",
+      "type"  : "smil_base",
+      "parent": ":",
+      "modify": "immutable",
+      "properties": {
+          "levels": {
+              "type"  : "array",
+              "items" : {
+                  "ref": "smil_level"
+              },
+              "min_items": 1
+          },
+          "body_event": {
+              "ref": "smil_body::event"
+          },
+          "body_slot": {
+              "ref": "smil_slot_list"
+          }
+      }
+  },
+  "smil_body::event" : {
+      "name"   : "body_event",
+      "type"   : "smil_base",
+      "parent" : ":",
+      "modify" : "immutable",
+      "require": "body",
+      "properties": {
+          "at_load" : {
+              "type": "string"
+          },
+          "at_end" : {
+              "type": "string"
+          }
+      }
+  },
+  "smil_level" :  {
+      "name"  : "level",
+      "type"  : "smil_base",
+      "parent": "body",
+      "modify": "immutable",
+      "properties": {
+          "level_id": {
+              "type" : "integer"
+          },
+          "screens": {
+              "type": "array",
+              "items": {
+                  "ref": "smil_screen"
+              },
+              "min_items": 1
+          }
+      }
+  },
+  "smil_screen" : {
+      "name"  : "screen",
+      "type"  : "smil_base",
+      "parent": "level",
+      "modify": "immutable",
+      "properties": {
+          "screen_id": {
+              "type" : "integer"
+          },
+          "screen_name" : {
+              "type" : "string"
+          },
+          "objects": {
+              "type" : "array",
+              "items": {
+                  "ref": "smil_object"
+              }
+          },
+          "screen_event": {
+              "ref" : "smil_screen::event"
+          },
+          "screen_slot": {
+              "ref" : "smil_slot_list"
+          }
+      }
+  },
+  "smil_screen::event" : {
+      "name"  : "screen_event",
+      "type"  : "smil_base",
+      "parent": "screen",
+      "modify": "immutable",
+      "properties": {
+          "at_load": {
+              "type": "string"
+          },
+          "at_next": {
+              "type": "string"
+          }
+      }
+  },
+  "smil_object" :  {
+      "name"  : "object",
+      "type"  : "smil_base",
+      "parent": "screen",
+      "modify": "immutable",
+      "properties": {
+          "object_name": {
+              "type": "string"
+          },
+          "object_id": {
+              "type": "integer"
+          },
+          "object_type": {
+              "type": "media"
+          },
+          "object_content": {
+              "type": "string"
+          },
+          "processable": {
+              "type": "processability"
+          },
+          "object_attribute": {
+              "ref": "smil_object::attribute"
+          },
+          "object_event": {
+              "ref": "smil_object::event"
+          },
+          "object_slot": {
+              "ref": "smil_slot_list"
+          }
+      }
+  },
+  "smil_object::attribute" : {
+      "name"  : "object_attribute",
+      "type"  : "smil_base",
+      "parent": "object",
+      "modify": "immutable",
+      "properties" : {
+          "position_x": {
+              "type" : "float",
+              "min": 0.0,
+              "max": 1.0
+          },
+          "position_y": {
+              "type" : "float",
+              "min": 0.0,
+              "max": 1.0
+          },
+          "size_x": {
+              "type" : "float",
+              "min": 0.0,
+              "max": 1.0
+          },
+          "size_y": {
+              "type" : "float",
+              "min": 0.0,
+              "max": 1.0
+          },
+          "layer": {
+              "type" : "integer"
+          },
+          "transparency": {
+              "type" : "float",
+              "min": 0.0,
+              "max": 1.0
+          }
+      }
+  },
+  "smil_object::event" : {
+      "name"  : "object_event",
+      "type"  : "smil_base",
+      "parent": "object",
+      "modify": "immutable",
+      "properties" : {
+          "at_start": {
+              "type": "string"
+          },
+          "at_end": {
+              "type": "string"
+          },
+          "on_click": {
+              "type": "string"
+          },
+          "on_swipe": {
+              "type": "string"
+          }
+      }
+  },
+  "smil_slot_entry" : {
+    "type": "object",
+    "properties" : {
+      "name": {
+        "type": "string"
+      },
+      "action": {
+        "type": "string"
+      },
+      "variables": {
+        "ref": "smil_slot_list::variable_list"
+      }
+    }
+  },
+  "smil_slot_list" : {
+      "name"  : "smil_slot_list",
+      "type"  : "smil_array",
+      "parent": null,
+      "modify": "immutable",
+      "items" : {
+          "type": "smil_slot_entry"
+      }
+  },
+  "smil_slot_list::variable_list" : {
+      "name"  : "smil_slot_variable_list",
+      "type"  : "smil_array",
+      "parent": null,
+      "modify": "immutable",
+      "items": {
+          "ref": "smil_slot_list::variable"
+      }
+  },
+  "smil_slot_list::variable" : {
+      "name"  : "smil_slot_variable",
+      "type"  : "smil_base",
+      "parent": null,
+      "modify": "immutable",
+      "properties": {
+          "var_name": {
+              "type": "string"
+          },
+          "content": {
+              "type": "string"
+          }
+      }
+  },
+  "smil_document" : {
+    "type" : "object",
+    "properties": {
+      "head" : {
+        "type" : "smil_head"
+      },
+      "meta" : {
+        "type" : "smil_meta"
+      },
+      "body" : {
+        "type" : "smil_body"
+      }
+    }
+  },
+
+  "# --- Validation Scope --- #" : "#",
+
+  "validate" : {
+    "title" : "SMIL basic file layout",
+    "items" : [
+      {
+        "type": "smil_head",
+        "optional" : false,
+        "max_items": 1
+      }
+    ]
+  }
+}
+
