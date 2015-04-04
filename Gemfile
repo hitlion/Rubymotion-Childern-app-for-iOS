@@ -7,7 +7,7 @@ gem 'rake'
 gem 'yard'
 gem 'yard-rspec'
 gem 'yard-cucumber'
-gem 'redcarpet'
+#gem 'redcarpet'
 gem 'json'
 gem 'motion-crescentia'
  #UI, suggar and spice
