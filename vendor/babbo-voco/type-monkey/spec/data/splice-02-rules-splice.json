@@ -1,0 +1,47 @@
+[
+  {
+    "type"   : "spec-core-root",
+    "path"   : ":spec-core-root",
+    "when"   : ["==", "$value", false],
+    "splice" : "modified"
+  },
+  {
+    "type"   : "spec-array-root.item-type",
+    "path"   : ":spec-array-root.item-type[*]",
+    "when"   : ["and",
+                  ["/=", "$index", 2],
+                  ["/=", "$index", 3]
+    ],
+    "splice" : "original"
+  },
+  {
+    "type"   : "spec-array-root.item-type",
+    "path"   : ":spec-array-root.item-type[*]",
+    "when"   : ["or",
+                  ["==", "$index", 2],
+                  ["==", "$index", 3]
+    ],
+    "splice" : "modified"
+  },
+  {
+    "type"   : "spec-array-root",
+    "path"   : ":spec-array-root",
+    "splice" : "immutable"
+  },
+  {
+    "type"   : "spec-object-root.core-prop",
+    "path"   : ":spec-object-root.core-prop",
+    "when"   : ["/=", "$value", true],
+    "splice" : "modified"
+  },
+  {
+    "type"   : "spec-object-root.array-prop.item-type",
+    "path"   : ":spec-object-root.array-prop.item-type[*]",
+    "when"   : ["and",
+      [ ">", "$index", 0 ],
+      [ "<", "$index", 3 ]
+    ],
+    "splice" : "modified"
+  }
+]
+

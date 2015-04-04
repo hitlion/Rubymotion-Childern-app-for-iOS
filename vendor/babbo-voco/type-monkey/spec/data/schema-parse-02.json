@@ -1,0 +1,11 @@
+{
+  "just a comment" : "",
+
+  "schema-type-int" : {
+    "type" : "integer"
+  },
+
+  "should not appear after parsing..": "...",
+  "### simply ignored..": 42
+}
+

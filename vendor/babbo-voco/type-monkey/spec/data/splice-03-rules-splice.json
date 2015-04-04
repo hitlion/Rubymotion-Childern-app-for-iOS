@@ -1,0 +1,12 @@
+[
+  {
+    "type"   : "spec-array-root",
+    "path"   : ":spec-array-root",
+    "splice" : "modified"
+  },
+  {
+    "type"   : "spec-array-root.item-type",
+    "path"   : ":spec-array-root.item-type[*]",
+    "splice" : "modified"
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "schema-type-int" : {
+    "type" : "integer"
+  },
+  "schema-type-str" : {
+    "type" : "integer"
+  },
+  "schema-type-bool" : {
+    "type" : "bool"
+  },
+  "schema-type-float" : {
+    "type" : "float"
+  },
+  "schema-type-obj" : {
+    "type" : "object"
+  },
+  "schema-type-ary" : {
+    "type" : "array"
+  }
+}
+

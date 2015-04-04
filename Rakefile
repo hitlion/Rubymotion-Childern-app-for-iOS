@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
  $:.unshift('/Library/RubyMotion/lib')
+ $:.unshift( File.join( Dir.pwd, 'vendor', 'babbo-voco', 'type-monkey', 'lib' ) )
 
 require 'motion/project/template/ios'
+require 'motion-type-monkey'
 
 begin
   require 'bundler'
@@ -18,7 +20,6 @@ DEVELOPMENT_ONLY = Dir.glob( "#{Dir.pwd}/app/**/*+devel.rb" )
 
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
-
   app.development do
     app.provisioning_profile = ENV['RM_DEV_PROFILE']
     app.codesign_certificate = ENV['RM_DEV_CERTIFICATE']

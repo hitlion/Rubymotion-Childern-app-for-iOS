@@ -1,0 +1,16 @@
+{
+  "spec-array-root" : {
+    "type": "array",
+    "items": {
+      "type": {
+        "type": "object",
+        "properties": {
+          "foo": { "type": "integer" },
+          "bar": { "type": "integer" },
+          "baz": { "type": "integer" }
+        }
+      },
+      "min_items": 1
+    }
+  }
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "foo": 42
+  },
+  {
+    "__copy": ":spec-array-root.item-type[0]",
+    "bar": 21
+  },
+  {
+    "__copy": ":spec-array-root.item-type[0]",
+    "baz": 84
+  }
+]
