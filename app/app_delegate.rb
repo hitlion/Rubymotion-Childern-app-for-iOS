@@ -1,16 +1,14 @@
-class AppDelegate
+class AppDelegate < PM::Delegate
   include Crescentia::Fixtures
+  tint_color '#fd8525'.uicolor
 
-  def application( application, didFinishLaunchingWithOptions:launchOptions )
-    return true if RUBYMOTION_ENV == 'test'
+  def on_load( app, options )
+    return if RUBYMOTION_ENV == 'test'
 
-    story_list_view_controller = StoryListViewController.alloc.init
-    navigation_controller = UINavigationController.alloc.init
-    navigation_controller.pushViewController( story_list_view_controller, animated: false )
+    open StoryListScreen.new( nav_bar: true )
 
-    @window = UIWindow.alloc.initWithFrame( UIScreen.mainScreen.bounds )
-    @window.rootViewController = navigation_controller
-    @window.makeKeyAndVisible
-    true
+    # FIXME: port this to MotionKit?
+    UINavigationBar.appearance.barTintColor = '#fd8525'.uicolor
+    UINavigationBar.appearance.setTitleTextAttributes( { NSForegroundColorAttributeName => '#ffffff'.uicolor } )
   end
 end

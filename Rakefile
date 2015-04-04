@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-if Dir.exists? '/Library/RubyMotion2.38'
-  # Fallback to 2.38 if available (until they fix the spontaneous spec-crashes introduced 3.00..)
-  $:.unshift('/Library/RubyMotion2.38/lib')
-else
-  $:.unshift('/Library/RubyMotion/lib')
-  App.warn 'Unable to fallback to RubyMotion2.38 - spec tests might crash the App inside the simulator (if this is 3.0).'
-end
+ $:.unshift('/Library/RubyMotion/lib')
 
 require 'motion/project/template/ios'
 
@@ -46,8 +40,9 @@ Motion::Project::App.setup do |app|
   app.identifier = 'de.tuluh-tec.babbo-voco'
   app.short_version = app.version = '1.0'
 
-  app.sdk_version = '8.1'
+  app.sdk_version = '8.2'
   app.deployment_target = '7.1'
 end
 
 YARD::Rake::YardocTask.new # include YARD rake task
+

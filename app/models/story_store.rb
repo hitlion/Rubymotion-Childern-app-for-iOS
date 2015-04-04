@@ -1,72 +1,24 @@
-# The main list of all available story bundles on the device.
-class StoryListViewController < UITableViewController
+class StoryStore
   # Root path inside the +Documents+ folder which will hold all *.babbo-bundles.
   STORY_ROOT = 'Bundles'
-  # Reuse-identifier for the cells in this table.
-  STORY_LIST_VIEW_CELL_IDENTIFIER = 'StoryListViewCell'
 
   # @return [Array<Hash>] An +Array+ containing one +Hash+ for each loaded story bundle.
   attr_reader :stories
 
-  def viewDidLoad
-    super
-
-    @stories = []
-    tableView.delegate = self
-    tableView.dataSource = self
-
-    # Register a default class for all table cells so they can easily be reused later
-    tableView.registerClass( UITableViewCell, forCellReuseIdentifier: STORY_LIST_VIEW_CELL_IDENTIFIER )
-
-    # Add pull-to-refresh to the table, it's useful for the customer and a must have for the BDD/TDD tests
-    pull_to_refresh = UIRefreshControl.alloc.init
-    pull_to_refresh.addTarget( self, action: :pull_to_reload, forControlEvents: UIControlEventValueChanged )
-    self.refreshControl = pull_to_refresh
-
-    # Additional setup purely for spec-testing
-    if RUBYMOTION_ENV == 'test'
-      tableView.accessibilityLabel = 'Story List'
+  class << self
+    def shared_store
+      @store ||= StoryStore.new
     end
   end
 
-  def viewWillAppear( animated )
-    super
-    reload_stories
+  def initialize
+    reload
   end
 
-  ## UITableViewDataSource
-
-  def tableView( table, numberOfRowsInSection: section )
-    @stories.size
-  end
-
-  def tableView( table, cellForRowAtIndexPath: path )
-    # @type [UITableViewCell] cell
-    cell = table.dequeueReusableCellWithIdentifier( STORY_LIST_VIEW_CELL_IDENTIFIER )
-    cell.textLabel.text = @stories[path.row]['meta']['set_name']
-    cell
-  end
-
-  ## Custom methods
-
-  # Force reloading of the cached story data - this will also cause a table refresh.
-  def reload_stories
-    @stories = load_available_stories
-    tableView.reloadData
-  end
-
-  # Separate method for pull-to-refresh so the refreshControl is only activated when required.
-  def pull_to_reload
-    self.refreshControl.beginRefreshing
-    reload_stories
-    self.refreshControl.endRefreshing
-  end
-
-  private
   # Check the available stories in the Applications NSDocumentDirectory
   # @return [Array<Hash>] An +Array+ containing +Hash+ objects each of which represents the +control.json+ of a story bundle.
   # @return [Array] An empty +Array+ if any errors occur. The specific error will be reported via NSLog.
-  def load_available_stories
+  def reload
     error_ptr = Pointer.new( :object )
     file_manager = NSFileManager.defaultManager
 
@@ -114,6 +66,7 @@ class StoryListViewController < UITableViewController
       end
     end
     # simple way to get a sortable number from the timestamp
-    res.sort_by { |x| x['meta']['timestamp'] }
+    @stories = res.sort_by { |x| x['meta']['timestamp'] }
   end
 end
+
