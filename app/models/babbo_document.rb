@@ -3,9 +3,11 @@ module Babbo
   class Error < StandardError; end
 
   class Document
-    def initialize( data )
-      @levels = []
+    include Babbo::Actionable
 
+    attr_reader :levels
+
+    def initialize( data )
       # this should already be checked by TypeMonkey but wth..
       # at least we assume the required fields *are present*
       unless data['head']['data_language'] == 'tuluh_smil' and
@@ -26,6 +28,11 @@ module Babbo
         :modified_conveyable => data['meta']['modified_conveyable'] || false,
         :timestamp => data['meta']['timestamp']
       }
+
+      @levels = ( data['body']['levels'] || [] ).map { |level| Babbo::Level.new( level ) }
+
+      parse_slots( data['body']['body_slot'] || [] )
+      parse_events( data['body']['body_event'] || {}, %w(at_load at_end) )
     end
 
     def document_id
