@@ -31,8 +31,8 @@ describe StoryListScreen do
 
       screen.reload_stories
       screen.stories.each do |story|
-        last.compare( story['meta']['timestamp'] ).should >= NSOrderedAscending
-        last = story['meta']['timestamp']
+        last.compare( story.timestamp ).should.be >= NSOrderedAscending
+        last = story.timestamp
       end
     end
 
@@ -40,13 +40,13 @@ describe StoryListScreen do
       # force a reload
       screen.on_load
 
-      screen.stories.size.should > 0
+      screen.stories.size.should.be > 0
       screen.table_data.first[:cells].length.should.be == screen.stories.size
     end
 
     it 'has the textLabel of each row table set to the "set_name" of the matching list entry' do
       screen.stories.each_with_index do |story, index|
-        screen.tableView.visibleCells[index].textLabel.text.should.equal( story['meta']['set_name'] )
+        screen.tableView.visibleCells[index].textLabel.text.should.equal( story.set_name )
       end
     end
   end

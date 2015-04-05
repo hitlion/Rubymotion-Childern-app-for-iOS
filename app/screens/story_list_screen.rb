@@ -22,7 +22,7 @@ class StoryListScreen < PM::TableScreen
     [{
       cells: @stories.map do |story|
         {
-          title: story['meta']['set_name']
+          title: story.set_name
         }
       end
     }]

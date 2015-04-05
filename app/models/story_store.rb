@@ -59,14 +59,14 @@ class StoryStore
       else
         data = NSJSONSerialization.JSONObjectWithData( raw, options: NSJSONReadingMutableLeaves, error: error_ptr)
         if data.nil?
-          NSLog( "Error while trying to parse #{File.basename( main__json )}: #{error_ptr[0].localizedDescription}" )
+          NSLog( "Error while trying to parse #{File.basename( main_json )}: #{error_ptr[0].localizedDescription}" )
         else
-          res << data
+          res << Babbo::Document.new( data )
         end
       end
     end
     # simple way to get a sortable number from the timestamp
-    @stories = res.sort_by { |x| x['meta']['timestamp'] }
+    @stories = res.sort_by { |x| x.timestamp }
   end
 end
 
