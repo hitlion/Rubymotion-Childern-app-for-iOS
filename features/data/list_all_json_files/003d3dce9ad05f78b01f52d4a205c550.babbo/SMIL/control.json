@@ -99,9 +99,7 @@
 			"at_load": null,
 			"at_end": null
 		},
-		"body_slot":
-		{
-			"slot_end": null
-		}
+		"body_slot": [
+		]
 	}
 }
