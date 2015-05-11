@@ -45,25 +45,21 @@
 									"transparency": 0.0
 								},
 								"object_event": {
-									"on_click": null,
+									"on_click": "play",
 									"on_swipe": null,
 									"at_start": null,
 									"at_end": "replay"
 								},
 								"object_slot": [
 									{
-										"name": "start",
-										"action": "function start() { play;}"
+										"name": "play",
+										"action": "$.log( $self.name() + ': play slot triggered.' ); if( $var1.status() == 'play' ) { $var1.pause(); } else { $var1.restart(); }",
+										"variables": []
 									},
 									{
 										"name": "replay",
-										"action": "function replay() {  msleep(2000); @var1:start();}",
-										"variables": [
-											{
-												"name": "var1",
-												"content": ":self"
-											}
-										]
+										"action": "$.msleep(2000); $self.start();",
+										"variables": []
 									}
 								]
 							},
@@ -90,11 +86,15 @@
 								"object_slot": [
 									{
 										"name": "start_right",
-										"action": "@var1:start()",
+										"action": "$var1.exit_to($var2.name())",
 										"variables": [
 											{
 												"name": "var1",
-												"content": ":level[level_id=1]:screen[screen_id=2]:object[object_id=1]"
+												"content": ":level[1]:screen[1]"
+											},
+											{
+												"name": "var2",
+												"content": ":level[1]:screen[2]"
 											}
 										]
 									}
@@ -123,11 +123,15 @@
 								"object_slot": [
 									{
 										"name": "start_wrong",
-										"action": "@var1:start()",
+										"action": "$var1.exit_to($var2.name())",
 										"variables": [
 											{
 												"name": "var1",
-												"content": ":level[level_id=1]:screen[screen_id=3]:object[object_id=1]"
+												"content": ":level[1]:screen[1]"
+											},
+											{
+												"name": "var2",
+												"content": ":level[1]:screen[3]"
 											}
 										]
 									}
@@ -141,11 +145,11 @@
 						"screen_slot": [
 							{
 								"name": "start",
-								"action": "@var1:start()",
+								"action": "$var1.start()",
 								"variables": [
 									{
 										"name": "var1",
-										"content": ":level[level_id=1]:screen[screen_id=1]:object[object_id=1]"
+										"content": ":self:object[1]"
 									}
 								]
 							}
@@ -154,7 +158,7 @@
 					{
 						"screen_id": 2,
 						"name": "right_answer",
-						"object": [
+						"objects": [
 							{
 								"object_name": "right_answer_video",
 								"object_id": 1,
@@ -173,16 +177,16 @@
 									"on_click": null,
 									"on_swipe": null,
 									"at_start": null,
-									"at_end": null
+									"at_end": "exit"
 								},
 								"object_slot": [
 									{
-										"name": "start",
-										"action": "@var1:play()",
+										"name": "exit",
+										"action": "$.msleep( 1000 ); $var1.exit_story();",
 										"variables": [
 											{
 												"name": "var1",
-												"content": ":self"
+												"content": ":level[1]:screen[2]"
 											}
 										]
 									}
@@ -190,17 +194,17 @@
 							}
 						],
 						"screen_event": {
-							"at_load": null,
+							"at_load": "start",
 							"at_next": null
 						},
 						"screen_slot": [
 							{
 								"name": "start",
-								"action": "@var1:play()",
+								"action": "$var1.start()",
 								"variables": [
 									{
 										"name": "var1",
-										"content": ":self"
+										"content": ":self:object[1]"
 									}
 								]
 							}
@@ -228,34 +232,38 @@
 									"on_click": null,
 									"on_swipe": null,
 									"at_start": null,
-									"at_end": null
+									"at_end": "exit"
 								},
 								"object_slot": [
 									{
-										"name": "start",
-										"action": "@var1:play()",
+										"name": "exit",
+										"action": "$.msleep( 500 ); $var1.exit_to($var2.name());",
 										"variables": [
 											{
 												"name": "var1",
-												"content": ":self"
-											}
+												"content": ":level[1]:screen[3]"
+											},
+											{
+												"name": "var2",
+												"content": ":level[1]:screen[1]"
+											},
 										]
 									}
 								]
 							}
 						],
 						"screen_event": {
-							"at_load": null,
+							"at_load": "start",
 							"at_next": "create_next_level"
 						},
 						"screen_slot": [
 							{
 								"name": "start",
-								"action": "@var1:play()",
+								"action": "$var1.start()",
 								"variables": [
 									{
 										"name": "var1",
-										"content": ":self"
+										"content": ":self:object[1]"
 									}
 								]
 							},
