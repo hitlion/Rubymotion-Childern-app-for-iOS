@@ -41,8 +41,12 @@ Motion::Project::App.setup do |app|
   app.identifier = 'de.tuluh-tec.babbo-voco'
   app.short_version = app.version = '1.0'
 
-  app.sdk_version = '8.2'
+  app.sdk_version = '8.3'
   app.deployment_target = '7.1'
+
+  app.vendor_project( 'vendor/babbo-voco/js-bridging', :static, :cflags => '-fobjc-arc -fno-exceptions -F JavaScriptCore' )
+  app.frameworks << 'JavaScriptCore'
+  app.frameworks << 'SpriteKit'
 end
 
 YARD::Rake::YardocTask.new # include YARD rake task
