@@ -1,6 +1,7 @@
 module Babbo
   class Slot
-    attr_reader :name, :action, :variables
+    attr_reader :name, :action, :variables, :busy
+    attr_accessor :active
 
     def initialize( data )
       @name = data['name']
@@ -10,10 +11,11 @@ module Babbo
       # ...   and probably should be real objects anyway..
       @variables = ( data['variables'] || {} ).map do |var|
         { 
-          :name    => var['var_name'],
+          :name    => var['name'],
           :content => var['content']
         }
       end
+      @busy = NSLock.alloc.init
     end
   end
 end

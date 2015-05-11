@@ -3,9 +3,11 @@ module Babbo
     include Babbo::Actionable
 
     attr_reader :id, :name, :type, :processable, :content,
-                :position, :size, :layer, :alpha
+                :position, :size, :layer, :alpha, :path
 
-    def initialize( data )
+    attr_accessor :scene_node
+
+    def initialize( data, parent=nil )
       @id = data['object_id'].to_i
       @name = data['object_name'].to_s
       @type = map_object_type( data['object_type'] )
@@ -18,6 +20,7 @@ module Babbo
                           data['object_attribute']['size_y'].to_f )
       @layer = data['object_attribute']['layer'].to_i
       @alpha = data['object_attribute']['transparency'].to_f
+      @path = "#{parent || ''}:object[#{@id}]"
 
       parse_slots( data['object_slot'] || [] )
       parse_events( data['object_event'] || {},

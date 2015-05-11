@@ -7,7 +7,7 @@ module Babbo
 
     attr_reader :levels
 
-    def initialize( data )
+    def initialize( data, bundle_path )
       # this should already be checked by TypeMonkey but wth..
       # at least we assume the required fields *are present*
       unless data['head']['data_language'] == 'tuluh_smil' and
@@ -30,6 +30,7 @@ module Babbo
       }
 
       @levels = ( data['body']['levels'] || [] ).map { |level| Babbo::Level.new( level ) }
+      @bundle_path = bundle_path
 
       parse_slots( data['body']['body_slot'] || [] )
       parse_events( data['body']['body_event'] || {}, %w(at_load at_end) )
@@ -82,6 +83,57 @@ module Babbo
 
     def levels
       @levels
+    end
+
+    def object_for_path( path )
+      # lazy build a map of all paths in the document
+      @paths ||= begin
+        paths = {}
+        @levels.each { |level| paths.merge!( level.paths ) }
+        paths
+      end
+      @paths[path]
+    end
+
+    def bundled_resource( name, of_type: type )
+      return nil unless [ :video, :picture, :audio ].include? type
+
+      # resource URIs should be relative to the SMIL directory (for now)
+      unless name.start_with? '..'
+        name = "../contents/#{name}"
+      end
+
+      resource_path = "#{@bundle_path}/SMIL/#{name}"
+      resource_url  = NSURL.fileURLWithPath( resource_path )
+      PM::logger.info( "Attempting to load '#{name}' of type #{type}.." )
+      if File.exists? resource_path
+        case type
+          when :video
+            return AVPlayer.playerWithURL( resource_url )
+          when :picture
+            return UIImage.imageWithContentsOfFile( resource_path )
+          when :audio
+            # FIXME: nil should really be an NSError**
+            return AVAudioPlayer.alloc.initWithContentsOfURL( resource_url, nil )
+        end
+      else
+        return nil
+      end
+    end
+
+    def create_scene( path )
+      PM::logger.info( "Creating SpriteKit Scene for #{path}")
+      screen = object_for_path( path )
+      if screen.is_a? Babbo::Screen
+        Babbo::SpriteBridge::SceneProxy.new( screen ).create_sknode( self )
+      else
+        nil
+      end
+    end
+
+    def observeValueForKeyPath( path, ofObject: _, change: change, context: _ )
+      PM::logger.info( "Path #{path} changed." )
+      PM::logger.info( "new value: #{change[NSKeyValueChangeNewKey]}")
     end
   end
 end

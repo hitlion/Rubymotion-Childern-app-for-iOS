@@ -53,7 +53,7 @@ class StoryStore
       main_json = File.join( bundle_path, 'SMIL', 'control.json' )
       next unless File.exists?( main_json )
 
-      raw = NSData.dataWithContentsOfFile( main_json, options: NSDataReadingMappedIfSafe, error: error_ptr)
+      raw = NSData.dataWithContentsOfFile( main_json, options: NSDataReadingMappedIfSafe, error: error_ptr )
       if raw.nil?
         NSLog( "Error while trying to read #{File.basename( main_json )}: #{error_ptr[0].localizedDescription}" )
       else
@@ -61,7 +61,7 @@ class StoryStore
         if data.nil?
           NSLog( "Error while trying to parse #{File.basename( main_json )}: #{error_ptr[0].localizedDescription}" )
         else
-          res << Babbo::Document.new( data )
+          res << Babbo::Document.new( data, bundle_path )
         end
       end
     end
