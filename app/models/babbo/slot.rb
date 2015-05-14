@@ -3,12 +3,14 @@ module Babbo
     attr_reader :name, :action, :variables, :busy
     attr_accessor :active
 
+    # initialize a new slot instance
+    # @param data [Hash] The parsed JSON for this slot
     def initialize( data )
       @name = data['name']
       @action = data['action']
       # TODO: this is a dummy-store as it is now.
-      # ...   variables nedd their conten object resolved
-      # ...   and probably should be real objects anyway..
+      # ...   variable content and objects are resolved on
+      # ...   slot execution.
       @variables = ( data['variables'] || {} ).map do |var|
         { 
           :name    => var['name'],

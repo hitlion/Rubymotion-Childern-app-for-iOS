@@ -1,6 +1,7 @@
 module Babbo
   module JSBridge
-    class Picture < Babbo::JSBridge::Object
+    # A JavaScript proxy representing an SKSpriteNode
+    class Picture < Babbo::JSBridge::Generic
     end
   end
 end

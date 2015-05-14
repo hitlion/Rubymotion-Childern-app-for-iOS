@@ -9,6 +9,7 @@
 
 @protocol BBVJSBridgedObject <JSExport>
 -( NSString* )name;
+-( void )moveResize:( NSDictionary* )args;
 @end
 
 @protocol BBVJSBridgedObjectVideo <JSExport>

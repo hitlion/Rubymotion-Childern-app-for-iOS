@@ -79,7 +79,7 @@
 								},
 								"object_event": {
 									"on_click": "start_right",
-									"on_swipe": null,
+									"on_swipe": "resize",
 									"at_start": null,
 									"at_end": null
 								},
@@ -97,6 +97,11 @@
 												"content": ":level[1]:screen[2]"
 											}
 										]
+									},
+									{
+										"name": "resize",
+										"action": "$self.moveResize( { width: 0.5, height: 0.5, x: 0.5, y: 0.5, duration: 2.0 } );",
+										"variables": []
 									}
 								]
 							},

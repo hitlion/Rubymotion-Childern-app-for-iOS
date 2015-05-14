@@ -1,12 +1,17 @@
 module Babbo
-  # Top level class representing a .babbo documents control.json
+  # Common error instance
   class Error < StandardError; end
 
+  # Top level class representing a .babbo documents control.json
   class Document
     include Babbo::Actionable
 
     attr_reader :levels
 
+    # Initialize the model instance from the parsed JSON data.
+    # @param data [Hash] The parsed JSON data
+    # @param bundle_path [String] The absolute path to the .babbo bundle
+    #   on the device filesystem.
     def initialize( data, bundle_path )
       # this should already be checked by TypeMonkey but wth..
       # at least we assume the required fields *are present*
@@ -85,6 +90,9 @@ module Babbo
       @levels
     end
 
+    # Locate a concrete object instance given a path string.
+    # @param path [String] A path notation :obj:obj:obj
+    # @return [Object] The object instance mathing the path or nil.
     def object_for_path( path )
       # lazy build a map of all paths in the document
       @paths ||= begin
@@ -95,6 +103,11 @@ module Babbo
       @paths[path]
     end
 
+    # Load a resounce file (video, picture, audio) from the .babbo bundle
+    # and return a suitable player or image instance.
+    # @param name [String] the path to the resource, relative to the .json.
+    # @param type [Enum] One of the resource types :video, :picture, :audio.
+    # @return [Object] A player object suitable for the media type.
     def bundled_resource( name, of_type: type )
       return nil unless [ :video, :picture, :audio ].include? type
 
@@ -121,6 +134,10 @@ module Babbo
       end
     end
 
+    # Create a SpriteKit scene from a given path.
+    # The path should specify a single screen inside a level.
+    # @param path [String] A path specification locating a singel screen.
+    # @returns [SKScene] A sprite kit scene node.
     def create_scene( path )
       PM::logger.info( "Creating SpriteKit Scene for #{path}")
       screen = object_for_path( path )
@@ -129,11 +146,6 @@ module Babbo
       else
         nil
       end
-    end
-
-    def observeValueForKeyPath( path, ofObject: _, change: change, context: _ )
-      PM::logger.info( "Path #{path} changed." )
-      PM::logger.info( "new value: #{change[NSKeyValueChangeNewKey]}")
     end
   end
 end

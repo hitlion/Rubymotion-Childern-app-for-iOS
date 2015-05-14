@@ -23,6 +23,9 @@ module Babbo
       BBVJSBridgingHelper.injectProtocol( 'BBVJSBridgedObjectScreen', intoClass: Babbo::JSBridge::Screen )
     end
 
+    # Return a proxy instance matching the passed document object.
+    # @param obj [Object] A valid babbo document node (screen or object)
+    # @return [Object] A matching Proxy from the Babbo::JSBridge bundle
     def proxy_for_object( obj )
       if obj.is_a? Babbo::Screen
         return Babbo::JSBridge::Screen.new( obj )
