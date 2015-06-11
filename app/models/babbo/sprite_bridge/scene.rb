@@ -23,6 +23,20 @@ module Babbo
         view.addGestureRecognizer( @tap )
       end
 
+      def audioPlayerDidFinishPlaying(player, successfully: flag )
+        if @document.nil?
+          PM::logger.error( "Scene '#{self.name}' received a audio done call but has no document!" )
+          return
+        end
+
+        object = @document.object_for_path( player.babbo_object_id )
+
+        PM::logger.info( "Playback ended for item #{player.babbo_object_id}" )
+        unless object.nil?
+          object.emit( 'at_end', @document ) if object.respond_to? 'emit:'
+        end
+      end
+
       private
 
       def on_video_done( notification )
