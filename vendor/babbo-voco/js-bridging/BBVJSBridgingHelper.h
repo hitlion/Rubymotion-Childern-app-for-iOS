@@ -9,7 +9,10 @@
 
 @protocol BBVJSBridgedObject <JSExport>
 -( NSString* )name;
--( void )moveResize:( NSDictionary* )args;
+-( void )move:( NSDictionary* )args;
+-( void )resize:( NSDictionary* )args;
+-( void )fade:( NSDictionary* )args;
+-( void )concurrent:( NSDictionary* )args;
 @end
 
 @protocol BBVJSBridgedObjectVideo <JSExport>

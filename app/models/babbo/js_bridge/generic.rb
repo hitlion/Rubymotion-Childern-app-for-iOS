@@ -12,43 +12,98 @@ module Babbo
         @node.path
       end
 
-      def moveResize( args )
-        size_x = args['width']
-        size_y = args['height']
+      def concurrent( args )
+        actions = []
+
+        args.each_pair do |action, aargs|
+          next if action == 'duration'
+
+          aargs['duration'] = args['duration'] unless aargs.has_key? 'duration'
+
+          case action
+            when 'move'
+              actions << _move( aargs )
+            when 'resize'
+              actions << _resize( aargs )
+            when 'fade'
+              actions << _fade( aargs )
+            else
+              if self.respond_to? action
+                actions << SKAction.runBlock( lambda { self.send(action)})
+              end
+          end
+        end
+
+        unless actions.empty?
+          @node.scene_node.runAction( SKAction.group( actions ) )
+        end
+      end
+
+      def move( args )
+        @node.scene_node.runAction( _move( args ) )
+      end
+
+      def resize( args )
+        @node.scene_node.runAction( _resize( args ) )
+      end
+
+      def fade( args )
+        @node.scene_node.runAction( _fade( args ) )
+      end
+
+      private # non exported API
+
+      def _fade( args )
+        new_alpha = 1.0 - args['alpha']
+        sec       = args['duration']
+
+        fade_action = SKAction.fadeAlphaTo( new_alpha, duration: sec )
+        fade_action
+      end
+
+      def _move( args )
         pos_x  = args['x']
         pos_y  = args['y']
         sec    = args['duration']
 
-        PM::logger.info( "In Args: #{size_x}, #{size_y}, #{pos_x}, #{pos_y}, #{sec}")
+        screen = UIScreen.mainScreen.bounds
+        scale  = UIScreen.mainScreen.scale
+
+        new_pos = CGPointMake( pos_x, pos_y )
+        px_pos  = CGPointMake( screen.size.width * scale * new_pos.x,
+                               screen.size.height * scale * new_pos.y )
+
+        # SKNodes have their coordinates relative to the center point
+        # adjust x/y with that in mind
+        px_pos.x += @node.scene_node.size.width / 2.0
+        px_pos.y += @node.scene_node.size.height / 2.0
+
+        # SKScene has a bottom-up coordinate system so we need to
+        # subtract the y position from the (scaled) screen height
+        move_action = SKAction.moveTo( CGPointMake( px_pos.x, screen.size.height * scale - px_pos.y ), duration: sec )
+        move_action
+      end
+
+      def _resize( args )
+        size_x = args['width']
+        size_y = args['height']
+        sec    = args['duration']
+
         # x.calc_size( size, obj_size )
         # x.calc_position( position, size )
         screen = UIScreen.mainScreen.bounds
         scale  = UIScreen.mainScreen.scale
 
-        PM::logger.info( "old size: #{@node.size.width}, #{@node.size.height}")
         # convert from 0.0 => 1.0 size range to actual pixels
         # for this screen.size has to be multiplied by the correct scale
         new_size = CGSizeMake( size_x, size_y )
         px_size = CGSizeMake( screen.size.width * scale * new_size.width,
                               screen.size.height * scale * new_size.height )
 
-        PM::logger.info( "px_size new: #{px_size.width}, #{px_size.height}")
-        new_pos = CGPointMake( pos_x, pos_y )
-        px_pos  = CGPointMake( screen.size.width * scale * new_pos.x,
-                                  screen.size.height * scale * new_pos.y )
-
-        # SKNodes have their coordinates relative to the center point
-        # adjust x/y with that in mind
-        px_pos.x += px_size.width / 2.0
-        px_pos.y += px_size.height / 2.0
-
         # SKScene has a bottom-up coordinate system so we need to
         # subtract the y position from the (scaled) screen height
-        move_action = SKAction.moveTo( CGPointMake( px_pos.x, screen.size.height * scale - px_pos.y ), duration: sec )
         size_action = SKAction.resizeToWidth( px_size.width, height: px_size.height, duration: sec )
-        group = SKAction.group( [ move_action, size_action ] )
-
-        @node.scene_node.runAction( group )
+        size_action
       end
     end
   end
