@@ -127,7 +127,7 @@ module Babbo
             return UIImage.imageWithContentsOfFile( resource_path )
           when :audio
             # FIXME: nil should really be an NSError**
-            return AVAudioPlayer.alloc.initWithContentsOfURL( resource_url, nil )
+            return AVAudioPlayer.alloc.initWithContentsOfURL( resource_url, error: nil )
         end
       else
         return nil
