@@ -8,10 +8,20 @@ module Babbo
       def create_sknode( scene )
         @node ||= begin
           content = scene.document.bundled_resource( @object.content, of_type: @object.type )
+          if content == nil
+            PM::logger.error("bundled_resource failed to return a valid node.")
+          end
 
           case @object.type
             when :audio
-              # FIXME: todo
+              texture = SKTexture.textureWithImageNamed( "audioIcon.png" )
+              node    = SKSpriteNode.spriteNodeWithTexture( texture )
+              node.userData = { :player => content, :state => 'stop' }
+              node.hidden = true
+
+              content.delegate = scene
+              content.babbo_object_id = @object.path
+
             when :video
               content.currentItem.babbo_object_id = @object.path
               content.actionAtItemEnd = AVPlayerActionAtItemEndPause
