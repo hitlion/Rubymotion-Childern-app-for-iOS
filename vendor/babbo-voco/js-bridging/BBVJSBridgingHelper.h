@@ -13,6 +13,7 @@
 -( void )resize:( NSDictionary* )args;
 -( void )fade:( NSDictionary* )args;
 -( void )concurrent:( NSDictionary* )args;
+-( void )setLayer:( NSDictionary* )args;
 @end
 
 @protocol BBVJSBridgedObjectVideo <JSExport>

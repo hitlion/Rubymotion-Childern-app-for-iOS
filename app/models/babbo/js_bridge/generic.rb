@@ -27,9 +27,11 @@ module Babbo
               actions << _resize( aargs )
             when 'fade'
               actions << _fade( aargs )
+            when 'layer'
+              actions << SKAction.runBlock( lambda { self.setLayer(aargs) } )
             else
               if self.respond_to? action
-                actions << SKAction.runBlock( lambda { self.send(action)})
+                actions << SKAction.runBlock( lambda { self.send(action) } )
               end
           end
         end
@@ -49,6 +51,11 @@ module Babbo
 
       def fade( args )
         @node.scene_node.runAction( _fade( args ) )
+      end
+
+      def setLayer( args )
+        new_z = args['l'] || @snode.scene_node.zPosition
+        @node.scene_node.zPosition = new_z
       end
 
       private # non exported API
