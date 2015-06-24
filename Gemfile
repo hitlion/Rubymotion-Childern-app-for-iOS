@@ -15,4 +15,5 @@ gem 'motion-crescentia'
  gem 'motion-kit'
  gem 'motion-wiretap'
  gem 'sugarcube', require: [ 'sugarcube-constants', 'sugarcube-color', 'sugarcube-ui', 'sugarcube-files', 'sugarcube-nsdate' ]
-
+# Ad-Hoc testing
+gem 'motion-cocoapods'
