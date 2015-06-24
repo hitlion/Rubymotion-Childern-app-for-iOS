@@ -124,7 +124,12 @@ module Babbo
           when :video
             return AVPlayer.playerWithURL( resource_url )
           when :picture
-            return UIImage.imageWithContentsOfFile( resource_path )
+            if File.extname( resource_path ).downcase == '.gif'
+              # possibly animated, return the raw data
+              return NSData.dataWithContentsOfFile( resource_path )
+            else
+              return UIImage.imageWithContentsOfFile( resource_path )
+            end
           when :audio
             # FIXME: nil should really be an NSError**
             return AVAudioPlayer.alloc.initWithContentsOfURL( resource_url, error: nil )

@@ -14,7 +14,7 @@ module Babbo
 
           case @object.type
             when :audio
-              texture = SKTexture.textureWithImageNamed( "audioIcon.png" )
+              texture = SKTexture.textureWithImageNamed( "file_music.png" )
               node    = SKSpriteNode.spriteNodeWithTexture( texture )
               node.userData = { :player => content, :state => 'stop' }
               node.hidden = true
@@ -41,8 +41,12 @@ module Babbo
                                  object: content.currentItem )
 
            when :picture
+             if content.is_a? NSData
+               node = SKSpriteNode.spriteNodeFromAnimatedGif( content )
+             else
               texture = SKTexture.textureWithImage( content )
               node    = SKSpriteNode.spriteNodeWithTexture( texture )
+             end
           end
 
           node.alpha = 1.0 - @object.alpha # JSON has this as "transparency 0.0..1.0"
