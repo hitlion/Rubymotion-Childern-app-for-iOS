@@ -1,0 +1,345 @@
+{
+	"head":
+	{
+		"data_language": "tuluh_smil", 
+		"data_language_version": "1.0", 
+		"template_id": "1.1" 
+	},
+
+	"meta":
+	{
+		"dokument_id": 1, 
+		"dataset_id": 1,
+		"branch_creator_id": 1, 
+		"creator_impressum": "René Köcher | BitSpin Productions | Waldstr. 14 – 986093 Ilmenau, Germany | ",
+		"branch_name": "Layer-Demo", 
+		"editor_id": null, 
+		"set_name": "Layer-Demo", 
+		"thumbnail": "../Thumbnail.jpg", 
+		"status": "V1", 
+		"modified_conveyable": true, 
+		"timestamp": "2015-06-15t10:47:00+00:00"
+	},
+
+	"body": { 
+		"levels" : [
+			{
+				"level_id": 1,
+				"screens": [
+					{
+						"screen_id": 1,
+						"name": "master",
+						"objects": [
+							{
+								"object_name": "backdrop",
+								"object_id": 1,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/backdrop_1.png",
+								"object_attribute": {
+									"position_x": 0.0,
+									"position_y": 0.0,
+									"size_x": 1.0,
+									"size_y": 1.0,
+									"layer": 0,
+									"transparency": 0.0
+								},
+								"object_event": {
+								},
+								"object_slot": [
+								]
+							},
+							{
+								"object_name": "box_1",
+								"object_id": 2,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/box_1.png",
+								"object_attribute": {
+									"position_x": 0.23,
+									"position_y": 0.23,
+									"size_x": 0.1,
+									"size_y": 0.1,
+									"layer": 1,
+									"transparency": 0.0
+								},
+								"object_event": {
+									"on_click": "lift"
+								},
+								"object_slot": [
+									{
+										"name": "lift",
+										"action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+										"variables": [
+											{ "name": "box_1", "content": ":level[1]:screen[1]:object[3]" },
+											{ "name": "box_2", "content": ":level[1]:screen[1]:object[4]" },
+											{ "name": "box_3", "content": ":level[1]:screen[1]:object[5]" },
+											{ "name": "box_4", "content": ":level[1]:screen[1]:object[6]" },
+											{ "name": "box_5", "content": ":level[1]:screen[1]:object[7]" },
+											{ "name": "box_6", "content": ":level[1]:screen[1]:object[8]" },
+											{ "name": "box_7", "content": ":level[1]:screen[1]:object[9]" }
+										]
+									}
+								]
+							},
+							{
+								"object_name": "box_2",
+								"object_id": 3,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/box_2.png",
+								"object_attribute": {
+									"position_x": 0.3,
+									"position_y": 0.3,
+									"size_x": 0.1,
+									"size_y": 0.1,
+									"layer": 2,
+									"transparency": 0.0
+								},
+								"object_event": {
+									"on_click": "lift"
+								},
+								"object_slot": [
+									{
+										"name": "lift",
+										"action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+										"variables": [
+											{ "name": "box_1", "content": ":level[1]:screen[1]:object[2]" },
+											{ "name": "box_2", "content": ":level[1]:screen[1]:object[4]" },
+											{ "name": "box_3", "content": ":level[1]:screen[1]:object[5]" },
+											{ "name": "box_4", "content": ":level[1]:screen[1]:object[6]" },
+											{ "name": "box_5", "content": ":level[1]:screen[1]:object[7]" },
+											{ "name": "box_6", "content": ":level[1]:screen[1]:object[8]" },
+											{ "name": "box_7", "content": ":level[1]:screen[1]:object[9]" }
+										]
+									}
+								]
+							},
+							{
+								"object_name": "box_3",
+								"object_id": 4,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/box_3.png",
+								"object_attribute": {
+									"position_x": 0.36,
+									"position_y": 0.36,
+									"size_x": 0.1,
+									"size_y": 0.1,
+									"layer": 3,
+									"transparency": 0.0
+								},
+								"object_event": {
+									"on_click": "lift"
+								},
+								"object_slot": [
+									{
+										"name": "lift",
+										"action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+										"variables": [
+											{ "name": "box_1", "content": ":level[1]:screen[1]:object[3]" },
+											{ "name": "box_2", "content": ":level[1]:screen[1]:object[2]" },
+											{ "name": "box_3", "content": ":level[1]:screen[1]:object[5]" },
+											{ "name": "box_4", "content": ":level[1]:screen[1]:object[6]" },
+											{ "name": "box_5", "content": ":level[1]:screen[1]:object[7]" },
+											{ "name": "box_6", "content": ":level[1]:screen[1]:object[8]" },
+											{ "name": "box_7", "content": ":level[1]:screen[1]:object[9]" }
+										]
+									}
+								]
+							},
+							{
+								"object_name": "box_4",
+								"object_id": 5,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/emoji.gif",
+								"object_attribute": {
+									"position_x": 0.42,
+									"position_y": 0.42,
+									"size_x": 0.1,
+									"size_y": 0.1,
+									"layer": 5,
+									"transparency": 0.0
+								},
+								"object_event": {
+									"on_click": "lift"
+								},
+								"object_slot": [
+									{
+										"name": "lift",
+										"action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+										"variables": [
+											{ "name": "box_1", "content": ":level[1]:screen[1]:object[4]" },
+											{ "name": "box_2", "content": ":level[1]:screen[1]:object[3]" },
+											{ "name": "box_3", "content": ":level[1]:screen[1]:object[2]" },
+											{ "name": "box_4", "content": ":level[1]:screen[1]:object[6]" },
+											{ "name": "box_5", "content": ":level[1]:screen[1]:object[7]" },
+											{ "name": "box_6", "content": ":level[1]:screen[1]:object[8]" },
+											{ "name": "box_7", "content": ":level[1]:screen[1]:object[9]" }
+										]
+									}
+								]
+							},
+							{
+								"object_name": "box_5",
+								"object_id": 6,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/box_5.png",
+								"object_attribute": {
+									"position_x": 0.48,
+									"position_y": 0.48,
+									"size_x": 0.1,
+									"size_y": 0.1,
+									"layer": 4,
+									"transparency": 0.0
+								},
+								"object_event": {
+									"on_click": "lift"
+								},
+								"object_slot": [
+									{
+										"name": "lift",
+										"action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+										"variables": [
+											{ "name": "box_1", "content": ":level[1]:screen[1]:object[5]" },
+											{ "name": "box_2", "content": ":level[1]:screen[1]:object[4]" },
+											{ "name": "box_3", "content": ":level[1]:screen[1]:object[3]" },
+											{ "name": "box_4", "content": ":level[1]:screen[1]:object[2]" },
+											{ "name": "box_5", "content": ":level[1]:screen[1]:object[7]" },
+											{ "name": "box_6", "content": ":level[1]:screen[1]:object[8]" },
+											{ "name": "box_7", "content": ":level[1]:screen[1]:object[9]" }
+										]
+									}
+								]
+							},
+							{
+								"object_name": "box_6",
+								"object_id": 7,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/box_6.png",
+								"object_attribute": {
+									"position_x": 0.55,
+									"position_y": 0.55,
+									"size_x": 0.1,
+									"size_y": 0.1,
+									"layer": 3,
+									"transparency": 0.0
+								},
+								"object_event": {
+									"on_click": "lift"
+								},
+								"object_slot": [
+									{
+										"name": "lift",
+										"action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+										"variables": [
+											{ "name": "box_1", "content": ":level[1]:screen[1]:object[6]" },
+											{ "name": "box_2", "content": ":level[1]:screen[1]:object[5]" },
+											{ "name": "box_3", "content": ":level[1]:screen[1]:object[4]" },
+											{ "name": "box_4", "content": ":level[1]:screen[1]:object[3]" },
+											{ "name": "box_5", "content": ":level[1]:screen[1]:object[2]" },
+											{ "name": "box_6", "content": ":level[1]:screen[1]:object[8]" },
+											{ "name": "box_7", "content": ":level[1]:screen[1]:object[9]" }
+										]
+									}
+								]
+							},
+							{
+								"object_name": "box_7",
+								"object_id": 8,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/box_7.png",
+								"object_attribute": {
+									"position_x": 0.61,
+									"position_y": 0.61,
+									"size_x": 0.1,
+									"size_y": 0.1,
+									"layer": 2,
+									"transparency": 0.0
+								},
+								"object_event": {
+									"on_click": "lift"
+								},
+								"object_slot": [
+									{
+										"name": "lift",
+										"action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+										"variables": [
+											{ "name": "box_1", "content": ":level[1]:screen[1]:object[7]" },
+											{ "name": "box_2", "content": ":level[1]:screen[1]:object[6]" },
+											{ "name": "box_3", "content": ":level[1]:screen[1]:object[5]" },
+											{ "name": "box_4", "content": ":level[1]:screen[1]:object[4]" },
+											{ "name": "box_5", "content": ":level[1]:screen[1]:object[3]" },
+											{ "name": "box_6", "content": ":level[1]:screen[1]:object[2]" },
+											{ "name": "box_7", "content": ":level[1]:screen[1]:object[9]" }
+										]
+									}
+								]
+							},
+							{
+								"object_name": "box_8",
+								"object_id": 9,
+								"object_type": "picture",
+								"processable": "local",
+								"object_content": "../content/box_8.png",
+								"object_attribute": {
+									"position_x": 0.67,
+									"position_y": 0.67,
+									"size_x": 0.1,
+									"size_y": 0.1,
+									"layer": 1,
+									"transparency": 0.0
+								},
+								"object_event": {
+									"on_click": "lift"
+								},
+								"object_slot": [
+									{
+										"name": "lift",
+										"action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+										"variables": [
+											{ "name": "box_1", "content": ":level[1]:screen[1]:object[8]" },
+											{ "name": "box_2", "content": ":level[1]:screen[1]:object[7]" },
+											{ "name": "box_3", "content": ":level[1]:screen[1]:object[6]" },
+											{ "name": "box_4", "content": ":level[1]:screen[1]:object[5]" },
+											{ "name": "box_5", "content": ":level[1]:screen[1]:object[4]" },
+											{ "name": "box_6", "content": ":level[1]:screen[1]:object[3]" },
+											{ "name": "box_7", "content": ":level[1]:screen[1]:object[2]" }
+										]
+									}
+								]
+							}
+						],
+						"screen_event": {
+							"at_load": "start",
+							"at_next": null
+						},
+						"screen_slot": [
+							{
+								"name": "start",
+								"action": "$var1.start()",
+								"variables": [
+									{
+										"name": "var1",
+										"content": ":self:object[6]"
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		],
+		"body_event":
+		{
+			"at_load": null,
+			"at_end": null
+		},
+		"body_slot":[
+		]
+	}
+}
