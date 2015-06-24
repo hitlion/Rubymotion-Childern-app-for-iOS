@@ -18,7 +18,7 @@ module TypeMonkey
 
     def initialize( json )
       @types = nil
-      @validators = nil
+      @validators = {}
 
       # a valid json should contain a hash with type definitions
       # as key-value-pairs
@@ -26,17 +26,34 @@ module TypeMonkey
         raise Schema::Error, 'Expected a dictionary as JSON toplevel element.'
       end
 
-      json.each_pair do |type, spec|
-        next unless spec.is_a? Hash
+      if json.has_key? '__order'
+        for type in json['__order']
+          spec = json[type]
+          next unless spec.is_a? Hash
 
-        unless spec.has_key? 'type'
-          raise Schema::Error, "Definition for type '#{type}' has no 'type' attribute!"
+          unless spec.has_key? 'type'
+            raise Schema::Error, "Definition for type '#{type}' has no 'type' attribute!"
+          end
+
+          begin
+            Wrapper.register( self, type, spec['type'], spec )
+          rescue Wrapper::Error => e
+            raise Schema::Error, "Error in schema definition:\n... #{e.message}"
+          end
         end
+      else
+        json.each_pair do |type, spec|
+          next unless spec.is_a? Hash
 
-        begin
-          Wrapper.register( self, type, spec['type'], spec )
-        rescue Wrapper::Error => e
-          raise Schema::Error, "Error in schema definition:\n... #{e.message}"
+          unless spec.has_key? 'type'
+            raise Schema::Error, "Definition for type '#{type}' has no 'type' attribute!"
+          end
+
+          begin
+            Wrapper.register( self, type, spec['type'], spec )
+          rescue Wrapper::Error => e
+            raise Schema::Error, "Error in schema definition:\n... #{e.message}"
+          end
         end
       end
       self
