@@ -44,7 +44,7 @@ module TypeMonkey
       end
 
       if schema.validators.has_key? toplevel
-        schema.validators[type_name].validate( object )
+        schema.validators[toplevel].validate( object )
       else
         raise TypeMonkey::Validator::Error, "Error '#{toplevel}' does not name a known type specification"
       end
