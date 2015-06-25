@@ -21,11 +21,9 @@ module Babbo
     # Return a hash of objects and paths starting at this model instance.
     # @returns [Hash<String,Object>] A hash for all paths beneath this element.
     def paths()
-      @paths ||= begin
-        paths = { @path => self }
-        @objects.each { |obj| paths[obj.path] = obj }
-        paths
-      end
+      paths = { @path => self }
+      @objects.each { |obj| paths[obj.path] = obj }
+      paths
     end
   end
 end
