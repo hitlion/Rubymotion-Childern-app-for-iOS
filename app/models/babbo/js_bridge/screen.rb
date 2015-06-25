@@ -8,7 +8,7 @@ module Babbo
           @node.scene_node.enumerateChildNodesWithName( '//*', usingBlock: lambda { |node, stop|
             if node.is_a? SKVideoNode
               node.pause
-              notify.removeObserver( @node.scene_node,
+              notify.removeObserver( StoryPlayerScreen.active_instance.scene,
                                       name: AVPlayerItemDidPlayToEndTimeNotification,
                                     object: node.userData[:player].currentItem )
             end
@@ -29,7 +29,7 @@ module Babbo
           @node.scene_node.enumerateChildNodesWithName( '//*', usingBlock: lambda { |node, stop|
             if node.is_a? SKVideoNode
               node.pause
-              notify.removeObserver( @node.scene_node,
+              notify.removeObserver( StoryPlayerScreen.active_instance.scene,
                                       name: AVPlayerItemDidPlayToEndTimeNotification,
                                     object: node.userData[:player].currentItem )
             end

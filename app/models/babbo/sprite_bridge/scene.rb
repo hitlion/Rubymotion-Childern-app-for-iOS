@@ -3,6 +3,11 @@ module Babbo
     class Scene < SKScene
       attr_accessor :document
 
+      def dealloc
+        NSLog("Deallocating <#{self} / #{self.name}>")
+        super
+      end
+
       def didMoveToView( view )
         @swipe ||= UISwipeGestureRecognizer.alloc.initWithTarget( self, action: 'on_gesture_detected:' )
         @swipe.numberOfTouchesRequired = 1

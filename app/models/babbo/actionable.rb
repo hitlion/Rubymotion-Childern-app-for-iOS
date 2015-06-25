@@ -72,6 +72,21 @@ module Babbo
         slot.busy.unlock
       end
     end
+
+    def scene_node
+      res = nil
+      if StoryPlayerScreen.active_instance.scene.name == self.path
+        res = StoryPlayerScreen.active_instance.scene
+      else
+        StoryPlayerScreen.active_instance.scene.enumerateChildNodesWithName( '//*', usingBlock: lambda { |node, stop|
+          res = node if node.name == self.path
+          stop = true unless res.nil?
+        })
+      end
+
+      puts "access scene_node for '#{self.path}' -> #{res}"
+      res
+    end
   end
 end
 

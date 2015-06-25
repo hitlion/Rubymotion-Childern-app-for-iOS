@@ -3,7 +3,6 @@ module Babbo
     include Babbo::Actionable
 
     attr_reader :id, :name, :objects, :path
-    attr_accessor :scene_node
 
     # Initialize the model instance from the parsed JSON data.
     # @param data [Hash] The parsed JSON data

@@ -122,7 +122,8 @@ module Babbo
       if File.exists? resource_path
         case type
           when :video
-            return AVPlayer.playerWithURL( resource_url )
+            #return AVPlayer.playerWithURL( resource_url )
+            return BVPlayer.playerWithURL( resource_url )
           when :picture
             if File.extname( resource_path ).downcase == '.gif'
               # possibly animated, return the raw data

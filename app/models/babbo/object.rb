@@ -5,8 +5,6 @@ module Babbo
     attr_reader :id, :name, :type, :processable, :content,
                 :position, :size, :layer, :alpha, :path
 
-    attr_accessor :scene_node
-
     # Initialize the model instance from the parsed JSON data.
     # @param data [Hash] The parsed JSON data
     # @param parent [String] The path specification up to the parent object.

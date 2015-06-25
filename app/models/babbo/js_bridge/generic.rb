@@ -7,6 +7,11 @@ module Babbo
         @node = story_node
       end
 
+      def dealloc
+        NSLog( "Finalizing #{self}")
+        super
+      end
+
       # Return the nodes path (node = JSON Document element)
       def name()
         @node.path

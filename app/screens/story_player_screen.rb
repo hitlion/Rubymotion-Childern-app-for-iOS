@@ -1,12 +1,22 @@
 class StoryPlayerScreen < PM::Screen
   attr_accessor :story, :scene, :screen
 
+  class << self
+    attr_accessor :active_instance
+  end
+
   def on_appear
+    StoryPlayerScreen.active_instance = self
     show_scene( ':level[1]:screen[1]' )
   end
 
-  def will_dismiss
+  def on_disappear
+    super
+
     # free up the resounces allocated by SpriteKit
+    @scene_view .removeFromSuperview
+    @screen     = nil
+    @scene      = nil
     @scene_view = nil
   end
 
@@ -34,13 +44,14 @@ class StoryPlayerScreen < PM::Screen
       self.view.addSubview( scene_view )
 
       @screen.emit( 'at_load', @story ) if @screen.is_a? Babbo::Screen
+
       UIView.animateWithDuration( 0.75, animations: lambda {
           scene_view.alpha  = 1.0
           @scene_view.alpha = 0.0
         },
                                      completion: lambda { |_|
           @scene_view.removeFromSuperview 
-          @scene_view.scene.removeAllChildren
+          @scene_view.scene.removeAllChildren # probably not needed
           @scene_view = nil
 
           @scene_view = scene_view
