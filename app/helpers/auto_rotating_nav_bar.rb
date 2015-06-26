@@ -8,5 +8,9 @@ class AutoRotatingNavigationController < PM::NavigationController
   def supportedInterfaceOrientations
     self.topViewController.supportedInterfaceOrientations
   end
+
+  def preferredInterfaceOrientationForPresentation
+    self.topViewController.preferredInterfaceOrientationForPresentation
+  end
 end
 
