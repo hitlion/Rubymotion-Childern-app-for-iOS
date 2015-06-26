@@ -11,52 +11,51 @@ class StoryPlayerScreen < PM::Screen
   end
 
   def on_disappear
-    super
-
     # free up the resounces allocated by SpriteKit
     @scene_view .removeFromSuperview
     @screen     = nil
     @scene      = nil
     @scene_view = nil
+
+    super
   end
 
   def show_scene( path, transition=false )
-    scene_view = SKView.alloc.initWithFrame( self.view.bounds )
+    skdummy = nil
+    unless @scene_view.nil?
+      if transition
+        # render the old scene to a texture..
+        texture = @scene_view.textureFromNode( @scene_view.scene )
+        # .. and put that on a sprite node..
+        skdummy = SKSpriteNode.spriteNodeWithTexture( texture )
+        # .. setup that node to fill the scene and be on top of all others
+        skdummy.zPosition = 99999.0
+        skdummy.size = @scene.size
+        skdummy.position = [ @scene.size.width / 2.0, @scene.size.height / 2.0 ]
+        # .. then add actions to fade-out and remove the node
+        skdummy.runAction( SKAction.sequence( [ SKAction.fadeOutWithDuration( 0.75 ),
+                                                SKAction.removeFromParent ] ) )
+      end
 
+      # with the mockup of the old scene in-place remove it to free it's
+      # resources
+      @scene_view.removeFromSuperview
+      @scene_view.scene.removeAllChildren
+    end
+
+    # prepare the new scene
     @screen = @story.object_for_path( path )
     @scene  = @story.create_scene( path )
 
-    if @scene_view.nil?
-      # first SKView, no transition required
-      @scene_view = scene_view
-      @scene_view.presentScene( @scene )
-      self.view.addSubview( @scene_view )
-
-      @screen.emit( 'at_load', @story ) if @screen.is_a? Babbo::Screen
-    else
-      # transition between different scenes
-      # Remove the SKView to free up resources (which SpriteKit woundln't do!)
-      # and create a fresh SKView to transition to.
-
-      scene_view.presentScene( @scene )
-      scene_view.alpha = 0.0
-
-      self.view.addSubview( scene_view )
-
-      @screen.emit( 'at_load', @story ) if @screen.is_a? Babbo::Screen
-
-      UIView.animateWithDuration( 0.75, animations: lambda {
-          scene_view.alpha  = 1.0
-          @scene_view.alpha = 0.0
-        },
-                                     completion: lambda { |_|
-          @scene_view.removeFromSuperview 
-          @scene_view.scene.removeAllChildren # probably not needed
-          @scene_view = nil
-
-          @scene_view = scene_view
-        } )
+    unless skdummy.nil?
+      @scene.addChild( skdummy )
     end
+
+    @scene_view = SKView.alloc.initWithFrame( self.view.bounds )
+    @scene_view.presentScene( @scene )
+    self.view.addSubview( @scene_view )
+
+    @screen.emit( 'at_load', @story ) if @screen.is_a? Babbo::Screen
   end
 
   # force landscape orientation
