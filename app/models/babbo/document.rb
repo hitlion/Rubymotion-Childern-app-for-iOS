@@ -144,7 +144,7 @@ module Babbo
     # @param path [String] A path specification locating a singel screen.
     # @returns [SKScene] A sprite kit scene node.
     def create_scene( path )
-      mp_l( "Creating SpriteKit Scene for #{path}")
+      mp_l( "Creating SpriteKit Scene for #{path}" )
       screen = object_for_path( path )
       if screen.is_a? Babbo::Screen
         Babbo::SpriteBridge::SceneProxy.new( screen ).create_sknode( self )

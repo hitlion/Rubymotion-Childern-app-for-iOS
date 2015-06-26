@@ -61,7 +61,7 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.102'
+  app.short_version = app.version = '1.0.103'
 
   app.device_family = [ :iphone, :ipad ]
 
