@@ -5,7 +5,7 @@ module Babbo
     class Audio < Babbo::JSBridge::Generic
       # Start the audio playback
       def start()
-        PM::logger.info( "JSBridge::audio#start(#{@node.path})" )
+        mp_l( "JSBridge::audio#start(#{@node.path})" )
         return unless @node.scene_node.userData[:player].is_a? AVAudioPlayer
 
         @node.scene_node.userData[:player].stop
@@ -16,7 +16,7 @@ module Babbo
 
       # Stop the audio playback (and rewind to 00:00)
       def stop()
-        PM::logger.info( "JSBridge::audio#stop(#{@node.path})" )
+        mp_l( "JSBridge::audio#stop(#{@node.path})" )
         return unless @node.scene_node.userData[:player].is_a? AVAudioPlayer
 
         @node.scene_node.userData[:player].stop
@@ -26,7 +26,7 @@ module Babbo
 
       # Like +stop+ but keep the current playback position
       def pause()
-        PM::logger.info( "JSBridge::audio#pause(#{@node.path})" )
+        mp_l( "JSBridge::audio#pause(#{@node.path})" )
         return if @node.nil?
 
         return unless @node.scene_node.userData[:player].is_a? AVAudioPlayer
@@ -37,7 +37,7 @@ module Babbo
 
       # Restart the playback after calling +pause+
       def restart()
-        PM::logger.info( "JSBridge::audio#restart(#{@node.path})" )
+        mp_l( "JSBridge::audio#restart(#{@node.path})" )
         return unless @node.scene_node.is_a? SKaudioNode
         return unless @node.scene_node.userData[:player].is_a? AVAudioPlayer
 

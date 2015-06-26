@@ -3,7 +3,7 @@ module Babbo
     # Base class for all JavaScript proxy objects
     class Generic
       def initialize( story_node )
-        #PM::logger.debug( "creating new #{self.class} -> #{story_node}" )
+        #mp_d( "creating new #{self.class} -> #{story_node}" )
         @node = story_node
       end
 

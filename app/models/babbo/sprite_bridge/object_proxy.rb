@@ -29,7 +29,7 @@ module Babbo
       def create_sknode( scene )
         content = scene.document.bundled_resource( @object.content, of_type: @object.type )
         if content == nil
-          PM::logger.error("bundled_resource failed to return a valid node.")
+          mp_e("bundled_resource failed to return a valid node.")
         end
 
         case @object.type
@@ -80,7 +80,7 @@ module Babbo
 
         node.userInteractionEnabled = true
 
-        PM::logger.info( "node { '#{node.name}', zPos: #{node.zPosition}, pos: [#{node.position.x}, #{node.position.y}], size: [#{node.size.width}, #{node.size.height}], alpha: #{node.alpha} }" )
+        mp_l( "node { '#{node.name}', zPos: #{node.zPosition}, pos: [#{node.position.x}, #{node.position.y}], size: [#{node.size.width}, #{node.size.height}], alpha: #{node.alpha} }" )
         node
       end
     end

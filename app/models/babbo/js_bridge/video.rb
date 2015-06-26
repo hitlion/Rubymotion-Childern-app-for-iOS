@@ -4,7 +4,7 @@ module Babbo
     class Video < Babbo::JSBridge::Generic
       # Start the video playback
       def start()
-        PM::logger.info( "JSBridge::Video#start(#{@node.path})" )
+        mp_l( "JSBridge::Video#start(#{@node.path})" )
         return unless @node.scene_node.is_a? SKVideoNode
         return unless @node.scene_node.userData[:player].is_a? AVPlayer
 
@@ -15,7 +15,7 @@ module Babbo
 
       # Stop the video playback (and rewind to 00:00)
       def stop()
-        PM::logger.info( "JSBridge::Video#stop(#{@node.path})" )
+        mp_l( "JSBridge::Video#stop(#{@node.path})" )
         return unless @node.scene_node.is_a? SKVideoNode
         return unless @node.scene_node.userData[:player].is_a? AVPlayer
 
@@ -26,7 +26,7 @@ module Babbo
 
       # Like +stop+ but keep the current playback position
       def pause()
-        PM::logger.info( "JSBridge::Video#pause(#{@node.path})" )
+        mp_l( "JSBridge::Video#pause(#{@node.path})" )
         return if @node.nil?
         return unless @node.scene_node.is_a? SKVideoNode
         return unless @node.scene_node.userData[:player].is_a? AVPlayer
@@ -37,7 +37,7 @@ module Babbo
 
       # Restart the playback after calling +pause+
       def restart()
-        PM::logger.info( "JSBridge::Video#restart(#{@node.path})" )
+        mp_l( "JSBridge::Video#restart(#{@node.path})" )
         return unless @node.scene_node.is_a? SKVideoNode
         return unless @node.scene_node.userData[:player].is_a? AVPlayer
 

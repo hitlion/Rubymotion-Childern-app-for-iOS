@@ -8,7 +8,7 @@ module Babbo
       def create_sknode( document )
         scene_size = calc_size( CGSizeMake( 1.0, 1.0 ) )
 
-        PM::logger.info( "scene { #{scene_size.width}, #{scene_size.height}, '#{@screen.path}' }")
+        mp_l( "scene { #{scene_size.width}, #{scene_size.height}, '#{@screen.path}' }")
         scene = Babbo::SpriteBridge::Scene.alloc.initWithSize( scene_size )
         scene.document = document
         scene.name     = @screen.path

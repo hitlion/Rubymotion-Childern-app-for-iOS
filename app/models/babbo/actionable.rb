@@ -33,18 +33,18 @@ module Babbo
         # (no run of multiple instances at the same time)
         return unless slot.busy.tryLock
 
-        PM::logger.info( "Actionable.emit( '#{event}' => #{@events[event]} )" )
+        mp_l( "Actionable.emit( '#{event}' => #{@events[event]} )" )
 
         vm  = JSVirtualMachine.alloc.init
         ctx = JSContext.alloc.initWithVirtualMachine( vm )
 
         # build JS Bridging proxies..
         slot.variables.each do |var|
-          PM::logger.info( "JS: creating proxy for #{var}" )
+          mp_l( "JS: creating proxy for #{var}" )
           target = var[:content].gsub( ':self' , self.path )
           object = story.object_for_path( target )
           if object.nil?
-            PM::logger.error( "Could not resolve reference to '#{var[:content]}', abort." )
+            mp_e( "Could not resolve reference to '#{var[:content]}', abort." )
             ctx = nil
             vm  = nil
             slot.busy.unlock
@@ -55,7 +55,7 @@ module Babbo
           proxy = Babbo::JSBridge::proxy_for_object( object )
           # .. end export it into the JavaScript context
           ctx["$#{var[:name]}"] = proxy
-          PM::logger.info( "JS{$#{var[:name]} => #{proxy}}" )
+          mp_l( "JS{$#{var[:name]} => #{proxy}}" )
         end
 
         # .. also inject the current object as '$self'..
@@ -63,7 +63,7 @@ module Babbo
         # .. and the global methods provided by BBVJSBridgingHelper '$.'
         ctx['$'] = BBVJSBridgingHelper.alloc.init
 
-        ctx.setExceptionHandler( lambda { |c,val| PM::logger.error( "JavascriptException: #{val.toString}" ) } )
+        ctx.setExceptionHandler( lambda { |c,val| mp_e( "JavascriptException: #{val.toString}" ) } )
         ctx.evaluateScript( slot.action )
 
         ctx = nil

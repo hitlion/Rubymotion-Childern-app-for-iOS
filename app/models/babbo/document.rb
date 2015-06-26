@@ -118,7 +118,7 @@ module Babbo
 
       resource_path = "#{@bundle_path}/SMIL/#{name}"
       resource_url  = NSURL.fileURLWithPath( resource_path )
-      PM::logger.info( "Attempting to load '#{name}' of type #{type}.." )
+      mp_l( "Attempting to load '#{name}' of type #{type}.." )
       if File.exists? resource_path
         case type
           when :video
@@ -145,7 +145,7 @@ module Babbo
     # @param path [String] A path specification locating a singel screen.
     # @returns [SKScene] A sprite kit scene node.
     def create_scene( path )
-      PM::logger.info( "Creating SpriteKit Scene for #{path}")
+      mp_l( "Creating SpriteKit Scene for #{path}")
       screen = object_for_path( path )
       if screen.is_a? Babbo::Screen
         Babbo::SpriteBridge::SceneProxy.new( screen ).create_sknode( self )

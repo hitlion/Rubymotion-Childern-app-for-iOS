@@ -39,7 +39,7 @@ module Babbo
             return Babbo::JSBridge::Picture.new( obj )
         end
       end
-      PM::logger.error( "No known JSBridge proxy for class #{obj.class}!" )
+      mp_e( "No known JSBridge proxy for class #{obj.class}!" )
       nil
     end
 

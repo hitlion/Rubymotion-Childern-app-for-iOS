@@ -1,7 +1,7 @@
 module AppDelegateHockeyKit
   # HockeyKit extensions
   def setupHockey
-    PM::logger.info( 'Initializing HockeyKit' )
+    mp_l( 'Initializing HockeyKit' )
     BWHockeyManager.sharedHockeyManager.updateURL = "https://hockey.bitspin-productions.net"
     BWHockeyManager.sharedHockeyManager.delegate = self
 
@@ -12,12 +12,12 @@ module AppDelegateHockeyKit
 
   # HockeyKit delegate
   def connectionOpened
-    PM::logger.info( 'HockeyKit - connection opened')
+    mp_l( 'HockeyKit - connection opened')
     UIApplication.sharedApplication.networkActivityIndicatorVisible = true
   end
 
   def connectionClosed
-    PM::logger.info( 'HockeyKit - connection closed')
+    mp_l( 'HockeyKit - connection closed')
     UIApplication.sharedApplication.networkActivityIndicatorVisible = false
   end
 end
