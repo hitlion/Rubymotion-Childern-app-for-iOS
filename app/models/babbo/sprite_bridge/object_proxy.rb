@@ -1,24 +1,3 @@
-class SpriteNode < SKSpriteNode
-  def dealloc
-    NSLog("Deallocating <#{self} / #{self.name}>")
-    super
-  end
-end
-
-class VideoNode < SKVideoNode
-  def dealloc
-    NSLog("Deallocating video <#{self} / #{self.name}>")
-    super
-  end
-end
-
-class BVPlayer < AVPlayer
-  def dealloc
-    NSLog("Deallocating <#{self} / #{self.name}>")
-    super
-  end
-end
-
 module Babbo
   module SpriteBridge
     class ObjectProxy < Proxy
@@ -35,8 +14,7 @@ module Babbo
         case @object.type
           when :audio
             texture = SKTexture.textureWithImageNamed( "file_music.png" )
-            #node    = SKSpriteNode.spriteNodeWithTexture( texture )
-            node    = SpriteNode.alloc.initWithTexture( texture )
+            node    = SKSpriteNode.spriteNodeWithTexture( texture )
             node.userData = { :player => content, :state => 'stop' }
             node.hidden = true
 
@@ -47,7 +25,7 @@ module Babbo
             content.currentItem.babbo_object_id = @object.path
             content.actionAtItemEnd = AVPlayerActionAtItemEndPause
 
-            node = VideoNode.alloc.initWithAVPlayer( content )
+            node = SKVideoNode.videoNodeWithAVPlayer( content )
             node.userData = { :player => content, :state => 'stop' }
 
             # Setup hooks for video done callback
@@ -63,12 +41,10 @@ module Babbo
 
           when :picture
             if content.is_a? NSData
-              #node = SKSpriteNode.spriteNodeFromAnimatedGif( content )
-              node = SpriteNode.spriteNodeFromAnimatedGif( content )
+              node = SKSpriteNode.spriteNodeFromAnimatedGif( content )
             else
               texture = SKTexture.textureWithImage( content )
-              #node    = SKSpriteNode.spriteNodeWithTexture( texture )
-              node    = SpriteNode.spriteNodeWithTexture( texture )
+              node    = SKSpriteNode.spriteNodeWithTexture( texture )
             end
         end
 
@@ -80,7 +56,7 @@ module Babbo
 
         node.userInteractionEnabled = true
 
-        mp_l( "node { '#{node.name}', zPos: #{node.zPosition}, pos: [#{node.position.x}, #{node.position.y}], size: [#{node.size.width}, #{node.size.height}], alpha: #{node.alpha} }" )
+        mp_d( "node { '#{node.name}', zPos: #{node.zPosition}, pos: [#{node.position.x}, #{node.position.y}], size: [#{node.size.width}, #{node.size.height}], alpha: #{node.alpha} }" )
         node
       end
     end

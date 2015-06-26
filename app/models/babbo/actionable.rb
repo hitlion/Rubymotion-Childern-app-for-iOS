@@ -83,8 +83,6 @@ module Babbo
           stop = true unless res.nil?
         })
       end
-
-      puts "access scene_node for '#{self.path}' -> #{res}"
       res
     end
   end

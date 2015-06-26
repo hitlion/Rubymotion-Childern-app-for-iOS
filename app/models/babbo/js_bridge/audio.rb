@@ -1,7 +1,6 @@
 module Babbo
   module JSBridge
     # A JavaScript proxy which *will* represent some
-    # Kind of audio node (TODO)
     class Audio < Babbo::JSBridge::Generic
       # Start the audio playback
       def start()
