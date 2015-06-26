@@ -12,10 +12,15 @@ class StoryPlayerScreen < PM::Screen
 
   def on_disappear
     # free up the resounces allocated by SpriteKit
-    @scene_view .removeFromSuperview
+    @scene_view.removeFromSuperview
+    @scene_view.scene.removeAllChildren
     @screen     = nil
     @scene      = nil
     @scene_view = nil
+
+    if StoryPlayerScreen.active_instance == self
+      StoryPlayerScreen.active_instance = nil
+    end
 
     super
   end
