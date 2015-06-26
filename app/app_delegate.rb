@@ -16,7 +16,7 @@ class AppDelegate < PM::Delegate
     # Add the required protocols to our Ruby classes
     Babbo::JSBridge::inject_protocols()
 
-    open StoryListScreen.new( nav_bar: true )
+    open StoryListScreen.new( nav_bar: true, nav_controller: AutoRotatingNavigationController )
 
     # FIXME: port this to MotionKit?
     UINavigationBar.appearance.barTintColor = '#f9bc34'.uicolor
