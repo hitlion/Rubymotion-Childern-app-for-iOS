@@ -5,7 +5,7 @@ module AppDelegateHockeyKit
     BWHockeyManager.sharedHockeyManager.updateURL = "https://hockey.bitspin-productions.net"
     BWHockeyManager.sharedHockeyManager.delegate = self
 
-    BWHockeyManager.sharedHockeyManager.loggingEnabled = true
+    #BWHockeyManager.sharedHockeyManager.loggingEnabled = true
     BWHockeyManager.sharedHockeyManager.alwaysShowUpdateReminder = true
     BWHockeyManager.sharedHockeyManager.checkForUpdateOnLaunch = true
   end
