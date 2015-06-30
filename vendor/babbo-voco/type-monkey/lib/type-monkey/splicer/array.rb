@@ -35,10 +35,8 @@ module TypeMonkey
           item  = element
           index = n
           if element.is_a? Hash
-            if element.keys.sort == %w(__idx __val)
-              item  = element['__val']
-              index = element['__idx']
-            end
+            item  = element['__val'] if element.has_key? '__val'
+            index = element['__idx'] if element.has_key? '__idx'
           end
 
           if item.is_a? Hash
