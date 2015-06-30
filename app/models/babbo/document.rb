@@ -70,8 +70,7 @@ module Babbo
     end
 
     def thumbnail
-      # TODO
-      nil
+      bundled_resource( @metadata[:thumbnail], of_type: :picture )
     end
 
     def status
