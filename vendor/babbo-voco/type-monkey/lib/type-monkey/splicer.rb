@@ -10,6 +10,15 @@ module TypeMonkey
   module Splicer
     class Error < StandardError; end
 
+    # Splice two JSON objects into one final result
+    # following the given set of +rules+ using the given +schema+.
+    # @param schema [TypeMonkey::Schema] A type-monkey schema description.
+    # @param rules [TypeMonkey::Rules] A type-monkey rules set (see #parse).
+    # @param root [String] The root object to start the merge with.
+    # @param original [Object] A parsed JSON object representing the 'original'.
+    # @param modified [Ojbect] A parsed JSON object representing the 'changes'.
+    # @return [Object] The result of merging +original+ and +modified+ applying
+    #   +rules+ with respect the the +schema+.
     def splice( schema, rules, root, original, modified )
       root_type = TypeMonkey::Wrapper.get( schema, root )
 
@@ -37,12 +46,46 @@ module TypeMonkey
       splice_original.dump
     end
 
-    def parse( data )
-      Rules.new( data )
+    # Parse a set of splice-rules in parsed-JSON form
+    # and create a new +Rules+ instance.
+    # @param data [Object] Parsed JSON data representing the rule-set
+    # @param mapping [Hash<Hash<String,String>,Hash<String,String>] A dictionary
+    #   containing twe optional dictionaries 'objects' and 'paths' which will be used
+    #   to map the object and path-names in the rule-set to their schema-types.
+    # @return [TypeMonkey::Rules] A new +Rules+ object.
+    def parse( data, mapping=nil )
+      Rules.new( data, mapping || { 'objects' => {}, 'paths' => {} } )
+    end
+
+    # Dump a list of [path, type] pairs representing all of the elements
+    # present in the JSON-data inside +tree+.
+    # 'path' will be the splicer-path leading to a node while 'type' is the
+    # associated schema-type for that node.
+    # @param schema [TypeMonkey::Schema] A type-monkey schema-description.
+    # @param root [String] The name of the root object inside +tree+
+    # @param tree [Object] Parsed JSON data representing a document.
+    # @return [Array<Array<String,String>>] An array with [path, type] pairs.
+    def dump_tree( schema, root, tree )
+      root_type = TypeMonkey::Wrapper.get( schema, root )
+
+      if root_type.is_a? TypeMonkey::Wrapper::ArrayType
+        splice_master   = ArraySplicer.new( schema, root, nil, tree )
+
+      elsif root_type.is_a? TypeMonkey::Wrapper::ObjectType
+        splice_master   = ObjectSplicer.new( schema, root, nil, tree )
+
+      elsif root_type.is_a? TypeMonkey::Wrapper::CoreType
+        splice_master   = CoreSplicer.new( schema, root, nil, tree )
+      else
+        raise ""
+      end
+
+      splice_master.paths.map { |path| [ path[0], path[1].type_name ] }
     end
 
     module_function :splice
     module_function :parse
+    module_function :dump_tree
 
     private
 
