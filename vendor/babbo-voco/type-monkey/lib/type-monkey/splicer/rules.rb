@@ -9,7 +9,7 @@ module TypeMonkey
     # Wrapper around a merge rule definition
     class Rules
       # Parse the JSON tree in +definitions+ and create applyable rules from it.
-      def initialize( definitions )
+      def initialize( definitions, mapping = { 'objects' => {}, 'paths' => {} } )
         @rules = {}
 
         definitions.each do |defn|
@@ -22,13 +22,14 @@ module TypeMonkey
           end
 
           rule = {
-            :path   => defn['path'],
+            :path   => check_path(defn['path'], mapping['paths'] || {}),
             :splice => defn['splice'].to_sym,
             :when   => parse_when( defn['when'] )
           }
 
-          @rules[defn['type']] ||= []
-          @rules[defn['type']] << rule
+          type = mapping['objects'][defn['type']] || defn['type']
+          @rules[type] ||= []
+          @rules[type] << rule
         end
       end
 
@@ -63,6 +64,34 @@ module TypeMonkey
       end
 
       private
+
+      # @private
+      # Check for and return a mapping for +path+
+      # @param path [String] The unmapped path string
+      # @param mapping [Hash<String,String>] A dictionary of path mappings.
+      # @return The mapped path or in case there is no mapping the original.
+      def check_path( path, mapping )
+        res = path.clone
+        # collect all array indices and replace them with
+        # %idxN
+        indices = {}
+        path = path.gsub(/(?<=\[)(\d+|\*)\s*(?=\])/) do |index|
+          key = "%idx#{indices.keys.size}"
+          indices[key] = index
+          key
+        end
+
+        # check if a mapping the that path exists
+        if mapping.has_key? path
+          res = mapping[path].clone
+          # if so, re-insert the indices at the correct
+          # positions inside the path
+          indices.each_pair do |key,index|
+            res.gsub!( key, index )
+          end
+        end
+        res
+      end
 
       # @private
       # Parse a 'when:' block and create the LogicOps and ValueOps it defines.
