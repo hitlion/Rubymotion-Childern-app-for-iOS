@@ -23,7 +23,7 @@ module TypeMonkey
       # Validate a parsed JSON-object against the spec
       # @param object [Object] A parsed JSON object (tree).
       def validate( object )
-        unless object.is_a? @type.type_class
+        unless object.is_a? @type.type_class or object.is_a? Numeric # numbers are interchangable
           if object.nil?
             if @type.default_value.nil?
               raise TypeMonkey::Validator::Error,
