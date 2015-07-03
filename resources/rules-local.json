@@ -140,7 +140,8 @@
                         "type": "string",
                         "default": ""
                     }
-                }
+                },
+                "default": {}
             },
             "object_slot": {
                 "type" : "smil_slot_list"
@@ -173,10 +174,12 @@
                         "type": "string",
                         "default": ""
                     }
-                }
+                },
+                "default": {}
             },
             "screen_slot": {
-                "type": "smil_slot_list"
+                "type": "smil_slot_list",
+                "default": []
             }
         }
     },
@@ -273,10 +276,12 @@
                         "type": "string",
                         "default": ""
                     }
-                }
+                },
+                "default": {}
             },
             "body_slot": {
-                "type": "smil_slot_list"
+                "type": "smil_slot_list",
+                "default": []
             }
         }
     },
