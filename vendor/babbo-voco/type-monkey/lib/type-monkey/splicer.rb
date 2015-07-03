@@ -46,7 +46,6 @@ module TypeMonkey
       modifiable_paths = splice_original.paths_modifiable( rules ).map { |path| rules.mapped_path( path ) }
       res = splice_original.dump
       res['__modifiable'] = modifiable_paths
-      mp res
       res
     end
 
