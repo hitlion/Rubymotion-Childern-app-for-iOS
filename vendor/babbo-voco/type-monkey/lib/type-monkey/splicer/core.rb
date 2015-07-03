@@ -81,6 +81,15 @@ module TypeMonkey
         [ [ path, self ] ]
       end
 
+      def paths_modifiable( rules )
+        merge_rule = rules.find( self ) || rules.find( @parent ) || :original
+        if merge_rule == :modified
+          [ path ]
+        else
+          []
+        end
+      end
+
       # Merge this splicer and +modify+ according to the passed +rules+.
       # For a +CoreSplicer+ this will check if the value should be modifiable
       # and in that case will copy the value of +other+.

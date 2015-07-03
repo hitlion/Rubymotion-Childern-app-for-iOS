@@ -33,17 +33,21 @@ module TypeMonkey
         splice_master   = CoreSplicer.new( schema, root, nil, original )
         splice_modified = CoreSplicer.new( schema, root, nil, modified )
       else
-        raise ""
+        raise TypeMonkey::Splicer::Error, "Internal error, this should never happen."
       end
 
       # create new elements etc. which use a '__copy' tag
       # by looking the path up in splice_master, creating a copy
       # and finally putting it all together as splice_original
-      splice_original = Splicer.create_copy_refs( schema, root, splice_master,
-                                                  splice_modified )
+      splice_original = Splicer.create_copy_refs( schema, root, rules,
+                                                  splice_master, splice_modified )
 
       splice_original.splice( rules, splice_modified )
-      splice_original.dump
+      modifiable_paths = splice_original.paths_modifiable( rules ).map { |path| rules.mapped_path( path ) }
+      res = splice_original.dump
+      res['__modifiable'] = modifiable_paths
+      mp res
+      res
     end
 
     # Parse a set of splice-rules in parsed-JSON form
@@ -77,7 +81,7 @@ module TypeMonkey
       elsif root_type.is_a? TypeMonkey::Wrapper::CoreType
         splice_master   = CoreSplicer.new( schema, root, nil, tree )
       else
-        raise ""
+        raise TypeMonkey::Splicer::Error, "Internal error, this should never happen."
       end
 
       splice_master.paths.map { |path| [ path[0], path[1].type_name ] }
@@ -89,12 +93,14 @@ module TypeMonkey
 
     private
 
-    def self.create_copy_refs( schema, root, master, modified )
+    def self.create_copy_refs( schema, root, rules, master, modified )
       master_paths = master.paths.to_h
       modified.paths.each do |path, splicer|
         next unless splicer.spec.is_a? Hash
 
-        copy_from = splicer.spec['__copy']
+        next if splicer.spec['__copy'].nil?
+
+        copy_from = rules.reverse_path(splicer.spec['__copy'])
         unless copy_from.nil?
           original = master_paths[copy_from]
           if original.nil?

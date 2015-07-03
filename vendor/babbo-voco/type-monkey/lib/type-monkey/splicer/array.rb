@@ -77,6 +77,17 @@ module TypeMonkey
         res
       end
 
+      def paths_modifiable( rules )
+        merge_rule = rules.find( self ) || rules.find( @parent ) || :original
+        if merge_rule == :modified
+          res = [ path ]
+        else
+          res = []
+        end
+        @items.map { |item| res += item.paths_modifiable( rules ) }
+        res
+      end
+
       # Merge this splicer and +modify+ according to the passed +rules+.
       # This will check if the splicer itself is modifyable and add new
       # objects as needed but will also check if the existing objects are
