@@ -1,0 +1,53 @@
+{
+	"body": { 
+		"levels" : [
+			{
+				"level_id": 1,
+				"screens": [
+					{
+						"screen_id": 1,
+						"name": "master",
+						"objects": [
+              {
+                "__idx": 4,
+                "object_content": "../content/emoji.gif"
+              },
+              {
+                "__copy": ":body:levels[1]:screens[1]:objects[9]",
+                "__idx": 9,
+                "object_name": "box_9",
+                "object_id": 10,
+                "object_content": "../content/box_8.png",
+                "object_attribute": {
+                  "position_x": 0.80,
+                  "position_y": 0.80,
+                  "size_x": 0.1,
+                  "size_y": 0.1,
+                  "transparency": 0.0
+                },
+                "object_event": {
+                  "on_click": "lift"
+                },
+                "object_slot": [
+                  {
+                    "name": "lift",
+                    "action": "var blocks = [ $self, $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7 ]; var layer = 9.0; for (var b in blocks) { blocks[b].concurrent({ resize: { width: 0.12, height: 0.12 }, layer: { l: layer }, duration: 0.25 }); $.msleep(250); blocks[b].resize({ width: 0.1, height: 0.1, duration: 0.25 }); layer -= 1.0; };",
+                    "variables": [
+                      { "name": "box_1", "content": ":level[1]:screen[1]:object[8]" },
+                      { "name": "box_2", "content": ":level[1]:screen[1]:object[7]" },
+                      { "name": "box_3", "content": ":level[1]:screen[1]:object[6]" },
+                      { "name": "box_4", "content": ":level[1]:screen[1]:object[5]" },
+                      { "name": "box_5", "content": ":level[1]:screen[1]:object[4]" },
+                      { "name": "box_6", "content": ":level[1]:screen[1]:object[3]" },
+                      { "name": "box_7", "content": ":level[1]:screen[1]:object[2]" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -41,7 +41,7 @@
 									"position_y": 0.0,
 									"size_x": 1.0,
 									"size_y": 1.0,
-									"layer": 0,
+									"layer": 0.0,
 									"transparency": 0.0
 								},
 								"object_event": {
@@ -60,7 +60,7 @@
 									"position_y": 0.23,
 									"size_x": 0.1,
 									"size_y": 0.1,
-									"layer": 1,
+									"layer": 1.0,
 									"transparency": 0.0
 								},
 								"object_event": {
@@ -93,7 +93,7 @@
 									"position_y": 0.3,
 									"size_x": 0.1,
 									"size_y": 0.1,
-									"layer": 2,
+									"layer": 2.0,
 									"transparency": 0.0
 								},
 								"object_event": {
@@ -126,7 +126,7 @@
 									"position_y": 0.36,
 									"size_x": 0.1,
 									"size_y": 0.1,
-									"layer": 3,
+									"layer": 3.0,
 									"transparency": 0.0
 								},
 								"object_event": {
@@ -153,13 +153,13 @@
 								"object_id": 5,
 								"object_type": "picture",
 								"processable": "local",
-								"object_content": "../content/emoji.gif",
+								"object_content": "../content/box_4.png",
 								"object_attribute": {
 									"position_x": 0.42,
 									"position_y": 0.42,
 									"size_x": 0.1,
 									"size_y": 0.1,
-									"layer": 5,
+									"layer": 5.0,
 									"transparency": 0.0
 								},
 								"object_event": {
@@ -192,7 +192,7 @@
 									"position_y": 0.48,
 									"size_x": 0.1,
 									"size_y": 0.1,
-									"layer": 4,
+									"layer": 4.0,
 									"transparency": 0.0
 								},
 								"object_event": {
@@ -225,7 +225,7 @@
 									"position_y": 0.55,
 									"size_x": 0.1,
 									"size_y": 0.1,
-									"layer": 3,
+									"layer": 3.0,
 									"transparency": 0.0
 								},
 								"object_event": {
@@ -258,7 +258,7 @@
 									"position_y": 0.61,
 									"size_x": 0.1,
 									"size_y": 0.1,
-									"layer": 2,
+									"layer": 2.0,
 									"transparency": 0.0
 								},
 								"object_event": {
@@ -291,7 +291,7 @@
 									"position_y": 0.67,
 									"size_x": 0.1,
 									"size_y": 0.1,
-									"layer": 1,
+									"layer": 1.0,
 									"transparency": 0.0
 								},
 								"object_event": {
