@@ -48,6 +48,7 @@ module TypeMonkey
       else
         raise TypeMonkey::Validator::Error, "Error '#{toplevel}' does not name a known type specification"
       end
+      true
     end
 
     module_function :get
