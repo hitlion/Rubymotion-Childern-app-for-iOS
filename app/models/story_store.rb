@@ -12,7 +12,7 @@ class StoryStore
   end
 
   def initialize
-    reload
+
   end
 
   # Check the available stories in the Applications NSDocumentDirectory
@@ -50,23 +50,109 @@ class StoryStore
       next unless File.directory?( bundle_path )
       next unless File.extname( bundle_path ) == '.babbo'
 
+      mp "Processing: #{bundle_path}", force_color: :red
+
+      # collect files inside the bundle
       main_json = File.join( bundle_path, 'SMIL', 'control.json' )
+      mods_json = File.join( bundle_path, 'SMIL', 'changes.json' )
       next unless File.exists?( main_json )
 
-      raw = NSData.dataWithContentsOfFile( main_json, options: NSDataReadingMappedIfSafe, error: error_ptr )
-      if raw.nil?
-        NSLog( "Error while trying to read #{File.basename( main_json )}: #{error_ptr[0].localizedDescription}" )
-      else
-        data = NSJSONSerialization.JSONObjectWithData( raw, options: NSJSONReadingMutableLeaves, error: error_ptr)
-        if data.nil?
-          NSLog( "Error while trying to parse #{File.basename( main_json )}: #{error_ptr[0].localizedDescription}" )
-        else
-          res << Babbo::Document.new( data, bundle_path )
+      main_data = load_json_file( main_json, false )
+      schema    = load_schema_definition()
+
+      next if schema.nil?
+
+      if File.exists? mods_json
+        mods_data = load_json_file( mods_json, false )
+        rules     = load_splicer_rules( bundle_path )
+
+        next if rules.nil? or mods_data.nil?
+
+        begin
+          # TODO: handle exceptions..
+          data = TypeMonkey::Splicer::splice( schema, rules, 'smil_document',
+                                              main_data, mods_data )
+        rescue => e
+          NSLog( "Skip.." )
+          next
         end
+      else
+        data = main_data
       end
+      begin
+        TypeMonkey::Validator::validate( schema, data, 'smil_document' )
+      rescue => e
+        NSLog( "Skip 2.." )
+        next
+      end
+
+      res << Babbo::Document.new( data, bundle_path )
     end
     # simple way to get a sortable number from the timestamp
     @stories = res.sort_by { |x| x.timestamp }
+  end
+
+  private
+
+  def load_schema_definition
+    @schema ||= begin
+      path = NSBundle.mainBundle.pathForResource( 'rules-local', ofType: 'json' )
+      data = load_json_file( path, false )
+      if data.nil?
+        nil
+      else
+        begin
+        # TODO: handle exceptions..
+          TypeMonkey::Schema::parse( data )
+        rescue TypeMonkey::Schema::Error => e
+          NSLog( "Failed to load schema definition" )
+          nil
+        end
+      end
+    end
+  end
+
+  def load_splicer_rules( bundle_path )
+    path = File.join( bundle_path, 'SMIL', 'rules-splice.json' )
+    data = load_json_file( path, false )
+    if data.nil?
+      nil
+    else
+      # TODO: handle exceptions
+      begin
+        mapping = load_splicer_mapping
+        TypeMonkey::Splicer::parse( data, mapping )
+      rescue TypeMonkey::Splicer::Error => e
+        NSLog( "Failed to load splicer rules." )
+        nil
+      end
+    end
+  end
+
+  def load_splicer_mapping
+    @mapping ||= begin
+      path = NSBundle.mainBundle.pathForResource( 'splice-mapping', ofType: 'json' )
+      load_json_file( path )
+    end
+  end
+
+  def load_json_file( path, read_only=true )
+    error_ptr = Pointer.new( :object )
+    raw = NSData.dataWithContentsOfFile( path, options: NSDataReadingMappedIfSafe, error: error_ptr )
+    if raw.nil?
+      error = error_ptr[0]
+      NSLog( "Error while trying to read '#{File.basename(path)}': #{error.localizedDescription}" )
+      nil
+    else
+      options = read_only ? 0 : ( NSJSONReadingMutableContainers | NSJSONReadingMutableLeaves )
+      data = NSJSONSerialization.JSONObjectWithData( raw, options: options, error: error_ptr )
+      if data.nil?
+        error = error_ptr[0]
+        NSLog( "Error while parsing '#{File.basename(path)}': #{error.localizedDescription}" )
+        return nil
+      end
+      data
+    end
   end
 end
 
