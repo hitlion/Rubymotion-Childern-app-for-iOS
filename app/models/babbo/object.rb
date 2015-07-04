@@ -4,6 +4,7 @@ module Babbo
 
     attr_reader :id, :name, :type, :processable, :content,
                 :position, :size, :layer, :alpha, :path
+    attr_accessor :modifiable
 
     # Initialize the model instance from the parsed JSON data.
     # @param data [Hash] The parsed JSON data
@@ -26,6 +27,8 @@ module Babbo
       parse_slots( data['object_slot'] || [] )
       parse_events( data['object_event'] || {},
                     %w(on_click on_swipe at_start at_end) )
+
+      @modifiable = false
     end
 
     private

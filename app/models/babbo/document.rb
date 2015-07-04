@@ -7,6 +7,7 @@ module Babbo
     include Babbo::Actionable
 
     attr_reader :levels
+    attr_accessor :modifiable
 
     # Initialize the model instance from the parsed JSON data.
     # @param data [Hash] The parsed JSON data
@@ -39,6 +40,19 @@ module Babbo
 
       parse_slots( data['body']['body_slot'] || [] )
       parse_events( data['body']['body_event'] || {}, %w(at_load at_end) )
+
+      if data.has_key? '__modifiable'
+        @modifiable = data['__modifiable'].include? ':body'
+
+        data['__modifiable'].each do |path|
+          object = object_for_path( path.sub( /^:body/, '' ) )
+
+          next if object.nil?
+          object.modifiable = true
+        end
+      else
+        @modifiable = false
+      end
     end
 
     def document_id
@@ -100,6 +114,28 @@ module Babbo
         paths
       end
       @paths[path]
+    end
+
+    # Return a list of all modifiable objects
+    # @return [Array<Object>] A list with all modifiable story objects
+    def modifiable_objects
+      res = []
+      @levels.each do |level|
+        res << level if level.modifiable
+        level.screens.each do |screen|
+          res << screen if screen.modifiable
+          screen.objects.each do |object|
+            res << object if object.modifiable
+          end
+        end
+      end
+      res
+    end
+
+    # Like `modifiable_objects` but return the object's path string instead.
+    # @return [Array<String>] A list of paths for all modifiable story objects
+    def modifiable_paths
+      modifiable_objects.map{ |object| object.path }
     end
 
     # Load a resounce file (video, picture, audio) from the .babbo bundle

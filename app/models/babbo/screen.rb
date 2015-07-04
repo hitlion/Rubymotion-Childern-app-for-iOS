@@ -3,6 +3,7 @@ module Babbo
     include Babbo::Actionable
 
     attr_reader :id, :name, :objects, :path
+    attr_accessor :modifiable
 
     # Initialize the model instance from the parsed JSON data.
     # @param data [Hash] The parsed JSON data
@@ -15,6 +16,8 @@ module Babbo
 
       parse_slots( data['screen_slot'] || [] )
       parse_events( data['screen_event'] || {}, %w(at_load at_next) )
+
+      @modifiable = false
     end
 
     # Return a hash of objects and paths starting at this model instance.

@@ -2,6 +2,7 @@ module Babbo
   # A single level inside a .babbo document
   class Level
     attr_reader :id, :screens, :path
+    attr_accessor :modifiable
 
     # Initialize the model instance from the parsed JSON data.
     # @param data [Hash] The parsed JSON data
@@ -10,6 +11,7 @@ module Babbo
       @id = data['level_id'].to_i
       @path = "#{parent || ''}:level[#{@id}]"
       @screens = ( data['screens'] || [] ).map { |screen| Babbo::Screen.new( screen, @path ) }
+      @modifiable = false
     end
 
     # Return a hash of objects and paths starting at this model instance.
