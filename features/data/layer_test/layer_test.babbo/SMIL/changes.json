@@ -13,7 +13,7 @@
                 "object_content": "../content/emoji.gif"
               },
               {
-                "__copy": ":body:levels[1]:screens[1]:objects[9]",
+                "__copy": ":body:level[1]:screen[1]:object[9]",
                 "__idx": 9,
                 "object_name": "box_9",
                 "object_id": 10,

@@ -1,32 +1,32 @@
 [
   {
-    "type"   : ":body:levels:screens:objects!",
-    "path"   : ":body:levels[1]:screens[1]:objects",
+    "type"   : ":body:level:screen:objects!",
+    "path"   : ":body:level[1]:screen[1]:objects",
     "splice" : "modified"
   },
   {
-    "type"   : ":body:levels:screens:objects",
-    "path"   : ":body:levels[1]:screens[1]:objects[*]",
+    "type"   : ":body:level:screen:object",
+    "path"   : ":body:level[1]:screen[1]:object[*]",
     "splice" : "original"
   },
   {
-    "type"   : ":body:levels:screens:objects",
-    "path"   : ":body:levels[1]:screens[1]:objects[5]",
+    "type"   : ":body:level:screen:object",
+    "path"   : ":body:level[1]:screen[1]:object[5]",
     "splice" : "modified"
   },
   {
-    "type"   : ":body:levels:screens:objects",
-    "path"   : ":body:levels[1]:screens[1]:objects[10]",
+    "type"   : ":body:level:screen:object",
+    "path"   : ":body:level[1]:screen[1]:object[10]",
     "splice" : "modified"
   },
   {
-    "type"   : ":body:levels:screens:objects:object_attribute:position_x",
-    "path"   : ":body:levels[1]:screens[1]:objects[10]:object_attribute:position_x",
+    "type"   : ":body:level:screen:object:object_attribute:position_x",
+    "path"   : ":body:level[1]:screen[1]:object[10]:object_attribute:position_x",
     "splice" : "modified"
   },
   {
-    "type"   : ":body:levels:screens:objects:object_attribute:positon_y",
-    "path"   : ":body:levels[1]:screens[1]:objects[10]:object_attribute:position_y",
+    "type"   : ":body:level:screen:object:object_attribute:positon_y",
+    "path"   : ":body:level[1]:screen[1]:object[10]:object_attribute:position_y",
     "splice" : "modified"
   }
 ]
