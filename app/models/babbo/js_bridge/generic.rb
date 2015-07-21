@@ -25,7 +25,7 @@ module Babbo
         end
 
         args.each_pair do |action, aargs|
-          next if action == 'duration'
+          next if action == 'duration' or action == 'wait'
 
           aargs['duration'] = args['duration'] unless aargs.has_key? 'duration'
 
@@ -49,6 +49,11 @@ module Babbo
 
         unless actions.empty?
           @node.scene_node.runAction( SKAction.group( actions ) )
+          if args.has_key? 'wait' and args['wait'] == true
+            if args['duration']
+              NSThread.sleepForTimeInterval( args['duration'] )
+            end
+          end
         end
       end
 
