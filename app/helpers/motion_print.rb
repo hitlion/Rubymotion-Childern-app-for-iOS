@@ -3,7 +3,7 @@
 module MotionPrint
   class << self
     def simulator?
-      @simulator ||= !(UIDevice.currentDevice.model =~ /simulator/i).nil?
+      @simulator ||= ( !(UIDevice.currentDevice.model =~ /simulator/i).nil? or NSBundle.mainBundle.infoDictionary.has_key? 'SPEC_HOST_PATH')
     end
 
     def use_nslog
@@ -36,7 +36,7 @@ module Kernel
   end
 
   def mp_e( message )
-    if MotionPrint.simulator? and ! MotionPrint.use_nslog
+    if MotionPrint.simulator? and ! MotionPrint.use_nslog?
       mp "[ERROR] #{message}", force_color: :red
     else
       NSLog( "[ERROR] #{message}")
