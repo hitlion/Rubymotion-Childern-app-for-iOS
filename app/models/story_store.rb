@@ -59,15 +59,19 @@ class StoryStore
 
       main_data = load_json_file( main_json, false )
       schema    = load_schema_definition()
+      rules     = load_splicer_rules( bundle_path )
 
       next if schema.nil?
 
       if File.exists? mods_json
         mods_data = load_json_file( mods_json, false )
-        rules     = load_splicer_rules( bundle_path )
+      else
+        # this wil result in a no-op merge but causes the resulting
+        # document to be augmented with a '__modifiable' key
+        mods_data = {}
+      end
 
-        next if rules.nil? or mods_data.nil?
-
+      unless rules.nil?
         begin
           # TODO: handle exceptions..
           data = TypeMonkey::Splicer::splice( schema, rules, 'smil_document',
@@ -76,9 +80,8 @@ class StoryStore
           NSLog( "Skip.." )
           next
         end
-      else
-        data = main_data
       end
+
       begin
         TypeMonkey::Validator::validate( schema, data, 'smil_document' )
       rescue => e

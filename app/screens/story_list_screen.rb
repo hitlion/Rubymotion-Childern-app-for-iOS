@@ -1,7 +1,8 @@
 # The main list of all available story bundles on the device.
 class StoryListScreen < PM::TableScreen
-  title 'Story List'
+  title 'Babbo Voco'
   refreshable
+  longpressable
 
   # @return [Array<Hash>] An +Array+ containing one +Hash+ for each loaded story bundle.
   attr_accessor :stories
@@ -9,8 +10,7 @@ class StoryListScreen < PM::TableScreen
     @layout = StoryListLayout.new( root: self.view )
     @layout.build
 
-    @stories = []
-    reload_stories
+    @stories = StoryStore.shared_store.reload
   end
 
   def on_refresh
@@ -23,7 +23,9 @@ class StoryListScreen < PM::TableScreen
         {
           title: story.set_name,
           action: :story_selected,
-          arguments: story
+          long_press_action: :edit_story,
+          arguments: story,
+          image: story.thumbnail || { image: 'file_warning' }
         }
       end
     }]
@@ -37,6 +39,10 @@ class StoryListScreen < PM::TableScreen
 
   def story_selected( story )
     open_modal StoryPlayerScreen.new( story: story, nav_bar: false )
+  end
+
+  def edit_story( story )
+    open_modal StoryEditorScreen.new( story: story, nav_bar: true,  nav_controller: AutoRotatingNavigationController )
   end
 
   # force portrait orientation

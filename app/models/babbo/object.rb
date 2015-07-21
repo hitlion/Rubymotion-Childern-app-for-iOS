@@ -2,9 +2,9 @@ module Babbo
   class Object
     include Babbo::Actionable
 
-    attr_reader :id, :name, :type, :processable, :content,
-                :position, :size, :layer, :alpha, :path
-    attr_accessor :modifiable
+    attr_reader :id, :name, :type, :processable,
+                :size, :layer, :alpha, :path
+    attr_accessor :position, :content, :modifiable
 
     # Initialize the model instance from the parsed JSON data.
     # @param data [Hash] The parsed JSON data

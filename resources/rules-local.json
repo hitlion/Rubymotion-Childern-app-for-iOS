@@ -229,7 +229,8 @@
                 "type" : "string"
             },
             "modified_conveyable": {
-                "type" : "boolean"
+                "type" : "boolean",
+				"default": false
             },
             "timestamp": {
                 "type"   : "string",

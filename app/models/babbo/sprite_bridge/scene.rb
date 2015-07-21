@@ -2,25 +2,57 @@ module Babbo
   module SpriteBridge
     class Scene < SKScene
       attr_accessor :document
+      attr_accessor :edit_mode
+
+      def initWithSize(size)
+        if super
+          @edit_mode ||= false
+          self
+        end
+      end
+
+      def edit_mode= (state)
+        @edit_mode = state
+
+        unless self.view.nil?
+          self.view.removeGestureRecognizer( @swipe_vertical )
+          self.view.removeGestureRecognizer( @swipe_left )
+          self.view.removeGestureRecognizer( @swipe_right )
+          self.view.removeGestureRecognizer( @tap )
+          self.view.removeGestureRecognizer( @long_press ) unless @long_press.nil?
+          didMoveToView( self.view )
+        end
+      end
 
       def didMoveToView( view )
-        @swipe ||= UISwipeGestureRecognizer.alloc.initWithTarget( self, action: 'on_gesture_detected:' )
-        @swipe.numberOfTouchesRequired = 1
-        @swipe.direction = UISwipeGestureRecognizerDirectionUp   |
-                           UISwipeGestureRecognizerDirectionDown |
-                           UISwipeGestureRecognizerDirectionLeft |
-                           UISwipeGestureRecognizerDirectionRight
-        @swipe.reset
+        @swipe_vertical ||= UISwipeGestureRecognizer.alloc.initWithTarget( self, action: 'on_gesture_detected:' )
+        @swipe_vertical.numberOfTouchesRequired = 1
+        @swipe_vertical.direction = UISwipeGestureRecognizerDirectionUp   |
+                                    UISwipeGestureRecognizerDirectionDown
+        @swipe_vertical.reset
+
+        @swipe_left ||= UISwipeGestureRecognizer.alloc.initWithTarget( self, action: 'on_gesture_detected:' )
+        @swipe_left.numberOfTouchesRequired = 1
+        @swipe_left.direction = UISwipeGestureRecognizerDirectionLeft
+        @swipe_left.reset
+
+        @swipe_right ||= UISwipeGestureRecognizer.alloc.initWithTarget( self, action: 'on_gesture_detected:' )
+        @swipe_right.numberOfTouchesRequired = 1
+        @swipe_right.direction = UISwipeGestureRecognizerDirectionRight
+        @swipe_right.reset
 
         @tap ||= UITapGestureRecognizer.alloc.initWithTarget( self, action: 'on_gesture_detected:' )
         @tap.numberOfTouchesRequired = 1
         @tap.numberOfTapsRequired = 1
-        @tap.requireGestureRecognizerToFail( @swipe )
+        @tap.requireGestureRecognizerToFail( @swipe_vertical )
+        @tap.requireGestureRecognizerToFail( @swipe_left )
+        @tap.requireGestureRecognizerToFail( @swipe_right )
 
-        #self.scaleMode = SKScaleModeFill
-
-        view.addGestureRecognizer( @swipe )
+        view.addGestureRecognizer( @swipe_vertical )
+        view.addGestureRecognizer( @swipe_left )
+        view.addGestureRecognizer( @swipe_right )
         view.addGestureRecognizer( @tap )
+
       end
 
       def audioPlayerDidFinishPlaying(player, successfully: flag )
@@ -56,6 +88,7 @@ module Babbo
       end
 
       def on_gesture_detected( sender )
+        mp_l( "on_gesture_detected" )
         if @document.nil?
           mp_e( "Scene '#{self.name}' detected a gesture but have no document!" )
           return
@@ -64,6 +97,9 @@ module Babbo
         if sender.state == UIGestureRecognizerStateEnded
           touch_loc = sender.locationInView( sender.view )
           scene_loc = convertPointFromView( touch_loc )
+
+          mp_l( "Touch location: [#{touch_loc.x}, #{touch_loc.y}]")
+          mp_l( "Scene location: [#{scene_loc.x}, #{scene_loc.y}]")
 
           node = nodeAtPoint( scene_loc )
           object = @document.object_for_path( node.name )

@@ -37,6 +37,7 @@ Motion::Project::App.setup do |app|
 
     app.pods do
       pod 'HockeyKit'
+      pod 'IQAudioRecorderController'
     end
   end
 
@@ -49,11 +50,16 @@ Motion::Project::App.setup do |app|
       app.info_plist['UIFileSharingEnabled'] = true
 
       app.pods do
+        pod 'IQAudioRecorderController'
         pod 'HockeyKit'
       end
     else 
       app.provisioning_profile = ENV['RM_PUB_PROFILE']
       app.codesign_certificate = ENV['RM_PUB_CERTIFICATE']
+
+      app.pods do
+        pod 'IQAudioRecorderController'
+      end
     end
     # Filter out development helpers
     app.files.select! { |x| true unless DEVELOPMENT_ONLY.include? x }
@@ -61,17 +67,19 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.103'
+  app.short_version = app.version = '1.0.109'
 
   app.device_family = [ :iphone, :ipad ]
 
-  app.sdk_version = '8.3'
+  app.sdk_version = '9.0'
   app.deployment_target = '7.1'
   app.icons = %w(Icon-58.png Icon-80.png Icon-87.png Icon-120.png Icon@2x.png Icon@3x.png)
 
   app.vendor_project( 'vendor/babbo-voco/js-bridging', :static, :cflags => '-fobjc-arc -fno-exceptions -F JavaScriptCore' )
   app.frameworks << 'JavaScriptCore'
   app.frameworks << 'SpriteKit'
+  app.frameworks << 'CoreImage'
+  app.frameworks << 'AVFoundation'
 end
 
 YARD::Rake::YardocTask.new # include YARD rake task

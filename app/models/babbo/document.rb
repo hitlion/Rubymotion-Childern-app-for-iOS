@@ -148,7 +148,7 @@ module Babbo
 
       # resource URIs should be relative to the SMIL directory (for now)
       unless name.start_with? '..'
-        name = "../contents/#{name}"
+        name = "../content/#{name}"
       end
 
       resource_path = "#{@bundle_path}/SMIL/#{name}"
@@ -174,15 +174,33 @@ module Babbo
       end
     end
 
+    def relative_path_for_resource( name )
+      name.gsub( /^#{@bundle_path}/, '..' )
+    end
+
+    def path_for_new_resource_of_type( type )
+      return nil unless [ :video, :picture, :audio ].include? type
+
+      base_name = NSUUID.UUID.UUIDString
+      case type
+        when :video
+          "#{@bundle_path}/content/#{base_name}.m4v"
+        when :audio
+          "#{@bundle_path}/content/#{base_name}.m4a"
+        when :picture
+          "#{@bundle_path}/content/#{base_name}.png"
+      end
+    end
+
     # Create a SpriteKit scene from a given path.
     # The path should specify a single screen inside a level.
     # @param path [String] A path specification locating a singel screen.
     # @returns [SKScene] A sprite kit scene node.
-    def create_scene( path )
+    def create_scene( path, enable_editor = false )
       mp_l( "Creating SpriteKit Scene for #{path}" )
       screen = object_for_path( path )
       if screen.is_a? Babbo::Screen
-        Babbo::SpriteBridge::SceneProxy.new( screen ).create_sknode( self )
+        Babbo::SpriteBridge::SceneProxy.new( screen ).create_sknode( self, enable_editor )
       else
         nil
       end
