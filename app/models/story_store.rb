@@ -71,7 +71,9 @@ class StoryStore
         mods_data = {}
       end
 
-      unless rules.nil?
+      if rules.nil?
+        data = main_data
+      else
         begin
           # TODO: handle exceptions..
           data = TypeMonkey::Splicer::splice( schema, rules, 'smil_document',
@@ -82,13 +84,13 @@ class StoryStore
         end
       end
 
-      begin
-        TypeMonkey::Validator::validate( schema, data, 'smil_document' )
-      rescue => e
-        NSLog( "Skip 2.." )
-        next
-      end
-
+#      begin
+#        TypeMonkey::Validator::validate( schema, data, 'smil_document' )
+#      rescue => e
+#        NSLog( "Skip 2.." )
+#        next
+#      end
+#
       res << Babbo::Document.new( data, bundle_path )
     end
     # simple way to get a sortable number from the timestamp
@@ -117,6 +119,8 @@ class StoryStore
 
   def load_splicer_rules( bundle_path )
     path = File.join( bundle_path, 'SMIL', 'rules-splice.json' )
+    return nil unless File.exists? path
+
     data = load_json_file( path, false )
     if data.nil?
       nil
