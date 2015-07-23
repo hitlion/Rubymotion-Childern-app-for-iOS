@@ -45,8 +45,23 @@
 
 -( void )msleep:( useconds_t )millisec
 {
-  usleep( 1000 * millisec );
+  [NSThread sleepForTimeInterval:(double)millisec / 1000.0];
 }
 
+-( NSArray* )shuffle:( NSArray* )base
+{
+  NSMutableArray *array = [base mutableCopy];
+
+  for( NSInteger count = base.count; count >= 0; --count )
+  {
+    NSUInteger index = arc4random() % ( array.count - 1 );
+    id object = [array objectAtIndex:index];
+
+    [array removeObjectAtIndex:index];
+    index = arc4random() % ( array.count - 1);
+    [array insertObject:object atIndex:index];
+  }
+  return array;
+}
 @end
 

@@ -5,6 +5,7 @@
 @protocol BBVJSBridgedHelper <JSExport>
 -( void )log:( NSString* )message;
 -( void )msleep:( useconds_t )millisec;
+-( NSArray* )shuffle:( NSArray* )base;
 @end
 
 @protocol BBVJSBridgedObject <JSExport>
