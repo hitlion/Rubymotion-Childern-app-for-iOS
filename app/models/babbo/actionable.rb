@@ -19,9 +19,15 @@ module Babbo
     # execute a given +event+ inside a +story+ object.
     # @param event [String] The name of the event that should be fired.
     # @param story [Babbo::Document] The containing story document.
-    def emit( event, story )
-      return unless @events.has_key? event
-      slot = @slots.find { |s| s.name == @events[event] }
+    # @param concrete_slot [String] The name of a concrete slot that should be
+    #   fired instead of +event+ (used internally for +Generic#emit+.
+    def emit( event, story, concrete_slot=nil )
+      return unless @events.has_key? event or ! concrete_slot.nil?
+      if concrete_slot.nil?
+        slot = @slots.find { |s| s.name == @events[event] }
+      else
+        slot = @slots.find { |s| s.name == concrete_slot }
+      end
       return if slot.nil?
 
       # run the actual event execution insida an asynchronous thread
