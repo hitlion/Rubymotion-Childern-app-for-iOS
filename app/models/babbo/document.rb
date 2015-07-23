@@ -107,6 +107,7 @@ module Babbo
     # @param path [String] A path notation :obj:obj:obj
     # @return [Object] The object instance mathing the path or nil.
     def object_for_path( path )
+      return self if path == ':'
       # lazy build a map of all paths in the document
       @paths ||= begin
         paths = {}
