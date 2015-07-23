@@ -67,11 +67,11 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.109'
+  app.short_version = app.version = '1.0.110'
 
   app.device_family = [ :iphone, :ipad ]
 
-  app.sdk_version = '9.0'
+  app.sdk_version = '8.4'
   app.deployment_target = '7.1'
   app.icons = %w(Icon-58.png Icon-80.png Icon-87.png Icon-120.png Icon@2x.png Icon@3x.png)
 
