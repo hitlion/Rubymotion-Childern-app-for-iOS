@@ -15,6 +15,7 @@
 -( void )fade:( NSDictionary* )args;
 -( void )concurrent:( NSDictionary* )args;
 -( void )layer:( NSDictionary* )args;
+-( BOOL )emit:( NSString* )slot;
 @end
 
 @protocol BBVJSBridgedObjectVideo <JSExport>

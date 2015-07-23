@@ -70,8 +70,13 @@ module Babbo
       end
 
       def layer( args )
-        new_z = args['l'] || @snode.scene_node.zPosition
+        new_z = args['l'] || @node.scene_node.zPosition
         @node.scene_node.zPosition = new_z
+      end
+
+      def emit( slot_name )
+        # FIXME: Am I really OK with that way of accessing the document?
+        @node.emit( nil, @node.scene_node.scene.document, slot_name )
       end
 
       private # non exported API
