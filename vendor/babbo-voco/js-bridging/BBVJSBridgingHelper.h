@@ -9,13 +9,23 @@
 @end
 
 @protocol BBVJSBridgedObject <JSExport>
--( NSString* )name;
+// read-only attribute access
+@property(readonly) NSString* name;
+@property(readonly) double position_x;
+@property(readonly) double position_y;
+@property(readonly) double size_x;
+@property(readonly) double size_y;
+@property(readonly) double layer;
+@property(readonly) double transparency;
+
+// attribute manipulation
 -( void )move:( NSDictionary* )args;
 -( void )resize:( NSDictionary* )args;
 -( void )fade:( NSDictionary* )args;
 -( void )concurrent:( NSDictionary* )args;
 -( void )layer:( NSDictionary* )args;
 -( BOOL )emit:( NSString* )slot;
+
 @end
 
 @protocol BBVJSBridgedObjectVideo <JSExport>

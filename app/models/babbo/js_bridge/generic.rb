@@ -8,7 +8,7 @@ module Babbo
       end
 
       # Return the nodes path (node = JSON Document element)
-      def name()
+      def name
         @node.path
       end
 
@@ -79,6 +79,39 @@ module Babbo
         @node.emit( nil, @node.scene_node.scene.document, slot_name )
       end
 
+      # read-only property-access
+      def position_x
+        position = _point_for_top_left_position
+        ( '%.2f' % _point_from_scene( position ).x ).to_f
+      end
+
+      def position_y
+        position = _point_for_top_left_position
+        ( '%.2f' % _point_from_scene( position ).y ).to_f
+      end
+
+      def size_x
+        scene = @node.scene_node.scene
+        size  = @node.scene_node.size
+
+        ( '%.2f' % ( ( size.width * 100.0 / scene.size.width ) * 0.01 ) ).to_f
+      end
+
+      def size_y
+        scene = @node.scene_node.scene
+        size  = @node.scene_node.size
+
+        ( '%.2f' % ( ( size.height * 100.0 / scene.size.height ) * 0.01 ) ).to_f
+      end
+
+      def transparency
+        ( '%.2f' % ( 1.0 - @node.scene_node.alpha ) ).to_f
+      end
+
+      def layer
+        @node.scene_node.zPosition
+      end
+
       private # non exported API
 
       def _fade( args )
@@ -126,7 +159,7 @@ module Babbo
         # for this screen.size has to be multiplied by the correct scale
         new_size = CGSizeMake( size_x, size_y )
         px_size = CGSizeMake( screen.size.width * scale * new_size.width,
-                              screen.size.height * scale * new_size.height )
+                             screen.size.height * scale * new_size.height )
 
         # SKScene has a bottom-up coordinate system so we need to
         # subtract the y position from the (scaled) screen height
@@ -148,11 +181,11 @@ module Babbo
         # for this screen.size has to be multiplied by the correct scale
         new_size = CGSizeMake( size_x, size_y )
         px_size = CGSizeMake( screen.size.width * scale * new_size.width,
-                              screen.size.height * scale * new_size.height )
+                             screen.size.height * scale * new_size.height )
 
         new_pos = CGPointMake( pos_x, pos_y )
         px_pos  = CGPointMake( screen.size.width * scale * new_pos.x,
-                                  screen.size.height * scale * new_pos.y )
+                              screen.size.height * scale * new_pos.y )
 
         # SKNodes have their coordinates relative to the center point
         # adjust x/y with that in mind
@@ -164,6 +197,35 @@ module Babbo
         move_action = SKAction.moveTo( CGPointMake( px_pos.x, screen.size.height * scale - px_pos.y ), duration: sec )
         size_action = SKAction.resizeToWidth( px_size.width, height: px_size.height, duration: sec )
         [ move_action, size_action ]
+      end
+
+      def _point_for_top_left_position
+        center_pos = @node.scene_node.position
+        node_size  = @node.scene_node.size
+
+        # remember: Y increases on the negative axis..
+        CGPointMake( center_pos.x - node_size.width / 2.0,
+                     center_pos.y + node_size.height / 2.0 )
+      end
+
+      def _point_for_center_position( point )
+        node_size  = @node.scene_node.size
+
+        # remember: Y increases on the negative axis..
+        CGPointMake( point.x + node_size.width / 2.0,
+                     point.y - node_size.height / 2.0 )
+      end
+
+      def _point_from_scene( point )
+        scene = @node.scene_node.scene
+        CGPointMake( 0.01 * ( point.x * 100.0 / scene.size.width ),
+                     0.01 * ( ( scene.size.height - point.y ) * 100.0 / scene.size.height ) )
+      end
+
+      def _point_to_scene( point )
+        scene = @node.scene_node.scene
+        CGPointMake( point.x * 100.0 * scene.size.width,
+                     point.y * 100.0 * scene.size.height )
       end
     end
   end
