@@ -75,7 +75,7 @@ Motion::Project::App.setup do |app|
   app.deployment_target = '7.1'
   app.icons = %w(Icon-58.png Icon-80.png Icon-87.png Icon-120.png Icon@2x.png Icon@3x.png)
 
-  app.vendor_project( 'vendor/babbo-voco/js-bridging', :static, :cflags => '-fobjc-arc -fno-exceptions -F JavaScriptCore' )
+  app.vendor_project( 'vendor/babbo-voco/js-bridging', :static, :cflags => '-fobjc-arc -F JavaScriptCore' )
   app.frameworks << 'JavaScriptCore'
   app.frameworks << 'SpriteKit'
   app.frameworks << 'CoreImage'
