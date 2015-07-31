@@ -5,6 +5,15 @@
 require 'motion/project/template/ios'
 require 'motion-type-monkey'
 
+# # in case we get un-catchable exceptions and warnings about compact unwind again
+# # uncomment the following (see: http://stackoverflow.com/a/30733047/128661)
+# class Motion::Project::IOSConfig
+#   rm_ldflags = instance_method( :ldflags )
+#   define_method( :ldflags ) do |platform|
+#     rm_ldflags.bind( self ).( platform ) + ' -Wl,-keep_dwarf_unwind -Wl,-no_compact_unwind'
+#   end
+# end
+
 begin
   require 'bundler'
   Bundler.setup
