@@ -84,13 +84,13 @@ class StoryStore
         end
       end
 
-#      begin
-#        TypeMonkey::Validator::validate( schema, data, 'smil_document' )
-#      rescue => e
-#        NSLog( "Skip 2.." )
-#        next
-#      end
-#
+      begin
+        TypeMonkey::Validator::validate( schema, data, 'smil_document' )
+      rescue => e
+        NSLog( "Skip 2.." )
+        next
+      end
+
       res << Babbo::Document.new( data, bundle_path )
     end
     # simple way to get a sortable number from the timestamp
