@@ -78,7 +78,7 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.112'
+  app.short_version = app.version = '1.0.113'
 
   app.device_family = [ :iphone, :ipad ]
 
@@ -86,7 +86,7 @@ Motion::Project::App.setup do |app|
   app.deployment_target = '7.1'
   app.icons = %w(Icon-58.png Icon-80.png Icon-87.png Icon-120.png Icon@2x.png Icon@3x.png)
 
-  app.manifest_assets << { :kind => 'sotfware-package', :url => '__URL__' }
+  app.manifest_assets << { :kind => 'software-package', :url => '__URL__' }
 
   app.vendor_project( 'vendor/babbo-voco/js-bridging', :static, :cflags => '-fobjc-arc -F JavaScriptCore' )
   app.frameworks << 'JavaScriptCore'
@@ -126,7 +126,9 @@ task :deploy do
     if notes[/#{tagline}/]
       Motion::Project::App.warn( 'No changes to the release notes detected, aborting.' )
     else
-      Motion::Project::App.info( 'Create', 'Creating release.html' )
+      app = Motion::Project::App
+
+      app.info( 'Create', 'Creating release.html' )
       markdown = Redcarpet::Markdown.new( Redcarpet::Render::XHTML,
                                           autolink: true,
                                           tables: true,
@@ -137,17 +139,19 @@ task :deploy do
 
       open( "#{tmpdir}/release.html", 'w' ) { |io| io.write( markdown.render( notes ) ) }
 
-      Motion::Project::App.info( 'Create', 'Creating application.plist' )
-      open( "#{tmpdir}/application.plist", 'w' ) { |io| io.write( Motion::Project::App.config.manifest_plist_data ) }
+      app.info( 'Create', 'Creating application.plist' )
+      open( "#{tmpdir}/application.plist", 'w' ) do |io|
+        io.write( File.read( File.join( app.config.versionized_build_dir( app.config.deploy_platform ), 'manifest.plist' ) ) )
+      end
 
-      Motion::Project::App.info( 'Copy', "Copying assets to #{deploy_server}:#{deploy_path}.." )
+      app.info( 'Copy', "Copying assets to #{deploy_server}:#{deploy_path}.." )
       release = [ 
-        Motion::Project::App.config.archive(),
+        app.config.archive(),
         "#{tmpdir}/application.plist",
         "#{tmpdir}/release.html"
       ]
 
-      `scp #{release.join( ' ' )} #{deploy_server}:#{deploy_path}/`
+      `scp #{ENV['RM_SCP_OPTIONS'] || ''} #{release.join( ' ' )} #{deploy_server}:#{deploy_path}/`
     end
   end
 end
