@@ -128,9 +128,9 @@ class SystemLogView < UIView
         end
 
         # adjust scrolling
-        #bottom = CGPointMake( 0, @text_view.contentSize.height - @text_view.bounds.size.height + @text_view.contentInset.bottom )
-        #@text_view.setContentOffset( bottom, animated: false )
-        @text_view.scrollRangeToVisible( NSMakeRange( @text_view.attributedText.length - 1, 1 ) )
+        if @text_view.attributedText.length >= 1
+          @text_view.scrollRangeToVisible( NSMakeRange( @text_view.attributedText.length - 1, 1 ) )
+        end
       end
   end
 
