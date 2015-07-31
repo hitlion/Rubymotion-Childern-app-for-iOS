@@ -79,7 +79,7 @@ class StoryStore
           data = TypeMonkey::Splicer::splice( schema, rules, 'smil_document',
                                               main_data, mods_data )
         rescue => e
-          NSLog( "Skip.." )
+          mp_e( e.message )
           next
         end
       end
@@ -87,7 +87,7 @@ class StoryStore
       begin
         TypeMonkey::Validator::validate( schema, data, 'smil_document' )
       rescue => e
-        NSLog( "Skip 2.." )
+        mp_e( e.message )
         next
       end
 
@@ -109,7 +109,7 @@ class StoryStore
         begin
         # TODO: handle exceptions..
           TypeMonkey::Schema::parse( data )
-        rescue TypeMonkey::Schema::Error => e
+        rescue TypeMonkey::Schema::Error
           NSLog( "Failed to load schema definition" )
           nil
         end
@@ -129,7 +129,7 @@ class StoryStore
       begin
         mapping = load_splicer_mapping
         TypeMonkey::Splicer::parse( data, mapping )
-      rescue TypeMonkey::Splicer::Error => e
+      rescue TypeMonkey::Splicer::Error
         NSLog( "Failed to load splicer rules." )
         nil
       end
