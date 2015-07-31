@@ -69,7 +69,7 @@ module Babbo
         # .. and the global methods provided by BBVJSBridgingHelper '$.'
         ctx['$'] = BBVJSBridgingHelper.alloc.init
 
-        ctx.setExceptionHandler( lambda { |c,val| mp_e( "JavascriptException: #{val.toString}" ) } )
+        ctx.setExceptionHandler( lambda { |c,val| mp_e_js( "JavascriptException: #{val.toString}" ) } )
         ctx.evaluateScript( slot.action )
 
         ctx = nil

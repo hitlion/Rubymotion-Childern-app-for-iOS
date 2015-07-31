@@ -18,29 +18,50 @@ end
 
 module Kernel
   def mp_l( message )
+    log = "[INFO] #{message}"
+    SystemLogView.log_message( log, :green )
+
     if MotionPrint.use_nslog?
-      NSLog( "[INFO] #{message}" )
+      NSLog( log )
     else
       return unless MotionPrint.simulator?
     end
-    mp "[INFO] #{message}", force_color: :green
+    mp log, force_color: :green
   end
 
   def mp_d( message )
+    log = "[DEBUG] #{message}"
+    SystemLogView.log_message( log, :yellow )
+
     if MotionPrint.use_nslog?
-      NSLog( "[DEBUG] #{message}" )
+      NSLog( log )
     else
       return unless MotionPrint.simulator?
     end
-    mp "[DEBUG] #{message}", force_color: :yellow
+    mp log, force_color: :yellow
   end
 
   def mp_e( message )
+    log = "[ERROR] #{message}"
+    SystemLogView.log_message( log, :red )
+
     if MotionPrint.simulator? and ! MotionPrint.use_nslog?
-      mp "[ERROR] #{message}", force_color: :red
+      mp log, force_color: :red
     else
-      NSLog( "[ERROR] #{message}")
+      NSLog( log )
     end
   end
+
+  def mp_e_js( message )
+    log = "[ERROR] #{message}"
+    SystemLogView.log_jscript( log, :red )
+
+    if MotionPrint.simulator? and ! MotionPrint.use_nslog?
+      mp log, force_color: :red
+    else
+      NSLog( log )
+    end
+  end
+
 end
 

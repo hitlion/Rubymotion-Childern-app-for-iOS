@@ -48,11 +48,27 @@ module Babbo
         @tap.requireGestureRecognizerToFail( @swipe_left )
         @tap.requireGestureRecognizerToFail( @swipe_right )
 
+        @double_tap ||= UITapGestureRecognizer.alloc.initWithTarget( self, action: 'on_show_log:' )
+        @double_tap.numberOfTouchesRequired = 2
+        @double_tap.numberOfTapsRequired = 2
+        @double_tap.requireGestureRecognizerToFail( @swipe_vertical )
+        @double_tap.requireGestureRecognizerToFail( @swipe_left )
+        @double_tap.requireGestureRecognizerToFail( @swipe_right )
+        @double_tap.requireGestureRecognizerToFail( @tap )
+
+
         view.addGestureRecognizer( @swipe_vertical )
         view.addGestureRecognizer( @swipe_left )
         view.addGestureRecognizer( @swipe_right )
         view.addGestureRecognizer( @tap )
+        view.addGestureRecognizer( @double_tap )
 
+        @log_view ||= SystemLogView.alloc.initWithSize( view.size )
+        view.addSubview( @log_view )
+      end
+
+      def willMoveFromView( view )
+        @log_view.removeFromSuperview()
       end
 
       def audioPlayerDidFinishPlaying(player, successfully: flag )
@@ -98,9 +114,6 @@ module Babbo
           touch_loc = sender.locationInView( sender.view )
           scene_loc = convertPointFromView( touch_loc )
 
-          mp_l( "Touch location: [#{touch_loc.x}, #{touch_loc.y}]")
-          mp_l( "Scene location: [#{scene_loc.x}, #{scene_loc.y}]")
-
           node = nodeAtPoint( scene_loc )
           object = @document.object_for_path( node.name )
 
@@ -113,6 +126,10 @@ module Babbo
             object.emit( 'on_click', @document ) if object.respond_to? 'emit:'
           end
         end
+      end
+
+      def on_show_log( sender )
+          @log_view.show
       end
     end
   end
