@@ -70,7 +70,7 @@ module Babbo
       end
 
       def layer( *args )
-        if args.empty?
+        if args.nil? or args.empty?
           @node.scene_node.zPosition
         else
           new_z = args.first['l'] || @node.scene_node.zPosition
