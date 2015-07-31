@@ -69,9 +69,13 @@ module Babbo
         @node.scene_node.runAction( _fade( args ) )
       end
 
-      def layer( args )
-        new_z = args['l'] || @node.scene_node.zPosition
-        @node.scene_node.zPosition = new_z
+      def layer( *args )
+        if args.empty?
+          @node.scene_node.zPosition
+        else
+          new_z = args.first['l'] || @node.scene_node.zPosition
+          @node.scene_node.zPosition = new_z
+        end
       end
 
       def emit( slot_name )
@@ -106,10 +110,6 @@ module Babbo
 
       def transparency
         ( '%.2f' % ( 1.0 - @node.scene_node.alpha ) ).to_f
-      end
-
-      def layer
-        @node.scene_node.zPosition
       end
 
       private # non exported API
