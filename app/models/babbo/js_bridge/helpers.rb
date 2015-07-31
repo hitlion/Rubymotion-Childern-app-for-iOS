@@ -21,6 +21,8 @@ module Babbo
 
       BBVJSBridgingHelper.injectProtocol( 'BBVJSBridgedObject', intoClass: Babbo::JSBridge::Screen )
       BBVJSBridgingHelper.injectProtocol( 'BBVJSBridgedObjectScreen', intoClass: Babbo::JSBridge::Screen )
+
+      BBVJSBridgingHelper.injectProtocol( 'BBVJSBridgedGlobal', intoClass: Babbo::JSBridge::Global )
     end
 
     # Return a proxy instance matching the passed document object.

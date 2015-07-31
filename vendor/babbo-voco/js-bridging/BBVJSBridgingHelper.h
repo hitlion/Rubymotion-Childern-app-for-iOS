@@ -2,7 +2,7 @@
 #include <unistd.h>
 #import <JavaScriptCore/JSExport.h>
 
-@protocol BBVJSBridgedHelper <JSExport>
+@protocol BBVJSBridgedGlobal <JSExport>
 -( void )log:( NSString* )message;
 -( void )msleep:( useconds_t )millisec;
 -( NSArray* )shuffle:( NSArray* )base;
@@ -53,7 +53,7 @@
 -( void )exit_story;
 @end
 
-@interface BBVJSBridgingHelper : NSObject<BBVJSBridgedHelper>
+@interface BBVJSBridgingHelper : NSObject
 +( BOOL )injectProtocol:( NSString* )protocolName intoClass:( Class )cls;
 +( BOOL )checkClass:( Class )cls forProtocol:( NSString* )protocolName;
 @end

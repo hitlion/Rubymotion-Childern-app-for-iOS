@@ -67,9 +67,9 @@ module Babbo
         # .. also inject the current object as '$self'..
         ctx['$self'] = Babbo::JSBridge::proxy_for_object( self )
         # .. and the global methods provided by BBVJSBridgingHelper '$.'
-        ctx['$'] = BBVJSBridgingHelper.alloc.init
+        ctx['$'] = Babbo::JSBridge::Global.new
 
-        ctx.setExceptionHandler( lambda { |c,val| mp_e_js( "JavascriptException: #{val.toString}" ) } )
+        ctx.setExceptionHandler( lambda { |c,val| mp_e_js( "[JavascriptException]: in <#{self.path}::#{event}> #{val.toString}" ) } )
         ctx.evaluateScript( slot.action )
 
         ctx = nil
