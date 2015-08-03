@@ -184,6 +184,7 @@ task :fabric_send do
   ENV['SRCROOT'] = File.dirname( __FILE__ )
 
   fabric_run = File.join( Dir.pwd, 'vendor', 'Pods', 'Fabric', 'Fabric.framework', 'run' )
+  crashlytics_run = File.join( Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'Crashlytics.framework', 'submit' )
   fabric_api = ENV['RM_FABRIC_API']
   fabric_key = ENV['RM_FABRIC_KEY']
 
@@ -192,6 +193,7 @@ task :fabric_send do
   end
 
   system( "#{fabric_run} #{fabric_api} #{fabric_key}" )
+  system( "#{crashlytics_run} #{fabric_api} #{fabric_key} -ipaPath #{app.config.archive()} -notifications YES -debug YES" )
 end
 
 task :deploy => 'archive:distribution'
