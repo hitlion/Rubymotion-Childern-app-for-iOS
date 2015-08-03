@@ -3,18 +3,19 @@ module Babbo
     class Screen < Babbo::JSBridge::Generic
       def exit_to( path )
         Dispatch::Queue.main.sync do
-          notify = NSNotificationCenter.defaultCenter
-          # freeze any running video / audio etc.
-          @node.scene_node.enumerateChildNodesWithName( '//*', usingBlock: lambda { |node, stop|
-            if node.is_a? SKVideoNode
-              node.pause
-              notify.removeObserver( StoryPlayerScreen.active_instance.scene,
-                                      name: AVPlayerItemDidPlayToEndTimeNotification,
-                                    object: node.userData[:player].currentItem )
-            end
-            node.userData = {}
-          })
-
+          with_scene_node do |scene_node|
+            notify = NSNotificationCenter.defaultCenter
+            # freeze any running video / audio etc.
+            scene_node.enumerateChildNodesWithName( '//*', usingBlock: lambda { |node, stop|
+              if node.is_a? SKVideoNode
+                node.pause
+                notify.removeObserver( StoryPlayerScreen.active_instance.scene,
+                                        name: AVPlayerItemDidPlayToEndTimeNotification,
+                                      object: node.userData[:player].currentItem )
+              end
+              node.userData = {}
+            })
+          end
 
           # FIXME: this is probably the uggliest, baddest way to get to the StoryPlayerScreen possible..
           story_player = UIApplication.sharedApplication.keyWindow.rootViewController.visibleViewController
@@ -24,18 +25,20 @@ module Babbo
 
       def exit_story()
         Dispatch::Queue.main.sync do
-          notify = NSNotificationCenter.defaultCenter
-          # freeze any running video / audio etc.
-          @node.scene_node.enumerateChildNodesWithName( '//*', usingBlock: lambda { |node, stop|
-            if node.is_a? SKVideoNode
-              node.pause
-              notify.removeObserver( StoryPlayerScreen.active_instance.scene,
-                                      name: AVPlayerItemDidPlayToEndTimeNotification,
-                                    object: node.userData[:player].currentItem )
-            end
+          with_scene_node do |scene_node|
+            notify = NSNotificationCenter.defaultCenter
+            # freeze any running video / audio etc.
+            scene_node.enumerateChildNodesWithName( '//*', usingBlock: lambda { |node, stop|
+              if node.is_a? SKVideoNode
+                node.pause
+                notify.removeObserver( StoryPlayerScreen.active_instance.scene,
+                                        name: AVPlayerItemDidPlayToEndTimeNotification,
+                                      object: node.userData[:player].currentItem )
+              end
 
-            node.userData = {}
-          })
+              node.userData = {}
+            })
+          end
 
           # FIXME: this is probably the uggliest, baddest way to get to the StoryPlayerScreen possible..
           story_player = UIApplication.sharedApplication.keyWindow.rootViewController.visibleViewController

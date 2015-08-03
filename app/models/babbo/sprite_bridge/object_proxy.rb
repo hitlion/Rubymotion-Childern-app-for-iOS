@@ -9,6 +9,7 @@ module Babbo
         content = scene.document.bundled_resource( @object.content, of_type: @object.type )
         if content == nil
           mp_e("bundled_resource failed to return a valid node.")
+          return nil
         end
 
         case @object.type
@@ -44,7 +45,11 @@ module Babbo
               node = SKSpriteNode.spriteNodeFromAnimatedGif( content )
             else
               texture = SKTexture.textureWithImage( content )
-              node    = SKSpriteNode.spriteNodeWithTexture( texture )
+              if texture.nil?
+                mp_e "Could not load texture '#{@object.content}' for #{@object.path}."
+                texture = SKTexture.textureWithImageNamed( 'file_warning.png' )
+              end
+              node = SKSpriteNode.spriteNodeWithTexture( texture )
             end
         end
 

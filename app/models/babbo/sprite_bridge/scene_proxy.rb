@@ -19,7 +19,10 @@ module Babbo
 
         @screen.objects.each do |object|
           bridge_object = Babbo::SpriteBridge::ObjectProxy.new( object )
-          scene.addChild( bridge_object.create_sknode( scene, enable_editor ) )
+          sknode = bridge_object.create_sknode( scene, enable_editor )
+          unless sknode.nil?
+            scene.addChild( sknode )
+          end
         end
         scene
       end

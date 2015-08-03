@@ -4,50 +4,61 @@ module Babbo
     class Audio < Babbo::JSBridge::Generic
       # Start the audio playback
       def start()
-        mp_l( "JSBridge::audio#start(#{@node.path})" )
-        return unless @node.scene_node.userData[:player].is_a? AVAudioPlayer
+        with_scene_node do |scene_node|
+          mp_l( "JSBridge::audio#start(#{scene_node.name})" )
 
-        @node.scene_node.userData[:player].stop
-        @node.scene_node.userData[:player].currentTime = 0
-        @node.scene_node.userData[:player].play
-        @node.scene_node.userData[:state] = 'play'
+          if scene_node.userData[:player].is_a? AVAudioPlayer
+            scene_node.userData[:player].stop
+            scene_node.userData[:player].currentTime = 0
+            scene_node.userData[:player].play
+            scene_node.userData[:state] = 'play'
+          end
+          # save to use @node since we're in this block
+          @node.emit( 'at_start', scene_node.scene.document )
+        end
       end
 
       # Stop the audio playback (and rewind to 00:00)
       def stop()
-        mp_l( "JSBridge::audio#stop(#{@node.path})" )
-        return unless @node.scene_node.userData[:player].is_a? AVAudioPlayer
+        with_scene_node do |scene_node|
+          mp_l( "JSBridge::audio#stop(#{scene_node.name})" )
 
-        @node.scene_node.userData[:player].stop
-        @node.scene_node.userData[:player].currentTime = 0
-        @node.scene_node.userData[:state] = 'stop'
+          if scene_node.userData[:player].is_a? AVAudioPlayer
+            scene_node.userData[:player].stop
+            scene_node.userData[:player].currentTime = 0
+            scene_node.userData[:state] = 'stop'
+          end
+        end
       end
 
       # Like +stop+ but keep the current playback position
       def pause()
-        mp_l( "JSBridge::audio#pause(#{@node.path})" )
-        return if @node.nil?
+        with_scene_node do |scene_node|
+          mp_l( "JSBridge::audio#pause(#{scene_node.name})" )
 
-        return unless @node.scene_node.userData[:player].is_a? AVAudioPlayer
-
-        @node.scene_node.userData[:player].pause
-        @node.scene_node.userData[:state] = 'pause'
+          if scene_node.userData[:player].is_a? AVAudioPlayer
+            scene_node.userData[:player].pause
+            scene_node.userData[:state] = 'pause'
+          end
+        end
       end
 
       # Restart the playback after calling +pause+
       def restart()
-        mp_l( "JSBridge::audio#restart(#{@node.path})" )
-        return unless @node.scene_node.is_a? SKaudioNode
-        return unless @node.scene_node.userData[:player].is_a? AVAudioPlayer
+        with_scene_node do |scene_node|
+          mp_l( "JSBridge::audio#restart(#{scene_node.name})" )
 
-        @node.scene_node.userData[:player].play
-        @node.scene_node.userData[:state] = 'play'
+          if scene_node.userData[:player].is_a? AVAudioPlayer
+            scene_node.userData[:player].play
+            scene_node.userData[:state] = 'play'
+          end
+        end
       end
 
       # Query the current playback status.
       # @return [String] 'play', 'pause', 'stop'
       def status()
-        @node.scene_node.userData[:state] || 'pause'
+        with_scene_node { |scene_node| scene_node.userData[:state] || 'pause' } || 'undef'
       end
     end
   end
