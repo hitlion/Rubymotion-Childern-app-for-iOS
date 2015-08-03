@@ -1,7 +1,8 @@
 class AppDelegate < PM::Delegate
-  include Crescentia::Fixtures
+  # include Crescentia::Fixtures
   # include HockeyKit support if it's compiled in
   include AppDelegateHockeyKit if defined?(AppDelegateHockeyKit)
+  include AppDelegateCrashlytics if defined?(AppDelegateCrashlytics)
 
   tint_color '#ffffff'.uicolor
 
@@ -9,9 +10,9 @@ class AppDelegate < PM::Delegate
     return if RUBYMOTION_ENV == 'test'
 
     # Hook up HockeyKit (if this build supports it)
-    if self.respond_to? :setupHockey
-      self.setupHockey
-    end
+    self.setupHockey if self.respond_to? :setupHockey
+    # Hook up Crashlytics (also, only if supported)
+    self.setupCrashlytics if self.respond_to? :setupCrashlytics
 
     # Add the required protocols to our Ruby classes
     Babbo::JSBridge::inject_protocols()

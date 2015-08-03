@@ -7,15 +7,15 @@ require 'motion-type-monkey'
 
 require 'redcarpet'
 
-# # in case we get un-catchable exceptions and warnings about compact unwind again
-# # uncomment the following (see: http://stackoverflow.com/a/30733047/128661)
-# class Motion::Project::IOSConfig
-#   rm_ldflags = instance_method( :ldflags )
-#   define_method( :ldflags ) do |platform|
-#     rm_ldflags.bind( self ).( platform ) + ' -Wl,-keep_dwarf_unwind -Wl,-no_compact_unwind'
-#   end
-# end
-
+## # # in case we get un-catchable exceptions and warnings about compact unwind again
+## # # uncomment the following (see: http://stackoverflow.com/a/30733047/128661)
+## class Motion::Project::IOSConfig
+##   rm_ldflags = instance_method( :ldflags )
+##   define_method( :ldflags ) do |platform|
+##     rm_ldflags.bind( self ).( platform ) + ' -Wl,-keep_dwarf_unwind -Wl,-no_compact_unwind'
+##   end
+## end
+## 
 begin
   require 'bundler'
   Bundler.setup
@@ -45,10 +45,18 @@ Motion::Project::App.setup do |app|
     app.info_plist['SPEC_HOST_PATH'] = File.absolute_path( Dir.pwd )
     # fon on-device Tests (this enables iTunes File sharing so Story-Bundles can be copied to the device via iTunes)
     app.info_plist['UIFileSharingEnabled'] = true
+    app.info_plist['Fabric'] = {
+        'APIKey' => ENV['RM_FABRIC_API'] || 'please-set-RM_FABRIC_API-environment',
+        'Kits'   => [
+          { 'KitName' => 'Crashlytics' }
+        ]
+    }
 
     app.pods do
       pod 'HockeyKit'
       pod 'IQAudioRecorderController'
+      pod 'Fabric'
+      pod 'Crashlytics'
     end
   end
 
@@ -59,10 +67,18 @@ Motion::Project::App.setup do |app|
       app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
       app.codesign_certificate = ENV['RM_ADHOC_CERTIFICATE']
       app.info_plist['UIFileSharingEnabled'] = true
+      app.info_plist['Fabric'] = {
+        'APIKey' => ENV['RM_FABRIC_API'] || 'please-set-RM_FABRIC_API-environment',
+        'Kits'   => [
+          { 'KitName' => 'Crashlytics' }
+        ]
+      }
 
       app.pods do
         pod 'IQAudioRecorderController'
         pod 'HockeyKit'
+        pod 'Fabric'
+        pod 'Crashlytics'
       end
     else 
       app.provisioning_profile = ENV['RM_PUB_PROFILE']
@@ -78,7 +94,7 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.113'
+  app.short_version = app.version = '1.0.119'
 
   app.device_family = [ :iphone, :ipad ]
 
@@ -96,6 +112,8 @@ Motion::Project::App.setup do |app|
 end
 
 YARD::Rake::YardocTask.new # include YARD rake task
+
+namespace :beta do
 
 desc 'Deploy an ad-hoc build to a HockeyKit server'
 task :deploy do
@@ -156,5 +174,28 @@ task :deploy do
   end
 end
 
+task :fabric_send do
+  app = Motion::Project::App
+
+  ENV['BUILT_PRODUCTS_DIR'] =  app.config.versionized_build_dir( app.config.deploy_platform )
+  ENV['INFOPLIST_PATH'] = File.join( app.config.bundle_filename, 'Info.plist' )
+  ENV['DWARF_DSYM_FILE_NAME'] = File.basename( app.config.app_bundle_dsym( app.config.deploy_platform ) )
+  ENV['DWARF_DSYM_FOLDER_PATH'] = app.config.versionized_build_dir( app.config.deploy_platform )
+  ENV['SRCROOT'] = File.dirname( __FILE__ )
+
+  fabric_run = File.join( Dir.pwd, 'vendor', 'Pods', 'Fabric', 'Fabric.framework', 'run' )
+  fabric_api = ENV['RM_FABRIC_API']
+  fabric_key = ENV['RM_FABRIC_KEY']
+
+  if fabric_api.nil? or fabric_key.nil?
+    app.fail( 'Please set the RM_FABRIC_API and RM_FABRIC_KEY environment variables to your API-Key and Build-Secret.' )
+  end
+
+  system( "#{fabric_run} #{fabric_api} #{fabric_key}" )
+end
+
 task :deploy => 'archive:distribution'
+task :fabric => ['beta:deploy', 'beta:fabric_send']
+
+end
 

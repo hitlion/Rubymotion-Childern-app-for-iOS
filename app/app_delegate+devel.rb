@@ -21,3 +21,11 @@ module AppDelegateHockeyKit
     UIApplication.sharedApplication.networkActivityIndicatorVisible = false
   end
 end
+
+module AppDelegateCrashlytics
+  def setupCrashlytics
+    mp_l( 'Initializing Crashlytics' )
+    Fabric.with([Crashlytics.sharedInstance])
+  end
+end
+
