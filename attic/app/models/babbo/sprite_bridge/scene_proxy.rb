@@ -1,6 +1,6 @@
 module Babbo
   module SpriteBridge
-    class SceneProxy < Proxy
+    class SceneProxy < Babbo::SpriteBridge::Proxy
       def initialize( babbo_screen )
         @screen = babbo_screen
       end

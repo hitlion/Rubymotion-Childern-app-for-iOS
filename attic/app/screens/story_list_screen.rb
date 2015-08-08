@@ -7,8 +7,8 @@ class StoryListScreen < PM::TableScreen
   # @return [Array<Hash>] An +Array+ containing one +Hash+ for each loaded story bundle.
   attr_accessor :stories
   def on_load
-    @layout = StoryListLayout.new( root: self.view )
-    @layout.build
+    #@layout = StoryListLayout.new( root: self.view )
+    #@layout.build
 
     @stories = StoryStore.shared_store.reload
   end

@@ -1,6 +1,6 @@
 module Babbo
   module SpriteBridge
-    class ObjectProxy < Proxy
+    class ObjectProxy < Babbo::SpriteBridge::Proxy
       def initialize( babbo_object )
         @object = babbo_object
       end

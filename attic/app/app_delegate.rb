@@ -4,7 +4,7 @@ class AppDelegate < PM::Delegate
   include AppDelegateHockeyKit if defined?(AppDelegateHockeyKit)
   include AppDelegateCrashlytics if defined?(AppDelegateCrashlytics)
 
-  tint_color '#ffffff'.uicolor
+  tint_color rmq(self).color.from_hex('#ffffff')
 
   def on_load( app, options )
     return if RUBYMOTION_ENV == 'test'
@@ -20,8 +20,8 @@ class AppDelegate < PM::Delegate
     open StoryListScreen.new( nav_bar: true, nav_controller: AutoRotatingNavigationController )
 
     # FIXME: port this to MotionKit?
-    UINavigationBar.appearance.barTintColor = '#f9bc34'.uicolor
-    UINavigationBar.appearance.setTitleTextAttributes( { NSForegroundColorAttributeName => '#ffffff'.uicolor } )
+    UINavigationBar.appearance.barTintColor = rmq(self).color.from_hex( '#f9bc34' )
+    UINavigationBar.appearance.setTitleTextAttributes( { NSForegroundColorAttributeName => rmq(self).color.from_hex( '#ffffff' ) } )
   end
 end
 

@@ -28,21 +28,17 @@ class SystemLogView < UIView
       NSNotificationCenter.defaultCenter.postNotificationName( 'StoryLogChanged', object: nil )
     end
 
-    def create_log_message( message, color=nil )
-      color_attribute = '#ffffff'.uicolor
-      case color
+    def create_log_message( message, color_name=nil )
+      color_attribute = UIColor.whiteColor
+      case color_name
         when :red
-          color_attribute = '#ff0000'.uicolor
+          color_attribute = UIColor.redColor
         when :green
-          color_attribute = '#00ff00'.uicolor
+          color_attribute = UIColor.greenColor
         when :blue
-          color_attribute = '#0000ff'.uicolor
+          color_attribute = UIColor.blueColor
         when :yellow
-          color_attribute = '#ffff00'.uicolor
-        else
-          if color.respond_to? 'uicolor'
-            color_attribute = color.uicolor
-          end
+          color_attribute = UIColor.yellowColor
       end
       NSAttributedString.alloc.initWithString( "\n#{message}", attributes: { NSForegroundColorAttributeName => color_attribute } )
     end
@@ -54,30 +50,30 @@ class SystemLogView < UIView
     super.initWithFrame( CGRectMake( 0, 0, size.width, size.height ) ).tap do
 
       self.center = CGPointMake( size.width / 2.0 , -0.5 * size.height )
-      self.backgroundColor = '#000000'.uicolor
+      self.backgroundColor = color.from_hex( '#000000' )
       self.alpha = 0.75
 
       @text_view = UITextView.alloc.initWithFrame( CGRectMake( 0, 44, size.width, size.height - 44 ), textContainer: nil ).tap do |text|
-        text.backgroundColor = '#000000'.uicolor( 0.0 )
-        text.textColor = '#ffffff'.uicolor
+        text.backgroundColor = color.from_hex( '#000000' )
+        text.textColor = color.from_hex( '#ffffff' )
         text.attributedText = SystemLogView.messages
         text.scrollEnabled = true
         text.editable = false
       end
 
-      @mode_switch = UIButton.buttonWithType( :custom.uibuttontype )
-      @mode_switch.setTitle( 'log: jscript', forState: :normal.uicontrolstate )
-      @mode_switch.addTarget( self, action: 'mode_changed:', forControlEvents: :touch.uicontrolevent )
+      @mode_switch = UIButton.buttonWithType( UIButtonTypeCustom )
+      @mode_switch.setTitle( 'log: jscript', forState: UIControlStateNormal )
+      @mode_switch.addTarget( self, action: 'mode_changed:', forControlEvents: UIControlEventTouchUpInside )
       @mode_switch.frame = [ [ 0, 20 ], [ 60, 20 ] ]
       @mode_switch.titleLabel.font = UIFont.italicSystemFontOfSize( 12.0 )
-      @mode_switch.titleLabel.textAlignment = :left.nstextalignment
+      @mode_switch.titleLabel.textAlignment = NSTextAlignmentLeft
 
-      @hide_switch = UIButton.buttonWithType( :custom.uibuttontype )
-      @hide_switch.setTitle( 'X', forState: :normal.uicontrolstate )
+      @hide_switch = UIButton.buttonWithType( UIButtonTypeCustom )
+      @hide_switch.setTitle( 'X', forState: UIControlStateNormal )
       @hide_switch.frame = [ [ size.width - 40, 20 ], [ 40, 20 ] ]
       @hide_switch.titleLabel.font = UIFont.italicSystemFontOfSize( 12.0 )
-      @hide_switch.titleLabel.textAlignment = :left.nstextalignment
-      @hide_switch.addTarget( self, action: 'hide', forControlEvents: :touch.uicontrolevent )
+      @hide_switch.titleLabel.textAlignment = NSTextAlignmentLeft
+      @hide_switch.addTarget( self, action: 'hide', forControlEvents: UIControlEventTouchUpInside )
 
       @hidden = true
       @mode = :jscript
@@ -137,10 +133,10 @@ class SystemLogView < UIView
   def mode_changed( _ )
     if @mode == :jscript
       @mode = :all
-      @mode_switch.setTitle( 'log: all', forState: :normal.uicontrolstate )
+      @mode_switch.setTitle( 'log: all', forState: UIControlStateNormal )
     else
       @mode = :jscript
-      @mode_switch.setTitle( 'log: jscript', forState: :normal.uicontrolstate )
+      @mode_switch.setTitle( 'log: jscript', forState: UIControlStateNormal )
     end
 
     log_changed( self )
