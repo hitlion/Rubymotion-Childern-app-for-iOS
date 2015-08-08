@@ -3,17 +3,13 @@ source 'https://rubygems.org'
 #ruby-gemset=babbo-voco
 
 gem 'rake'
-# Add your dependencies here:
+# required inside the Rakefile
 gem 'yard'
 gem 'yard-rspec'
 gem 'yard-cucumber'
 gem 'redcarpet'
 gem 'json'
-gem 'motion-crescentia'
- #UI, suggar and spice
- gem 'ProMotion'
- gem 'motion-kit'
- gem 'motion-wiretap'
- gem 'sugarcube', require: [ 'sugarcube-constants', 'sugarcube-color', 'sugarcube-ui', 'sugarcube-files', 'sugarcube-nsdate' ]
-# Ad-Hoc testing
-gem 'motion-cocoapods'
+# required inside the Application
+gem 'cocoapods', '~> 0.38.2'
+gem 'motion-cocoapods', '~> 1.7.3'
+gem 'redpotion'
