@@ -2,8 +2,8 @@ class AppDelegate < PM::Delegate
   status_bar true, animation: :fade
   tint_color rmq.color.white
 
-  include AppDelegateHockeyKit if defined?( AppDelegateHockeyKit )
-  include AppDelegateCrashlytics if defined?( AppDelegateCrashlytics )
+  include HockeyKitIntegration if defined?( HockeyKitIntegration )
+  include CrashlyticsIntegration if defined?( CrashlyticsIntegration )
 
   def on_load( app, options )
     return if RUBYMOTION_ENV == 'test'
