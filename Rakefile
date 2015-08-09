@@ -95,7 +95,7 @@ Motion::Project::App.setup do |app|
 
   app.sdk_version = '8.4'
   app.deployment_target = '7.1'
-  app.icons = %w(Icon-58.png Icon-80.png Icon-87.png Icon-120.png Icon@2x.png Icon@3x.png)
+  app.icons = [ 'AppIcon' ]
 
   app.manifest_assets << { :kind => 'software-package', :url => '__URL__' }
 
