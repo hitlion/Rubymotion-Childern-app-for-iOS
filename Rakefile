@@ -25,6 +25,9 @@ Bundler.require
 DEVELOPMENT_ONLY  = Dir.glob( './app/**/*+devel.rb' ) \
                   + Dir.glob( './lib/**/*+devel.rb' )
 
+ADHOC_BETA_ONLY   = Dir.glob( './app/**/*+beta.rb' ) \
+                  + Dir.glob( './lib/**/*+beta.rb' )
+
 Motion::Project::App.setup do |app|
 
   app.files += Dir.glob( './lib/**/*.rb' )
@@ -45,6 +48,11 @@ Motion::Project::App.setup do |app|
 
     # Filter out development helpers
     app.files.select! { |x| true unless DEVELOPMENT_ONLY.include? x }
+
+    unless ENV['staging'] == true
+      # also filter out ad-hoc / beta related code
+      app.files.select! { |x| true unless ADHOC_BETA_ONLY.include? x }
+    end
   end
 
   # pods used in all configurations
