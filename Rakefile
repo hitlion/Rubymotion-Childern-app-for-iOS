@@ -15,82 +15,66 @@ require 'redcarpet'
 ##     rm_ldflags.bind( self ).( platform ) + ' -Wl,-keep_dwarf_unwind -Wl,-no_compact_unwind'
 ##   end
 ## end
-## 
-begin
-  require 'bundler'
-  Bundler.setup
-  Bundler.require
-rescue LoadError
-  App.warn 'Failed to require \'bundler\'!'
-end
+##
 
-task 'crescentia:run' => 'build:simulator'
+require 'bundler'
+Bundler.setup
+Bundler.require
 
 # Sources only included in development and test builds.
-DEVELOPMENT_ONLY = Dir.glob( "#{Dir.pwd}/app/**/*+devel.rb" )
+DEVELOPMENT_ONLY  = Dir.glob( "#{Dir.pwd}/app/**/*+devel.rb" ) \
+                  + Dir.glob( "#{Dir.pwd}/lib/**/*+devel.rb" )
 
 Motion::Project::App.setup do |app|
-  # Use `rake config' to see complete project settings.
   app.development do
-    if ENV['staging'] == 'true'
-      Motion::Project::App.info('Setup', 'Configuring ad-hoc development build')
+    app.provisioning_profile = ENV['RM_DEV_PROFILE']
+    app.codesign_certificate = ENV['RM_DEV_CERTIFICATE']
 
-      app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
-      app.codesign_certificate = ENV['RM_ADHOC_CERTIFICATE']
-   else
-      app.provisioning_profile = ENV['RM_DEV_PROFILE']
-      app.codesign_certificate = ENV['RM_DEV_CERTIFICATE']
-    end
     # for Spec tests
     app.info_plist['SPEC_HOST_PATH'] = File.absolute_path( Dir.pwd )
-    # fon on-device Tests (this enables iTunes File sharing so Story-Bundles can be copied to the device via iTunes)
-    app.info_plist['UIFileSharingEnabled'] = true
-    app.info_plist['Fabric'] = {
-        'APIKey' => ENV['RM_FABRIC_API'] || 'please-set-RM_FABRIC_API-environment',
-        'Kits'   => [
-          { 'KitName' => 'Crashlytics' }
-        ]
-    }
-
-    app.pods do
-      pod 'HockeyKit'
-      pod 'IQAudioRecorderController'
-      pod 'Fabric'
-      pod 'Crashlytics'
-    end
   end
 
   app.release do
-    if ENV['staging'] == 'true'
-      Motion::Project::App.info('Setup', 'Configuring ad-hoc release build')
+    app.provisioning_profile = ENV['RM_PUB_PROFILE']
+    app.codesign_certificate = ENV['RM_PUB_CERTIFICATE']
 
-      app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
-      app.codesign_certificate = ENV['RM_ADHOC_CERTIFICATE']
-      app.info_plist['UIFileSharingEnabled'] = true
-      app.info_plist['Fabric'] = {
-        'APIKey' => ENV['RM_FABRIC_API'] || 'please-set-RM_FABRIC_API-environment',
-        'Kits'   => [
-          { 'KitName' => 'Crashlytics' }
-        ]
-      }
+    app.entitlements['get-task-allow'] = false
+    app.entitlements['beta-reports-active'] = true
 
-      app.pods do
-        pod 'IQAudioRecorderController'
-        pod 'HockeyKit'
-        pod 'Fabric'
-        pod 'Crashlytics'
-      end
-    else 
-      app.provisioning_profile = ENV['RM_PUB_PROFILE']
-      app.codesign_certificate = ENV['RM_PUB_CERTIFICATE']
-
-      app.pods do
-        pod 'IQAudioRecorderController'
-      end
-    end
     # Filter out development helpers
     app.files.select! { |x| true unless DEVELOPMENT_ONLY.include? x }
   end
+
+  # pods used in all configurations
+  app.pods do
+    pod 'IQAudioRecorderController'
+  end
+
+  if ENV['staging'] == 'true' or app.development?
+
+    app.entitlements['get-task-allow'] = true
+    app.entitlements['beta-reports-active'] = true
+
+    if ENV['staging'] == 'true'
+      Motion::Project::App.info('Setup', 'Configuring ad-hoc development build')
+      app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
+      app.codesign_certificate = ENV['RM_ADHOC_CERTIFICATE']
+    end
+
+    app.info_plist['UIFileSharingEnabled'] = true
+    # fon on-device Tests (this enables iTunes File sharing so Story-Bundles can be copied to the device via iTunes)
+    app.info_plist['Fabric'] = {
+        'APIKey' => ENV['RM_FABRIC_API'] || 'please-set-RM_FABRIC_API-environment',
+        'Kits'   => [ { 'KitName' => 'Crashlytics' } ]
+    }
+
+    app.pods do
+      pod 'Fabric'
+      pod 'Crashlytics'
+      pod 'HockeyKit'
+    end
+  end
+  # generic configuration
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
