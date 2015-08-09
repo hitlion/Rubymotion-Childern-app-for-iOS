@@ -22,10 +22,12 @@ Bundler.setup
 Bundler.require
 
 # Sources only included in development and test builds.
-DEVELOPMENT_ONLY  = Dir.glob( "#{Dir.pwd}/app/**/*+devel.rb" ) \
-                  + Dir.glob( "#{Dir.pwd}/lib/**/*+devel.rb" )
+DEVELOPMENT_ONLY  = Dir.glob( './app/**/*+devel.rb' ) \
+                  + Dir.glob( './lib/**/*+devel.rb' )
 
 Motion::Project::App.setup do |app|
+
+  app.files += Dir.glob( './lib/**/*.rb' )
   app.development do
     app.provisioning_profile = ENV['RM_DEV_PROFILE']
     app.codesign_certificate = ENV['RM_DEV_CERTIFICATE']
