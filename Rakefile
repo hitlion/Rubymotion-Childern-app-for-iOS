@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
  $:.unshift('/Library/RubyMotion/lib')
- $:.unshift(File.join(Dir.pwd, 'vendor', 'babbo-voco', 'type-monkey', 'lib'))
 
 require 'motion/project/template/ios'
 require 'redcarpet'
