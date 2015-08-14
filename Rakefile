@@ -3,8 +3,6 @@
  $:.unshift(File.join(Dir.pwd, 'vendor', 'babbo-voco', 'type-monkey', 'lib'))
 
 require 'motion/project/template/ios'
-require 'motion-type-monkey'
-
 require 'redcarpet'
 
 ## # # in case we get un-catchable exceptions and warnings about compact unwind again
@@ -100,6 +98,8 @@ Motion::Project::App.setup do |app|
   app.manifest_assets << {:kind => 'software-package', :url => '__URL__'}
 
   app.vendor_project('vendor/babbo-voco/js-bridging', :static, :cflags => '-fobjc-arc -F JavaScriptCore')
+  app.vendor_project('vendor/babbo-voco/digest'     , :static, :cflags => '-fobjc-arc')
+
   app.frameworks << 'JavaScriptCore'
   app.frameworks << 'SpriteKit'
   app.frameworks << 'CoreImage'
