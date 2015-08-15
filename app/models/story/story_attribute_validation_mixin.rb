@@ -18,7 +18,13 @@ module Story
 
         # lazy load the scope only if it's actually accessed
         self.validation_scopes[name] = Proc.new do
-          validation_root = YAML.load(File.read(Dir.resource('model/validation.yml'))).symbolicate
+          if File.exists? File.join(Dir.system_path(:caches), 'validation.yml')
+            # allow updates by a downloaded version
+            validation_root_path = File.join(Dir.system_path(:caches), 'validation.yml')
+          else
+            validation_root_path = Dir.resource('model/validation.yml')
+          end
+          validation_root = YAML.load(File.read(validation_root_path)).symbolicate
 
           unless validation_root.nil?
             if validation_root.has_key? name
