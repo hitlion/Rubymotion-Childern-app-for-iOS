@@ -3,6 +3,12 @@ module Story
     module ClassMixin
       attr_accessor :validation_scopes
 
+      # Declare an external validation scope for use in this class.
+      #
+      # The scope will be lazy-loaded at runtime and is available
+      # using the `#validation_scopes` property of the class.
+      #
+      # @param [Symbol] name The name of the external scope.
       def validation_scope( name )
         self.validation_scopes ||= {}
         return if self.validation_scopes.has_key? name
@@ -67,12 +73,14 @@ module Story
       @validation_errors ||= []
 
       if expected.is_a? Symbol
-        if self.class.validation_scopes[expected].nil?
-          @validation_errors << "Undefined validation scope '#{expected}'"
+        scope_name = expected.to_sym
+        expected = self.class.validation_scopes[scope_name]
+        expected = expected.call if expected.is_a? Proc
+
+        if expected.nil?
+          @validation_errors << "Undefined validation scope '#{scope_name}'"
           return nil
         end
-        expected = self.class.validation_scopes[expected]
-        expected = expected.call if expected.is_a? Proc
       end
 
       # check unexpected attributes
