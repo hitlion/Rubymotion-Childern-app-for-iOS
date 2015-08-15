@@ -7,6 +7,8 @@ module Story
     #
     include Story::AttributeValidationMixin
 
+    validation_scope :level
+
     attr_reader :id
     attr_accessor :screens
 
@@ -37,9 +39,9 @@ module Story
     def load( description )
       return false if valid?
 
-      validate_attributes(description, {
-        :level_id => { :required => true, :as => :to_i },
-        :screens  => { :default  => [] }}) do |desc|
+      validate_attributes(description, :level) do |desc|
+#       {:level_id => { :required => true, :as => :to_i },
+#        :screens  => { :default  => [] }}) do |desc|
 
         @id      = desc[:level_id]
         @screens = []

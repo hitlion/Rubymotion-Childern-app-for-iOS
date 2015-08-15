@@ -7,6 +7,8 @@ module Story
     include Story::SlotsMixin
     include Story::AttributeValidationMixin
 
+    validation_scope :screen
+
     has_events :at_load, :at_next
 
     attr_reader :id, :name
@@ -42,12 +44,12 @@ module Story
     def load( description )
       return false if valid?
 
-      validate_attributes(description, {
-        :screen_id     => { :required => true, :as => :to_i },
-        :name          => { :required => true, :as => :to_s },
-        :objects       => { :default  => [] },
-        :screen_event  => { :default  => {} },
-        :screen_slot   => { :default  => [] } }) do |desc|
+      validate_attributes(description, :screen) do |desc|
+#       {:screen_id     => { :required => true, :as => :to_i },
+#        :name          => { :required => true, :as => :to_s },
+#        :objects       => { :default  => [] },
+#        :screen_event  => { :default  => {} },
+#        :screen_slot   => { :default  => [] } }) do |desc|
 
         @id      = desc[:screen_id]
         @name    = desc[:name]

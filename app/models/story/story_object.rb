@@ -7,6 +7,9 @@ module Story
     include Story::SlotsMixin
     include Story::AttributeValidationMixin
 
+    validation_scope :object
+    validation_scope :object_attribute
+
     has_events :at_start, :at_end, :on_click, :on_swipe,
                :start_moving, :end_moving, :new_poition
 
@@ -44,15 +47,15 @@ module Story
     def load( description )
       return false if valid?
 
-      validate_attributes(description, {
-        :object_id        => { :required => true, :as => :to_i   },
-        :object_name      => { :required => true, :as => :to_s   },
-        :object_type      => { :required => true, :as => :to_sym },
-        :processable      => { :required => true, :as => :to_sym },
-        :object_content   => { :required => true, :as => :to_s   },
-        :object_attribute => { :required => true, },
-        :object_event     => { :default  => {}    },
-        :object_slot      => { :default  => []    } }) do |desc|
+      validate_attributes(description, :object) do |desc|
+#       {:object_id        => { :required => true, :as => :to_i   },
+#        :object_name      => { :required => true, :as => :to_s   },
+#        :object_type      => { :required => true, :as => :to_sym },
+#        :processable      => { :required => true, :as => :to_sym },
+#        :object_content   => { :required => true, :as => :to_s   },
+#        :object_attribute => { :required => true, },
+#        :object_event     => { :default  => {}    },
+#        :object_slot      => { :default  => []    } }) do |desc|
 
         @id           = desc[:object_id]
         @name         = desc[:object_name]
@@ -65,15 +68,15 @@ module Story
 
         # `object_attribute` is a +Hash+ in it's own and deserves
         # it's own nested validation (also it has optionals..).
-        validate_attributes(desc[:object_attribute], {
-          :position_x   => { :required => true  , :as => :to_f },
-          :position_y   => { :required => true  , :as => :to_f },
-          :size_x       => { :required => true  , :as => :to_f },
-          :size_y       => { :required => true  , :as => :to_f },
-          :layer        => { :required => true  , :as => :to_f },
-          :transparency => { :required => true  , :as => :to_f },
-          :resize       => { :default  => :scale, :as => :to_sym },
-          :moveable     => { :default  => false } }) do |attribs|
+        validate_attributes(desc[:object_attribute], :object_attribute) do |attribs|
+#         {:position_x   => { :required => true  , :as => :to_f },
+#          :position_y   => { :required => true  , :as => :to_f },
+#          :size_x       => { :required => true  , :as => :to_f },
+#          :size_y       => { :required => true  , :as => :to_f },
+#          :layer        => { :required => true  , :as => :to_f },
+#          :transparency => { :required => true  , :as => :to_f },
+#          :resize       => { :default  => :scale, :as => :to_sym },
+#          :moveable     => { :default  => false } }) do |attribs|
 
           @position     = CGPoint.new(attribs[:position_x], attribs[:position_y])
           @size         = CGSize.new(attribs[:size_x], attribs[:size_y])

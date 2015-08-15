@@ -6,6 +6,8 @@ module Story
     include Story::SlotsMixin
     include Story::AttributeValidationMixin
 
+    validation_scope :body
+
     has_events :at_load, :at_end
 
     attr_accessor :levels
@@ -36,10 +38,10 @@ module Story
     def load( description )
       return false if valid?
 
-      validate_attributes(description, {
-        :levels     => { :default => [] },
-        :body_event => { :default => {} }, 
-        :body_slot  => { :default => [] }}) do |desc|
+      validate_attributes(description, :body) do |desc|
+#        {:levels     => { :default => [] },
+#        :body_event => { :default => {} }, 
+#        :body_slot  => { :default => [] }}) do |desc|
 
         @levels = []
 

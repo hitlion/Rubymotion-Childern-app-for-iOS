@@ -5,6 +5,10 @@ module Story
   class Document
     include Story::AttributeValidationMixin
 
+    validation_scope :document
+    validation_scope :head
+    validation_scope :meta
+
     # attributes parsed from :head
     attr_reader :data_language, :data_language_version, :template_id
     # attributes parsed from :meta
@@ -41,15 +45,15 @@ module Story
     def load( description )
       return false if valid?
 
-      validate_attributes(description, {
-        :head => { :required => true },
-        :meta => { :required => true },
-        :body => { :required => true } }) do |desc|
+      validate_attributes(description, :document) do |desc|
+#       {:head => { :required => true },
+#        :meta => { :required => true },
+#        :body => { :required => true } }) do |desc|
 
-        validate_attributes(desc[:head], {
-          :data_language         => { :required => true, :as => :to_s },
-          :data_language_version => { :required => true, :as => :to_s },
-          :template_id           => { :required => true, :as => :to_s } }) do |head|
+        validate_attributes(desc[:head], :head) do |head|
+#         {:data_language         => { :required => true, :as => :to_s },
+#          :data_language_version => { :required => true, :as => :to_s },
+#          :template_id           => { :required => true, :as => :to_s } }) do |head|
 
           @data_language         = head[:data_language]
           @data_language_version = head[:data_language_version]
@@ -67,18 +71,18 @@ module Story
         # No sense in continuing if we know the validation failed.
         break unless validation_errors.empty?
 
-        validate_attributes(desc[:meta], {
-          :dokument_id         => { :required => true, :as => :to_i },
-          :dataset_id          => { :required => true, :as => :to_i },
-          :branch_name         => { :required => true, :as => :to_s },
-          :branch_creator_id   => { :required => true, :as => :to_i },
-          :creator_impressum   => { :default  => '~' , :as => :to_s },
-          :editor_id           => { :default  => nil },
-          :set_name            => { :required => false, :as => :to_s },
-          :thumbnail           => { :required => true, :as => :to_s },
-          :status              => { :required => true, :as => :to_sym },
-          :modified_conveyable => { :required => true },
-          :timestamp           => { :required => true, :as => :to_s } }) do |meta|
+        validate_attributes(desc[:meta], :meta) do |meta|
+ #        {:dokument_id         => { :required => true, :as => :to_i },
+ #         :dataset_id          => { :required => true, :as => :to_i },
+ #         :branch_name         => { :required => true, :as => :to_s },
+ #         :branch_creator_id   => { :required => true, :as => :to_i },
+ #         :creator_impressum   => { :default  => '~' , :as => :to_s },
+ #         :editor_id           => { :default  => nil },
+ #         :set_name            => { :required => false, :as => :to_s },
+ #         :thumbnail           => { :required => true, :as => :to_s },
+ #         :status              => { :required => true, :as => :to_sym },
+ #         :modified_conveyable => { :required => true },
+ #         :timestamp           => { :required => true, :as => :to_s } }) do |meta|
 
           @document_id         = meta[:dokument_id]
           @dataset_id          = meta[:dataset_id]
@@ -112,8 +116,6 @@ module Story
       @valid = true if validation_errors.empty?
       valid?
     end
-
-
   end
 end
 
