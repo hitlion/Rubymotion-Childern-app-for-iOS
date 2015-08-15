@@ -1,5 +1,36 @@
 module Story
   module AttributeValidationMixin
+    module ClassMixin
+      attr_accessor :validation_scopes
+
+      def validation_scope( name )
+        self.validation_scopes ||= {}
+        return if self.validation_scopes.has_key? name
+
+        validation_root_path = Dir.resource('model/validation.yml')
+        return nil if validation_root_path.nil?
+
+        # lazy load the scope only if it's actually accessed
+        self.validation_scopes[name] = Proc.new do
+          validation_root = YAML.load(File.read(Dir.resource('model/validation.yml'))).symbolicate
+
+          unless validation_root.nil?
+            if validation_root.has_key? name
+              # symbolicate all keys, replace :as with Symbols and :type with classes
+              scope = Hash.symbolicate(validation_root[name])
+              scope = Hash[scope.map do |k, v|
+                v[:as]   = v[:as].to_sym              if v.has_key? :as
+                v[:type] = Kernel.const_get(v[:type]) if v.has_key? :type
+                [k, v]
+              end]
+              self.validation_scopes[name] = scope
+              scope
+            end
+          end
+        end
+      end
+    end
+
     attr_reader :validation_errors
 
     # Validate +attributes+ against +expected+ and return a new +Hash+.
@@ -27,11 +58,22 @@ module Story
     # If an optional block is passed it will be called with the validated attributes
     # as single argument.
     #
-    # @param [Hash] attributes A hash of attributes to be validated.
+    # @param [Hash] attributes A +Hash+ of attributes to be validated.
     # @param [Hash] expected A hash with validation instructions.
+    #   If a +Symbol+ is passed instead of a +Hash+ and a matching scope was
+    #   registered using +#validation_scope+ then this scope will be used.
     # @return [Hash] A new hash with validated, augmented attributes or +nil+
     def validate_attributes( attributes, expected )
-      @validation_errors = []
+      @validation_errors ||= []
+
+      if expected.is_a? Symbol
+        if self.class.validation_scopes[expected].nil?
+          @validation_errors << "Undefined validation scope '#{expected}'"
+          return nil
+        end
+        expected = self.class.validation_scopes[expected]
+        expected = expected.call if expected.is_a? Proc
+      end
 
       # check unexpected attributes
       attributes.keys.each do |k|
@@ -51,6 +93,13 @@ module Story
             res[k] = v[:as].nil? ? v[:default] : v[:default].send(v[:as])
           end
         end
+
+        # optional type-class validation
+        if v[:type].is_a? Class
+          unless res[k].is_a? v[:type]
+            @validation_errors << "Type mismatch: attribute '#{k}' has type '#{res[k].class}' but should be a '#{v[:type]}'"
+          end
+        end
       end
 
       if @validation_errors.empty?
@@ -59,6 +108,10 @@ module Story
       else
         nil
       end
+    end
+
+    def self.included( base )
+      base.extend(Story::AttributeValidationMixin::ClassMixin)
     end
   end
 end

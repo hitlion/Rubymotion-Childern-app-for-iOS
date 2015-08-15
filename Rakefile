@@ -2,6 +2,8 @@
  $:.unshift('/Library/RubyMotion/lib')
 
 require 'motion/project/template/ios'
+require 'motion-yaml'
+
 require 'redcarpet'
 
 ## # # in case we get un-catchable exceptions and warnings about compact unwind again
