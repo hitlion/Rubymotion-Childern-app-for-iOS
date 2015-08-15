@@ -16,10 +16,8 @@ class AssetStore
   CACHE_DIR = 'assets'
 
   def initialize
-    manager = NSFileManager.defaultManager
     @cache_path = begin
-      urls = manager.URLsForDirectory(NSCachesDirectory, inDomains: NSUserDomainMask)
-      File.join(urls.first.fileSystemRepresentation, CACHE_DIR)
+      File.join(Dir.system_path(:caches), CACHE_DIR)
     end
 
     if Dir.exist? @cache_path
@@ -27,7 +25,7 @@ class AssetStore
     else
       # NOTE: Dir#mkdir could be used here but it has no equivalent
       #   to 'withIntermediateDirectories: true'.
-      @valid = manager.createDirectoryAtPath(@cache_path, withIntermediateDirectories: true, attributes: nil, error: nil)
+      @valid = Dir.mkdirs(@cache_path)
     end
   end
 
