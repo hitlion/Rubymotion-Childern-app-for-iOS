@@ -19,3 +19,11 @@ class Hash
   end
 end
 
+# @private
+class NilClass
+  # Return +nil+ if NilClass#symbolicate is called
+  def symbolicate
+    nil
+  end
+end
+
