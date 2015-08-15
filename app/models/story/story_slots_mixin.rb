@@ -39,6 +39,8 @@ module Story
         if self.class.events.include? name.to_sym
           @events[name.to_sym] = slot
         else
+          @validation_errors ||= []
+          @validation_errors << "Undefined event '#{name}'."
           mp "warning: undefined event '#{name}'", force_color: :purple
         end
       end
@@ -61,15 +63,15 @@ module Story
     # @param [Array<Hash>] slot_def A list of slot definitions.
     def parse_slots( slot_def )
       @slots ||= {}
-      slot_def.each do |slot|
-        if slot[:name] && slot[:action] && slot[:variables]
-
-          @slots[slot[:name]] = Story::Slot.new(slot[:name],
-                                                slot[:action],
-                                                slot[:variables])
+      slot_def.each do |sdef|
+        slot = Story::Slot.new
+        if slot.load(sdef)
+          @slots[slot.name] = slot
         else
-          mp 'warning: incomplete slot definition', force_color: :purple
-          mp slot, force_color: :purple
+          @validation_errors ||= []
+          @validation_errors += slot.validation_errors.map do |err|
+            "slot['#{slot.name}']: #{err}"
+          end
         end
       end
     end

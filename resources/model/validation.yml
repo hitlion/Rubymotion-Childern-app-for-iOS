@@ -58,3 +58,12 @@ object_attribute:
   resize:                { default: scale, as: to_sym }
   moveable:              { default: false }
 
+slot:
+  name:                  { required: true, as: to_s }
+  action:                { required: true, as: to_s }
+  variables:             { default:    [], type: Array }
+
+slot_variable:
+  name:                  { required: true, as: to_s }
+  content:               { required: true, as: to_s }
+

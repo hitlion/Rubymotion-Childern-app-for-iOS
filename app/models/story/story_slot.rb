@@ -1,21 +1,52 @@
 module Story
   class Slot
+    include Story::AttributeValidationMixin
+
+    validation_scope :slot
+    validation_scope :slot_variable
+
     attr_reader :name, :action, :variables
 
     # Initialize a new Slot instance.
+    def initialize
+      @name      = 'undefined'
+      @action    = ''
+      @variables = {}
+      @valid     = false
+    end
+
+    def valid?
+      @valid
+    end
+
+    # Load the object attributes from the +Hash+ in +description+.
     #
-    # If the list passed in +variables+ contains invalid or
-    # incomplete variables they will be parsed as name/content 'undefined'.
+    # All attributes will be validated, type converted and
+    # - where appropriate and required - replaced with default values.
     #
-    # @param [String] name A name identifying this slot.
-    # @param [String] action The designated JavaScript code for this slot
-    # @param [Array<Hash<Symbol,String>>] variables A list of
-    #   { :name => 'name', :content => 'content' } hashes.
-    def initialize(name, action, variables)
-      @name      = name
-      @action    = action
-      @variables = Hash[variables.map { |var| [var[:name] || 'undef',
-                                               var[:content] || 'undef'] }]
+    # @param [Hash] description A +Hash+ containing the initial values
+    #   for this objects properties.
+    # @return [Boolean] true if the object was initialized successfully.
+    #   false if the attributes where invalid or the object was already
+    #   initialized by calling +load+ before.
+    def load( description )
+      return false if valid?
+
+
+      validate_attributes(description, :slot) do |desc|
+        @name      = desc[:name]
+        @action    = desc[:action]
+        @variables = []
+
+        desc[:variables].each do |var_desc|
+          validate_attributes(var_desc, :slot_variable) do |var|
+            @variables << var
+          end
+        end
+      end
+
+      @valid = true if validation_errors.empty?
+      valid?
     end
   end
 end
