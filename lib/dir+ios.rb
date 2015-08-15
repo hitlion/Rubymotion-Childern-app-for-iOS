@@ -36,7 +36,8 @@ class Dir
       }
       return nil unless paths.has_key? type
 
-      url = NSFileManager.defaultManager.URLsForDirectory(type, inDomains: NSUserDomainMask).first
+      url = NSFileManager.defaultManager.URLsForDirectory(type,
+                                                          inDomains: NSUserDomainMask).first
       return nil if url.nil?
 
       url.fileSystemRepresentation
@@ -48,7 +49,10 @@ class Dir
     # @param [String] path The path to be created.
     # @return [Boolean] +true+ if the path was created, otherwise +false+
     def mkdirs( path )
-      NSFileManager.defaultManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil, error: nil)
+      NSFileManager.defaultManager.createDirectoryAtPath(path,
+                                                         withIntermediateDirectories: true,
+                                                         attributes: nil,
+                                                         error: nil)
     end
   end
 end
