@@ -29,7 +29,7 @@ ADHOC_BETA_ONLY   = Dir.glob('./app/**/*+beta.rb') \
 
 Motion::Project::App.setup do |app|
 
-  app.files += Dir.glob('./lib/**/*.rb')
+  app.files = Dir.glob('./lib/**/*.rb') + app.files
   app.development do
     app.provisioning_profile = ENV['RM_DEV_PROFILE']
     app.codesign_certificate = ENV['RM_DEV_CERTIFICATE']
@@ -57,6 +57,7 @@ Motion::Project::App.setup do |app|
   # pods used in all configurations
   app.pods do
     pod 'IQAudioRecorderController'
+    pod 'zipzap'
   end
 
   if ENV['staging'] == 'true' or app.development?
