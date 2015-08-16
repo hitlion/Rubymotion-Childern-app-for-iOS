@@ -36,7 +36,7 @@ class Dir
       }
       return nil unless paths.has_key? type
 
-      url = NSFileManager.defaultManager.URLsForDirectory(type,
+      url = NSFileManager.defaultManager.URLsForDirectory(paths[type],
                                                           inDomains: NSUserDomainMask).first
       return nil if url.nil?
 
