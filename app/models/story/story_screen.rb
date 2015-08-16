@@ -11,7 +11,7 @@ module Story
 
     has_events :at_load, :at_next
 
-    attr_reader :id, :name
+    attr_reader :id, :name, :path
     attr_accessor :objects
 
     # Initialize a new Screen instance

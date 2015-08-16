@@ -9,7 +9,7 @@ module Story
 
     validation_scope :level
 
-    attr_reader :id
+    attr_reader :id, :path
     attr_accessor :screens
 
     # Initialize a new Level instance

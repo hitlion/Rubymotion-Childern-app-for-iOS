@@ -10,7 +10,7 @@ module Story
 
     has_events :at_load, :at_end
 
-    attr_accessor :levels
+    attr_accessor :levels, :path
 
     # Initialize a new Body instance
     def initialize
