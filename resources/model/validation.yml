@@ -15,7 +15,7 @@ meta:
   branch_name:           { required: true, as: to_s }
   branch_creator_id:     { required: true, as: to_i }
   creator_impressum:     { default:     ~, as: to_s }
-  editor_id:             { default:  null, type: String }
+  editor_id:             { default:  null, type: String, as: to_s }
   set_name:              { required: false, as: to_s }
   thumbnail:             { required: true, as: to_s }
   status:                { required: true, as: to_sym }
