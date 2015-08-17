@@ -65,6 +65,41 @@ class StoryBundle
     @paths[path]
   end
 
+  # Return a +NSData+ object for the assec at +path+
+  #
+  # @param [String] path The relative asset path inside the bundle.
+  # @return [NSData] The assects data or +nil+ if an error occurs.
+  def asset_data( path )
+    return nil unless valid?
+
+    # relative paths are specified from inside the SMIL directory
+    if path.start_with? '../'
+      path = File.absolute_path(File.join(@path, 'SMIL', path))
+    end
+
+    if File.exists? path
+      NSData.dataWithContentsOfFile(path)
+    else
+      nil
+    end
+  end
+
+  # Return the absolute path to the asset +path+
+  # @param [String] path The asset path relative to the bundle.
+  # @return [String] The absolute asset path or +nil+ if the bundle is
+  #   invalid.
+  def asset_path( path )
+    return nil unless valid?
+
+    # relative paths are specified from inside the SMIL directory
+    if path.start_with? '../'
+      File.absolute_path(File.join(@path, 'SMIL', path))
+    else
+      # TODO: different handling?
+      path
+    end
+  end
+
   private
 
   # Load the story definition from `SMIL/control.[yml/json]`.
