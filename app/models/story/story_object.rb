@@ -13,7 +13,8 @@ module Story
     has_events :at_start, :at_end, :on_click, :on_swipe,
                :start_moving, :end_moving, :new_poition
 
-    attr_reader :id, :name, :type, :processable, :resize, :moveable, :path, :changes
+    attr_reader :id, :name, :type, :processable, :resize, :moveable, :path,
+                :changes, :mask
     attr_accessor :content, :position, :size, :layer, :transparency
 
     # Initialize a new Object instance
@@ -62,6 +63,7 @@ module Story
         @type         = desc[:object_type]
         @processable  = desc[:processable]
         @content      = desc[:object_content]
+        @mask         = desc[:object_mask]
 
         # now that @id is available update our @path
         @path.gsub!(/:object\[[^\]]*\]$/, ":object[#{@id}]")

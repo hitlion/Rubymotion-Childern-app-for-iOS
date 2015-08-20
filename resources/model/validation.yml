@@ -44,6 +44,7 @@ object:
   object_type:           { required: true, as: to_sym }
   processable:           { required: true, as: to_sym }
   object_content:        { required: true, as: to_s }
+  object_mask:           { required: false, as: to_s }
   object_attribute:      { required: true, type: Hash }
   object_event:          { default:    {}, type: Hash }
   object_slot:           { default:    [], type: Array }
