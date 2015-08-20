@@ -1,5 +1,5 @@
 class StoryBundle
-  attr_reader :document, :load_errors
+  attr_reader :document, :load_errors, :path
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
