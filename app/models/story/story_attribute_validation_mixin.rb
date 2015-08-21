@@ -6,7 +6,7 @@ module Story
       # Declare an external validation scope for use in this class.
       #
       # The scope will be lazy-loaded at runtime and is available
-      # using the `#validation_scopes` property of the class.
+      # using the {#validation_scope}s property of the class.
       #
       # @param [Symbol] name The name of the external scope.
       def validation_scope( name )
@@ -46,34 +46,35 @@ module Story
     attr_reader :validation_errors
 
     # Validate +attributes+ against +expected+ and return a new +Hash+.
-    # +excepted+ contains a set of keys and how to validate them in attributes:
+    # +excepted+ contains a set of keys and how to validate them in attributes.
     #
-    # ``ruby
-    # {
-    #   :attribute_name => {
-    #     :required => true/false, # optional: is thes attribute required?
-    #     :default  => object,     # optional: default value if not required
-    #     :as       => conversion  # optional: selector to +send()+ to
-    #                              # convert the value (e.g. :to_s, :to_i, ..)
-    # }
-    # ```
+    # @example 'expected' attribute definition
+    #   {
+    #     :attribute_name => {
+    #       :required => true/false, # optional: is thes attribute required?
+    #       :default  => object,     # optional: default value if not required
+    #       :as       => conversion  # optional: selector to +send()+ to
+    #                                # convert the value (e.g. :to_s, :to_i, ..)
+    #     }
+    #   }
     #
-    # If +attributes+ is missing an attribute which has its `:required` key set
+    # If +attributes+ is missing an attribute which has its +:required+ key set
     # the validation will fail. Otherwise the attribute will be either ignored
-    # or - if `:default` was set - be replaced with a default value.
+    # or - if +:default+ was set - be replaced with a default value.
     #
-    # If the additional `:as` key is present the specified selector will be
+    # If the additional +:as+ key is present the specified selector will be
     # +send()+ to the value and the result used. This is handy for in-place
-    # string / integer / symbol conversion using :to_s, :to_i and so forth.
+    # string / integer / symbol conversion using +:to_s+, +:to_i+ and so forth.
     #
-    # If validation fails the object property +validation_errors+ will be set.
+    # If validation fails the object property {#validation_errors} will be set.
     # If an optional block is passed it will be called with the validated attributes
     # as single argument.
     #
     # @param [Hash] attributes A +Hash+ of attributes to be validated.
     # @param [Hash] expected A hash with validation instructions.
     #   If a +Symbol+ is passed instead of a +Hash+ and a matching scope was
-    #   registered using +#validation_scope+ then this scope will be used.
+    #   registered using {ClassMixin#validation_scope validation_scope}
+    #   then this scope will be used.
     # @return [Hash] A new hash with validated, augmented attributes or +nil+
     def validate_attributes( attributes, expected )
       @validation_errors ||= []

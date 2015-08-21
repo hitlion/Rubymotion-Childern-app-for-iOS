@@ -5,15 +5,14 @@ module Story
 
       # Define the valid events for this class.
       # Using the method DSL-Style will create a class property
-      # also called +events+ which will contain a +Symbol+ for each
+      # also called {#events} which will contain a +Symbol+ for each
       # valid event.
       #
-      # ```ruby
-      # class Foo
-      #   include Story::SlotsMixin
-      #   events :on_click, :on_swipe
-      # end
-      # ```
+      # @example
+      #   class Foo
+      #     include Story::SlotsMixin
+      #     events :on_click, :on_swipe
+      #   end
       def has_events( *args )
         self.events ||= []
         self.events += args.map { |event| event.to_sym }
@@ -24,12 +23,11 @@ module Story
 
     # Parse a dictionary of event => slot-name mappings
     # and - if the class supports an event - record the
-    # mapping in the instance property +events+.
+    # mapping in the instance property {#events}.
     #
-    # Expected syntax for +event_def+:
-    # ```ruby
-    # { :event_a => 'slot name', :event_b => 'slot name', ... }
-    # ```
+    # @example Expected syntax for +event_def+
+    #  { :event_a => 'slot name', :event_b => 'slot name', ... }
+    #
     #
     # @param [Hash<Symbol, String>] event_def A mapping of event
     #   names and assigned slots.
@@ -47,18 +45,16 @@ module Story
     end
 
     # Parse a list of slot definitions.
-    # Each slot definition has the following form:
-    # ```ruby
-    # {
-    #   :name => 'slot name',
-    #   :action => 'multi-line javascript code',
-    #   :variables => [
-    #     { :name => 'variable name', :content => 'object reference' }
-    #   ]
-    # }
-    # ```
+    # @example Expected syntax for a slot definition
+    #   {
+    #     :name => 'slot name',
+    #     :action => 'multi-line javascript code',
+    #     :variables => [
+    #       { :name => 'variable name', :content => 'object reference' }
+    #     ]
+    #   }
     #
-    # For each slot a +Story::Slot+ instance will be created and populated.
+    # For each slot a {Story::Slot} instance will be created and populated.
     #
     # @param [Array<Hash>] slot_def A list of slot definitions.
     def parse_slots( slot_def )

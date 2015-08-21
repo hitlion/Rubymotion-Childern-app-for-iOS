@@ -1,6 +1,9 @@
 # HockeyKit ad-hoc distribution helper
 module HockeyKitIntegration
+  # Setup HockeyKit integration.
   def setupHockeyKit
+    return if device.simulator?
+
     mp 'Initalizing HockeyKit'
     # generic setup
     BWHockeyManager.sharedHockeyManager.updateURL = 'https://hockey.bitspin-productions.net'
@@ -12,11 +15,13 @@ module HockeyKitIntegration
 
 ## HockeyKit delegate methods (all optional)
 
+  # @private
   # callback when HockeyKit starts checking for updates
   def connectionOpened
     rmq.animations.start_spinner
   end
 
+  # @private
   # callback when HockeyKit finishes checking for updates
   def connectionClosed
     rmq.animations.stop_spinner

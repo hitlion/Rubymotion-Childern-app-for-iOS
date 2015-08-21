@@ -26,7 +26,7 @@ module Story
 
     # Check if this screen is valid.
     # A freshly created screen is always invalid and can only become
-    # valid once it's +load+ method was successfully called.
+    # valid once it's {#load} method was successfully called.
     def valid?
       @valid
     end
@@ -40,16 +40,11 @@ module Story
     #   for this objects properties.
     # @return [Boolean] true if the object was initialized successfully.
     #   false if the attributes where invalid or the object was already
-    #   initialized by calling +load+ before.
+    #   initialized by calling {#load} before.
     def load( description )
       return false if valid?
 
       validate_attributes(description, :screen) do |desc|
-#       {:screen_id     => { :required => true, :as => :to_i },
-#        :name          => { :required => true, :as => :to_s },
-#        :objects       => { :default  => [] },
-#        :screen_event  => { :default  => {} },
-#        :screen_slot   => { :default  => [] } }) do |desc|
 
         @id      = desc[:screen_id]
         @name    = desc[:name]

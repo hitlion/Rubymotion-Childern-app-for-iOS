@@ -1,6 +1,6 @@
 module Story
   # A wrapper around the documents levels.
-  # Access to all screens in a level as avilable using the +screens+ property.
+  # Access to all screens in a level as avilable using the {#screens} property.
   class Level
     #
     # TODO: track changes to the screens array
@@ -21,7 +21,7 @@ module Story
 
     # Check if this level is valid.
     # A freshly created level is always invalid and can only become
-    # valid once it's +load+ method was successfully called.
+    # valid once it's {#load} method was successfully called.
     def valid?
       @valid
     end
@@ -35,13 +35,11 @@ module Story
     #   for this levels properties.
     # @return [Boolean] true if the level was initialized successfully.
     #   false if the attributes where invalid or the level was already
-    #   initialized by calling +load+ before.
+    #   initialized by calling {#load} before.
     def load( description )
       return false if valid?
 
       validate_attributes(description, :level) do |desc|
-#       {:level_id => { :required => true, :as => :to_i },
-#        :screens  => { :default  => [] }}) do |desc|
 
         @id      = desc[:level_id]
         @screens = []

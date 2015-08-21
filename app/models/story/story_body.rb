@@ -1,7 +1,7 @@
 module Story
   # A wrapper around the documents body.
   # This class consists only of the body event / slot definitions
-  # and the levels which may be accessed using the +levels+ property.
+  # and the levels which may be accessed using the {#levels} property.
   class Body
     include Story::SlotsMixin
     include Story::AttributeValidationMixin
@@ -20,7 +20,7 @@ module Story
 
     # Check if this body is valid.
     # A freshly created body is always invalid and can only become
-    # valid once it's +load+ method was successfully called.
+    # valid once it's {#load} method was successfully called.
     def valid?
       @valid
     end
@@ -34,15 +34,11 @@ module Story
     #   for this body properties.
     # @return [Boolean] true if the body was initialized successfully.
     #   false if the attributes where invalid or the body was already
-    #   initialized by calling +load+ before.
+    #   initialized by calling {#load} before.
     def load( description )
       return false if valid?
 
       validate_attributes(description, :body) do |desc|
-#        {:levels     => { :default => [] },
-#        :body_event => { :default => {} }, 
-#        :body_slot  => { :default => [] }}) do |desc|
-
         @levels = []
 
         parse_events(desc[:body_event])

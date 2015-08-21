@@ -28,10 +28,9 @@ module Story
     #   for this objects properties.
     # @return [Boolean] true if the object was initialized successfully.
     #   false if the attributes where invalid or the object was already
-    #   initialized by calling +load+ before.
+    #   initialized by calling {#load} before.
     def load( description )
       return false if valid?
-
 
       validate_attributes(description, :slot) do |desc|
         @name      = desc[:name]

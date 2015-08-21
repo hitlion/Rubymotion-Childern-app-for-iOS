@@ -13,7 +13,7 @@ class Hash
     end
   end
 
-  # See +Hash#symbolicate
+  # See Hash#symbolicate
   def symbolicate
     Hash.symbolicate(self)
   end

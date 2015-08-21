@@ -1,5 +1,5 @@
 # Declare +names+ to be private module functions.
-# @param [Array] *names A list of names that should be converted to
+# @param [Array] names A list of names that should be converted to
 #   private module functions.
 # @todo Not sure I like how this polutes the global scope..
 def private_module_function( *names )

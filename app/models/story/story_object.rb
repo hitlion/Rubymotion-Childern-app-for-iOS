@@ -2,7 +2,7 @@ module Story
   # A wrapper around a single object inside a screen.
   # All vital properties can be accessed via attributes.
   # Changes to the writeable attributes are traced and can be
-  # monitored using the +changes+ attribute.
+  # monitored using the {#changes} attribute.
   class Object
     include Story::SlotsMixin
     include Story::AttributeValidationMixin
@@ -30,7 +30,7 @@ module Story
 
     # Check if this object is valid.
     # A freshly created object is always invalid an can only become
-    # valid once it's +load+ method was successfully called.
+    # valid once it's {#load} method was successfully called.
     def valid?
       @valid
     end
@@ -44,19 +44,11 @@ module Story
     #   for this objects properties.
     # @return [Boolean] true if the object was initialized successfully.
     #   false if the attributes where invalid or the object was already
-    #   initialized by calling +load+ before.
+    #   initialized by calling {#load} before.
     def load( description )
       return false if valid?
 
       validate_attributes(description, :object) do |desc|
-#       {:object_id        => { :required => true, :as => :to_i   },
-#        :object_name      => { :required => true, :as => :to_s   },
-#        :object_type      => { :required => true, :as => :to_sym },
-#        :processable      => { :required => true, :as => :to_sym },
-#        :object_content   => { :required => true, :as => :to_s   },
-#        :object_attribute => { :required => true, },
-#        :object_event     => { :default  => {}    },
-#        :object_slot      => { :default  => []    } }) do |desc|
 
         @id           = desc[:object_id]
         @name         = desc[:object_name]
@@ -68,17 +60,9 @@ module Story
         # now that @id is available update our @path
         @path.gsub!(/:object\[[^\]]*\]$/, ":object[#{@id}]")
 
-        # `object_attribute` is a +Hash+ in it's own and deserves
+        # +object_attribute+ is a +Hash+ in it's own and deserves
         # it's own nested validation (also it has optionals..).
         validate_attributes(desc[:object_attribute], :object_attribute) do |attribs|
-#         {:position_x   => { :required => true  , :as => :to_f },
-#          :position_y   => { :required => true  , :as => :to_f },
-#          :size_x       => { :required => true  , :as => :to_f },
-#          :size_y       => { :required => true  , :as => :to_f },
-#          :layer        => { :required => true  , :as => :to_f },
-#          :transparency => { :required => true  , :as => :to_f },
-#          :resize       => { :default  => :scale, :as => :to_sym },
-#          :moveable     => { :default  => false } }) do |attribs|
 
           @position     = CGPoint.new(attribs[:position_x], attribs[:position_y])
           @size         = CGSize.new(attribs[:size_x], attribs[:size_y])
@@ -99,7 +83,7 @@ module Story
     ## mark: Change tracking
 
     # @private
-    # Track modifications to the objects :content property
+    # Track modifications to the objects {#content} property
     def content=( new_content )
       @changes[:object_content] ||= { :value => nil, :original => @content }
       @changes[:object_content][:value] = new_content
@@ -107,7 +91,7 @@ module Story
     end
 
     # @private
-    # Track modifications to the objects :position property
+    # Track modifications to the objects {#position} property
     def position=( new_position )
       @changes[:position_x] ||= { :value => nil, :original => @position.x }
       @changes[:position_y] ||= { :value => nil, :original => @position.y }
@@ -117,7 +101,7 @@ module Story
     end
 
     # @private
-    # Track modifications to the objects :size property
+    # Track modifications to the objects {#size} property
     def size=( new_size )
       @changes[:size_x] ||= { :value => nil, :original => @size.width }
       @changes[:size_y] ||= { :value => nil, :original => @size.height }
@@ -127,7 +111,7 @@ module Story
     end
 
     # @private
-    # Track modifications to the objects :layer property
+    # Track modifications to the objects {#layer} property
     def layer=( new_layer )
       @changes[:layer] ||= { :value => nil, :original => @layer }
       @changes[:layer][:value] = new_layer
@@ -135,7 +119,7 @@ module Story
     end
 
     # @private
-    # Track modifications to the objects :transparency property
+    # Track modifications to the objects {#transparency} property
     def transparency=( new_transparency )
       @changes[:transparency] ||= { :value => nil, :original => @transparency }
       @changes[:transparency][:value] = new_transparency

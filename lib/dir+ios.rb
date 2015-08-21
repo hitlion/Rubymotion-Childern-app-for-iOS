@@ -43,7 +43,7 @@ class Dir
       url.fileSystemRepresentation
     end
 
-    # Like Dir#mkdir but also create all intermediate paths.
+    # Like {Dir#mkdir} but also create all intermediate paths.
     # This method will not fail if the path exists.
     #
     # @param [String] path The path to be created.

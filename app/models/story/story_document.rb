@@ -1,7 +1,7 @@
 module Story
   # A thin wrapper around a documents root structure.
   # This class encapsulates all the metadata as well as header information.
-  # The document body can be accessessed using the +body+ property.
+  # The document body can be accessessed using the {#body} property.
   class Document
     include Story::AttributeValidationMixin
 
@@ -27,7 +27,7 @@ module Story
 
     # Check if this document is valid.
     # A freshly created document is always invalid an can only become
-    # valid once it's +load+ method was successfully called.
+    # valid once it's {#load} method was successfully called.
     def valid?
       @valid
     end
@@ -46,14 +46,7 @@ module Story
       return false if valid?
 
       validate_attributes(description, :document) do |desc|
-#       {:head => { :required => true },
-#        :meta => { :required => true },
-#        :body => { :required => true } }) do |desc|
-
         validate_attributes(desc[:head], :head) do |head|
-#         {:data_language         => { :required => true, :as => :to_s },
-#          :data_language_version => { :required => true, :as => :to_s },
-#          :template_id           => { :required => true, :as => :to_s } }) do |head|
 
           @data_language         = head[:data_language]
           @data_language_version = head[:data_language_version]
@@ -72,17 +65,6 @@ module Story
         break unless validation_errors.empty?
 
         validate_attributes(desc[:meta], :meta) do |meta|
- #        {:dokument_id         => { :required => true, :as => :to_i },
- #         :dataset_id          => { :required => true, :as => :to_i },
- #         :branch_name         => { :required => true, :as => :to_s },
- #         :branch_creator_id   => { :required => true, :as => :to_i },
- #         :creator_impressum   => { :default  => '~' , :as => :to_s },
- #         :editor_id           => { :default  => nil },
- #         :set_name            => { :required => false, :as => :to_s },
- #         :thumbnail           => { :required => true, :as => :to_s },
- #         :status              => { :required => true, :as => :to_sym },
- #         :modified_conveyable => { :required => true },
- #         :timestamp           => { :required => true, :as => :to_s } }) do |meta|
 
           @document_id         = meta[:dokument_id]
           @dataset_id          = meta[:dataset_id]
