@@ -1,3 +1,4 @@
+# +Hash+ extension to support key->+Symbol+ conversion.
 class Hash
   # Return a new hash with all keys replaced by +Symbol+s.
   # This operation is performed recursively on all elements in the +Hash+

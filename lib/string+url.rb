@@ -1,3 +1,4 @@
+# NSURL related extensions to +String+
 class String
   # Return a new +NSURL+ containing the receiver # converted to a file URL.
   # @return [NSURL] The file URL matching the receiver

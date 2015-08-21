@@ -1,3 +1,5 @@
+# The Story module contains all classes dealing with parsing, validation
+# and internal representation of story definitions (control.yml / control.json)
 module Story
   # A thin wrapper around a documents root structure.
   # This class encapsulates all the metadata as well as header information.
