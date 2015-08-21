@@ -43,7 +43,7 @@ Motion::Project::App.setup do |app|
     app.codesign_certificate = ENV['RM_PUB_CERTIFICATE']
 
     app.entitlements['get-task-allow'] = false
-    app.entitlements['beta-reports-active'] = true
+    #app.entitlements['beta-reports-active'] = true
 
     # Filter out development helpers
     app.files.select! { |x| true unless DEVELOPMENT_ONLY.include? x }
@@ -63,7 +63,7 @@ Motion::Project::App.setup do |app|
   if ENV['staging'] == 'true' or app.development?
 
     app.entitlements['get-task-allow'] = true
-    app.entitlements['beta-reports-active'] = true
+    #app.entitlements['beta-reports-active'] = true
 
     if ENV['staging'] == 'true'
       Motion::Project::App.info('Setup', 'Configuring ad-hoc development build')
@@ -174,14 +174,27 @@ end
 task :fabric_send do
   app = Motion::Project::App
 
-  ENV['BUILT_PRODUCTS_DIR'] =  app.config.versionized_build_dir(app.config.deploy_platform)
-  ENV['INFOPLIST_PATH'] = File.join(app.config.bundle_filename, 'Info.plist')
+  ENV['BUILT_PRODUCTS_DIR'] =  File.absolute_path(app.config.versionized_build_dir(app.config.deploy_platform))
+  ENV['CODE_SIGN_IDENTITY'] = 'iPhone Developer'
+  ENV['CONFIGURATION'] = app.config.development? ? 'Debug' : 'Release'
   ENV['DWARF_DSYM_FILE_NAME'] = File.basename(app.config.app_bundle_dsym(app.config.deploy_platform))
-  ENV['DWARF_DSYM_FOLDER_PATH'] = app.config.versionized_build_dir(app.config.deploy_platform)
-  ENV['SRCROOT'] = File.dirname(__FILE__)
+  ENV['DWARF_DSYM_FOLDER_PATH'] = File.absolute_path(app.config.versionized_build_dir(app.config.deploy_platform))
+  ENV['EXECUTABLE_PATH'] = File.join(app.config.bundle_filename, app.config.name)
+  ENV['FRAMEWORK_SEARCH_PATHS'] = "#{ENV['BUILT_PRODUCTS_DIR']} #{File.absolute_path(File.dirname(__FILE__))}"
+  ENV['IPHONEOS_DEPLOYMENT_TARGET'] = app.config.deployment_target
+  ENV['INFOPLIST_PATH'] = File.join(app.config.bundle_filename, 'Info.plist')
+  ENV['PLATFORM_NAME'] = app.config.deploy_platform.downcase
+  ENV['PRODUCT_NAME'] = app.config.name
+  ENV['SDKROOT'] = `xcrun --sdk #{app.config.deploy_platform.downcase} --show-sdk-path 2>/dev/null`.strip
+  ENV['SRCROOT'] = File.absolute_path(File.dirname(__FILE__))
+  ENV['TARGETED_DEVICE_FAMILY'] = app.config.device_family.map { |t| { :iphone => '1', :ipad => '2' }[t] || '' }.join(',')
+  ENV['WRAPPER_NAME'] = app.config.bundle_filename
+  ENV['XCODE_VERSION_ACTUAL'] = `/usr/libexec/PlistBuddy #{app.config.xcode_dir}/../Info.plist -c 'print:DTXcode'`.strip
+  ENV['PROJECT_FILE_PATH'] = File.absolute_path(File.join(File.dirname(__FILE__), 'vendor', 'Pods', 'Pods.xcodeproj'))
 
   fabric_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Fabric', 'Fabric.framework', 'run')
   crashlytics_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'Crashlytics.framework', 'submit')
+
   fabric_api = ENV['RM_FABRIC_API']
   fabric_key = ENV['RM_FABRIC_KEY']
 
