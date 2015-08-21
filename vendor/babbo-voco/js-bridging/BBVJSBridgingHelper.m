@@ -12,6 +12,7 @@
   (void)@protocol(BBVJSBridgedObjectAudio);
   (void)@protocol(BBVJSBridgedObjectPicture);
   (void)@protocol(BBVJSBridgedObjectScreen);
+  (void)@protocol(BBVJSBridgedFuture);
   (void)@protocol(BBVJSBridgedGlobal);
 
   Protocol *p = objc_getProtocol( [protocolName cStringUsingEncoding:NSUTF8StringEncoding] );

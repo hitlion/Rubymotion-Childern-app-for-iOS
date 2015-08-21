@@ -45,12 +45,18 @@
 @end
 
 @protocol BBVJSBridgedObjectPicture <JSExport>
--( NSString* )name;
 @end
 
 @protocol BBVJSBridgedObjectScreen <JSExport>
+@property(readonly) double screen_id;
+
 -( void )exit_to:( NSString* )path;
 -( void )exit_story;
+@end
+
+@protocol BBVJSBridgedFuture <JSExport>
+@property(readonly) NSString * path;
+@property(readonly) NSString * name;
 @end
 
 @interface BBVJSBridgingHelper : NSObject
