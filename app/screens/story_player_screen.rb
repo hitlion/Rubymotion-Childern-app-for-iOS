@@ -24,6 +24,8 @@ class StoryPlayerScreen < PM::Screen
   def on_dismiss
     rmq(@player).remove
 
+    @scene.removeAllChildren unless @scene.nil?
+
     @story_bundle = nil
     @player = nil
     @scene  = nil
@@ -34,6 +36,8 @@ class StoryPlayerScreen < PM::Screen
   def show_scene( target )
     transition_image = create_transition_image
     rmq(@player).remove
+
+    @scene.removeAllChildren unless @scene.nil?
 
     @player = nil
     @scene  = nil
