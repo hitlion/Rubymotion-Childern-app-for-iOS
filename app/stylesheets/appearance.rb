@@ -10,6 +10,7 @@ class StandardAppearance
       end
 
       UINavigationBar.appearance.tap do |o|
+        o.tintColor = rmq.color.white
         o.barTintColor = rmq.color.babbo_orange
         o.setTitleTextAttributes({
           UITextAttributeTextColor => rmq.color.white

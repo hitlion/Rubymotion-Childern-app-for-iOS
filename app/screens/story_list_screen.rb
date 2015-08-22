@@ -89,13 +89,27 @@ class StoryListScreen < PM::TableScreen
   #   the table cell.
   # @return [Hash] A +Hash+ formated for use in ProMotions #table_data.
   def cell_data_for_invalid_bundle(bundle)
+    detail_button = UIButton.buttonWithType(UIButtonTypeDetailDisclosure)
+    detail_button.setImage(image.resource('exclamation'), forState: UIControlStateNormal)
+    detail_button.setImage(image.resource('exclamation'), forState: UIControlStateHighlighted)
+    detail_button.setTintColor(rmq.color.red)
+
+    detail_button.on(:tap) do
+      open LoadErrorsScreen.new(nav_bar: true,
+                                nav_controller: AutoRotatingNavigationController,
+                                title: File.basename(bundle.path),
+                                load_errors: bundle.load_errors)
+    end
+
     {
       title: File.basename(bundle.path),
       image: { image: 'placeholder/file_information' },
       style: { text_color: rmq.color.red },
 
       editing_style: :delete,
-      accessory_type: :disclosure_indicator
+      accessory: { view: detail_button },
+
+      action: :show_error_alert
     }
   end
 
@@ -109,6 +123,11 @@ class StoryListScreen < PM::TableScreen
     open_modal StoryPlayerScreen.new(nav_bar: false,
                                      nav_controller: AutoRotatingNavigationController,
                                      story_bundle: args[:bundle])
+  end
+
+  def show_error_alert
+    app.alert(title: 'Entschuldigung',
+              message: 'Diese Story enthält Fehler und kann nicht angezeigt werden.')
   end
 end
 
