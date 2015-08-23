@@ -235,7 +235,7 @@ module JavaScript
         JavaScript::AudioProxy.new(scene_object)
       elsif scene_object.is_a? Scene::VideoNode
         JavaScript::VideoProxy.new(scene_object)
-      elsif scene_object.is_a? SKScene
+      elsif scene_object.is_a? Scene::RootNode
         JavaScript::ScreenProxy.new(scene_object)
       elsif scene_object.is_a? Story::Body # not a scene object per se..
         JavaScript::FutureProxy.new(scene_object.path)

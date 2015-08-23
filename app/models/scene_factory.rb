@@ -39,7 +39,7 @@ module SceneFactory
   # @return [SKScene] A populated SpriteKit scene or +nil+ if an
   #   error occurs during conversion.
   def convert_screen( bundle, story_screen )
-    scene = SKScene.sceneWithSize([device.scaled_width, device.scaled_height])
+    scene = Scene::RootNode.new(bundle, story_screen)
     scene.name = story_screen.path
 
     story_screen.objects.each do |story_object|
