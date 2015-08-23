@@ -25,7 +25,6 @@
 -( void )concurrent:( NSDictionary* )args;
 -( void )layer:( NSDictionary* )args;
 -( BOOL )emit:( NSString* )slot;
-
 @end
 
 @protocol BBVJSBridgedObjectVideo <JSExport>
@@ -57,6 +56,8 @@
 @protocol BBVJSBridgedFuture <JSExport>
 @property(readonly) NSString * path;
 @property(readonly) NSString * name;
+
+-( BOOL )emit:( NSString* )slot;
 @end
 
 @interface BBVJSBridgingHelper : NSObject
