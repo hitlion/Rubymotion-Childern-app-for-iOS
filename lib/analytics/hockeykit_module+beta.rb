@@ -2,7 +2,7 @@
 module HockeyKitIntegration
   # Setup HockeyKit integration.
   def setupHockeyKit
-    return if device.simulator?
+    return if device.is_simulator?
 
     mp 'Initalizing HockeyKit'
     # generic setup
