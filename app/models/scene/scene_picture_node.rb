@@ -12,7 +12,7 @@ module Scene
 
         if image.nil?
           image = rmq.image.resource('placeholder/file_warning')
-          mp "Missing picture for node '#{story_object.path}'",
+          lp "Missing picture for node '#{story_object.path}'",
              force_color: :yellow
         end
 

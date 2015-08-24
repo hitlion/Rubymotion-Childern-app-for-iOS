@@ -62,7 +62,7 @@ module Scene
     # @return [AVAsset] The initialized asset instance.
     def load_video_asset( asset_url )
       unless File.exists? asset_url.fileSystemRepresentation
-        mp "Video asset '#{asset_url.fileSystemRepresentation}' is missing.",
+        lp "Video asset '#{asset_url.fileSystemRepresentation}' is missing.",
            force_color: :cyan
 
         asset_url = Dir.resource('placeholder/file_warning.m4v').to_file_url
@@ -81,7 +81,7 @@ module Scene
       track_info = asset.tracksWithMediaType(media_type).first
 
       if track_info.nil?
-        mp 'Video asset contains no video tracks!', force_color: :red
+        lp 'Video asset contains no video tracks!', force_color: :red
         CGSize.new(1.0, 1.0)
       else
         track_info.naturalSize

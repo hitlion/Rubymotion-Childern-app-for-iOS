@@ -4,7 +4,7 @@ module CrashlyticsIntegration
   def setupCrashlytics
     return if device.is_simulator?
 
-    mp 'Initializing Crashlytics'
+    lp 'Initializing Crashlytics'
     Fabric.with([ Crashlytics.sharedInstance ])
   end
 end

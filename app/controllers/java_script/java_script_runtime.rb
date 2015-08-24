@@ -78,12 +78,12 @@ module JavaScript
 
       receiver = @story_bundle.object_for_path(target)
       if receiver.nil?
-        mp "send_event: no receiver named '#{target}' available."
+        lp "send_event: no receiver named '#{target}' available."
         return false
       end
 
       if receiver.events[name].nil?
-        mp "send_event: receiver '#{target}' does not respond to '#{name}'.",
+        lp "send_event: receiver '#{target}' does not respond to '#{name}'.",
            force_color: :cyan
         return false
       end
@@ -92,7 +92,7 @@ module JavaScript
       slot      = receiver.slots[slot_name]
 
       if slot.nil?
-        mp "send_event: receiver '#{target}' has no slot named '#{slot_name}'.",
+        lp "send_event: receiver '#{target}' has no slot named '#{slot_name}'.",
            force_color: :cyan
         return false
       end
@@ -102,7 +102,7 @@ module JavaScript
 
       script_action  = slot.action
       if script_action.nil? || script_action.empty?
-        mp "send_event: receiver '#{target}' has not action for slot '#{slot_name}'.",
+        lp "send_event: receiver '#{target}' has not action for slot '#{slot_name}'.",
            force_color: :cyan
         return false
       end
@@ -132,12 +132,12 @@ module JavaScript
 
       receiver = @story_bundle.object_for_path(target)
       if receiver.nil?
-        mp "send_event: no receiver named '#{target}' available."
+        lp "send_event: no receiver named '#{target}' available."
         return false
       end
 
       if receiver.slots[name].nil?
-        mp "send_event: receiver '#{target}' has no slot named '#{name}'.",
+        lp "send_event: receiver '#{target}' has no slot named '#{name}'.",
            force_color: :cyan
         return false
       end
@@ -149,7 +149,7 @@ module JavaScript
 
       script_action  = slot.action
       if script_action.nil? || script_action.empty?
-        mp "send_event: receiver '#{target}' has not action for slot '#{name}'.",
+        lp "send_event: receiver '#{target}' has not action for slot '#{name}'.",
            force_color: :cyan
         return false
       end
@@ -184,7 +184,7 @@ module JavaScript
           end
 
           script_context.setExceptionHandler(lambda do |context, value|
-            mp "[JavaScriptException]: #{value.toString}", force_color: :red
+            lp "[JavaScriptException]: #{value.toString}", force_color: :red, log_js: true
           end)
           script_context.evaluateScript(action)
           @script_state = script_context['$$']
@@ -205,7 +205,7 @@ module JavaScript
     # @return [SKNode] The matching scene node or +nil+ if no such node exists.
     def scene_object_for_path( path )
       if @scene_root.nil?
-        mp "Unable to fetch '#{path}' while @scene_root is still nil.",
+        lp "Unable to fetch '#{path}' while @scene_root is still nil.",
            force_color: red
         return nil
       end
@@ -265,7 +265,7 @@ module JavaScript
         end
 
         if content_object.nil?
-          mp "send_event: Unable to resolve object '#{content_path}'",
+          lp "send_event: Unable to resolve object '#{content_path}'",
              force_color: :red
           return nil
         end
@@ -294,14 +294,14 @@ module JavaScript
       variables.each_pair do |export_name, scene_object|
         proxy = proxy_for_object(scene_object)
         if proxy.nil?
-          mp "send_event: Skipping proxy creation for '#{scene_object}'",
+          lp "send_event: Skipping proxy creation for '#{scene_object}'",
              force_color: :cyan
           complete = false
           next
         end
 
         export_var = export_name.gsub(/[^a-zA-Z0-9_]+/, '_')
-        mp "Exporting #{scene_object} as $#{export_var}",
+        lp "Exporting #{scene_object} as $#{export_var}",
            force_color: :green
         context["$#{export_var}"] = proxy
       end

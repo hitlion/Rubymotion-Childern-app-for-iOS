@@ -47,7 +47,7 @@ class StoryPlayerScreen < PM::Screen
 
     if @scene.nil?
       # FIXME
-      mp "bailouto"
+      lp "bailouto"
       return
     end
     @scene.addChild(transition_image)

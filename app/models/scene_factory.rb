@@ -17,12 +17,12 @@ module SceneFactory
     story_screen = bundle.object_for_path(path)
 
     if story_screen.nil?
-      mp "No screen available at path '#{path}'!"
+      lp "No screen available at path '#{path}'!"
       return nil
     end
 
     unless story_screen.is_a? Story::Screen
-      mp "'#{path}' is not a Story::Screen!"
+      lp "'#{path}' is not a Story::Screen!"
       return nil
     end
     convert_screen(bundle, story_screen)
@@ -45,7 +45,7 @@ module SceneFactory
     story_screen.objects.each do |story_object|
       object = convert_object(bundle, story_object)
       if object.nil?
-        mp "Scene conversion failed for '#{story_screen.path}'.",
+        lp "Scene conversion failed for '#{story_screen.path}'.",
            force_color: :red
 
         return nil
@@ -66,7 +66,7 @@ module SceneFactory
   # @return [SKNode] A specialized +SKNode+ subclass matching +story_object+
   #   or +nil+ if no conversion is available for this object type.
   def convert_object( bundle, story_object )
-    mp "Converting #{story_object.type} at #{story_object.path}"
+    lp "Converting #{story_object.type} at #{story_object.path}"
     case story_object.type
     when :picture
       Scene::PictureNode.new(bundle, story_object)
@@ -75,9 +75,9 @@ module SceneFactory
     when :video
       Scene::VideoNode.new(bundle, story_object)
     else
-      mp "Object conversion failed for '#{story_object.path}'",
+      lp "Object conversion failed for '#{story_object.path}'",
          force_color: :red
-      mp ".. unknown :type '#{story_object.type}",
+      lp ".. unknown :type '#{story_object.type}",
          force_color: :red
       return nil
     end

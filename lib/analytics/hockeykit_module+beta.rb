@@ -4,7 +4,7 @@ module HockeyKitIntegration
   def setupHockeyKit
     return if device.is_simulator?
 
-    mp 'Initalizing HockeyKit'
+    lp 'Initalizing HockeyKit'
     # generic setup
     BWHockeyManager.sharedHockeyManager.updateURL = 'https://hockey.bitspin-productions.net'
     BWHockeyManager.sharedHockeyManager.delegate = self

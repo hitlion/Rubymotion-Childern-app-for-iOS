@@ -39,7 +39,7 @@ module Story
         else
           @validation_errors ||= []
           @validation_errors << "Undefined event '#{name}'."
-          mp "warning: undefined event '#{name}'", force_color: :purple
+          lp "warning: undefined event '#{name}'", force_color: :purple
         end
       end
     end

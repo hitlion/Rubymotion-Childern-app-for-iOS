@@ -121,7 +121,7 @@ class StoryBundle
       return
     end
 
-    mp "Read control data from: '#{control_path}'"
+    lp "Read control data from: '#{control_path}'"
     if control_data.nil?
       @load_errors << "Errors occured while trying to read '#{control_path}'."
       return
@@ -135,7 +135,7 @@ class StoryBundle
       document = nil
     end
 
-    mp "#{File.basename(control_path)} contains a valid document."
+    lp "#{File.basename(control_path)} contains a valid document."
     @document = document
   end
 
@@ -143,7 +143,7 @@ class StoryBundle
   # if everything is available add them to the +AssetStore+
   def collect_and_cache_assets
     # Assets are only contained in objects
-    mp 'Collecting assets..'
+    lp 'Collecting assets..'
     asset_list = []
     @document.body.levels.each do |level|
       level.screens.each do |screen|
@@ -167,14 +167,14 @@ class StoryBundle
     if @load_errors.empty?
       asset_store = AssetStore.new
       asset_list.each do |asset|
-        mp "Caching '#{asset}'..", force_color: :yellow if app.development?
+        lp "Caching '#{asset}'..", force_color: :yellow if app.development?
 
         unless asset_store.cache_resource(asset)
           @load_errors << "Failed to cache asset '#{asset}'"
         end
       end
       asset_store.compact!
-      mp "Cached #{asset_list.count} assets."
+      lp "Cached #{asset_list.count} assets."
     end
   end
 end

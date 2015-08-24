@@ -14,7 +14,7 @@ module Scene
         audio = bundle.asset_data(story_object.content)
         if audio.nil?
           image = rmq.image.resource('placeholder/file_warning')
-          mp "Missing audio for node '#{story_object.path}'",
+          lp "Missing audio for node '#{story_object.path}'",
              force_color: :cyan
           @av_player = nil
         else
@@ -23,7 +23,7 @@ module Scene
           @av_player = AVAudioPlayer.alloc.initWithContentsOfURL(audio_url, error: error)
 
           if @av_player.nil?
-            mp "Error loading audio for node '#{story_object.path}': #{error[0].localizedDescription}",
+            lp "Error loading audio for node '#{story_object.path}': #{error[0].localizedDescription}",
                force_color: :cyan
           end
         end

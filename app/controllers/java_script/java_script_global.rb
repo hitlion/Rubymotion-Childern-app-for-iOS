@@ -9,7 +9,7 @@ module JavaScript
     #
     # @param [String] message The message to be logged.
     def log( message )
-      mp "JavaScript: #{message}", force_color: :purple
+      lp "JavaScript: #{message}", force_color: :purple, log_js: true
     end
 
     # Sleep the current thread for a specific number of milliseconds.

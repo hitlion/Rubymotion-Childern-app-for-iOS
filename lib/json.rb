@@ -22,7 +22,7 @@ class JSON
         return obj
       end
 
-      mp "JSON.load: #{error[0].localizedDescription}", force_color: :red
+      lp "JSON.load: #{error[0].localizedDescription}", force_color: :red
       nil
     end
 
@@ -40,7 +40,7 @@ class JSON
         return NSString.alloc.initWithData(data, encoding: NSUTF8StringEncoding)
       end
 
-      mp "JSON.dump: #{error[0].localizedDescription}", force_color: :red
+      lp "JSON.dump: #{error[0].localizedDescription}", force_color: :red
       nil
     end
   end
