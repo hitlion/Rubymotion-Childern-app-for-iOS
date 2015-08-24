@@ -4,13 +4,14 @@ class StoryPlayerScreen < PM::Screen
 
   attr_accessor :story_bundle
 
-  def did_load
+  def on_load
     rmq(self.view).apply_style(:root)
+    rmq(self.view).append(StoryLoggerView).tag(:logger)
   end
 
   def will_appear
     @scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]')
-    @player = append(ScenePlayer, :scene_player).get
+    @player = rmq.unshift!(ScenePlayer, :scene_player)
     @player.presentScene(@scene)
 
     JavaScript::Runtime.prepare_for(@story_bundle, @scene)
@@ -51,7 +52,7 @@ class StoryPlayerScreen < PM::Screen
     end
     @scene.addChild(transition_image)
 
-    @player = rmq.append(ScenePlayer, :scene_player).get
+    @player = rmq.unshift!(ScenePlayer, :scene_player)
     @player.presentScene(@scene)
 
     JavaScript::Runtime.get.scene_root = @scene
