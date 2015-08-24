@@ -48,13 +48,13 @@ class Kernel
       return mp object, options
     else
       msg = MotionPrint.logger(object, options)
-      string = LoggerPrint.attributed_string_from_ansi(msg)
+      string = LoggerPrint.attributed_string_from_ansi(msg + "\n")
       NSNotificationCenter.defaultCenter.postNotificationName('LogMessageAvailable',
                                                               object: string,
                                                               userInfo: nil)
 
       if log_js
-        NSNotificationCenter.defaultCenter.postNotificationName('LogMessageAvailable',
+        NSNotificationCenter.defaultCenter.postNotificationName('ScriptMessageAvailable',
                                                                 object: string,
                                                                 userInfo: nil)
       end
