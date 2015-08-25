@@ -153,10 +153,10 @@ module JavaScript
 
         when :start, :stop, :pause, :restart
           if self.respond_to? k
-            actions << SKAction.runBlock(lambda do
-              NSThread.sleepForTimeInterval(duration || 1.0)
-              self.send(k)
-            end)
+            actions << SKAction.sequence([
+              SKAction.waitForDuration(vargs[:duration] || 1.0),
+              SKAction.runBlock(->(){ self.send(k) })
+            ])
           end
         end
       end
@@ -212,10 +212,10 @@ module JavaScript
     # @param [Double] duration The animation duration in seconds.
     # @return [SKAction] A matching +SKAction+.
     def do_layer( target_layer, duration )
-      SKAction.runBlock(lambda do
-        NSThread.sleepForTimeInterval(duration || 1.0)
-        node.zPosition = target_layer
-      end)
+      SKAction.sequence([
+        SKAction.waitForDuration(duration || 1.0),
+        SKAction.runBlock(->(){ node.zPosition = target_layer })
+      ])
     end
 
     # Perform a simultaneous move and resize of the target.
