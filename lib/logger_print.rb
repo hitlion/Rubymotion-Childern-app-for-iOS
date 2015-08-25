@@ -43,7 +43,7 @@ end
 
 class Kernel
   def lp(object={}, options={})
-    return unless device.is_simulator? || app.ad_hoc_release?
+    return unless device.is_simulator? || app.development? || app.ad_hoc_release?
 
     log_js = options.delete(:log_js) || false
     if device.is_simulator?
