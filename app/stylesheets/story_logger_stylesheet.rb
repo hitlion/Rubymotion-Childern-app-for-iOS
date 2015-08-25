@@ -32,7 +32,6 @@ class StoryLoggerStylesheet < ApplicationStylesheet
     st.font  = rmq.font.font_with_name('Menlo', 10)
     st.text  = '[scroll: true]'
     st.color = rmq.color.white
-    st.size_to_fit = true
     st.color_highlighted = rmq.color.red
     st.content_horizontal_alignment = UIControlContentHorizontalAlignmentCenter
   end
