@@ -27,6 +27,16 @@ class StoryLoggerStylesheet < ApplicationStylesheet
     st.content_horizontal_alignment = UIControlContentHorizontalAlignmentCenter
   end
 
+  def scroll_lock_button( st )
+    st.frame = {lop: 5, fb: 5, w: 100, h: 20}
+    st.font  = rmq.font.font_with_name('Menlo', 10)
+    st.text  = '[scroll: true]'
+    st.color = rmq.color.white
+    st.size_to_fit = true
+    st.color_highlighted = rmq.color.red
+    st.content_horizontal_alignment = UIControlContentHorizontalAlignmentCenter
+  end
+
   def log_messages_view( st )
     st.frame = {l: 5, fr: 5, t: 2, fb: 30}
     st.font  = rmq.font.font_with_name('Menlo', 10)

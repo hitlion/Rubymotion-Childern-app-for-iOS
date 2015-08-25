@@ -3,6 +3,7 @@ class StoryLoggerView < UIView
   def initWithFrame( frame )
     super.tap do
       @filter = :java_script
+      @scroll = true
       @hidden = true
 
       rmq(self).stylesheet = StoryLoggerStylesheet
@@ -26,6 +27,11 @@ class StoryLoggerView < UIView
 
       append(UIButton, :dismiss_button).on(:tap) do
         hide
+      end
+
+      append(UIButton, :scroll_lock_button).on(:tap) do
+        @scroll = !@scroll
+        rmq(:scroll_lock_button).data("[scroll: #{@scroll}]")
       end
 
       @all_messages = append(UITextView, :log_messages_view).get
@@ -92,14 +98,20 @@ class StoryLoggerView < UIView
   private
 
   def add_log_message( log_view, message )
-    text = log_view.attributedText.mutableCopy
+    Dispatch::Queue.main.async do
+      text = log_view.attributedText.mutableCopy
 
-    while text.length + message.length >= 2048
-          line_range = text.mutableString.lineRangeForRange(NSMakeRange(0, 1))
-          text.deleteCharactersInRange(line_range)
+      while text.length + message.length >= 2048
+            line_range = text.mutableString.lineRangeForRange(NSMakeRange(0, 1))
+            text.deleteCharactersInRange(line_range)
+      end
+      text.appendAttributedString(message)
+      log_view.attributedText = text
+
+      if @scroll && text.length > 0
+        log_view.scrollRangeToVisible(NSMakeRange(text.length - 1, text.length))
+      end
     end
-    text.appendAttributedString(message)
-    log_view.attributedText = text
   end
 end
 
