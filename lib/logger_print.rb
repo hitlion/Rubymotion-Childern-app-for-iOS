@@ -5,19 +5,19 @@ module LoggerPrint
     # basically reverse what MotionPrint does for colors
     # und split the string on color boundaries
     colors = [
-      rmq.color.gray, rmq.color.red, rmq.color.green, rmq.color.yellow,
-      rmq.color.blue, rmq.color.from_hex('#b98cae'), rmq.color.cyan,
-      rmq.color.white
+      rmq.color.term_gray, rmq.color.term_red, rmq.color.term_green,
+      rmq.color.term_yellow, rmq.color.term_blue, rmq.color.term_magenta,
+      rmq.color.term_cyan, rmq.color.term_white
     ]
 
     string.split(/\e\[[01]/).each do |part|
       if part.start_with? 'm'
-        parts << [rmq.color.white, part[1..-1]]
+        parts << [rmq.color.term_white, part[1..-1]]
       elsif part.start_with? ';'
         color_key = part[/^;3(\d)m/,1].to_i
         parts << [colors[color_key], part[4..-1]]
       else
-        parts << [rmq.color.white, part]
+        parts << [rmq.color.term_white, part]
       end
     end
 
@@ -31,7 +31,7 @@ module LoggerPrint
 
     parts.each do |part|
       attrs = { NSForegroundColorAttributeName => part[0],
-                NSFontAttributeName => rmq.font.with_name('Menlo-Bold', 10) }
+                NSFontAttributeName => rmq.font.with_name('Menlo', 10) }
       text  = NSAttributedString.alloc.initWithString(part[1],
                                                       attributes: attrs)
 
@@ -45,8 +45,10 @@ class Kernel
   def lp(object={}, options={})
     log_js = options.delete(:log_js) || false
     if device.is_simulator?
-      return mp object, options
-    else
+      mp object, options
+    end
+
+    if app.development?
       msg = MotionPrint.logger(object, options)
       string = LoggerPrint.attributed_string_from_ansi(msg + "\n")
       NSNotificationCenter.defaultCenter.postNotificationName('LogMessageAvailable',
