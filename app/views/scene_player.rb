@@ -10,16 +10,18 @@ class ScenePlayer < SKView
         end
       end
 
-      on(:swipe) do |_, event|
-        return if scene.nil?
+      %w(up down left right).each do |direction|
+        on("swipe_#{direction}".to_sym) do |_, event|
+          return if scene.nil?
 
-        object = object_at_location(event.location)
-        unless object.nil?
-          JavaScript::Runtime.send_event(object.name, :on_swipe)
+          object = object_at_location(event.location)
+          unless object.nil?
+            JavaScript::Runtime.send_event(object.name, :on_swipe)
+          end
         end
       end
 
-      on(:pan) { |_, _| rmq(:logger).map { |l| l.show } }
+      on(:pinch) { |_, _| rmq(:logger).map { |l| l.show } }
     end
   end
 
