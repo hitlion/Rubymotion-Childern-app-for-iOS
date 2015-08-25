@@ -1,6 +1,8 @@
 module LoggerPrint
   module_function
   def split_ansi( string )
+    Dispatch.once { define_colors }
+
     parts = []
     # basically reverse what MotionPrint does for colors
     # und split the string on color boundaries
@@ -38,6 +40,17 @@ module LoggerPrint
       res.appendAttributedString(text)
     end
     res
+  end
+
+  def define_colors
+    rmq.color.add_named(:term_gray   , '#bebebe')
+    rmq.color.add_named(:term_red    , '#fc2b33')
+    rmq.color.add_named(:term_green  , '#b0cc71')
+    rmq.color.add_named(:term_yellow , '#fdb14b')
+    rmq.color.add_named(:term_blue   , '#82c1d9')
+    rmq.color.add_named(:term_magenta, '#dc99cd')
+    rmq.color.add_named(:term_cyan   , '#89cfc4')
+    rmq.color.add_named(:term_white  , '#e8e8e8')
   end
 end
 
