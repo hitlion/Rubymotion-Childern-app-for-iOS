@@ -71,6 +71,7 @@ Motion::Project::App.setup do |app|
       Motion::Project::App.info('Setup', 'Configuring ad-hoc development build')
       app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
       app.codesign_certificate = ENV['RM_ADHOC_CERTIFICATE']
+      app.info_plist['IsAdHocRelease'] = true
     end
 
     app.info_plist['UIFileSharingEnabled'] = true
