@@ -3,14 +3,16 @@ class StandardAppearance
     # common tinting / design colors
     rmq.color.add_named(:babbo_orange, '#f9bc34')
 
-    rmq.color.add_named(:term_gray   , '#bebebe')
-    rmq.color.add_named(:term_red    , '#fc2b33')
-    rmq.color.add_named(:term_green  , '#b0cc71')
-    rmq.color.add_named(:term_yellow , '#fdb14b')
-    rmq.color.add_named(:term_blue   , '#82c1d9')
-    rmq.color.add_named(:term_magenta, '#dc99cd')
-    rmq.color.add_named(:term_cyan   , '#89cfc4')
-    rmq.color.add_named(:term_white  , '#e8e8e8')
+    if app.development? || app.ad_hoc_release? || device.is_simulator?
+      rmq.color.add_named(:term_gray   , '#bebebe')
+      rmq.color.add_named(:term_red    , '#fc2b33')
+      rmq.color.add_named(:term_green  , '#b0cc71')
+      rmq.color.add_named(:term_yellow , '#fdb14b')
+      rmq.color.add_named(:term_blue   , '#82c1d9')
+      rmq.color.add_named(:term_magenta, '#dc99cd')
+      rmq.color.add_named(:term_cyan   , '#89cfc4')
+      rmq.color.add_named(:term_white  , '#e8e8e8')
+    end
 
     # global default styles
     Dispatch.once do

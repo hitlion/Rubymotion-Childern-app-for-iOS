@@ -6,7 +6,10 @@ class StoryPlayerScreen < PM::Screen
 
   def on_load
     rmq(self.view).apply_style(:root)
-    rmq(self.view).append(StoryLoggerView).tag(:logger)
+
+    if app.development? || app.ad_hoc_release?
+      rmq(self.view).append(StoryLoggerView).tag(:logger)
+    end
   end
 
   def will_appear
