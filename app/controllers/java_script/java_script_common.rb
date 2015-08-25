@@ -63,7 +63,7 @@ module JavaScript
     def resize( args )
       args = Hash.symbolicate(args)
       if args[:width] && args[:height] && args[:duration]
-        action = do_resize(CGSize.new(args[:width], args[:height]), duration)
+        action = do_resize(CGSize.new(args[:width], args[:height]), args[:duration])
         node.runAction(action) unless action.nil?
       end
     end
@@ -76,7 +76,7 @@ module JavaScript
     def fade( args )
       args = Hash.symbolicate(args)
       if args[:alpha] && args[:duration]
-        action = do_fade(args[:alpha], duration)
+        action = do_fade(args[:alpha], args[:duration])
         node.runAction(action) unless action.nil?
       end
     end
@@ -89,7 +89,7 @@ module JavaScript
     def layer( args )
       args = Hash.symbolicate(args)
       if args[:layer] && args[:duration]
-        action = do_layer(args[:layer], duration)
+        action = do_layer(args[:layer], args[:duration])
         node.runAction(action) unless action.nil?
       end
     end
@@ -130,8 +130,8 @@ module JavaScript
         when :resize
           next if vargs[:width].nil? || vargs[:height].nil?
 
-          acctions << do_resize(CGSize.new(vargs[:width], vargs[:height]),
-                                vargs[:duration] || duration)
+          actions << do_resize(CGSize.new(vargs[:width], vargs[:height]),
+                               vargs[:duration] || duration)
 
         when :fade
           next if vargs[:alpha].nil?
@@ -139,9 +139,9 @@ module JavaScript
           actions << do_fade(vargs[:alpha], vargs[:duration] || 1.0)
 
         when :layer
-          next if vargs[:layer].nil?
+          next if vargs[:l].nil?
 
-          actions << do_layer(vargs[:layer], vargs[:duration] || 1.0)
+          actions << do_layer(vargs[:l], vargs[:duration] || 1.0)
 
         when :move_resize
           next if vargs[:x].nil? || vargs[:y].nil? ||
@@ -153,8 +153,10 @@ module JavaScript
 
         when :start, :stop, :pause, :restart
           if self.respond_to? k
-            actions << SKAction.customActionWithDuraction(duration,
-                        action: -> (_, time){ self.send(k) if time >= duration })
+            actions << SKAction.runBlock(lambda do
+              NSThread.sleepForTimeInterval(duration || 1.0)
+              self.send(k)
+            end)
           end
         end
       end
@@ -210,10 +212,10 @@ module JavaScript
     # @param [Double] duration The animation duration in seconds.
     # @return [SKAction] A matching +SKAction+.
     def do_layer( target_layer, duration )
-      SKAction.customActionWithDuraction(0.001 + duration || 1.0,
-                                         action: lambda { |node, time|
-        node.zPosition = target_layer if time >= duration
-      })
+      SKAction.runBlock(lambda do
+        NSThread.sleepForTimeInterval(duration || 1.0)
+        node.zPosition = target_layer
+      end)
     end
 
     # Perform a simultaneous move and resize of the target.
