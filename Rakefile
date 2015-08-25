@@ -66,6 +66,8 @@ Motion::Project::App.setup do |app|
     #app.entitlements['beta-reports-active'] = true
 
     if ENV['staging'] == 'true'
+      app.entitlements['get-task-allow'] = false
+
       Motion::Project::App.info('Setup', 'Configuring ad-hoc development build')
       app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
       app.codesign_certificate = ENV['RM_ADHOC_CERTIFICATE']
