@@ -110,7 +110,7 @@ module JavaScript
       variables = collect_variables(slot.variables, receiver.path)
       return false if variables.nil?
 
-      async = args[:async].nil? ? true : args[:async]
+      async = args.fetch(:async, true)
       dispatch_script_block(receiver_proxy, variables, script_action, async)
       true
     end

@@ -106,8 +106,8 @@ module JavaScript
     def concurrent( args )
       actions = []
       args = Hash.symbolicate(args)
-      duration = args[:duration] || 1.0
-      wait     = args[:wait] || false
+      duration = args.fetch(:duration, 1.0)
+      wait     = args.fetch(:wait, false)
 
       if args.has_key? :move and args.has_key? :resize
         # combine move and resize in continious blocks
@@ -125,23 +125,23 @@ module JavaScript
           next if vargs[:x].nil? || vargs[:y].nil?
 
           actions << do_move(CGPoint.new(vargs[:x], vargs[:y]),
-                             vargs[:duration] || duration)
+                             vargs.fetch(:duration, duration))
 
         when :resize
           next if vargs[:width].nil? || vargs[:height].nil?
 
           actions << do_resize(CGSize.new(vargs[:width], vargs[:height]),
-                               vargs[:duration] || duration)
+                               vargs.fetch(:duration, duration))
 
         when :fade
           next if vargs[:alpha].nil?
 
-          actions << do_fade(vargs[:alpha], vargs[:duration] || 1.0)
+          actions << do_fade(vargs[:alpha], vargs.fetch(:duration, 1.0))
 
         when :layer
           next if vargs[:l].nil?
 
-          actions << do_layer(vargs[:l], vargs[:duration] || 1.0)
+          actions << do_layer(vargs[:l], vargs.fetch(:duration, 1.0))
 
         when :move_resize
           next if vargs[:x].nil? || vargs[:y].nil? ||
@@ -149,12 +149,12 @@ module JavaScript
 
           actions << do_move_resize(CGPoint.new(vargs[:x], vargs[:y]),
                                     CGSize.new(vargs[:width], vargs[:height]),
-                                    vargs[:duration] || 1.0)
+                                    vargs.fetch(:duration, 1.0))
 
         when :start, :stop, :pause, :restart
           if self.respond_to? k
             actions << SKAction.sequence([
-              SKAction.waitForDuration(vargs[:duration] || 1.0),
+              SKAction.waitForDuration(vargs.fetch(:duration, 1.0)),
               SKAction.runBlock(->(){ self.send(k) })
             ])
           end
