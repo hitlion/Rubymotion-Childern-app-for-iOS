@@ -67,6 +67,8 @@ Motion::Project::App.setup do |app|
 
     if ENV['staging'] == 'true'
       app.entitlements['get-task-allow'] = false
+      #app.instance_eval{ @embed_dsym = true }
+      app.embed_dsym = true # embedd dsyms in ad-hoc releases
 
       Motion::Project::App.info('Setup', 'Configuring ad-hoc development build')
       app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
@@ -91,7 +93,7 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.121'
+  app.short_version = app.version = '1.0.130'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :landscape_right]
@@ -138,7 +140,7 @@ task :deploy do
       io.write(tagline)
     end
 
-    `#{editor} #{tmpdir}/release.md`
+    system("#{editor} #{tmpdir}/release.md")
     notes = File.read("#{tmpdir}/release.md")
 
     if notes[/#{tagline}/]
@@ -169,7 +171,7 @@ task :deploy do
         "#{tmpdir}/release.html"
       ]
 
-      `scp #{ENV['RM_SCP_OPTIONS'] || ''} #{release.join(' ')} #{deploy_server}:#{deploy_path}/`
+      system("scp #{ENV['RM_SCP_OPTIONS'] || ''} #{release.join(' ')} #{deploy_server}:#{deploy_path}/")
     end
   end
 end
