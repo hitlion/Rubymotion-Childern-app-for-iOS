@@ -32,8 +32,8 @@ module HockeyKitIntegration
   # callback to get a unique device identifier
   def customDeviceIdentifier
     if app.development? || app.ad_hoc_release?
-      uuid = UIDevice.currentDevice.send(:identifierForVendor)
-      return uuid.UUIDString unless uuid.nil?
+      uuid = UIDevice.currentDevice.identifierForVendor
+      return "beef#{uuid.UUIDString.gsub(/-/, '0')}" unless uuid.nil?
     end
     nil
   end
