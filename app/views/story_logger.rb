@@ -1,38 +1,38 @@
 class StoryLoggerView < UIView
 
+  attr_accessor :touch_target
+
   def initWithFrame( frame )
     super.tap do
-      @filter = :java_script
-      @scroll = true
-      @hidden = true
+      @scroll        = true
+      @hidden        = true
 
       rmq(self).stylesheet = StoryLoggerStylesheet
       rmq(self).apply_style(:root)
 
-      append(UIButton, :switch_mode_button).on(:tap) do
-        if @filter == :java_script
-          rmq(@all_messages).show
-          rmq(@script_messages).hide
-          @filter = :all
-
-          rmq(:switch_mode_button).data('[Console]')
-        else
+      append(UISegmentedControl, :switch_mode_button).on(:change) do |sender, _|
+        if sender.selectedSegmentIndex == 0
           rmq(@all_messages).hide
           rmq(@script_messages).show
-          @filter = :java_script
-
-          rmq(:switch_mode_button).data('[JavaScript]')
+        else
+          rmq(@all_messages).show
+          rmq(@script_messages).hide
         end
       end
 
-      append(UIButton, :dismiss_button).on(:tap) do
-        hide
+      append(UIButton, :dismiss_button).on(:tap) { hide }
+
+      append(UISwitch, :scroll_lock_switch).on(:change) do |sender, _|
+        @scroll = sender.on?
       end
 
-      append(UIButton, :scroll_lock_button).on(:tap) do
-        @scroll = !@scroll
-        rmq(:scroll_lock_button).data("[scroll: #{@scroll}]")
+      append(UILabel, :scroll_lock_label)
+
+      append(UISwitch, :tranparent_touch_switch_switch).on(:change) do |sender, _|
+        set_exclusive_touch(!sender.on?)
       end
+
+      append(UILabel, :tranparent_touch_switch_label)
 
       @all_messages = append(UITextView, :log_messages_view).get
       @script_messages = append(UITextView, :log_messages_view).get
@@ -52,13 +52,17 @@ class StoryLoggerView < UIView
 
       rmq(self).hide
       rmq(self).animations.slide_out(to_direction: :top)
+      set_exclusive_touch(false)
     end
   end
 
+  # @private
   def dealloc
     NSNotificationCenter.removeObserver(self)
   end
 
+  # @private
+  # callback for log message notifications
   def update_contents( notification )
     if notification.name == 'LogMessageAvailable'
       add_log_message( @all_messages, notification.object )
@@ -70,12 +74,14 @@ class StoryLoggerView < UIView
   # Show the logger view if it's hidden.
   def show
     return unless @hidden
-
     @hidden = false
 
     self.center = self.superview.center # required for slide_in to work
+
     rmq(self).show
     rmq(self).animations.slide_in(from_direction: :top)
+
+    set_exclusive_touch(!rmq(:tranparent_touch_switch_switch).get.on?)
   end
 
   # Hide the logger view if it's visible
@@ -84,6 +90,7 @@ class StoryLoggerView < UIView
 
     @hidden = true
     rmq(self).animations.slide_out(to_direction: :top)
+    set_exclusive_touch(false)
   end
 
   # Toggle the logger views visibility
@@ -110,6 +117,20 @@ class StoryLoggerView < UIView
 
       if @scroll && text.length > 0
         log_view.scrollRangeToVisible(NSMakeRange(text.length - 1, text.length))
+      end
+    end
+  end
+
+  def set_exclusive_touch(active)
+    if active
+      exclusiveTouch = true
+      if superview.respond_to? :gestureRecognizers
+        superview.gestureRecognizers.each { |r| r.enabled = false }
+      end
+    else
+      exclusiveTouch = false
+      if superview.respond_to? :gestureRecognizers
+        superview.gestureRecognizers.each { |r| r.enabled = true }
       end
     end
   end

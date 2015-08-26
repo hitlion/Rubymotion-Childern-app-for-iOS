@@ -10,30 +10,45 @@ class StoryLoggerStylesheet < ApplicationStylesheet
   end
 
   def switch_mode_button( st )
-    st.frame = {l: 5, fb: 5, w: 100, h: 20}
-    st.font  = rmq.font.font_with_name('Menlo', 10)
-    st.text  = '[JavaScript]'
-    st.color = rmq.color.white
-    st.color_highlighted = rmq.color.red
-    st.content_horizontal_alignment = UIControlContentHorizontalAlignmentLeft
+    st.frame = {l: 5, fb: 5, w: 200, h: 20}
+    st.unshift = 'Console'
+    st.unshift = 'JavaScript'
+    st.content_horizontal_alignment = UIControlContentHorizontalAlignmentCenter
+    st.view.selectedSegmentIndex = 0
   end
 
   def dismiss_button( st )
     st.frame = {fr: 5, fb: 5, w: 50, h: 20}
-    st.font  = rmq.font.font_with_name('Menlo', 10)
-    st.text  = '[ X ]'
+    st.font  = rmq.font.font_with_name('Menlo', 20)
+    st.text  = '⏏'
     st.color = rmq.color.white
     st.color_highlighted = rmq.color.red
     st.content_horizontal_alignment = UIControlContentHorizontalAlignmentCenter
   end
+  def scroll_lock_switch( st )
+    st.frame = {lop: 25, fb: 20, w: 30, h: 10}
+    st.on    = true
+    st.view.transform = CGAffineTransformMakeScale(0.5, 0.5)
+  end
 
-  def scroll_lock_button( st )
-    st.frame = {lop: 5, fb: 5, w: 100, h: 20}
+  def scroll_lock_label( st )
+    st.frame = {lop: 5, fb: 5, w: 50, h: 20}
     st.font  = rmq.font.font_with_name('Menlo', 10)
-    st.text  = '[scroll: true]'
-    st.color = rmq.color.white
-    st.color_highlighted = rmq.color.red
-    st.content_horizontal_alignment = UIControlContentHorizontalAlignmentCenter
+    st.text  = 'scroll:'
+    st.color = rmq.color.babbo_orange
+  end
+
+  def tranparent_touch_switch_switch( st )
+    st.frame = {lop: 20, fb: 20, w: 30, h: 10}
+    st.on    = false
+    st.view.transform = CGAffineTransformMakeScale(0.5, 0.5)
+  end
+
+  def tranparent_touch_switch_label( st )
+    st.frame = {lop: 5, fb: 5, w: 50, h: 20}
+    st.font = rmq.font.font_with_name('Menlo', 10)
+    st.text = 'touch:'
+    st.color = rmq.color.babbo_orange
   end
 
   def log_messages_view( st )

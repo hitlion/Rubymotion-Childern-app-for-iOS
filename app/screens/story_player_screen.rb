@@ -8,7 +8,7 @@ class StoryPlayerScreen < PM::Screen
     rmq(self.view).apply_style(:root)
 
     if app.development? || app.ad_hoc_release?
-      rmq(self.view).append(StoryLoggerView).tag(:logger)
+      @logger = rmq(self.view).append(StoryLoggerView).tag(:logger).get
     end
   end
 
@@ -16,6 +16,8 @@ class StoryPlayerScreen < PM::Screen
     @scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]')
     @player = rmq.unshift!(ScenePlayer, :scene_player)
     @player.presentScene(@scene)
+
+    rmq(@player).append(@logger) unless @logger.nil?
 
     JavaScript::Runtime.prepare_for(@story_bundle, @scene)
   end
@@ -26,6 +28,7 @@ class StoryPlayerScreen < PM::Screen
   end
 
   def on_dismiss
+    rmq(@logger).remove
     rmq(@player).remove
 
     @scene.removeAllChildren unless @scene.nil?
@@ -39,6 +42,7 @@ class StoryPlayerScreen < PM::Screen
 
   def show_scene( target )
     transition_image = create_transition_image
+    rmq(@logger).remove
     rmq(@player).remove
 
     @scene.removeAllChildren unless @scene.nil?
@@ -57,6 +61,8 @@ class StoryPlayerScreen < PM::Screen
 
     @player = rmq.unshift!(ScenePlayer, :scene_player)
     @player.presentScene(@scene)
+
+    rmq(@player).append(@logger) unless @logger.nil?
 
     JavaScript::Runtime.get.scene_root = @scene
     JavaScript::Runtime.send_event(@scene.name, :at_load)
