@@ -25,6 +25,7 @@ class StoryLoggerStylesheet < ApplicationStylesheet
     st.color_highlighted = rmq.color.red
     st.content_horizontal_alignment = UIControlContentHorizontalAlignmentCenter
   end
+
   def scroll_lock_switch( st )
     st.frame = {lop: 25, fb: 20, w: 30, h: 10}
     st.on    = true
@@ -39,7 +40,7 @@ class StoryLoggerStylesheet < ApplicationStylesheet
   end
 
   def tranparent_touch_switch_switch( st )
-    st.frame = {lop: 20, fb: 20, w: 30, h: 10}
+    st.frame = {lop: 25, fb: 20, w: 30, h: 10}
     st.on    = false
     st.view.transform = CGAffineTransformMakeScale(0.5, 0.5)
   end
@@ -49,6 +50,15 @@ class StoryLoggerStylesheet < ApplicationStylesheet
     st.font = rmq.font.font_with_name('Menlo', 10)
     st.text = 'touch:'
     st.color = rmq.color.babbo_orange
+  end
+
+  def quit_story_button( st )
+    st.frame = {lop: 15, fb: 5, w: 100, h: 20}
+    st.font = rmq.font.font_with_name('Menlo', 10)
+    st.text = 'exit story'
+    st.border = { width: 1.0, color: rmq.color.babbo_orange }
+    st.color = rmq.color.babbo_orange
+    st.color_highlighted = rmq.color.babbo_orange
   end
 
   def log_messages_view( st )
