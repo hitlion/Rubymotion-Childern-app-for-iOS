@@ -85,7 +85,7 @@ Motion::Project::App.setup do |app|
 
     app.pods do
       pod 'Fabric'
-      pod 'Crashlytics'
+      pod 'Crashlytics', '= 3.1.0'
       pod 'HockeyKit'
     end
   end
@@ -215,4 +215,3 @@ task :deploy => 'archive:distribution'
 task :fabric => ['beta:deploy', 'beta:fabric_send']
 
 end
-
