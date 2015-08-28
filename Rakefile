@@ -48,7 +48,7 @@ Motion::Project::App.setup do |app|
     # Filter out development helpers
     app.files.select! { |x| true unless DEVELOPMENT_ONLY.include? x }
 
-    unless ENV['staging'] == true
+    unless ENV['staging'] == 'true'
       # also filter out ad-hoc / beta related code
       app.files.select! { |x| true unless ADHOC_BETA_ONLY.include? x }
     end
@@ -58,6 +58,13 @@ Motion::Project::App.setup do |app|
   app.pods do
     pod 'IQAudioRecorderController'
     pod 'zipzap'
+  end
+
+  # pods used in staging and ad-hoc releases
+  app.pods do
+      pod 'Fabric'
+      pod 'Crashlytics', '= 3.1.0'
+      pod 'HockeyKit'
   end
 
   if ENV['staging'] == 'true' or app.development?
@@ -83,11 +90,7 @@ Motion::Project::App.setup do |app|
         'Kits'   => [{'KitName' => 'Crashlytics'}]
     }
 
-    app.pods do
-      pod 'Fabric'
-      pod 'Crashlytics', '= 3.1.0'
-      pod 'HockeyKit'
-    end
+
   end
   # generic configuration
 
