@@ -73,7 +73,11 @@ module SceneFactory
     when :audio
       Scene::AudioNode.new(bundle, story_object)
     when :video
-      Scene::VideoNode.new(bundle, story_object)
+      if story_object.content.downcase.end_with? '.gif'
+        Scene::GIFVideoNode.new(bundle, story_object)
+      else
+        Scene::VideoNode.new(bundle, story_object)
+      end
     else
       lp "Object conversion failed for '#{story_object.path}'",
          force_color: :red

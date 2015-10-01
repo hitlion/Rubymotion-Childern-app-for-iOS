@@ -35,6 +35,8 @@ module JavaScript
     def stop
       node.av_player.seekToTime(KCMTimeZero)
       node.av_player.pause
+
+      node.stop if node.respond_to? :stop
     end
 
     # @private
