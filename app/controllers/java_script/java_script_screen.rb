@@ -16,7 +16,7 @@ module JavaScript
 
     # @return [Fixnum] The wrapped nodes +scren_id+.
     def screen_id
-      @node.screen_id
+      node.screen_id
     end
 
     # @private
