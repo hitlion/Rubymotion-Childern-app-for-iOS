@@ -31,6 +31,7 @@ module JavaScript
 
       # Dispose off of the currently active JavaScript runtime.
       def tear_down
+        self.instance.tear_down unless self.instance.nil?
         self.instance = nil
       end
 
@@ -57,8 +58,13 @@ module JavaScript
       @script_state = begin
         ctx = JSContext.alloc.initWithVirtualMachine(@script_vm)
         ctx.evaluateScript('$$ = new Array();')
-        ctx['$$']
+        ctx
       end
+    end
+
+    def tear_down
+      @script_state = nil
+      @script_vm    = nil
     end
 
     # Send a given event to a target node inside the current scene.
@@ -159,10 +165,24 @@ module JavaScript
 
       # synchronize @script_state
       ctx = JSContext.currentContext
-      @script_state = ctx['$$']
+      self.script_state = ctx['$$']
       dispatch_script_block(receiver_proxy, variables, script_action, false)
-      ctx['$$'] = @script_state
+      ctx['$$'] = self.script_state
       true
+    end
+
+    # Fetch the shared script state
+    #
+    # @return [JSValue] The current sharde script state ('$$')
+    def script_state
+      @script_state['$$']
+    end
+
+    # Replace the shared script state
+    #
+    # @param [JSValue] val The new value for the shared state ('$$')
+    def script_state=( val )
+      @script_state['$$'] = val
     end
 
     private
@@ -176,7 +196,7 @@ module JavaScript
         if export_variables(variables, script_context)
           # setup fixed globals
           script_context['$']  = JavaScript::Global.new
-          script_context['$$'] = @script_state
+          script_context['$$'] = self.script_state
 
           unless receiver.nil?
             # body and level may have slots but no proxy representation
@@ -187,8 +207,10 @@ module JavaScript
             lp "[JavaScriptException]: #{value.toString}", force_color: :red, log_js: true
           end)
           script_context.evaluateScript(action)
-          @script_state = script_context['$$']
+          self.script_state = script_context['$$']
         end
+        lp "dealloc script_context"
+        purge_variables(variables, script_context)
         script_context = nil
       end
 
@@ -234,6 +256,8 @@ module JavaScript
       elsif scene_object.is_a? Scene::AudioNode
         JavaScript::AudioProxy.new(scene_object)
       elsif scene_object.is_a? Scene::VideoNode
+        JavaScript::VideoProxy.new(scene_object)
+      elsif scene_object.is_a? Scene::GIFVideoNode
         JavaScript::VideoProxy.new(scene_object)
       elsif scene_object.is_a? Scene::RootNode
         JavaScript::ScreenProxy.new(scene_object)
@@ -307,6 +331,18 @@ module JavaScript
       end
 
       complete
+    end
+
+    def purge_variables(variables, context)
+      return if variables.nil?
+
+      variables.each_pair do |export_name, scene_object|
+        export_var = export_name.gsub(/[^a-zA-Z0-9_]+/, '_')
+        unless context["$#{export_var}"].nil?
+          lp "Purging $#{export_var}..", force_color: :cyan
+          context["$#{export_var}"] = nil
+        end
+      end
     end
   end
 end
