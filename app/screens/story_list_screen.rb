@@ -8,6 +8,7 @@ class StoryListScreen < PM::TableScreen
   def on_load
     @story_bundles = []
     reload_bundles
+    set_nav_bar_button :right, title: "Kids", action: :go_to_kids_menu
   end
 
   # Reload the table data
@@ -128,6 +129,10 @@ class StoryListScreen < PM::TableScreen
   def show_error_alert
     app.alert(title: 'Entschuldigung',
               message: 'Diese Story enthält Fehler und kann nicht angezeigt werden.')
+  end
+
+  def go_to_kids_menu
+    open_modal KidsScreen.new(nav_bar: false)
   end
 end
 
