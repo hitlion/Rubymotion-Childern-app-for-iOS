@@ -1,5 +1,7 @@
 class KidsScene < SKScene
 
+  attr_accessor :story_list
+
   #####################
   # constants
   #####################
@@ -98,9 +100,11 @@ class KidsScene < SKScene
       printf("Logo button clicked \n")
     end
 
+    story = @story_list.select{|s| s.document.set_name == @center_node.name}.first
+
     if @center_node.equal?(node)
-      start_story
-    elsif (@stories.include? node) && (!node.equal?(@center_node))
+      play_story(story)
+    elsif (@story_list.select{|s| s.document.set_name == node.name}.first) && (!node.equal?(@center_node))
       scale_all_small
       move_rope_by_x(@center_point.x - node.position.x, 0.35)
       @center_node = node
@@ -152,13 +156,6 @@ class KidsScene < SKScene
   end
 
   ##
-  # Start the @center_node story
-  #
-  def start_story
-    puts "Start Story"
-  end
-
-  ##
   # Creates sprite elements at the button line.
   # The height of this line is defined in the class constant BUTTON_LINE
   #
@@ -191,8 +188,8 @@ class KidsScene < SKScene
 
     distance_between_storyicons ||= texture.size.width * 1.2 * @big_scale
 
-    10.times do |i|
-      #story = SKSpriteNode.spriteNodeWithTexture(UIColor.clearColor, texture.size)
+    @story_list.each_with_index do |s,i|
+
       story = SKSpriteNode.spriteNodeWithColor(UIColor.clearColor, size: texture.size)
 
       story.scale = @small_scale
@@ -200,9 +197,7 @@ class KidsScene < SKScene
       story.anchorPoint = CGPointMake(0.5, 0.98)
       story.position = CGPointMake(mid_x + i * distance_between_storyicons, @story_pos_y)
 
-      story.name = ELEMENT_STORY_NAME + i.to_s
-
-      @stories[i] = story
+      story.name = s.document.set_name
 
       story.physicsBody = SKPhysicsBody.bodyWithRectangleOfSize(story.size)
       story.physicsBody.dynamic = true
@@ -216,7 +211,7 @@ class KidsScene < SKScene
       story_frame.position = CGPointMake(0, -texture.size.height)
       story.addChild story_frame
 
-      story_picture = SKSpriteNode.spriteNodeWithImageNamed("story_picture_dummy")
+      story_picture = SKSpriteNode.spriteNodeWithTexture(SKTexture.textureWithImage (UIImage.imageWithData(s.asset_data(s.document.thumbnail))))
       story_picture.zPosition = -3
       story_picture.anchorPoint = CGPointMake(0.5, 0.5)
       story_picture.position = CGPointMake(0, - 0.65 * texture.size.height)
@@ -231,7 +226,7 @@ class KidsScene < SKScene
 
       story.addChild user_picture
 
-      label = SKLabelNode.labelNodeWithText(ELEMENT_STORY_NAME + i.to_s)
+      label = SKLabelNode.labelNodeWithText(s.document.set_name)
       label.position = CGPointMake(0, - 0.42 * texture.size.height )
       label.zPosition = -1
       label.fontSize = FONT_SIZE
@@ -241,7 +236,7 @@ class KidsScene < SKScene
 
     end
 
-    @center_node = @stories[0]
+    @center_node = childNodeWithName(@story_list.first.document.set_name)
 
     scale_all_small
     scale_mid_big
@@ -252,10 +247,11 @@ class KidsScene < SKScene
   #
   def add_joints
 
-    @stories.each do |i|
-      joint = SKPhysicsJointPin.jointWithBodyA(childNodeWithName(i.name).physicsBody,
+    @story_list.each do |s|
+      joint = SKPhysicsJointPin.jointWithBodyA(childNodeWithName(s.document.set_name).physicsBody,
                                                bodyB:childNodeWithName(ELEMENT_ROPE_NAME).physicsBody,
-                                               anchor:CGPointMake(i.position.x,i.position.y+50))
+                                               anchor:CGPointMake(childNodeWithName(s.document.set_name).position.x,
+                                                                  childNodeWithName(s.document.set_name).position.y+50))
 
       joint.lowerAngleLimit = -0.1
       joint.upperAngleLimit = 0.1
@@ -271,7 +267,8 @@ class KidsScene < SKScene
   #
   def add_rope
 
-    rope_width = @stories.last.position.x - @stories.first.position.x + 3 * frame.size.width
+    rope_width = childNodeWithName(@story_list.last.document.set_name).position.x
+                - childNodeWithName(@story_list.first.document.set_name).position.x + 3 * frame.size.width
 
     rope = SKSpriteNode.spriteNodeWithColor(UIColor.clearColor, size: CGSizeMake(rope_width, @height / 100))
     rope.name = ELEMENT_ROPE_NAME
@@ -337,11 +334,13 @@ class KidsScene < SKScene
   # param duration The duration for this animation
   #
   def move_rope_by_x(x_distance, duration)
-    if @center_node.equal?(@stories.first) && @stories.first.position == @center_point && x_distance >= 0
+    if @center_node.equal?(childNodeWithName(@story_list.first.document.set_name)) &&
+        childNodeWithName(@story_list.first.document.set_name).position == @center_point && x_distance >= 0
       return
     end
 
-    if @center_node.equal?(@stories.last) && @stories.last.position == @center_point && x_distance <= 0
+    if @center_node.equal?(childNodeWithName(@story_list.last.document.set_name)) &&
+        childNodeWithName(@story_list.last.document.set_name).position == @center_point && x_distance <= 0
       return
     end
 
@@ -375,8 +374,8 @@ class KidsScene < SKScene
   # Set the scale property from all elements of the @stories array to @small_scale
   #
   def scale_all_small
-    @stories.each do |story|
-        story.scale = @small_scale
+    @story_list.each do |s|
+      childNodeWithName(s.document.set_name).scale = @small_scale
     end
   end
 
@@ -387,5 +386,13 @@ class KidsScene < SKScene
     if @init && @center_node.position != @center_point
       move_rope_by_x(@center_point.x - @center_node.position.x,0.05)
     end
+  end
+
+  # Start the +StoryPlayerScreen+ displaying a given +StoryBundle+
+  def play_story( story )
+
+    rmq.screen.open_modal StoryPlayerScreen.new(nav_bar: false,
+                                     nav_controller: AutoRotatingNavigationController,
+                                     story_bundle: story)
   end
 end
