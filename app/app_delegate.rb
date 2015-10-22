@@ -17,6 +17,7 @@ class AppDelegate < PM::Delegate
 
   def application(application, willChangeStatusBarOrientation: new_orientation, duration: d)
     device.orientation = new_orientation
+    #@window.rootViewController = KidsScreenController.alloc.init
   end
 end
 
