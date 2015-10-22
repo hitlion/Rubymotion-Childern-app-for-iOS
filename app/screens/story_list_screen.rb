@@ -132,7 +132,7 @@ class StoryListScreen < PM::TableScreen
   end
 
   def go_to_kids_menu
-    open_modal KidsScreen.new(nav_bar: false)
+    open_modal KidsScreen.new(nav_bar: false, story_list: @story_list)
   end
 end
 
