@@ -1,4 +1,31 @@
 class StoryBundle
+  class << self
+    attr_reader :bundle_list
+    
+    # Return the (cached) bundle list.
+    # If the list was not loaded it will be initialized on first
+    # request.
+    #
+    # @param [Hash] args Optional parameters
+    # @option [Bool] args :reload Force a reload from disk
+    # @return [Array<StoryBundle>] The list of available
+    #   story bundles.
+    def bundles( args={} )
+      if self.bundle_list.nil? || args.fetch(:reload, false)
+        bundle_root = File.join(Dir.system_path(:documents), 'Bundles')
+        Dir::mkdirs(bundle_root) unless Dir.exist? bundle_root
+        
+        self.bundle_list = []
+        Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
+          bundle = StoryBundle.new(bundle_path)
+          bundle.load
+          self.bundle_list << bundle
+        end
+      end
+      self.bundle_list
+    end
+  end
+
   attr_reader :document, :load_errors, :path
 
   # Initialize a new +StoryBundle+.
