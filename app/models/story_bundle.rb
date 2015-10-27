@@ -1,6 +1,6 @@
 class StoryBundle
   class << self
-    attr_reader :bundle_list
+    attr_accessor :bundle_list
     
     # Return the (cached) bundle list.
     # If the list was not loaded it will be initialized on first

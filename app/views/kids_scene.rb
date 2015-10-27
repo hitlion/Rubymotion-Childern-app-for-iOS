@@ -156,6 +156,7 @@ class KidsScene < SKScene
   # This methods initialize the member variables
   #
   def init_values
+    @story_list = StoryBundle.bundles
     @height     ||= CGRectGetHeight(self.frame)
     @width      ||= CGRectGetWidth(self.frame)
     @stories    ||= []
