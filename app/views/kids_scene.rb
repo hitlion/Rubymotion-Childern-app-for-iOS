@@ -6,20 +6,22 @@ class KidsScene < SKScene
   # constants
   #####################
 
-  BUTTON_LINE_SCALE = 0.25
+  # y position (in x * screen high)
+  BUTTON_LINE_Y = 0.8
+  ROPE_LINE_Y   = 0.6
+  STORY_POS_Y = 0.6
 
-  BUTTON_LINE = 0.8
-  ROPE_LINE   = 0.6
-
+  # x position (in x * screen width)
   CHILD_BUTTON_X  = 0.8
   PARENT_BUTTON_X = 0.2
   LOGO_BUTTON_X   = 0.5
 
-  SIZE_CENTER_PIC  = 0.5
-  SIZE_OTHER_PIC   = 0.25
+  # Sizes (in x * screen high) for the folowing elements
+  SIZE_CENTER_STORY  = 0.5
+  SIZE_OTHER_STORY   = 0.25
+  SIZE_BUTTON_LINE_ELEMENT = 0.25
 
-  STORY_POS_Y = 0.65
-
+  # Sprite node names
   BUTTON_PARENT_NAME = "PARENT"
   BUTTON_CHILD_NAME = "CHILD"
   BUTTON_LOGO_NAME = "LOGO"
@@ -28,6 +30,7 @@ class KidsScene < SKScene
   ELEMENT_BACKGROUND_NAME = "BACKGROUND"
   ELEMENT_USER_PICTURE = "USER PICTURE"
 
+  # Font and fonstsize
   FONT_SIZE = 47
   FONT = "Enriqueta Regular"
   
@@ -42,6 +45,10 @@ class KidsScene < SKScene
 
   def didMoveToView(view)
     super
+
+    if @init
+      return
+    end
 
     @init = false
 
@@ -76,7 +83,9 @@ class KidsScene < SKScene
     @delta = @last_update_time ?  current_time - @last_update_time : 0
     @last_update_time = current_time
 
-    if @stories.include?(nodeAtPoint(@center_point))
+    #todo
+
+    if (@story_list.select{|s| s.document.set_name == nodeAtPoint(@center_point).name}.first)
       @center_node = nodeAtPoint(@center_point)
     end
   end
@@ -150,9 +159,9 @@ class KidsScene < SKScene
     @height     ||= CGRectGetHeight(self.frame)
     @width      ||= CGRectGetWidth(self.frame)
     @stories    ||= []
-    @rope_line  ||= @height * ROPE_LINE
-    @height_center_pic ||= @height * SIZE_CENTER_PIC
-    @height_other_pic  ||= @height * SIZE_OTHER_PIC
+    @rope_line  ||= @height * ROPE_LINE_Y
+    @height_center_pic ||= @height * SIZE_CENTER_STORY
+    @height_other_pic  ||= @height * SIZE_OTHER_STORY
   end
 
   ##
@@ -168,14 +177,14 @@ class KidsScene < SKScene
     element = SKSpriteNode.spriteNodeWithTexture(SKTexture.textureWithImageNamed(texture_name))
     element.name = name
     element.zPosition = z_pos
-    element.position = CGPointMake(x_pos * @width, BUTTON_LINE * @height)
-    element.scale = ((@height * BUTTON_LINE_SCALE) / (element.size.height))
+    element.position = CGPointMake(x_pos * @width, BUTTON_LINE_Y * @height)
+    element.scale = ((@height * SIZE_BUTTON_LINE_ELEMENT) / (element.size.height))
 
     addChild element
   end
 
   ##
-  # add and define dummy story list
+  # add story list
   #
   def add_story_list
     texture = SKTexture.textureWithImageNamed("Rahmen.png")
@@ -214,9 +223,16 @@ class KidsScene < SKScene
       story_picture = SKSpriteNode.spriteNodeWithTexture(SKTexture.textureWithImage (UIImage.imageWithData(s.asset_data(s.document.thumbnail))))
       story_picture.zPosition = -3
       story_picture.anchorPoint = CGPointMake(0.5, 0.5)
-      story_picture.position = CGPointMake(0, - 0.65 * texture.size.height)
-      story_picture.scale = (0.55 * texture.size.height) / story_picture.size.height
+      story_picture.position = CGPointMake(0, - 0.63 * texture.size.height)
+      story_picture.scale = (0.68 * texture.size.height) / story_picture.size.height
       story.addChild story_picture
+
+      clip = SKSpriteNode.spriteNodeWithImageNamed("Klammer")
+      clip.zPosition = -1
+      clip.anchorPoint = CGPointMake(0.5, 0)
+      clip.position = CGPointMake(0, - 0.05 * texture.size.height)
+      clip.scale = (0.2 * texture.size.height) / clip.size.height
+      story.addChild clip
 
       user_picture = SKSpriteNode.spriteNodeWithImageNamed("avatar_Vater")
       user_picture.zPosition = 1
@@ -227,7 +243,7 @@ class KidsScene < SKScene
       story.addChild user_picture
 
       label = SKLabelNode.labelNodeWithText(s.document.set_name)
-      label.position = CGPointMake(0, - 0.42 * texture.size.height )
+      label.position = CGPointMake(0, - 0.35 * texture.size.height )
       label.zPosition = -1
       label.fontSize = FONT_SIZE
       label.fontColor = UIColor.blackColor
@@ -274,7 +290,7 @@ class KidsScene < SKScene
     rope.name = ELEMENT_ROPE_NAME
     rope.zPosition = 0
 
-    rope.position = CGPointMake(- @width, ROPE_LINE * @height)
+    rope.position = CGPointMake(- @width, ROPE_LINE_Y * @height)
     rope.anchorPoint = CGPointMake(0.0, 0.5)
 
     rope.physicsBody = SKPhysicsBody.bodyWithRectangleOfSize(rope.size)
@@ -285,16 +301,18 @@ class KidsScene < SKScene
 
     texture = SKTexture.textureWithImageNamed("Seil.png")
 
-   # TODO Länge der Sprites generisch gestalten
-    5.times do |i|
+
+
+    3.times do |i|
       rope_part = SKSpriteNode.spriteNodeWithTexture(texture)
-      rope_part.size = CGSizeMake (2000,4)
-      rope_part.position = CGPointMake (0 + i * 1500 , 0)
-      rope_part.zPosition = 1
+      rope_part.size = CGSizeMake(1024,15)
+      rope_part.anchorPoint = CGPointMake(0,0.5)
+      rope_part.position = CGPointMake (0 + i * 1024 , 0)
+      rope_part.zPosition = 0
 
       rope.addChild rope_part
     end
-
+   # TODO Länge der Sprites generisch gestalten
   end
 
   ##
@@ -317,13 +335,23 @@ class KidsScene < SKScene
   # Touch Event / clicked Methods
   #################
   def parent_button_clicked
-    #TODO go to parent menue
+
+    rmq.screen.close
+    #rmq.screen.open_modal AgeVerificationScreen.new(nav_bar: true,
+    #                                                nav_controller: AutoRotatingNavigationController)
   end
 
   def child_button_clicked
     #TODO Kindermenue
   end
 
+  # Start the +StoryPlayerScreen+ displaying a given +StoryBundle+
+  def play_story( story )
+
+    rmq.screen.open_modal StoryPlayerScreen.new(nav_bar: false,
+                                                nav_controller: AutoRotatingNavigationController,
+                                                story_bundle: story)
+  end
   ############################
   # Helper and action methods.
   ############################
@@ -388,11 +416,5 @@ class KidsScene < SKScene
     end
   end
 
-  # Start the +StoryPlayerScreen+ displaying a given +StoryBundle+
-  def play_story( story )
 
-    rmq.screen.open_modal StoryPlayerScreen.new(nav_bar: false,
-                                     nav_controller: AutoRotatingNavigationController,
-                                     story_bundle: story)
-  end
 end
