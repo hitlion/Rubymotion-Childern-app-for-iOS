@@ -42,7 +42,6 @@ class KidsScene < SKScene
   ##
   # called when moved to this view
   #
-
   def didMoveToView(view)
     super
 
@@ -336,10 +335,8 @@ class KidsScene < SKScene
   # Touch Event / clicked Methods
   #################
   def parent_button_clicked
-
-    rmq.screen.close
-    #rmq.screen.open_modal AgeVerificationScreen.new(nav_bar: true,
-    #                                                nav_controller: AutoRotatingNavigationController)
+    StartScreen.next_screen= :age_verification_screen
+    rmq.screen.open_root_screen(StartScreen)
   end
 
   def child_button_clicked

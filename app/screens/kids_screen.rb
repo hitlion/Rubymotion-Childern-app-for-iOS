@@ -12,4 +12,5 @@ class KidsScreen < PM::Screen
     rmq(@player).remove
     @player = nil
   end
+
 end
