@@ -39,16 +39,7 @@ class StoryListScreen < PM::TableScreen
   #
   # @todo: Handle branch data
   def reload_bundles
-    bundle_root = File.join(Dir.system_path(:documents), 'Bundles')
-    Dir::mkdirs(bundle_root) unless Dir.exist? bundle_root
-
-    @story_bundles = []
-    Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
-      bundle = StoryBundle.new(bundle_path)
-      bundle.load
-
-      @story_bundles << bundle
-    end
+    @story_bundles = StoryBundle.bundles
   end
 
   # Create a ProMotion compatible cell data +Hash+ from the given +StoryBundle+
@@ -130,7 +121,10 @@ class StoryListScreen < PM::TableScreen
   end
 
   def go_to_kids_menu
-    open_modal KidsScreen.new(nav_bar: false)
+    StartScreen.next_screen= :kids_menu
+
+    rmq.screen.close(to_screen: :root)
   end
+
 end
 
