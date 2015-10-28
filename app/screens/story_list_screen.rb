@@ -122,8 +122,7 @@ class StoryListScreen < PM::TableScreen
 
   def go_to_kids_menu
     StartScreen.next_screen= :kids_menu
-
-    rmq.screen.close(to_screen: :root)
+    rmq.screen.open_root_screen(StartScreen)
   end
 
 end

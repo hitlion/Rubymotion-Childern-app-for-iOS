@@ -26,12 +26,12 @@ class AgeVerificationScreen < PM::Screen
 
   def back_pressed
     StartScreen.next_screen= :kids_menu
-    rmq.screen.close(to_screen: :root)
+    rmq.screen.open_root_screen(StartScreen)
   end
 
   def ok_pressed
     StartScreen.next_screen= :parent_menu
-    rmq.screen.close(to_screen: :root)
+    rmq.screen.open_root_screen(StartScreen)
   end
 
 end
