@@ -346,9 +346,7 @@ class KidsScene < SKScene
   # Start the +StoryPlayerScreen+ displaying a given +StoryBundle+
   def play_story( story )
 
-    rmq.screen.open_modal StoryPlayerScreen.new(nav_bar: false,
-                                                nav_controller: AutoRotatingNavigationController,
-                                                story_bundle: story)
+    rmq.screen.open_modal StoryPlayerScreen.new(story_bundle: story)
   end
   ############################
   # Helper and action methods.

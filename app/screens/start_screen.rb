@@ -15,18 +15,15 @@ class StartScreen < PM::Screen
   end
 
   def go_to_kids
-    open_modal KidsScreen.new(nav_bar: true,
-                          nav_controller: AutoRotatingNavigationController)
+    open_modal KidsScreen.new
   end
 
   def go_to_parent
-    open_modal StoryListScreen.new(nav_bar: true,
-        nav_controller: AutoRotatingNavigationController)
+    open_modal StoryListScreen.new(nav_bar: true)
   end
 
   def go_to_age_verification
-    open_modal AgeVerificationScreen.new(nav_bar: true,
-                                   nav_controller: AutoRotatingNavigationController)
+    open_modal AgeVerificationScreen.new
   end
 
   def on_appear(args={})
