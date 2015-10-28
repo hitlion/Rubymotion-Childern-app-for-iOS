@@ -11,7 +11,7 @@ class AppDelegate < PM::Delegate
     self.setupHockeyKit if self.respond_to? :setupHockeyKit
     self.setupCrashlytics if self.respond_to? :setupCrashlytics
 
-    open StartScreen.new(nav_bar: false , nav_controller: AutoRotatingNavigationController)
+    open StartScreen.new(nav_bar: true , nav_controller: AutoRotatingNavigationController)
 
     # NOTE: this is not in the RMQ samples but it's required for appearance.rb.
     rmq.all.reapply_styles
