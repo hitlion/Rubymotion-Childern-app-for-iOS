@@ -2,6 +2,7 @@ class StartScreen < PM::Screen
 
   class << self
     attr_accessor :next_screen
+    attr_accessor :next_story
   end
 
   title "Start Screen"
@@ -15,15 +16,20 @@ class StartScreen < PM::Screen
   end
 
   def go_to_kids
-    open_modal KidsScreen.new
+    open KidsScreen.new
   end
 
   def go_to_parent
-    open_modal StoryListScreen.new(nav_bar: true)
+    open StoryListScreen.new(nav_bar: true)
   end
 
   def go_to_age_verification
-    open_modal AgeVerificationScreen.new
+    open AgeVerificationScreen.new
+  end
+
+  def start_story
+    open_modal StoryPlayerScreen.new(nav_bar: false,
+                                     story_bundle: StartScreen.next_story)
   end
 
   def on_appear(args={})
@@ -42,6 +48,10 @@ class StartScreen < PM::Screen
 
     if StartScreen.next_screen == :age_verification_screen
       go_to_age_verification
+    end
+
+    if StartScreen.next_screen == :story_player
+      start_story
     end
 
   end

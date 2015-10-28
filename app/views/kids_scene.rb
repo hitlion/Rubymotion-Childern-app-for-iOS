@@ -345,8 +345,9 @@ class KidsScene < SKScene
 
   # Start the +StoryPlayerScreen+ displaying a given +StoryBundle+
   def play_story( story )
-
-    rmq.screen.open_modal StoryPlayerScreen.new(story_bundle: story)
+    StartScreen.next_story = story
+    StartScreen.next_screen = :story_player
+    rmq.screen.open_root_screen(StartScreen)
   end
   ############################
   # Helper and action methods.
