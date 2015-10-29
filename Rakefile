@@ -63,7 +63,7 @@ Motion::Project::App.setup do |app|
   # pods used in staging and ad-hoc releases
   app.pods do
       pod 'Fabric'
-      pod 'Crashlytics', '= 3.1.0'
+      pod 'Crashlytics' #, '= 3.1.0'
   end
 
   if ENV['staging'] == 'true' or app.development?
@@ -95,7 +95,7 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.135'
+  app.short_version = app.version = '1.0.136'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :landscape_right]
@@ -142,6 +142,7 @@ task :fabric_send do
 
   fabric_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Fabric', 'Fabric.framework', 'run')
   crashlytics_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'Crashlytics.framework', 'submit')
+  upload_dsym_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'Crashlytics.framework', 'uploadDSYM')
 
   fabric_api = ENV['RM_FABRIC_API']
   fabric_key = ENV['RM_FABRIC_KEY']
@@ -150,7 +151,13 @@ task :fabric_send do
     app.fail('Please set the RM_FABRIC_API and RM_FABRIC_KEY environment variables to your API-Key and Build-Secret.')
   end
 
+  app.info('fabric.io', 'Submitting to fabric..')
   system("#{fabric_run} #{fabric_api} #{fabric_key}")
+
+  app.info('fabric.io', 'Uploading dSYM..')
+  system("#{upload_dsym_run} #{fabric_api} #{fabric_key}")
+
+  app.info('fabric.io', 'Uploading to Beta..')
   system("#{crashlytics_run} #{fabric_api} #{fabric_key} -ipaPath #{app.config.archive()} -notifications YES -debug YES")
 end
 
