@@ -6,8 +6,7 @@ module Scene
     #
     # @param [StoryBundle] bundle The {StoryBundle} containing +story_object+.
     # @param [Scene::Object] story_object The object definition.
-    def initialize( bundle, story_object )
-      initWithColor(rmq.color.clear, size: [0, 0]).tap do
+    def self.create( bundle, story_object )
         if story_object.content.downcase.end_with? '.gif'
           series = UIImage.imagesFromAnimatedGifData(bundle.asset_data(story_object.content))
 
@@ -16,12 +15,11 @@ module Scene
                force_color: :yellow
           else
             image = UIImage.imageWithCGImage(series.first.first)
-            add_animation_series(series)
-            @animated = true
+            animated = true
           end
         else
-          image = UIImage.imageWithData(bundle.asset_data(story_object.content))
-          @animated = false
+          image = UIImage.imageWithContentsOfFile(bundle.asset_path(story_object.content))
+          animated = false
         end
 
         if image.nil?
@@ -30,15 +28,20 @@ module Scene
              force_color: :yellow
         end
 
-        self.texture  = SKTexture.textureWithImage(image)
-        self.size     = calculate_node_size(story_object.size,
-                                            image.size.width / image.size.height,
-                                            story_object.resize)
-        self.position = calculate_node_position(story_object.position,
-                                                self.size)
-        self.zPosition = story_object.layer
-        self.alpha     = 1.0001 - story_object.transparency
-        self.name      = story_object.path
+      texture  = SKTexture.textureWithImage(image)
+      PictureNode.alloc.initWithTexture(texture).tap do |node|
+        node.size     = node.calculate_node_size(story_object.size,
+                                                 image.size.width / image.size.height,
+                                                 story_object.resize)
+        node.position = node.calculate_node_position(story_object.position,
+                                                     node.size)
+        node.zPosition = story_object.layer
+        node.alpha     = 1.0001 - story_object.transparency
+        node.name      = story_object.path
+
+        if animated
+          node.add_animation_series(series)
+        end
       end
     end
 
@@ -56,7 +59,7 @@ module Scene
     #
     # @param [Array<Array<CGImage, Float>>] series An +Array+ of CGImage / delay pairs.
     def add_animation_series(series)
-      # SpriteKit doesn't suppor variable framerate animations, get an avaerage delay
+      # SpriteKit doesn't support variable framerate animations, get an avaerage delay
       frame_delay = 1.0
       unless series.count <= 1
         frame_delay = series.map { |m| m[1] }.inject(:+) / series.count
@@ -65,6 +68,7 @@ module Scene
       textures = series.map { |m| SKTexture.textureWithCGImage(m[0]) }
       animation = SKAction.animateWithTextures(textures, timePerFrame: frame_delay )
       self.runAction(SKAction.repeatActionForever(animation))
+      @animated = true
     end
   end
 end

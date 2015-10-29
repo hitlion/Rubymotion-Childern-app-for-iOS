@@ -8,7 +8,7 @@ module Scene
     #
     # @param [StoryBundle] bundle The {StoryBundle} containing +story_object+.
     # @param [Scene::Object] story_object The object definition.
-    def initialize( bundle, story_object )
+    def self.create( bundle, story_object )
       # pre-setup, fetch the video asset and extract it's size
       asset_url  = bundle.asset_path(story_object.content).to_file_url
       asset      = load_video_asset(asset_url)
@@ -17,18 +17,20 @@ module Scene
       av_item   = AVPlayerItem.playerItemWithAsset(asset)
       av_player = AVPlayer.playerWithPlayerItem(av_item)
 
-      initWithAVPlayer(av_player).tap do
-        self.name      = story_object.path
-        self.size      = calculate_node_size(story_object.size,
-                                             video_size.width / video_size.height,
-                                             story_object.resize)
-        self.position  = calculate_node_position(story_object.position,
-                                                 self.size)
-        self.zPosition = story_object.layer
-        self.alpha     = 1.0 - story_object.transparency
+      VideoNode.alloc.initWithAVPlayer(av_player).tap do |node|
+        node.instance_eval do
+          self.name      = story_object.path
+          self.size      = calculate_node_size(story_object.size,
+                                               video_size.width / video_size.height,
+                                               story_object.resize)
+          self.position  = calculate_node_position(story_object.position,
+                                                   self.size)
+          self.zPosition = story_object.layer
+          self.alpha     = 1.0 - story_object.transparency
 
-        # Setup playback notifications (why can't this be done via delegation!?)
-        @av_player     = av_player
+          # Setup playback notifications (why can't this be done via delegation!?)
+          @av_player     = av_player
+        end
       end
     end
 

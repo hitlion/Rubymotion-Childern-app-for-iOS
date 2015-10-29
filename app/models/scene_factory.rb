@@ -39,7 +39,7 @@ module SceneFactory
   # @return [SKScene] A populated SpriteKit scene or +nil+ if an
   #   error occurs during conversion.
   def convert_screen( bundle, story_screen )
-    scene = Scene::RootNode.new(bundle, story_screen)
+    scene = Scene::RootNode.create(bundle, story_screen)
     scene.name = story_screen.path
 
     story_screen.objects.each do |story_object|
@@ -69,14 +69,14 @@ module SceneFactory
     lp "Converting #{story_object.type} at #{story_object.path}"
     case story_object.type
     when :picture
-      Scene::PictureNode.new(bundle, story_object)
+      Scene::PictureNode.create(bundle, story_object)
     when :audio
-      Scene::AudioNode.new(bundle, story_object)
+      Scene::AudioNode.create(bundle, story_object)
     when :video
       if story_object.content.downcase.end_with? '.gif'
-        Scene::GIFVideoNode.new(bundle, story_object)
+        Scene::GIFVideoNode.create(bundle, story_object)
       else
-        Scene::VideoNode.new(bundle, story_object)
+        Scene::VideoNode.create(bundle, story_object)
       end
     else
       lp "Object conversion failed for '#{story_object.path}'",

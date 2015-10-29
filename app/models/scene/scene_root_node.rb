@@ -8,10 +8,12 @@ module Scene
     #
     # @param [StoryBundle] bundle The {StoryBundle} containing +story_object+.
     # @param [Scene::Object] story_object The object definition.
-    def initialize( bundle, story_object )
-      initWithSize([device.scaled_width, device.scaled_height]).tap do
-        self.name  = story_object.path
-        @screen_id = story_object.id
+    def self.create( bundle, story_object )
+      RootNode.alloc.initWithSize([device.screen_width, device.screen_height]).tap do |scene|
+        scene.instance_eval do
+          self.name  = story_object.path
+          @screen_id = story_object.id
+        end
       end
     end
 

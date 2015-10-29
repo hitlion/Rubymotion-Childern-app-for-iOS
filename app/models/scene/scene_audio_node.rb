@@ -8,37 +8,39 @@ module Scene
     #
     # @param [StoryBundle] bundle The {StoryBundle} containing +story_object+.
     # @param [Scene::Object] story_object The object definition.
-    def initialize( bundle, story_object )
-      initWithColor(rmq.color.clear, size: [0, 0]).tap do
-        image = rmq.image.resource('placeholder/file_music')
-        audio = bundle.asset_data(story_object.content)
-        if audio.nil?
-          image = rmq.image.resource('placeholder/file_warning')
-          lp "Missing audio for node '#{story_object.path}'",
-             force_color: :cyan
-          @av_player = nil
-        else
-          error = Pointer.new(:object)
-          audio_url = bundle.asset_path(story_object.content).to_file_url
-          @av_player = AVAudioPlayer.alloc.initWithContentsOfURL(audio_url, error: error)
-
-          if @av_player.nil?
-            lp "Error loading audio for node '#{story_object.path}': #{error[0].localizedDescription}",
+    def self.create( bundle, story_object )
+      AudioNode.alloc.initWithColor(rmq.color.clear, size: [0, 0]).tap do |node|
+        node.instance_eval do
+          image = rmq.image.resource('placeholder/file_music')
+          audio = bundle.asset_data(story_object.content)
+          if audio.nil?
+            image = rmq.image.resource('placeholder/file_warning')
+            lp "Missing audio for node '#{story_object.path}'",
                force_color: :cyan
+            @av_player = nil
+          else
+            error = Pointer.new(:object)
+            audio_url = bundle.asset_path(story_object.content).to_file_url
+            @av_player = AVAudioPlayer.alloc.initWithContentsOfURL(audio_url, error: error)
+
+            if @av_player.nil?
+              lp "Error loading audio for node '#{story_object.path}': #{error[0].localizedDescription}",
+                 force_color: :cyan
+            end
           end
-        end
 
-        self.name      = story_object.path
-        self.texture   = SKTexture.textureWithImage(image)
-        self.size      = image.size
-        self.position  = calculate_node_position(story_object.position,
-                                                self.size)
-        self.zPosition = story_object.layer
-        self.alpha     = 1.00001 - story_object.transparency
-        self.hidden    = true
+          self.name      = story_object.path
+          self.texture   = SKTexture.textureWithImage(image)
+          self.size      = image.size
+          self.position  = calculate_node_position(story_object.position,
+                                                  self.size)
+          self.zPosition = story_object.layer
+          self.alpha     = 1.00001 - story_object.transparency
+          self.hidden    = true
 
-        unless @av_player.nil?
-          @av_player.delegate = self
+          unless @av_player.nil?
+            @av_player.delegate = self
+          end
         end
       end
     end

@@ -19,35 +19,37 @@ module Scene
     #
     # @param [StoryBundle] bundle The {StoryBundle} containing +story_object+.
     # @param [Scene::Object] story_object The object definition.
-    def initialize( bundle, story_object )
-      initWithColor(rmq.color.clear, size: [0, 0]).tap do
-        series = UIImage.imagesFromAnimatedGifData(bundle.asset_data(story_object.content))
+    def self.create( bundle, story_object )
+      GIFVideoNode.alloc.initWithColor(rmq.color.clear, size: [0, 0]).tap do |node|
+        node.instance_eval do
+          series = UIImage.imagesFromAnimatedGifData(bundle.asset_data(story_object.content))
 
-        if series.nil?
-          lp "Could not extract GIF images for node '#{story_object.path}'",
-             force_color: :yellow
-          @animation = nil
-        else
-          image = UIImage.imageWithCGImage(series.first.first)
-          @animation = animation_series(series)
+          if series.nil?
+            lp "Could not extract GIF images for node '#{story_object.path}'",
+               force_color: :yellow
+            @animation = nil
+          else
+            image = UIImage.imageWithCGImage(series.first.first)
+            @animation = animation_series(series)
+          end
+
+          if image.nil?
+            image = rmq.image.resource('placeholder/file_warning')
+            lp "Missing picture for node '#{story_object.path}'",
+               force_color: :yellow
+          end
+
+          self.texture  = SKTexture.textureWithImage(image)
+          self.size     = calculate_node_size(story_object.size,
+                                              image.size.width / image.size.height,
+                                              story_object.resize)
+          self.position = calculate_node_position(story_object.position,
+                                                  self.size)
+          self.zPosition = story_object.layer
+          self.alpha     = 1.0001 - story_object.transparency
+          self.name      = story_object.path
+          @av_player     = AVDummy.new
         end
-
-        if image.nil?
-          image = rmq.image.resource('placeholder/file_warning')
-          lp "Missing picture for node '#{story_object.path}'",
-             force_color: :yellow
-        end
-
-        self.texture  = SKTexture.textureWithImage(image)
-        self.size     = calculate_node_size(story_object.size,
-                                            image.size.width / image.size.height,
-                                            story_object.resize)
-        self.position = calculate_node_position(story_object.position,
-                                                self.size)
-        self.zPosition = story_object.layer
-        self.alpha     = 1.0001 - story_object.transparency
-        self.name      = story_object.path
-        @av_player     = AVDummy.new
       end
     end
 
