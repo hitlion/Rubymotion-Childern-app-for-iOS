@@ -4,6 +4,11 @@
 module Scene
   # Common methods used by the various node classes
   module NodeHelpersMixin
+    def dealloc
+      self.texture = nil if self.is_a? SKSpriteNode
+      lp "dealloc -> #{self}"
+    end
+
     # Calculate the pixel size for a node based on a reliative size,
     # reference size and scale mode.
     #
@@ -21,16 +26,16 @@ module Scene
     def calculate_node_size( relative_size, aspect_ratio, scale_mode = :scale )
       case scale_mode
       when :aspect_fit, :aspect_fit_x
-        CGSize.new(device.scaled_width * relative_size.width,
-                   (device.scaled_width * relative_size.height) / aspect_ratio)
+        CGSize.new(device.screen_width * relative_size.width,
+                   (device.screen_width * relative_size.height) / aspect_ratio)
 
       when :aspect_fit_y
-        CGSize.new((device.scaled_width * relative_size.height) / aspect_ratio,
-                   device.scaled_width * relative_size.height)
+        CGSize.new((device.screen_width * relative_size.height) / aspect_ratio,
+                   device.screen_width * relative_size.height)
 
       else # defaults to :scale
-        CGSize.new(device.scaled_width * relative_size.width,
-                   device.scaled_height * relative_size.height)
+        CGSize.new(device.screen_width * relative_size.width,
+                   device.screen_height * relative_size.height)
       end
     end
 
@@ -43,8 +48,8 @@ module Scene
     # @return [CGPoint] A pixel position matching the given constrains.
     def calculate_node_position( relative_position, node_size )
       # NOTE: SpriteKit uses a bottom-left coordinate system
-      tmp = CGPoint.new(device.scaled_width * relative_position.x,
-                        device.scaled_height - (device.scaled_height * relative_position.y))
+      tmp = CGPoint.new(device.screen_width * relative_position.x,
+                        device.screen_height - (device.screen_height * relative_position.y))
       # move the top-left based coordinates to center based versions
       CGPoint.new(tmp.x + node_size.width / 2.0,
                   tmp.y - node_size.height / 2.0)
@@ -56,8 +61,8 @@ module Scene
     # @param [CGSize] node_size The current size in pixels.
     # @return [CGSize] The relative size in the range 0.0...1.0.
     def calculate_relative_size( node_size )
-      CGSize.new(('%.2f' % (node_size.width / device.scaled_width)).to_f,
-                 ('%.2f' % (node_size.height / device.scaled_height)).to_f)
+      CGSize.new(('%.2f' % (node_size.width / device.screen_width)).to_f,
+                 ('%.2f' % (node_size.height / device.screen_height)).to_f)
     end
 
     # Calculate the relative position of +node_position+ based on the
@@ -69,10 +74,10 @@ module Scene
     # @return [CGPoint] The relative top-left position in range 0.0...1.0.
     def calculate_relative_position( node_position, node_size )
       tmp = CGPoint.new(node_position.x - node_size.width / 2.0,
-                        device.scaled_height - (node_position.y + node_size.height / 2.0))
+                        device.screen_height - (node_position.y + node_size.height / 2.0))
 
-      CGPoint.new(('%.2f' % (tmp.x / device.scaled_width)).to_f,
-                  ('%.2f' % (tmp.y / device.scaled_height)).to_f)
+      CGPoint.new(('%.2f' % (tmp.x / device.screen_width)).to_f,
+                  ('%.2f' % (tmp.y / device.screen_height)).to_f)
     end
   end
 end
