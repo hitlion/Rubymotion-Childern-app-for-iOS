@@ -105,6 +105,11 @@ class StoryLoggerView < UIView
     end
   end
 
+  def clear!
+    @all_messages.attributedText = NSAttributedString.alloc.initWithString('')
+    @script_messages.attributedText = NSAttributedString.alloc.initWithString('')
+  end
+
   private
 
   def add_log_message( log_view, message )
