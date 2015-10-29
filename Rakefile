@@ -73,8 +73,7 @@ Motion::Project::App.setup do |app|
 
     if ENV['staging'] == 'true'
       app.entitlements['get-task-allow'] = false
-      #app.instance_eval{ @embed_dsym = true }
-      app.embed_dsym = true # embedd dsyms in ad-hoc releases
+      #app.embed_dsym = true # embedd dsyms in ad-hoc releases
 
       Motion::Project::App.info('Setup', 'Configuring ad-hoc development build')
       app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
