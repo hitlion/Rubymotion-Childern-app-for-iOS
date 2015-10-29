@@ -2,13 +2,11 @@ class AppDelegate < PM::Delegate
   status_bar true, animation: :fade
   tint_color rmq.color.white
 
-  include HockeyKitIntegration if defined? HockeyKitIntegration
   include CrashlyticsIntegration if defined? CrashlyticsIntegration
 
   def on_load( app, options )
     return if RUBYMOTION_ENV == 'test'
 
-    self.setupHockeyKit if self.respond_to? :setupHockeyKit
     self.setupCrashlytics if self.respond_to? :setupCrashlytics
 
     open StoryListScreen.new(nav_bar: true , nav_controller: AutoRotatingNavigationController)

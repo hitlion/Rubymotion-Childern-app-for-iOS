@@ -64,7 +64,6 @@ Motion::Project::App.setup do |app|
   app.pods do
       pod 'Fabric'
       pod 'Crashlytics', '= 3.1.0'
-      pod 'HockeyKit'
   end
 
   if ENV['staging'] == 'true' or app.development?
@@ -119,65 +118,6 @@ end
 YARD::Rake::YardocTask.new # include YARD rake task
 
 namespace :beta do
-
-desc 'Deploy an ad-hoc build to a HockeyKit server'
-task :deploy do
-  deploy_server = ENV['RM_HOCKEY_SERVER']
-  deploy_path   = ENV['RM_HOCKEY_PATH']
-  editor        = ENV['EDITOR']
-
-  if deploy_path.nil? or deploy_server.nil?
-    Motion::Project::App.fail('Please set the RM_HOCKEY_SERVER and RM_HOCKEY_PATH environment variables!')
-  end
-
-  if editor.nil?
-    # we need to provide some release-notes after all..
-    Motion::Project::App.fail('Please set the EDITOR environment variable!')
-  end
-
-  Motion::Project::App.info('Deploy', 'Preparing release notes template..')
-  Dir.mktmpdir('deploy', nil) do |tmpdir|
-    tagline ='~~ write your release notes above and then delete this line, markdown syntax is expected ~~'
-
-    open("#{tmpdir}/release.md", 'w') do |io|
-      io.write(tagline)
-    end
-
-    system("#{editor} #{tmpdir}/release.md")
-    notes = File.read("#{tmpdir}/release.md")
-
-    if notes[/#{tagline}/]
-      Motion::Project::App.warn('No changes to the release notes detected, aborting.')
-    else
-      app = Motion::Project::App
-
-      app.info('Create', 'Creating release.html')
-      markdown = Redcarpet::Markdown.new(Redcarpet::Render::XHTML,
-                                         autolink: true,
-                                         tables: true,
-                                         underline: true,
-                                         strikethrough: true,
-                                         no_intra_emphasis: true,
-                                         fenced_code_blocks: true)
-
-      open("#{tmpdir}/release.html", 'w') { |io| io.write(markdown.render(notes)) }
-
-      app.info('Create', 'Creating application.plist')
-      open("#{tmpdir}/application.plist", 'w') do |io|
-        io.write(File.read(File.join(app.config.versionized_build_dir(app.config.deploy_platform), 'manifest.plist')))
-      end
-
-      app.info('Copy', "Copying assets to #{deploy_server}:#{deploy_path}..")
-      release = [ 
-        app.config.archive(),
-        "#{tmpdir}/application.plist",
-        "#{tmpdir}/release.html"
-      ]
-
-      system("scp #{ENV['RM_SCP_OPTIONS'] || ''} #{release.join(' ')} #{deploy_server}:#{deploy_path}/")
-    end
-  end
-end
 
 task :fabric_send do
   app = Motion::Project::App
