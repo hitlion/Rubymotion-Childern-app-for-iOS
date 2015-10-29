@@ -1,10 +1,12 @@
 PODS:
   - Crashlytics (3.1.0)
-  - Fabric (1.4.0):
-    - Fabric/Base (= 1.4.0)
-  - Fabric/Base (1.4.0)
+  - Fabric (1.5.1):
+    - Fabric/Base (= 1.5.1)
+  - Fabric/Base (1.5.1)
   - HockeyKit (2.0.7)
-  - IQAudioRecorderController (1.0.0)
+  - IQAudioRecorderController (1.0.1):
+    - SCSiriWaveformView
+  - SCSiriWaveformView (1.0.3)
   - zipzap (8.0.4)
 
 DEPENDENCIES:
@@ -16,9 +18,10 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Crashlytics: 93e2f86363d53c002c6366a9d87e41f2eaee87c3
-  Fabric: 6d1d1c1eaf7ebc76fc3307e2c0259456411baf26
+  Fabric: 03c3b3fe77e11a2bc31421b989a9c7adaa4779a5
   HockeyKit: 50c665e93ffec19f784de76563b9f4aecf467ae8
-  IQAudioRecorderController: c4d77b3112184f034f3a64a2ac619df46c3b7040
+  IQAudioRecorderController: 8b63465b6f8b5c81c9faa4475c946536d9fb43d7
+  SCSiriWaveformView: b8b2756af42addcd31900c3945f24edafefb5395
   zipzap: 45be5e182aead61fbb8300ddb4766f8e82a557c4
 
 COCOAPODS: 0.38.2
