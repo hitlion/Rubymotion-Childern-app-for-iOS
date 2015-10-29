@@ -46,11 +46,22 @@ class AgeVerificationScreen < PM::Screen
   end
 
   def pickerView(pickerView, numberOfRowsInComponent:component)
-    10
+    elements = 0
+
+    elements = 10 if component == 3
+    elements = 10 if component == 2
+    elements = 10 if component == 1
+    elements = 2 if component == 0
+
+    elements
   end
 
   def pickerView(pickerView, titleForRow:row, forComponent:component)
-    row.to_s
+    if(component == 0)
+      (row+1).to_s
+    else
+      row.to_s
+    end
   end
 
   def numberOfComponentsInPickerView(pickerView)
@@ -59,10 +70,10 @@ class AgeVerificationScreen < PM::Screen
 
   def pickerView(pickerView, didSelectRow:row, inComponent:component)
 
-    @num0 = row if component == 0
-    @num1 = row if component == 1
-    @num2 = row if component == 2
-    @num3 = row if component == 3
+    @num0 = row+1 if component == 0
+    @num1 = row   if component == 1
+    @num2 = row   if component == 2
+    @num3 = row   if component == 3
 
     @num = @num0 * 1000 + @num1 * 100 + @num2 * 10 + @num3
 
