@@ -4,68 +4,83 @@ class StoryPlayerScreen < PM::Screen
 
   attr_accessor :story_bundle
 
+  class << self
+    attr_accessor :instance
+
+    def get( bundle )
+      StoryPlayerScreen.instance ||= StoryPlayerScreen.new(nav_bar: false)
+      StoryPlayerScreen.instance.story_bundle = bundle unless bundle.nil?
+      StoryPlayerScreen.instance
+    end
+
+    def dispose!
+      StoryPlayerScreen.instance = nil
+    end
+  end
+
   def on_load
     rmq(self.view).apply_style(:root)
 
+    @player = rmq.unshift!(ScenePlayer, :scene_player)
+
     if app.development? || app.ad_hoc_release?
       @logger = rmq(self.view).append(StoryLoggerView).tag(:logger).get
+      rmq(@player).append(@logger) unless @logger.nil?
     end
   end
 
   def will_appear
-    @scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]')
-    @player = rmq.unshift!(ScenePlayer, :scene_player)
-    @player.presentScene(@scene)
+    scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]')
 
-    rmq(@player).append(@logger) unless @logger.nil?
+    @logger.clear! unless @logger.nil?
+    @player.presentScene(nil)
+    @player.presentScene(scene)
 
-    JavaScript::Runtime.prepare_for(@story_bundle, @scene)
+    JavaScript::Runtime.prepare_for(@story_bundle, scene)
   end
 
   def on_appear
     JavaScript::Runtime.send_event(':body', :at_load, async: false )
-    JavaScript::Runtime.send_event(@scene.name, :at_load)
+    JavaScript::Runtime.send_event(@player.scene.name, :at_load)
   end
 
-  def on_dismiss
-    rmq(@logger).remove
-    rmq(@player).remove
+  def will_disappear
+    unless @player.scene.nil?
+      @player.scene.removeAllChildren
+      @player.scene.removeAllActions
+      @player.scene.removeFromParent
+    end
 
-    @scene.removeAllChildren unless @scene.nil?
+    @logger.clear! unless @logger.nil?
+    @player.presentScene(nil)
 
     @story_bundle = nil
-    @player = nil
-    @scene  = nil
-
     JavaScript::Runtime.tear_down
   end
 
   def show_scene( target )
     transition_image = create_transition_image
-    rmq(@logger).remove
-    rmq(@player).remove
 
-    @scene.removeAllChildren unless @scene.nil?
+    unless @player.scene.nil?
+      @player.scene.removeAllChildren
+      @player.scene.removeAllActions
+      @player.scene.removeFromParent
+    end
+    @player.presentScene(nil)
 
-    @player = nil
-    @scene  = nil
+    scene  = SceneFactory.create_scene(@story_bundle, target)
 
-    @scene  = SceneFactory.create_scene(@story_bundle, target)
-
-    if @scene.nil?
+    if scene.nil?
       # FIXME
       lp "bailouto"
       return
     end
-    @scene.addChild(transition_image)
+    scene.addChild(transition_image)
 
-    @player = rmq.unshift!(ScenePlayer, :scene_player)
-    @player.presentScene(@scene)
+    @player.presentScene(scene)
 
-    rmq(@player).append(@logger) unless @logger.nil?
-
-    JavaScript::Runtime.get.scene_root = @scene
-    JavaScript::Runtime.send_event(@scene.name, :at_load)
+    JavaScript::Runtime.get.scene_root = scene
+    JavaScript::Runtime.send_event(@player.scene.name, :at_load)
   end
 
   private
@@ -75,14 +90,15 @@ class StoryPlayerScreen < PM::Screen
   #
   # @return [SKSpriteNode]
   def create_transition_image
-    texture = @player.textureFromNode(@scene)
+    texture = @player.textureFromNode(@player.scene)
     SKSpriteNode.spriteNodeWithTexture(texture).tap do |node|
-      node.size      = @scene.size
+      node.size      = @player.scene.size
       node.position  = CGPoint.new(node.size.width / 2.0, node.size.height / 2.0)
       node.zPosition = 10_000
       node.runAction(SKAction.sequence([
         SKAction.fadeOutWithDuration(0.75),
-        SKAction.removeFromParent
+        SKAction.removeFromParent,
+        SKAction.runBlock(-> {node.texture = nil})
       ]))
     end
   end
