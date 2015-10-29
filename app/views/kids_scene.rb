@@ -335,7 +335,8 @@ class KidsScene < SKScene
   # Touch Event / clicked Methods
   #################
   def parent_button_clicked
-    StartScreen.next_screen= :age_verification_screen
+    StartScreen.next_screen = :age_verification_screen
+    StartScreen.last_screen = :kids_menu
     rmq.screen.open_root_screen(StartScreen)
   end
 
@@ -347,6 +348,7 @@ class KidsScene < SKScene
   def play_story( story )
     StartScreen.next_story = story
     StartScreen.next_screen = :story_player
+    StartScreen.last_screen = :kids_menu
     rmq.screen.open_root_screen(StartScreen)
   end
   ############################

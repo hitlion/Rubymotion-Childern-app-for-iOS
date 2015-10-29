@@ -112,7 +112,10 @@ class StoryListScreen < PM::TableScreen
     return if args[:bundle].nil?
     return unless args[:bundle].valid?
 
-    open_modal StoryPlayerScreen.get(args[:bundle])
+    StartScreen.next_story = args[:bundle]
+    StartScreen.next_screen = :story_player
+    StartScreen.last_screen = :parent_menu
+    rmq.screen.open_root_screen(StartScreen)
   end
 
   def show_error_alert
@@ -122,6 +125,7 @@ class StoryListScreen < PM::TableScreen
 
   def go_to_kids_menu
     StartScreen.next_screen= :kids_menu
+    StartScreen.last_screen = :parent_menu
     rmq.screen.open_root_screen(StartScreen)
   end
 

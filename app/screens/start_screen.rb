@@ -3,6 +3,7 @@ class StartScreen < PM::Screen
   class << self
     attr_accessor :next_screen
     attr_accessor :next_story
+    attr_accessor :last_screen
   end
 
   title "Start Screen"
@@ -28,8 +29,8 @@ class StartScreen < PM::Screen
   end
 
   def start_story
-    open_modal StoryPlayerScreen.new(nav_bar: false,
-                                     story_bundle: StartScreen.next_story)
+    StartScreen.next_screen = StartScreen.last_screen
+    open_modal StoryPlayerScreen.get(StartScreen.next_story)
   end
 
   def on_appear(args={})

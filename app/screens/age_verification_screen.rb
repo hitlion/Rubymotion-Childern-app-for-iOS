@@ -35,13 +35,13 @@ class AgeVerificationScreen < PM::Screen
   end
 
   def ok_pressed
-    #if(DateTime.now.year - @num > 17)
-    #  StartScreen.next_screen= :parent_menu
-    #  rmq.screen.open_root_screen(StartScreen)
-    #else
-    #  StartScreen.next_screen= :kids_menu
-    #  rmq.screen.open_root_screen(StartScreen)
-    #end
+    if(Time.now.year - @num > 17)
+       StartScreen.next_screen= :parent_menu
+       rmq.screen.open_root_screen(StartScreen)
+    else
+      StartScreen.next_screen= :kids_menu
+      rmq.screen.open_root_screen(StartScreen)
+    end
 
   end
 
