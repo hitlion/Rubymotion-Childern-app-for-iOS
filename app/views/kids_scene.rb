@@ -67,6 +67,9 @@ class KidsScene < SKScene
     add_rope
 
     add_joints
+
+    add_version_number
+
   end
 
   ##
@@ -329,6 +332,16 @@ class KidsScene < SKScene
     background.size = CGSizeMake(@width,@height)
 
     addChild background
+  end
+
+  def add_version_number
+    label = SKLabelNode.labelNodeWithText(app.version)
+    label.position = CGPointMake(30,10)
+    label.zPosition = 100
+    label.fontSize = 15
+    label.fontColor = UIColor.blackColor
+    label.fontName = FONT
+    addChild label
   end
 
   #################
