@@ -15,33 +15,14 @@ class AgeVerificationStylesheet < ApplicationStylesheet
 
   def age_input_field(st)
     st.frame = {w: 225, below_prev:10, h:45, centered: :horizontal}
-    st.background_color = color.orange
+    #st.background_color = color.orange
   end
 
-  def age_input_field1(st)
-    st.frame = {l:5, w:50, t:5, fb:5}
-    st.background_color = color.white
-  end
-
-  def age_input_field2(st)
-    st.frame = {rop:5, w:50, t:5, fb:5}
-    st.background_color = color.white
-  end
-
-  def age_input_field3(st)
-    st.frame = {rop:5, w:50, t:5, fb:5}
-    st.background_color = color.white
-  end
-
-  def age_input_field4(st)
-    st.frame = {rop:5, w:50, t:5, fb:5}
-    st.background_color = color.white
-  end
 
   def age_verification_button(st)
     st.frame = {w: 225, below_prev:10, h:45, centered: :horizontal}
     st.text = "OK"
-    st.background_color = color.orange
+    #st.background_color = color.orange
   end
 
 end
