@@ -10,7 +10,7 @@ class StartScreenStyleSheet < ApplicationStylesheet
 
   def logo(st)
     st.frame = {l:100, fr:100, below_prev:20, fb:20}
-    st.image = image.resource('logo')
+    st.image = image.resource('Logo')
   end
 
 end
