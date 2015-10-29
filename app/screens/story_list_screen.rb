@@ -120,9 +120,7 @@ class StoryListScreen < PM::TableScreen
     return if args[:bundle].nil?
     return unless args[:bundle].valid?
 
-    open_modal StoryPlayerScreen.new(nav_bar: false,
-                                     nav_controller: AutoRotatingNavigationController,
-                                     story_bundle: args[:bundle])
+    open_modal StoryPlayerScreen.get(args[:bundle])
   end
 
   def show_error_alert
