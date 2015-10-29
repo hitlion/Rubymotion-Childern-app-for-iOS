@@ -96,12 +96,12 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.131'
+  app.short_version = app.version = '1.0.133'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :landscape_right]
 
-  app.sdk_version = '9.0'
+  app.sdk_version = '9.1'
   app.deployment_target = '7.1'
   app.icons = ['AppIcon']
 
@@ -215,6 +215,7 @@ task :fabric_send do
 end
 
 task :deploy => 'archive:distribution'
+task :fabric_send => 'archive:distribution'
 task :fabric => ['beta:deploy', 'beta:fabric_send']
 
 end
