@@ -158,10 +158,9 @@ class KidsScene < SKScene
   # This methods initialize the member variables
   #
   def init_values
-    @story_list = StoryBundle.bundles
+    @story_list = StoryBundle.bundles.select { |b| b.valid? }
     @height     ||= CGRectGetHeight(self.frame)
     @width      ||= CGRectGetWidth(self.frame)
-    @stories    ||= []
     @rope_line  ||= @height * ROPE_LINE_Y
     @height_center_pic ||= @height * SIZE_CENTER_STORY
     @height_other_pic  ||= @height * SIZE_OTHER_STORY
@@ -255,7 +254,10 @@ class KidsScene < SKScene
 
     end
 
-    @center_node = childNodeWithName(@story_list.first.document.set_name)
+    if(!@story_list.empty?)
+      @center_node = childNodeWithName(@story_list.first.document.set_name)
+    end
+
 
     scale_all_small
     scale_mid_big
@@ -285,6 +287,8 @@ class KidsScene < SKScene
   # Add and define the rope sprite
   #
   def add_rope
+
+    return if @story_list.empty?
 
     rope_width = childNodeWithName(@story_list.last.document.set_name).position.x
                 - childNodeWithName(@story_list.first.document.set_name).position.x + 3 * frame.size.width
@@ -374,6 +378,11 @@ class KidsScene < SKScene
   # param duration The duration for this animation
   #
   def move_rope_by_x(x_distance, duration)
+
+    rope = self.childNodeWithName(ELEMENT_ROPE_NAME)
+
+    return if (rope.nil? || @story_list.empty?)
+
     if @center_node.equal?(childNodeWithName(@story_list.first.document.set_name)) &&
         childNodeWithName(@story_list.first.document.set_name).position == @center_point && x_distance >= 0
       return
@@ -407,15 +416,18 @@ class KidsScene < SKScene
   #
   def scale_mid_big
     scale_all_small
-    @center_node.scale = @big_scale
+
+    @center_node.scale = @big_scale if @centernode
   end
 
   ##
   # Set the scale property from all elements of the @stories array to @small_scale
   #
   def scale_all_small
-    @story_list.each do |s|
-      childNodeWithName(s.document.set_name).scale = @small_scale
+    if(!@story_list.empty?)
+      @story_list.each do |s|
+        childNodeWithName(s.document.set_name).scale = @small_scale
+      end
     end
   end
 
@@ -423,6 +435,9 @@ class KidsScene < SKScene
   # If the current position of the @center_node is not the @center_point, than move the rope
   # by the diff between these two points
   def center_story_pics
+
+    return if @center_node.nil? || !@init
+
     if @init && @center_node.position != @center_point
       move_rope_by_x(@center_point.x - @center_node.position.x,0.05)
     end
