@@ -40,6 +40,7 @@ class StoryListScreen < PM::TableScreen
   # @todo: Handle branch data
   def reload_bundles
     @story_bundles = StoryBundle.bundles
+    #@story_bundles.sort{|s| s.document.timestamp}
   end
 
   # Create a ProMotion compatible cell data +Hash+ from the given +StoryBundle+

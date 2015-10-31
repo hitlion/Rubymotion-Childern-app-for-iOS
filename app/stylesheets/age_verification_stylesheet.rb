@@ -8,19 +8,19 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def logo(st)
-    st.frame = {l:150, fr:150, below_prev:20, h:200}
-    st.image = image.resource('logo')
+    st.frame = {w: 0.5 * device.screen_width, below_prev:20, h: 0.5 * device.screen_height, centered: :horizontal}
+    st.image = image.resource('Logo')
     #st.background_color = color.white
   end
 
   def age_input_field(st)
-    st.frame = {w: 225, below_prev:10, h:45, centered: :horizontal}
+    st.frame = {w: 0.5 * device.screen_width, below_prev:10,  h: 0.2 * device.screen_height, centered: :horizontal}
     #st.background_color = color.orange
   end
 
 
   def age_verification_button(st)
-    st.frame = {w: 225, below_prev:10, h:45, centered: :horizontal}
+    st.frame = {w: 0.5 * device.screen_width, below_prev:10,  h: 0.2 * device.screen_height, centered: :horizontal}
     st.text = "OK"
     #st.background_color = color.orange
   end

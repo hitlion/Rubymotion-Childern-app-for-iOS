@@ -159,6 +159,7 @@ class KidsScene < SKScene
   #
   def init_values
     @story_list = StoryBundle.bundles.select { |b| b.valid? }
+   # @story_list.sort{|s| s.document.timestamp}
     @height     ||= CGRectGetHeight(self.frame)
     @width      ||= CGRectGetWidth(self.frame)
     @rope_line  ||= @height * ROPE_LINE_Y
@@ -416,8 +417,9 @@ class KidsScene < SKScene
   #
   def scale_mid_big
     scale_all_small
-
-    @center_node.scale = @big_scale if @centernode
+    if(!@center_node.nil?)
+      @center_node.scale = @big_scale
+    end
   end
 
   ##

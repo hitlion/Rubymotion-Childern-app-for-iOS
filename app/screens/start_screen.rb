@@ -21,7 +21,7 @@ class StartScreen < PM::Screen
   end
 
   def go_to_parent
-    open StoryListScreen.new(nav_bar: true)
+    open ParentScreen.new
   end
 
   def go_to_age_verification

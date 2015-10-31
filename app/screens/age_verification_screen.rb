@@ -6,6 +6,7 @@ class AgeVerificationScreen < PM::Screen
   # Initial view setup
   def on_load
 
+    @num  = 9999
     @num0 = 1
     @num1 = 0
     @num2 = 0

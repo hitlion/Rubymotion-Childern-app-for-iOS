@@ -22,6 +22,7 @@ class StoryBundle
           self.bundle_list << bundle
         end
       end
+
       self.bundle_list
     end
   end
