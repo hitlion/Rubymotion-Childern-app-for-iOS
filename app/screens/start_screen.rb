@@ -33,6 +33,10 @@ class StartScreen < PM::Screen
     open_modal StoryPlayerScreen.get(StartScreen.next_story)
   end
 
+  def go_to_test
+    open TestScreen.new
+  end
+
   def on_appear(args={})
 
     if(StartScreen.next_screen.nil?)

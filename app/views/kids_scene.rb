@@ -291,8 +291,7 @@ class KidsScene < SKScene
 
     return if @story_list.empty?
 
-    rope_width = childNodeWithName(@story_list.last.document.set_name).position.x
-                - childNodeWithName(@story_list.first.document.set_name).position.x + 3 * frame.size.width
+    rope_width = childNodeWithName(@story_list.last.document.set_name).position.x - childNodeWithName(@story_list.first.document.set_name).position.x + 3 * device.screen_width
 
     rope = SKSpriteNode.spriteNodeWithColor(UIColor.clearColor, size: CGSizeMake(rope_width, @height / 100))
     rope.name = ELEMENT_ROPE_NAME
@@ -309,11 +308,13 @@ class KidsScene < SKScene
 
     texture = SKTexture.textureWithImageNamed("Seil.png")
 
+    width = device.screen_width
 
+    y = (rope_width / width).round
 
-    3.times do |i|
+    y.times do |i|
       rope_part = SKSpriteNode.spriteNodeWithTexture(texture)
-      rope_part.size = CGSizeMake(1024,15)
+      rope_part.size = CGSizeMake(width,15)
       rope_part.anchorPoint = CGPointMake(0,0.5)
       rope_part.position = CGPointMake (0 + i * 1024 , 0)
       rope_part.zPosition = 0
