@@ -54,6 +54,9 @@ Motion::Project::App.setup do |app|
     end
   end
 
+  app.info_plist['UIAppFonts'] = ['Enriqueta-Bold.otf', 'Enriqueta-Regular.otf']
+
+
   # pods used in all configurations
   app.pods do
     pod 'IQAudioRecorderController'
