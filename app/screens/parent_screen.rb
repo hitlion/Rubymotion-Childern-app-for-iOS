@@ -2,28 +2,30 @@ class ParentScreen < PM::Screen
 
   title "Elternmenue"
 
+  attr_accessor :story_list
+
   LEFT_LABEL_X_POS      = 0.02  # * navbar width
   LEFT_BUTTON_X_POS     = 0.5   # * navbar width
   MIDDLE_BUTTON_X_POS   = 0.6   # * navbar width
   RIGHT_BUTTON_X_POS    = 0.7   # * navbar width
   NAVBAR_ELEMENT_HEIGHT = 0.7   # * navbar height
-  NAVBAR_HEIGHT         = 0.125   # * screen_height
-  STORY_VIEW_HEIGHT     = 0.39   # * screen_height
+  NAVBAR_HEIGHT         = 0.125 # * screen_height
+  STORY_VIEW_HEIGHT     = 0.39  # * screen_height
   SUB_HEADER_HEIGHT     = 0.08  # * screen_height
   SUB_LINE_HEIGHT       = 0.02  # * screen_height
-  LEVEL_VIEW_HEIGHT     = 0.275   # * screen_height
-  TAB_BAR_HEIGHT        = 0.11   # * screen_height
+  LEVEL_VIEW_HEIGHT     = 0.275 # * screen_height
+  TAB_BAR_HEIGHT        = 0.11  # * screen_height
 
 
   CellIdentifier = 'MyCell'
 
   def on_load
-    lp "test Robert"
+    @story_list = StoryBundle.bundles.select { |b| b.valid? }
   end
 
   def will_appear
 
-    @babbo_bar_grey = UIColor.colorWithRed(242.0/255.0, green: 242.0/255.0, blue: 242.0/255.0, alpha:1.0)
+    @babbo_bar_grey = UIColor.colorWithRed(247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha:1.0)
     @babbo_line_grey = UIColor.colorWithRed(200.0/255.0, green: 200.0/255.0, blue: 200.0/255.0, alpha:1.0)
 
     @parentmenu = UIView.alloc.initWithFrame(CGRectMake(0 ,0, device.screen_width, device.screen_height))
@@ -67,27 +69,27 @@ class ParentScreen < PM::Screen
     @left_label = UILabel.alloc.initWithFrame(CGRectMake(0.02 * navbar_width,0.2 * navbar_heigth,
                                                          0.5 * navbar_width,navbar_element_height))
     @left_label.text = "Alle Spiele"
-    @left_label.font = UIFont.fontWithName("Enriqueta-Bold", size:30)
+    @left_label.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
 
     @own_nav_bar.addSubview @left_label
 
     @goto_kids_button = add_button_element_with_image(UIImage.imageNamed("Spielplatz_64.png"),
                                   displayName: "Spielplatz",
-                                  fontSize: 11,
+                                  fontSize: 13,
                                   position: CGPointMake(0.59 * navbar_width, 0.2 * navbar_heigth),
                                   size: CGSizeMake(navbar_element_height, navbar_element_height),
                                   action: "goto_kids_menu")
 
     @goto_shop_button = add_button_element_with_image(UIImage.imageNamed("Shop_64.png"),
                                   displayName: "Shop",
-                                  fontSize: 11,
+                                  fontSize: 13,
                                   position: CGPointMake(0.68 * navbar_width, 0.2 * navbar_heigth),
                                   size: CGSizeMake(navbar_element_height, navbar_element_height),
                                   action: "goto_shop")
 
     @goto_option_button = add_button_element_with_image(UIImage.imageNamed("Menu_64.png"),
                                   displayName: "Optionen",
-                                  fontSize: 11,
+                                  fontSize: 13,
                                   position: CGPointMake(0.77 * navbar_width, 0.2 * navbar_heigth),
                                   size: CGSizeMake(navbar_element_height, navbar_element_height),
                                   action: "goto_options")
@@ -209,21 +211,21 @@ class ParentScreen < PM::Screen
 
     @goto_stories_button = add_button_element_with_image(UIImage.imageNamed("Buch_64.png"),
                                                         displayName: "Stories",
-                                                        fontSize: 13,
+                                                        fontSize: 15,
                                                         position: CGPointMake(0.33 * @tab_bar.frame.size.width, 0.1 * @tab_bar.frame.size.height),
                                                         size: CGSizeMake(button_size, button_size),
                                                         action: "goto_stories")
 
     @goto_videos_button = add_button_element_with_image(UIImage.imageNamed("Videos_64.png"),
                                                        displayName: "Videos",
-                                                       fontSize: 13,
+                                                       fontSize: 15,
                                                        position: CGPointMake(0.465 * @tab_bar.frame.size.width, 0.1 * @tab_bar.frame.size.height),
                                                        size: CGSizeMake(button_size, button_size),
                                                        action: "goto_videos")
 
     @goto_games_button = add_button_element_with_image(UIImage.imageNamed("Spiele_64.png"),
                                                        displayName: "Spiele",
-                                                       fontSize: 13,
+                                                       fontSize: 15,
                                                        position: CGPointMake(0.6 * @tab_bar.frame.size.width, 0.1 * @tab_bar.frame.size.height),
                                                        size: CGSizeMake(button_size, button_size),
                                                        action: "goto_games:")
