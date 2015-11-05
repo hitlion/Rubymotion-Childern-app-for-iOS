@@ -324,6 +324,14 @@ class ParentScreen < PM::Screen
     c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos1.frame.origin.x <=> pos2.frame.origin.x}
     @level_collection_view.scrollToItemAtIndexPath(@level_collection_view.indexPathForCell(c[1]),
                                                    atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
+
+    c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos1.frame.origin.x <=> pos2.frame.origin.x}
+
+    lp indexPathForCell(c[0]).item
+
+    #@button_left.hidden = true
+
+
   end
 
   def scroll_level_list_right

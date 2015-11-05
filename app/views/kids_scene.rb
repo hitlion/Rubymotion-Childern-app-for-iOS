@@ -148,6 +148,8 @@ class KidsScene < SKScene
 
     self.runAction(moveSequence)
 
+
+
   end
 
   #######################
