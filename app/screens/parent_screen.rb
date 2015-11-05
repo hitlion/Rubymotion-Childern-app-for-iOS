@@ -226,7 +226,7 @@ class ParentScreen < PM::Screen
                                                        fontSize: 13,
                                                        position: CGPointMake(0.6 * @tab_bar.frame.size.width, 0.1 * @tab_bar.frame.size.height),
                                                        size: CGSizeMake(button_size, button_size),
-                                                       action: "goto_games")
+                                                       action: "goto_games:")
 
     @tab_bar.addSubview(@goto_stories_button)
     @tab_bar.addSubview(@goto_videos_button)
@@ -308,8 +308,8 @@ class ParentScreen < PM::Screen
 
   end
 
-  def goto_games
-
+  def goto_games(sender)
+    lp ["sender:", sender]
   end
 
   def goto_stories
