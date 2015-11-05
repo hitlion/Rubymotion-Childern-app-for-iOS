@@ -179,14 +179,14 @@ class ParentScreen < PM::Screen
     @button_left = UIButton.alloc.initWithFrame(CGRectMake(0, 0,
                                                            0.1 * @level_view.frame.size.width,
                                                            @level_view.frame.size.height))
-    @button_left.setImage(UIImage.imageNamed("Pfeil_links_64"), forState:UIControlStateNormal)
+    @button_left.setImage(UIImage.imageNamed("previous"), forState:UIControlStateNormal)
 
     @button_left.addTarget(self, action: "scroll_level_list_right", forControlEvents: UIControlEventTouchUpInside)
 
     @button_right = UIButton.alloc.initWithFrame(CGRectMake(0.9 * @level_view.frame.size.width , 0,
                                                            0.1 * @level_view.frame.size.width,
                                                            @level_view.frame.size.height))
-    @button_right.setImage(UIImage.imageNamed("Pfeil_rechts_64"), forState:UIControlStateNormal)
+    @button_right.setImage(UIImage.imageNamed("next"), forState:UIControlStateNormal)
 
     @button_right.addTarget(self, action: "scroll_level_list_left", forControlEvents: UIControlEventTouchUpInside)
 
@@ -327,17 +327,33 @@ class ParentScreen < PM::Screen
 
     c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos1.frame.origin.x <=> pos2.frame.origin.x}
 
-    lp indexPathForCell(c[0]).item
+    lp @level_collection_view.indexPathForCell(c.last).item
 
-    #@button_left.hidden = true
+    if (@level_collection_view.indexPathForCell(c.last).item == 9)
+      @button_right.hidden = true
+    else
+      @button_right.hidden = false
+    end
 
-
+    @button_left.hidden = false
   end
 
   def scroll_level_list_right
     c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos2.frame.origin.x <=> pos1.frame.origin.x}
     @level_collection_view.scrollToItemAtIndexPath(@level_collection_view.indexPathForCell(c[1]),
                                                    atScrollPosition:UICollectionViewScrollPositionRight, animated:true)
+
+    c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos2.frame.origin.x <=> pos1.frame.origin.x}
+
+    #lp @level_collection_view.indexPathForCell(c.last).item
+
+    if (@level_collection_view.indexPathForCell(c.last).item == 0)
+      @button_left.hidden = true
+    else
+      @button_left.hidden = false
+    end
+
+    @button_right.hidden = false
   end
 
   # UICollectionView Instance Methods
