@@ -114,11 +114,16 @@ class KidsScene < SKScene
     story = @story_list.select{|s| s.document.set_name == @center_node.name}.first
 
     if @center_node.equal?(node)
-      play_story(story)
+      @story_selected = true
+      @selected_story = story
     elsif (@story_list.select{|s| s.document.set_name == node.name}.first) && (!node.equal?(@center_node))
       scale_all_small
       move_rope_by_x(@center_point.x - node.position.x, 0.35)
+
       @center_node = node
+
+      @story_selected = false
+      @selected_story = nil
     end
   end
 
@@ -135,12 +140,16 @@ class KidsScene < SKScene
     prev_location = touch.previousLocationInView(self.view)
 
     move_rope_by_x(location.x - prev_location.x, 0.01)
+
+    @story_selected = false
+    @selected_story = nil
   end
 
   ##
   # Called when the touch ended
   #
   def touchesEnded(touches, withEvent: event)
+
     moveSequence = SKAction.sequence([SKAction.waitForDuration(0.35, withRange: 0.01),
                                       SKAction.performSelector("center_story_pics", onTarget: self),
                                       SKAction.waitForDuration(0.2, withRange: 0.05),
@@ -148,8 +157,10 @@ class KidsScene < SKScene
 
     self.runAction(moveSequence)
 
-
-
+    if(@story_selected && @selected_story)
+      play_story(@selected_story)
+      @story_selected = false
+    end
   end
 
   #######################
@@ -229,7 +240,7 @@ class KidsScene < SKScene
       story_picture.zPosition = -3
       story_picture.anchorPoint = CGPointMake(0.5, 0.5)
       story_picture.position = CGPointMake(0, - 0.63 * texture.size.height)
-      story_picture.scale = (0.68 * texture.size.height) / story_picture.size.height
+      story_picture.scale = (0.4 * texture.size.height) / story_picture.size.height
       story.addChild story_picture
 
       clip = SKSpriteNode.spriteNodeWithImageNamed("Klammer")
