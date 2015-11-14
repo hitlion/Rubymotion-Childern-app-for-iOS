@@ -12,18 +12,26 @@ class AgeVerificationScreen < PM::Screen
     @num2 = 0
     @num3 = 0
 
-    set_nav_bar_button :left, title: "Back", action: :back_pressed
-    set_nav_bar_button :right, title: "Ok", action: :ok_pressed
+    view = append(UIView, :view)
+    back_view = append(UIView, :back_field)
+    back_view.append(UIButton, :back_button).on(:touch) do
+       back_pressed
+     end
+    back_view.append(UILabel, :back_label)
+    view.append(UIImageView, :babbo)
+    right_view = view.append(UIView, :right_view)
+    right_view.append(UIImageView, :logo)
+    right_view.append(UILabel, :label1)
+    right_view.append(UILabel, :label2)
 
-    append(UIImageView, :logo)
 
-    @year_picker = append!(UIPickerView, :age_input_field)
-    @year_picker.delegate = self
-    @year_picker.dataSource = self
+     @year_picker = right_view.append!(UIPickerView, :age_input_field)
+     @year_picker.delegate = self
+     @year_picker.dataSource = self
 
-    append(UIButton, :age_verification_button).on(:touch) do
-      ok_pressed
-    end
+     right_view.append(UIButton, :age_verification_button).on(:touch) do
+       ok_pressed
+     end
   end
 
   def will_appear

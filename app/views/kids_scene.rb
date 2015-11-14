@@ -139,7 +139,7 @@ class KidsScene < SKScene
     location = touch.locationInView(self.view)
     prev_location = touch.previousLocationInView(self.view)
 
-    move_rope_by_x(location.x - prev_location.x, 0.01)
+    move_rope_by_x(1.5 * (location.x - prev_location.x), 0.02)
 
     @story_selected = false
     @selected_story = nil
@@ -224,6 +224,8 @@ class KidsScene < SKScene
 
       story.name = s.document.set_name
 
+      lp story.name
+
       story.physicsBody = SKPhysicsBody.bodyWithRectangleOfSize(story.size)
       story.physicsBody.dynamic = true
       story.physicsBody.angularDamping = 5.0
@@ -236,7 +238,13 @@ class KidsScene < SKScene
       story_frame.position = CGPointMake(0, -texture.size.height)
       story.addChild story_frame
 
-      story_picture = SKSpriteNode.spriteNodeWithTexture(SKTexture.textureWithImage (UIImage.imageWithData(s.asset_data(s.document.thumbnail))))
+      if(s.asset_data(s.document.thumbnail))
+        image = SKTexture.textureWithImage (UIImage.imageWithData(s.asset_data(s.document.thumbnail)))
+      else
+        image = SKTexture.textureWithImage (UIImage.imageNamed("Testbild.png"))
+      end
+
+      story_picture = SKSpriteNode.spriteNodeWithTexture(image)
       story_picture.zPosition = -3
       story_picture.anchorPoint = CGPointMake(0.5, 0.5)
       story_picture.position = CGPointMake(0, - 0.63 * texture.size.height)
@@ -432,7 +440,7 @@ class KidsScene < SKScene
   def scale_mid_big
     scale_all_small
     if(!@center_node.nil?)
-      @center_node.scale = @big_scale
+      @center_node.runAction(SKAction.scaleTo(@big_scale, duration: 0.35))
     end
   end
 
@@ -442,7 +450,7 @@ class KidsScene < SKScene
   def scale_all_small
     if(!@story_list.empty?)
       @story_list.each do |s|
-        childNodeWithName(s.document.set_name).scale = @small_scale
+        childNodeWithName(s.document.set_name).runAction(SKAction.scaleTo(@small_scale, duration: 0.2))
       end
     end
   end
@@ -451,11 +459,10 @@ class KidsScene < SKScene
   # If the current position of the @center_node is not the @center_point, than move the rope
   # by the diff between these two points
   def center_story_pics
-
     return if @center_node.nil? || !@init
 
     if @init && @center_node.position != @center_point
-      move_rope_by_x(@center_point.x - @center_node.position.x,0.05)
+      move_rope_by_x(@center_point.x - @center_node.position.x,0.85)
     end
   end
 

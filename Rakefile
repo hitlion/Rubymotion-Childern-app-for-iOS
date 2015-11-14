@@ -97,7 +97,8 @@ Motion::Project::App.setup do |app|
   # generic configuration
 
   app.name = 'Babbo-Voco'
-  app.identifier = 'de.tuluh-tec.babbo-voco'
+  #app.identifier = 'de.tuluh-tec.babbo-voco'
+  app.identifier = 'com.rsc.babbo'
   app.short_version = app.version = '1.0.135'
 
   app.device_family = [:iphone, :ipad]
