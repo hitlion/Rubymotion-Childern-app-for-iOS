@@ -119,25 +119,27 @@ class ParentScreen < PM::Screen
     @story_layout = UICollectionViewFlowLayout.alloc.init
     @story_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
 
-    @story_view = UICollectionView.alloc.initWithFrame(CGRectMake(0, NAV_BAR_HEIGHT * device.screen_height,
-                                                                  device.screen_width, STORY_VIEW_HEIGHT * device.screen_height),
-                                                           collectionViewLayout: @story_layout)
-    @story_view.dataSource = self
-    @story_view.delegate = self
+    @story_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0, NAV_BAR_HEIGHT * device.screen_height,
+                                                                             device.screen_width, STORY_VIEW_HEIGHT * device.screen_height),
+                                                                  collectionViewLayout: @story_layout)
+    @story_collection_view.dataSource = self
+    @story_collection_view.delegate = self
 
-    itemSize = CGSizeMake(0.45 * device.screen_width, @story_view.frame.size.height)
+    height = @story_collection_view.frame.size.height
+    width  = (4 * height) / 3
+    size = CGSizeMake(width, height)
 
-    @story_layout.itemSize = itemSize
+    @story_layout.itemSize = size
 
-    make_story_collection_view_cells(itemSize)
+    make_story_collection_view_cells(size)
 
-    @story_view.contentInset = UIEdgeInsetsMake(0,0.25 * @story_view.frame.size.width,0,0.25 * @story_view.frame.size.width)
+    @story_collection_view.contentInset = UIEdgeInsetsMake(0, 0 * @story_collection_view.frame.size.width, 0, 0 * @story_collection_view.frame.size.width)
 
 
-    @story_view.registerClass(UICollectionViewCell, forCellWithReuseIdentifier:CellIdentifier)
-    @story_view.backgroundColor = UIColor.clearColor
+    @story_collection_view.registerClass(UICollectionViewCell, forCellWithReuseIdentifier:CellIdentifier)
+    @story_collection_view.backgroundColor = UIColor.clearColor
 
-    @parentmenu.addSubview(@story_view)
+    @parentmenu.addSubview(@story_collection_view)
   end
 
   ##
@@ -409,7 +411,7 @@ class ParentScreen < PM::Screen
 
   def play_story(button)
     cell  = button.superview.superview.superview
-    path = @story_view.indexPathForCell(cell)
+    path = @story_collection_view.indexPathForCell(cell)
     story = @story_list[path.row]
 
     StartScreen.next_story = story
@@ -424,7 +426,8 @@ class ParentScreen < PM::Screen
   def cell_left_button_pressed(button)
 
     cell  = button.superview.superview.superview
-    path = @story_view.indexPathForCell(cell)
+    lp cell
+    path = @story_collection_view.indexPathForCell(cell)
     story_level_list = @stories[path.row]
 
     if(@pressed_more_button)
@@ -435,11 +438,11 @@ class ParentScreen < PM::Screen
       else
         button.setTitle("Weniger", forState: UIControlStateNormal)
         @pressed_more_button.setTitle("Mehr", forState: UIControlStateNormal)
-        more(story_level_list)
+        more(story_level_list, path: path)
         @pressed_more_button = button
       end
     else
-      more(story_level_list)
+      more(story_level_list, path: path)
       button.setTitle("Weniger", forState: UIControlStateNormal)
       @pressed_more_button = button
     end
@@ -449,11 +452,16 @@ class ParentScreen < PM::Screen
   # more was pressed (left button in story view cell)
   # rebuild the level list and open the level collection view
   # hide the tipps and tricks section
-  def more(list)
+  def more(list, path: path)
     make_level_collection_view_cells(@level_layout.itemSize, list)
     @sub_header.text = "Erstellte Level"
     @level_view.hidden = false
     @tips_view.hidden = true
+
+    lp path
+    lp @story_collection_view.cellForItemAtIndexPath(path)
+
+    @story_collection_view.scrollToItemAtIndexPath(path, atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally, animated:true)
   end
 
   ##
@@ -467,11 +475,15 @@ class ParentScreen < PM::Screen
   end
 
   def scroll_tips_list_left
-
+    c = @tips_collection_view.visibleCells
+    destination = NSIndexPath.indexPathForRow(@tips_collection_view.indexPathForCell(c[0]).row + 1, inSection:0)
+    @tips_collection_view.scrollToItemAtIndexPath(destination, atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
   end
 
   def scroll_tips_list_right
-
+    c = @tips_collection_view.visibleCells
+    destination = NSIndexPath.indexPathForRow(@tips_collection_view.indexPathForCell(c[0]).row - 1, inSection:0)
+    @tips_collection_view.scrollToItemAtIndexPath(destination, atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
   end
 
   ##
@@ -480,18 +492,6 @@ class ParentScreen < PM::Screen
     c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos1.frame.origin.x <=> pos2.frame.origin.x}
     @level_collection_view.scrollToItemAtIndexPath(@level_collection_view.indexPathForCell(c[1]),
                                                    atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
-
-    c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos1.frame.origin.x <=> pos2.frame.origin.x}
-
-    lp @level_collection_view.indexPathForCell(c.last).item
-
-    if (@level_collection_view.indexPathForCell(c.last).item == 9)
-      @button_right.hidden = true
-    else
-      @button_right.hidden = false
-    end
-
-    @button_left.hidden = false
   end
 
   ##
@@ -500,16 +500,6 @@ class ParentScreen < PM::Screen
     c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos2.frame.origin.x <=> pos1.frame.origin.x}
     @level_collection_view.scrollToItemAtIndexPath(@level_collection_view.indexPathForCell(c[1]),
                                                    atScrollPosition:UICollectionViewScrollPositionRight, animated:true)
-
-    c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos2.frame.origin.x <=> pos1.frame.origin.x}
-
-    if (@level_collection_view.indexPathForCell(c.last).item == 0)
-      @button_left.hidden = true
-    else
-      @button_left.hidden = false
-    end
-
-    @button_right.hidden = false
   end
 
   def build_story_list
@@ -631,7 +621,7 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
 
   # UICollectionView Instance Methods
   def collectionView(view, numberOfItemsInSection:section)
-    return @stories.length if(view == @story_view)
+    return @stories.length if(view == @story_collection_view)
     return @level_collection_view_cells.length if(view == @level_collection_view)
     return 3 if(view == @tips_collection_view)
   end
@@ -639,7 +629,7 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   def collectionView(view, cellForItemAtIndexPath:path)
     c = view.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: path)
 
-    if(view == @story_view)
+    if(view == @story_collection_view)
       story = @story_collection_view_cells[path.row]
       view = c.contentView
       view.addSubview(story)

@@ -46,7 +46,7 @@ class StoryCellView < UIView
 
   def play_story(button)
     cell  = button.superview.superview.superview
-    path = @story_view.indexPathForCell(cell)
+    path = @story_collection_view.indexPathForCell(cell)
     story = @story_list[path.row]
 
     StartScreen.next_story = story
@@ -58,7 +58,7 @@ class StoryCellView < UIView
   def cell_left_button_pressed(button)
 
     cell  = button.superview.superview.superview
-    path = @story_view.indexPathForCell(cell)
+    path = @story_collection_view.indexPathForCell(cell)
     story = @story_list[path.row]
 
     if(@more_is_open)
