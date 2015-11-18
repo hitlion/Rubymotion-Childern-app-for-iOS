@@ -194,7 +194,8 @@ class KidsScene < SKScene
     element.name = name
     element.zPosition = z_pos
     element.position = CGPointMake(x_pos * @width, BUTTON_LINE_Y * @height)
-    element.scale = ((@height * SIZE_BUTTON_LINE_ELEMENT) / (element.size.height))
+    @button_scale = (@height * SIZE_BUTTON_LINE_ELEMENT) / (element.size.height)
+    element.scale = @button_scale
 
     addChild element
   end
@@ -365,7 +366,7 @@ class KidsScene < SKScene
     label = SKLabelNode.labelNodeWithText(app.version)
     label.position = CGPointMake(30,10)
     label.zPosition = 100
-    label.fontSize = 15
+    label.fontSize = 25
     label.fontColor = UIColor.blackColor
     label.fontName = FONT
     addChild label
@@ -375,6 +376,21 @@ class KidsScene < SKScene
   # Touch Event / clicked Methods
   #################
   def parent_button_clicked
+    parent_button_sequence = SKAction.sequence([SKAction.performSelector("toogle_parent_button", onTarget: self),
+                                                SKAction.waitForDuration(0.25, withRange: 0.05),
+                                                SKAction.performSelector("goto_parent_menu", onTarget: self)])
+
+
+    self.runAction(parent_button_sequence)
+  end
+
+  def toogle_parent_button
+    childNodeWithName(BUTTON_PARENT_NAME).runAction(SKAction.scaleTo(0.6, duration: 0.1))
+  end
+
+  def goto_parent_menu
+    childNodeWithName(BUTTON_PARENT_NAME).runAction(SKAction.scaleTo(@button_scale, duration: 0.1))
+    SKAction.waitForDuration(0.15, withRange: 0.05)
     StartScreen.next_screen = :age_verification_screen
     StartScreen.last_screen = :kids_menu
     rmq.screen.open_root_screen(StartScreen)

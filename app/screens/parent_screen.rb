@@ -22,6 +22,8 @@ class ParentScreen < PM::Screen
   def will_appear
 
     @story_list = StoryBundle.bundles.select { |b| b.valid? }
+
+
     @story_collection_view_cells = []
     @tips_collection_view_cells = []
 
@@ -32,6 +34,8 @@ class ParentScreen < PM::Screen
     @parentmenu.backgroundColor = UIColor.colorWithRed(255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha:1.0)
 
     add @parentmenu
+
+    init_story_list
 
     add_nav_bar
 
@@ -44,6 +48,8 @@ class ParentScreen < PM::Screen
     add_tips_and_tricks_view
 
     add_tab_bar
+
+    init_story_list
   end
 
   def will_disappear
@@ -68,7 +74,7 @@ class ParentScreen < PM::Screen
 
     @parentmenu.addSubview line
 
-    @left_label = UILabel.alloc.initWithFrame(CGRectMake(0.02 * navbar_width,0.2 * navbar_heigth,
+    @left_label = UILabel.alloc.initWithFrame(CGRectMake(0.02 * navbar_width,0.15 * navbar_heigth,
                                                          0.5 * navbar_width,navbar_element_height))
     @left_label.text = "Alle Spiele"
     @left_label.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
@@ -78,25 +84,25 @@ class ParentScreen < PM::Screen
     @goto_kids_button = add_button_element_with_image(UIImage.imageNamed("Spielplatz_64.png"),
                                   displayName: "Spielplatz",
                                   fontSize: 13,
-                                  position: CGPointMake(0.59 * navbar_width, 0.2 * navbar_heigth),
+                                  position: CGPointMake(0.59 * navbar_width, 0.25 * navbar_heigth),
                                   size: CGSizeMake(navbar_element_height, navbar_element_height),
                                   action: "goto_kids_menu")
 
     @goto_shop_button = add_button_element_with_image(UIImage.imageNamed("Shop_64.png"),
                                   displayName: "Shop",
                                   fontSize: 13,
-                                  position: CGPointMake(0.68 * navbar_width, 0.2 * navbar_heigth),
+                                  position: CGPointMake(0.68 * navbar_width, 0.25 * navbar_heigth),
                                   size: CGSizeMake(navbar_element_height, navbar_element_height),
                                   action: "goto_shop")
 
     @goto_option_button = add_button_element_with_image(UIImage.imageNamed("Menu_64.png"),
                                   displayName: "Optionen",
                                   fontSize: 13,
-                                  position: CGPointMake(0.77 * navbar_width, 0.2 * navbar_heigth),
+                                  position: CGPointMake(0.77 * navbar_width, 0.25 * navbar_heigth),
                                   size: CGSizeMake(navbar_element_height, navbar_element_height),
                                   action: "goto_options")
 
-    @search_bar = add_seach_bar_at_position(CGPointMake(0.84 * navbar_width, 0.05 * navbar_heigth),
+    @search_bar = add_seach_bar_at_position(CGPointMake(0.84 * navbar_width, 0.1 * navbar_heigth),
                               size: CGSizeMake(0.155 * navbar_width, navbar_element_height),
                               placeholder: "Suchen")
 
@@ -231,6 +237,8 @@ class ParentScreen < PM::Screen
 
     @level_layout.itemSize = size
 
+    make_level_collection_view_cells(size, @stories[0])
+
     @level_collection_view.contentInset = UIEdgeInsetsMake(0,0,0,0)
     @level_collection_view.backgroundColor = UIColor.clearColor
     @level_collection_view.registerClass(UICollectionViewCell, forCellWithReuseIdentifier:CellIdentifier)
@@ -352,7 +360,6 @@ class ParentScreen < PM::Screen
     search_bar
   end
 
-
   ##
   # Adds a horizontal line in babbo grey
   #
@@ -399,7 +406,7 @@ class ParentScreen < PM::Screen
 
   end
 
-  def play_stories(button)
+  def play_story(button)
     cell  = button.superview.superview.superview
     path = @story_view.indexPathForCell(cell)
     story = @story_list[path.row]
@@ -410,24 +417,30 @@ class ParentScreen < PM::Screen
     rmq.screen.open_root_screen(StartScreen)
   end
 
-  def cell_button_pressed(button)
+  def cell_left_button_pressed(button)
 
     cell  = button.superview.superview.superview
+
     path = @story_view.indexPathForCell(cell)
-    story = @story_list[path.row]
+
+    story_level_list = @stories[path.row]
 
     if(@more_is_open)
-      less(story)
+      less(story_level_list)
+      button.setTitle("Mehr", forState: UIControlStateNormal)
     else
-      more(story)
+      more(story_level_list, levelList: story_level_list)
+      button.setTitle("Weniger", forState: UIControlStateNormal)
     end
   end
 
-  def more (story)
+  def more (story, levelList: list)
+    make_level_collection_view_cells(@level_layout.itemSize, list)
     @sub_header.text = "Erstellte Level"
     @more_is_open = true
     @level_view.hidden = false
     @tips_view.hidden = true
+
   end
 
   def less (story)
@@ -483,6 +496,18 @@ class ParentScreen < PM::Screen
     @button_right.hidden = false
   end
 
+  def init_story_list
+   stories = {}
+
+   @story_list.each do |s|
+     stories[s.document.document_id] ||= []
+     stories[s.document.document_id] << s
+   end
+
+   @stories = stories.keys.map { |k| stories[k] }
+
+  end
+
   ##
   # init the tips and tricks collection cell
   def make_tips_collection_view_cells(itemSize)
@@ -519,44 +544,81 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   end
 
   ##
-  # init the story collection view cells
-  def make_story_collection_view_cells(itemSize)
-    @story_list.each_with_index do |story, index|
+  # init the level collection view cells
+  def make_level_collection_view_cells(itemSize, levelList)
+
+    @level_collection_view_cells = []
+
+    levelList.each_with_index do |level,index|
+
       view = UIView.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
       view.backgroundColor = UIColor.redColor
 
-      image = UIImageView.alloc.initWithFrame(CGRectMake(0,0,view.frame.size.width, view.frame.size.height))
-      image.image = UIImage.imageWithData(story.asset_data(story.document.thumbnail))
+      image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, view.frame.size.width, view.frame.size.height))
+      image.image = UIImage.imageWithData(level.asset_data(level.document.thumbnail))
 
-      label = UILabel.alloc.initWithFrame(CGRectMake(0,0.4 * view.frame.size.height,
-                                                     view.frame.size.width, 0.2 * view.frame.size.height))
-      label.text = story.document.set_name
-      label.textColor = UIColor.whiteColor
+      view.addSubview(image)
+
+      @level_collection_view_cells[index] = view
+    end
+
+  end
+
+  ##
+  # init the story collection view cells
+  def make_story_collection_view_cells(itemSize)
+    @stories.each_with_index do |d,index|
+      view = UIView.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
+      view.backgroundColor = UIColor.redColor
+
+      image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, view.frame.size.width, view.frame.size.height))
+      image.image = UIImage.imageWithData(d[0].asset_data(d[0].document.thumbnail))
+
+      layer = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, 0.75 * view.frame.size.width, 0.33 * view.frame.size.height ))
+      layer.image = UIImage.imageNamed("cell_layer")
+
+      label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
+      label.text = d[0].document.set_name
+      label.textColor = UIColor.blackColor
       label.font = UIFont.fontWithName("Enriqueta-Bold", size:30)
       label.textAlignment = UITextAlignmentCenter
 
-      button = UIButton.alloc.initWithFrame(CGRectMake(0.4 * view.frame.size.width,0.6 * view.frame.size.height,
-                                                       0.2 * view.frame.size.width, 0.2 * view.frame.size.height))
-      button.setTitle("Mehr", forState: UIControlStateNormal)
-      button.setTitle("Weniger", forState: UIControlStateSelected)
-      button.setTitleColor(UIColor.blackColor, forState: UIControlStateNormal)
-      button.backgroundColor = UIColor.whiteColor
-      button.addTarget(self, action: "cell_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
+      left_button = UIButton.alloc.initWithFrame(CGRectMake(0.15 * layer.frame.size.width,0.6 * layer.frame.size.height,
+                                                            0.3 * layer.frame.size.width, 0.3 * layer.frame.size.height))
+      left_button.setBackgroundImage(UIImage.imageNamed("button_grey.png"), forState:UIControlStateNormal)
+      left_button.setTitle("Mehr", forState: UIControlStateNormal)
+      left_button.addTarget(self, action: "cell_left_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
+      right_button = UIButton.alloc.initWithFrame(CGRectMake(0.55 * layer.frame.size.width,0.6 * layer.frame.size.height,
+                                                             0.3 * layer.frame.size.width, 0.3 * layer.frame.size.height))
+      right_button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
+      right_button.setTitle("Spielen", forState: UIControlStateNormal)
+      right_button.addTarget(self, action: "play_story:", forControlEvents: UIControlEventTouchUpInside)
+
+      selectedStoryMarker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(view.bounds)- 0.05 *  view.frame.size.width,
+                                                                       view.frame.size.height - 0.05 * view.frame.size.width,
+                                                                       0.1 * view.frame.size.width, 0.05 * view.frame.size.width))
+
+      selectedStoryMarker.image = UIImage.imageNamed("Marker.png")
 
       view.addSubview(image)
+      view.addSubview(layer)
       view.addSubview(label)
-      view.addSubview(button)
+      view.addSubview(left_button)
+      view.addSubview(right_button)
+      view.addSubview(selectedStoryMarker)
 
       @story_collection_view_cells[index] = view
     end
   end
 
   # UICollectionView Instance Methods
-
   def collectionView(view, numberOfItemsInSection:section)
     return @story_list.length if(view == @story_view)
-    return 10 if(view == @level_collection_view)
+    return @level_collection_view_cells.length if(view == @level_collection_view)
     return 3 if(view == @tips_collection_view)
+
+
+
   end
 
   def collectionView(view, cellForItemAtIndexPath:path)
@@ -569,7 +631,9 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     end
 
     if(view == @level_collection_view)
-      c.backgroundColor = UIColor.yellowColor
+      level = @level_collection_view_cells[path.row]
+      view = c.contentView
+      view.addSubview(level)
     end
 
     if(view == @tips_collection_view)
@@ -580,7 +644,5 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
 
     c
   end
-
-
 
 end
