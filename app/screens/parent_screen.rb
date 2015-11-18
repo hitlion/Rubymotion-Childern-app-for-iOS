@@ -35,7 +35,7 @@ class ParentScreen < PM::Screen
 
     add @parentmenu
 
-    init_story_list
+    build_story_list
 
     add_nav_bar
 
@@ -49,7 +49,6 @@ class ParentScreen < PM::Screen
 
     add_tab_bar
 
-    init_story_list
   end
 
   def will_disappear
@@ -177,6 +176,7 @@ class ParentScreen < PM::Screen
                                                                   collectionViewLayout: @tips_layout)
     @tips_collection_view.dataSource = self
     @tips_collection_view.delegate = self
+    @tips_collection_view.pagingEnabled = true
 
     height = 0.95 * @tips_collection_view.frame.size.height
     width  = @tips_collection_view.frame.size.width
@@ -230,6 +230,7 @@ class ParentScreen < PM::Screen
                                                        collectionViewLayout: @level_layout)
     @level_collection_view.dataSource = self
     @level_collection_view.delegate = self
+    @level_collection_view.pagingEnabled = true
 
     height = 0.75 * @level_collection_view.frame.size.height
     width  = (4 * height) / 3
@@ -417,35 +418,50 @@ class ParentScreen < PM::Screen
     rmq.screen.open_root_screen(StartScreen)
   end
 
+  ##
+  # called if the more / less (left) button was pressed
+  # @param button the pressed button object
   def cell_left_button_pressed(button)
 
     cell  = button.superview.superview.superview
-
     path = @story_view.indexPathForCell(cell)
-
     story_level_list = @stories[path.row]
 
-    if(@more_is_open)
-      less(story_level_list)
-      button.setTitle("Mehr", forState: UIControlStateNormal)
+    if(@pressed_more_button)
+      if(@pressed_more_button == button)
+        @pressed_more_button = nil
+        less(story_level_list)
+        button.setTitle("Mehr", forState: UIControlStateNormal)
+      else
+        button.setTitle("Weniger", forState: UIControlStateNormal)
+        @pressed_more_button.setTitle("Mehr", forState: UIControlStateNormal)
+        more(story_level_list)
+        @pressed_more_button = button
+      end
     else
-      more(story_level_list, levelList: story_level_list)
+      more(story_level_list)
       button.setTitle("Weniger", forState: UIControlStateNormal)
+      @pressed_more_button = button
     end
   end
 
-  def more (story, levelList: list)
+  ##
+  # more was pressed (left button in story view cell)
+  # rebuild the level list and open the level collection view
+  # hide the tipps and tricks section
+  def more(list)
     make_level_collection_view_cells(@level_layout.itemSize, list)
     @sub_header.text = "Erstellte Level"
-    @more_is_open = true
     @level_view.hidden = false
     @tips_view.hidden = true
-
   end
 
-  def less (story)
+  ##
+  # less was pressed (left button in story view cell)
+  # open the tipss and tricks collection view
+  # hide the level list section
+  def less(story)
     @sub_header.text = "Tipps und Tricks"
-    @more_is_open = false
     @level_view.hidden = true
     @tips_view.hidden = false
   end
@@ -496,7 +512,7 @@ class ParentScreen < PM::Screen
     @button_right.hidden = false
   end
 
-  def init_story_list
+  def build_story_list
    stories = {}
 
    @story_list.each do |s|
@@ -562,12 +578,14 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       @level_collection_view_cells[index] = view
     end
 
+    @level_collection_view.reloadData
   end
 
   ##
   # init the story collection view cells
   def make_story_collection_view_cells(itemSize)
     @stories.each_with_index do |d,index|
+
       view = UIView.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
       view.backgroundColor = UIColor.redColor
 
@@ -613,12 +631,9 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
 
   # UICollectionView Instance Methods
   def collectionView(view, numberOfItemsInSection:section)
-    return @story_list.length if(view == @story_view)
+    return @stories.length if(view == @story_view)
     return @level_collection_view_cells.length if(view == @level_collection_view)
     return 3 if(view == @tips_collection_view)
-
-
-
   end
 
   def collectionView(view, cellForItemAtIndexPath:path)
