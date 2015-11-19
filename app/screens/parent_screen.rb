@@ -126,7 +126,7 @@ class ParentScreen < PM::Screen
     @story_collection_view.delegate = self
 
     height = @story_collection_view.frame.size.height
-    width  = (4 * height) / 3
+    width  = (16 * height) / 9
     size = CGSizeMake(width, height)
 
     @story_layout.itemSize = size
@@ -160,7 +160,7 @@ class ParentScreen < PM::Screen
   end
 
   ##
-  # adds tips and tricks section
+  # adds tips and tricks collection view
   def add_tips_and_tricks_view
     @tips_layout = UICollectionViewFlowLayout.alloc.init
     @tips_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
@@ -199,14 +199,16 @@ class ParentScreen < PM::Screen
                                                            @tips_view.frame.size.height))
     @button_left.setImage(UIImage.imageNamed("previous"), forState:UIControlStateNormal)
 
-    @button_left.addTarget(self, action: "scroll_tips_list_right", forControlEvents: UIControlEventTouchUpInside)
+    @button_left.addTarget(self, action: "scroll_tips_list:", forControlEvents: UIControlEventTouchUpInside)
+    @button_left.tag = -1
 
     @button_right = UIButton.alloc.initWithFrame(CGRectMake(0.9 * @tips_view.frame.size.width , 0,
                                                             0.1 * @tips_view.frame.size.width,
                                                             @tips_view.frame.size.height))
     @button_right.setImage(UIImage.imageNamed("next"), forState:UIControlStateNormal)
 
-    @button_right.addTarget(self, action: "scroll_tips_list_left", forControlEvents: UIControlEventTouchUpInside)
+    @button_right.addTarget(self, action: "scroll_tips_list:", forControlEvents: UIControlEventTouchUpInside)
+    @button_right.tag = +1
 
     @tips_view.addSubview(@button_left)
     @tips_view.addSubview(@button_right)
@@ -235,7 +237,7 @@ class ParentScreen < PM::Screen
     @level_collection_view.pagingEnabled = true
 
     height = 0.75 * @level_collection_view.frame.size.height
-    width  = (4 * height) / 3
+    width  = (16 * height) / 9
     size = CGSizeMake(width, height)
 
     @level_layout.itemSize = size
@@ -270,7 +272,7 @@ class ParentScreen < PM::Screen
   end
 
   ##
-  # adds the tab bar
+  # adds the tab bar at the bottom of the screen
   def add_tab_bar
     @tab_bar = UIView.alloc.initWithFrame(CGRectMake(0, (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT + LEVEL_VIEW_HEIGHT) * device.screen_height,
                                                       device.screen_width, TAB_BAR_HEIGHT * device.screen_height))
@@ -426,7 +428,6 @@ class ParentScreen < PM::Screen
   def cell_left_button_pressed(button)
 
     cell  = button.superview.superview.superview
-    lp cell
     path = @story_collection_view.indexPathForCell(cell)
     story_level_list = @stories[path.row]
 
@@ -458,9 +459,6 @@ class ParentScreen < PM::Screen
     @level_view.hidden = false
     @tips_view.hidden = true
 
-    lp path
-    lp @story_collection_view.cellForItemAtIndexPath(path)
-
     @story_collection_view.scrollToItemAtIndexPath(path, atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally, animated:true)
   end
 
@@ -474,16 +472,27 @@ class ParentScreen < PM::Screen
     @tips_view.hidden = false
   end
 
-  def scroll_tips_list_left
-    c = @tips_collection_view.visibleCells
-    destination = NSIndexPath.indexPathForRow(@tips_collection_view.indexPathForCell(c[0]).row + 1, inSection:0)
-    @tips_collection_view.scrollToItemAtIndexPath(destination, atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
-  end
+  ##
+  # Scroll the tips and tricks section
+  # @param source The source (button)
+  def scroll_tips_list(source)
+    cells = @tips_collection_view.visibleCells
+    path = @tips_collection_view.indexPathForCell(cells[0])
+    direction = source.tag
+    row = path.row + direction
 
-  def scroll_tips_list_right
-    c = @tips_collection_view.visibleCells
-    destination = NSIndexPath.indexPathForRow(@tips_collection_view.indexPathForCell(c[0]).row - 1, inSection:0)
+    if(row == @tips_collection_view.numberOfItemsInSection(0))
+      row = @tips_collection_view.numberOfItemsInSection(0) - 1
+    end
+
+    if(row == -1)
+      row = 0
+    end
+
+    destination = NSIndexPath.indexPathForRow(row, inSection:0)
+
     @tips_collection_view.scrollToItemAtIndexPath(destination, atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
+
   end
 
   ##
@@ -517,6 +526,7 @@ class ParentScreen < PM::Screen
   ##
   # init the tips and tricks collection cell
   def make_tips_collection_view_cells(itemSize)
+
     3.times do |index|
       view = UIView.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
       view.backgroundColor = UIColor.whiteColor

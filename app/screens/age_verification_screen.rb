@@ -13,11 +13,7 @@ class AgeVerificationScreen < PM::Screen
     @num3 = 0
 
     view = append(UIView, :view)
-    back_view = append(UIView, :back_field)
-    back_view.append(UIButton, :back_button).on(:touch) do
-       back_pressed
-     end
-    back_view.append(UILabel, :back_label)
+
     view.append(UIImageView, :babbo)
     right_view = view.append(UIView, :right_view)
     right_view.append(UIImageView, :logo)
@@ -25,25 +21,44 @@ class AgeVerificationScreen < PM::Screen
     right_view.append(UILabel, :label2)
 
 
-     @year_picker = right_view.append!(UIPickerView, :age_input_field)
-     @year_picker.delegate = self
-     @year_picker.dataSource = self
+    @year_picker = right_view.append!(UIPickerView, :age_input_field)
+    @year_picker.delegate = self
+    @year_picker.dataSource = self
 
-     right_view.append(UIButton, :age_verification_button).on(:touch) do
-       ok_pressed
-     end
+    #button = right_view.append!(UIButton, :age_verification_button)
+
+    #button.on(:touch) do
+    #  ok_pressed
+    #end
+
+    #button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
+
+    back_view = append(UIView, :back_field)
+
+    back_view.append(UIButton, :left_button).on(:touch) do
+      left_pressed
+    end
+
+    back_view.append(UILabel, :left_label)
+
+    back_view.append(UIButton, :right_button).on(:touch) do
+      right_pressed
+    end
+
+    back_view.append(UILabel, :right_label)
+
   end
 
   def will_appear
 
   end
 
-  def back_pressed
+  def left_pressed
     StartScreen.next_screen= :kids_menu
     rmq.screen.open_root_screen(StartScreen)
   end
 
-  def ok_pressed
+  def right_pressed
     if(Time.now.year - @num > 17 && Time.now.year - @num < 91)
        StartScreen.next_screen= :parent_menu
        rmq.screen.open_root_screen(StartScreen)
@@ -51,7 +66,6 @@ class AgeVerificationScreen < PM::Screen
       StartScreen.next_screen= :kids_menu
       rmq.screen.open_root_screen(StartScreen)
     end
-
   end
 
   def pickerView(pickerView, numberOfRowsInComponent:component)

@@ -12,11 +12,11 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def back_field(st)
-    st.frame = {w:device.screen_width, h: 0.15 * device.screen_height, fb:10}
+    st.frame = {w:device.screen_width, h: 0.1 * device.screen_height, fb:10}
   end
 
   def babbo(st)
-    st.frame = {l:30, t:0.2 * device.screen_height, w: 0.3 * device.screen_width, h: 0.6 * device.screen_height}
+    st.frame = {l:30, t:0.15 * device.screen_height, w: 0.3 * device.screen_width, h: 0.6 * device.screen_height}
     st.image = image.resource('Babbo_1')
   end
 
@@ -25,13 +25,13 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def logo(st)
-    st.frame = {w: 0.1 * device.screen_width, t:5, h: 0.15 * device.screen_height, centered: :horizontal}
+    st.frame = {w: 0.15 * device.screen_width, t:0, h: 0.2 * device.screen_height, centered: :horizontal}
     st.image = image.resource('Logo_Black')
 
   end
 
   def label1(st)
-    st.frame = {bp: 15, l:30, fr:30, h: 0.05 * device.screen_height,  centered: :horizontal}
+    st.frame = {below_prev:0.025 * device.screen_height, l:30, fr:30, h: 0.05 * device.screen_height,  centered: :horizontal}
     st.text = "Elternbereich"
     st.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
     st.text_alignment = :center
@@ -39,7 +39,7 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def label2(st)
-    st.frame = {bp: 15, l:30, fr:30, h: 0.05 * device.screen_height,  centered: :horizontal}
+    st.frame = {below_prev:0.025 * device.screen_height, l:30, fr:30, h: 0.05 * device.screen_height,  centered: :horizontal}
     st.text = "In welchem Jahr bist du geboren?"
     st.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
     st.text_alignment = :center
@@ -47,25 +47,37 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def age_input_field(st)
-    st.frame = {w: 0.3 * device.screen_width, below_prev:5,  h: 0.2 * device.screen_height, centered: :horizontal}
+    st.frame = {w: 0.3 * device.screen_width, below_prev:0.025 * device.screen_height,  h: 162, centered: :horizontal}
   end
 
   def age_verification_button(st)
-    st.frame = {w: 0.1 * device.screen_width, below_prev:15,  h: 0.05 * device.screen_height, centered: :horizontal}
+    st.frame = {w: 0.15 * device.screen_width, below_prev:0.2 * device.screen_height,  h: 0.06 * device.screen_height, centered: :horizontal}
+    st.color = rmq.color.white
     st.text = "Enter"
     st.font = UIFont.fontWithName("Enriqueta-Regular", size:25)
-    st.color = rmq.color.white
-    st.background_color = rmq.color.babbo_orange
   end
 
-  def back_button(st)
+  def left_button(st)
     st.frame = {l: 10, w: 0.075 * device.screen_width, h: 0.1 * device.screen_height, centered: :vertical }
-    st.image = image.resource("Babbo_Back_Button.png")
+    st.image = image.resource("babbo_left_button.png")
   end
 
-  def back_label(st)
-    st.frame = {rop: 1, w: 0.4 * device.screen_width, h: 0.05 * device.screen_height, centered: :vertical}
+  def left_label(st)
+    st.frame = {l: 0.1 * device.screen_width, w: 0.3 * device.screen_width, h: 0.05 * device.screen_height, centered: :vertical}
     st.text = "Zurück zum Spielplatz"
+    st.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
+    st.text_alignment = :center
+    st.color = rmq.color.black
+  end
+
+  def right_button(st)
+    st.frame = {l: 0.9 * device.screen_width, w: 0.075 * device.screen_width, h: 0.1 * device.screen_height, centered: :vertical }
+    st.image = image.resource("babbo_right_button.png")
+  end
+
+  def right_label(st)
+    st.frame = {l: 0.6 * device.screen_width, w: 0.3 * device.screen_width, h: 0.05 * device.screen_height, centered: :vertical}
+    st.text = "Weiter zum Elternmenü"
     st.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
     st.text_alignment = :center
     st.color = rmq.color.black
