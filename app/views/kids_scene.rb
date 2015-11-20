@@ -19,7 +19,8 @@ class KidsScene < SKScene
   # Sizes (in x * screen high) for the folowing elements
   SIZE_CENTER_STORY  = 0.5
   SIZE_OTHER_STORY   = 0.25
-  SIZE_BUTTON_LINE_ELEMENT = 0.25
+  SIZE_ELEMENT_IN_BUTTON_LINE = 0.2
+  SIZE_ELEMENT_IN_BUTTON_LINE_SMALL = 0.15
 
   # Sprite node names
   BUTTON_PARENT_NAME = "PARENT"
@@ -194,7 +195,8 @@ class KidsScene < SKScene
     element.name = name
     element.zPosition = z_pos
     element.position = CGPointMake(x_pos * @width, BUTTON_LINE_Y * @height)
-    @button_scale = (@height * SIZE_BUTTON_LINE_ELEMENT) / (element.size.height)
+    @button_scale = (@height * SIZE_ELEMENT_IN_BUTTON_LINE) / (element.size.height)
+    @button_clicked_scale = (@height * SIZE_ELEMENT_IN_BUTTON_LINE_SMALL) / (element.size.height)
     element.scale = @button_scale
 
     addChild element
@@ -265,7 +267,7 @@ class KidsScene < SKScene
       user_picture.scale = (0.35 * texture.size.height) / user_picture.size.height
       user_picture.name = ELEMENT_USER_PICTURE
 
-      story.addChild user_picture
+      # story.addChild user_picture
 
       label = SKLabelNode.labelNodeWithText(s.document.set_name)
       label.position = CGPointMake(0, - 0.35 * texture.size.height )
@@ -385,7 +387,8 @@ class KidsScene < SKScene
   end
 
   def toogle_parent_button
-    childNodeWithName(BUTTON_PARENT_NAME).runAction(SKAction.scaleTo(0.6, duration: 0.1))
+
+    childNodeWithName(BUTTON_PARENT_NAME).runAction(SKAction.scaleTo(@button_clicked_scale, duration: 0.1))
   end
 
   def goto_parent_menu

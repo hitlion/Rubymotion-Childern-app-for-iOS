@@ -126,7 +126,7 @@ class ParentScreen < PM::Screen
     @story_collection_view.delegate = self
 
     height = @story_collection_view.frame.size.height
-    width  = (16 * height) / 9
+    width  = (4 * height) / 3
     size = CGSizeMake(width, height)
 
     @story_layout.itemSize = size
@@ -237,7 +237,7 @@ class ParentScreen < PM::Screen
     @level_collection_view.pagingEnabled = true
 
     height = 0.75 * @level_collection_view.frame.size.height
-    width  = (16 * height) / 9
+    width  = (4 * height) / 3
     size = CGSizeMake(width, height)
 
     @level_layout.itemSize = size
