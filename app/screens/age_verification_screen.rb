@@ -25,13 +25,13 @@ class AgeVerificationScreen < PM::Screen
     @year_picker.delegate = self
     @year_picker.dataSource = self
 
-    #button = right_view.append!(UIButton, :age_verification_button)
+    button = view.append!(UIButton, :go_on_button)
 
-    #button.on(:touch) do
-    #  ok_pressed
-    #end
+    button.on(:touch) do
+      go_on_pressed
+    end
 
-    #button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
+    button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
 
     back_view = append(UIView, :back_field)
 
@@ -41,11 +41,6 @@ class AgeVerificationScreen < PM::Screen
 
     back_view.append(UILabel, :left_label)
 
-    back_view.append(UIButton, :right_button).on(:touch) do
-      right_pressed
-    end
-
-    back_view.append(UILabel, :right_label)
 
   end
 
@@ -58,7 +53,7 @@ class AgeVerificationScreen < PM::Screen
     rmq.screen.open_root_screen(StartScreen)
   end
 
-  def right_pressed
+  def go_on_pressed
     if(Time.now.year - @num > 17 && Time.now.year - @num < 91)
        StartScreen.next_screen= :parent_menu
        rmq.screen.open_root_screen(StartScreen)
