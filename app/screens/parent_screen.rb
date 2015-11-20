@@ -221,6 +221,7 @@ class ParentScreen < PM::Screen
   ##
   # adds the level scroll view
   def add_level_scroll_view
+
     @level_layout = UICollectionViewFlowLayout.alloc.init
     @level_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
 
