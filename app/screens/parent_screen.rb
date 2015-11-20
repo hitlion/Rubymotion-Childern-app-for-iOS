@@ -8,7 +8,6 @@ class ParentScreen < PM::Screen
   LEFT_BUTTON_X_POS     = 0.5   # * navbar width
   MIDDLE_BUTTON_X_POS   = 0.6   # * navbar width
   RIGHT_BUTTON_X_POS    = 0.7   # * navbar width
-  NAV_BAR_ELEMENT_HEIGHT = 0.7   # * navbar height
   NAV_BAR_HEIGHT         = 0.125 # * screen_height
   STORY_VIEW_HEIGHT     = 0.39  # * screen_height
   SUB_HEADER_HEIGHT     = 0.08  # * screen_height
@@ -23,10 +22,6 @@ class ParentScreen < PM::Screen
 
     @story_list = StoryBundle.bundles.select { |b| b.valid? }
 
-
-    @story_collection_view_cells = []
-    @tips_collection_view_cells = []
-
     @babbo_bar_grey = UIColor.colorWithRed(247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha:1.0)
     @babbo_line_grey = UIColor.colorWithRed(200.0/255.0, green: 200.0/255.0, blue: 200.0/255.0, alpha:1.0)
 
@@ -38,16 +33,12 @@ class ParentScreen < PM::Screen
     build_story_list
 
     add_nav_bar
-
     add_story_scroll_view
-
     add_sub_header
-
     add_level_scroll_view
-
     add_tips_and_tricks_view
-
     add_tab_bar
+    add_options
 
   end
 
@@ -60,55 +51,67 @@ class ParentScreen < PM::Screen
   def add_nav_bar
     navbar_heigth = NAV_BAR_HEIGHT * device.screen_height
     navbar_width = device.screen_width
-    navbar_element_height = NAV_BAR_ELEMENT_HEIGHT * navbar_heigth
 
-    @own_nav_bar = UIView.alloc.initWithFrame(CGRectMake(0 ,0, navbar_width, navbar_heigth))
-    @own_nav_bar.backgroundColor = @babbo_bar_grey
+    @nav_bar = UIView.alloc.initWithFrame(CGRectMake(0 ,0, navbar_width, navbar_heigth))
+    @nav_bar.backgroundColor = @babbo_bar_grey
 
-    @parentmenu.addSubview @own_nav_bar
+    @parentmenu.addSubview @nav_bar
 
-    line = horizontal_line_make(CGPointMake(0,
-                                            -1 + (NAV_BAR_HEIGHT) * device.screen_height ),
+    line = horizontal_line_make(CGPointMake(0, -1 + (NAV_BAR_HEIGHT) * device.screen_height),
                                 width: device.screen_width)
 
     @parentmenu.addSubview line
 
-    @left_label = UILabel.alloc.initWithFrame(CGRectMake(0.02 * navbar_width,0.15 * navbar_heigth,
-                                                         0.5 * navbar_width,navbar_element_height))
+    @left_label = UILabel.alloc.initWithFrame(CGRectMake(0.02 * @nav_bar.frame.size.width,
+                                                         0.15 * @nav_bar.frame.size.height,
+                                                         0.5  * @nav_bar.frame.size.width,
+                                                         0.85 * @nav_bar.frame.size.height))
     @left_label.text = "Alle Spiele"
     @left_label.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
 
-    @own_nav_bar.addSubview @left_label
+    @nav_bar.addSubview @left_label
 
     @goto_kids_button = add_button_element_with_image(UIImage.imageNamed("Spielplatz_64.png"),
                                   displayName: "Spielplatz",
                                   fontSize: 13,
-                                  position: CGPointMake(0.59 * navbar_width, 0.25 * navbar_heigth),
-                                  size: CGSizeMake(navbar_element_height, navbar_element_height),
+                                  position: CGPointMake(0.55 * @nav_bar.frame.size.width, 0.2 *  @nav_bar.frame.size.height),
+                                  size: CGSizeMake(0.075 * @nav_bar.frame.size.width,
+                                                   0.075 * @nav_bar.frame.size.width),
                                   action: "goto_kids_menu")
 
     @goto_shop_button = add_button_element_with_image(UIImage.imageNamed("Shop_64.png"),
                                   displayName: "Shop",
                                   fontSize: 13,
-                                  position: CGPointMake(0.68 * navbar_width, 0.25 * navbar_heigth),
-                                  size: CGSizeMake(navbar_element_height, navbar_element_height),
+                                  position: CGPointMake(0.65 * @nav_bar.frame.size.width, 0.2 *  @nav_bar.frame.size.height),
+                                  size: CGSizeMake(0.075 * @nav_bar.frame.size.width,
+                                                   0.075 * @nav_bar.frame.size.width),
                                   action: "goto_shop")
 
     @goto_option_button = add_button_element_with_image(UIImage.imageNamed("Menu_64.png"),
                                   displayName: "Optionen",
                                   fontSize: 13,
-                                  position: CGPointMake(0.77 * navbar_width, 0.25 * navbar_heigth),
-                                  size: CGSizeMake(navbar_element_height, navbar_element_height),
-                                  action: "goto_options")
+                                  position: CGPointMake(0.75 * @nav_bar.frame.size.width, 0.2 *  @nav_bar.frame.size.height),
+                                  size: CGSizeMake(0.075 * @nav_bar.frame.size.width,
+                                                   0.075 * @nav_bar.frame.size.width),
+                                  action: "open_options:")
 
-    @search_bar = add_seach_bar_at_position(CGPointMake(0.84 * navbar_width, 0.1 * navbar_heigth),
-                              size: CGSizeMake(0.155 * navbar_width, navbar_element_height),
+    @options_button_background = UIImageView.alloc.initWithFrame(CGRectMake(0.75 * @nav_bar.frame.size.width,
+                                                                            0.2  * @nav_bar.frame.size.height,
+                                                                            0.075 * @nav_bar.frame.size.width,
+                                                                            0.8 * @nav_bar.frame.size.height+1))
+    @options_button_background.image = UIImage.imageNamed("option_button_background.png")
+    @options_button_background.hidden = true
+
+
+    @search_bar = add_seach_bar_at_position(CGPointMake(0.83 * @nav_bar.frame.size.width, 0.07 *  @nav_bar.frame.size.height),
+                              size: CGSizeMake(0.155 * @nav_bar.frame.size.width, 0.75 * @nav_bar.frame.size.height),
                               placeholder: "Suchen")
 
-    @own_nav_bar.addSubview @goto_kids_button
-    @own_nav_bar.addSubview @goto_shop_button
-    @own_nav_bar.addSubview @goto_option_button
-    @own_nav_bar.addSubview @search_bar
+    @nav_bar.addSubview @goto_kids_button
+    @nav_bar.addSubview @goto_shop_button
+    @nav_bar.addSubview @options_button_background
+    @nav_bar.addSubview @goto_option_button
+    @nav_bar.addSubview @search_bar
 
   end
 
@@ -315,6 +318,53 @@ class ParentScreen < PM::Screen
   end
 
   ##
+  # add options view
+  def add_options
+
+    @options_view = UIView.alloc.initWithFrame(CGRectMake(0, -1 + NAV_BAR_HEIGHT * device.screen_height ,
+                                                          device.screen_width, device.screen_height - (NAV_BAR_HEIGHT * device.screen_height)))
+    @options_view.backgroundColor = UIColor.clearColor
+
+    options_table = UIImageView.alloc.initWithFrame(CGRectMake(0.75 * @options_view.frame.size.width, 0,
+                                                          0.25 * @options_view.frame.size.width, @options_view.frame.size.height))
+    options_table.image = UIImage.imageNamed("option_background.png")
+
+    parent_image = UIImageView.alloc.initWithFrame(CGRectMake(0, (1.0/32.0) * options_table.frame.size.height,
+                                                              options_table.frame.size.width,
+                                                              (10.0/32.0) * options_table.frame.size.height))
+    parent_image.backgroundColor = UIColor.blueColor
+
+    table = UIView.alloc.initWithFrame(CGRectMake(0,
+                                                  (12.0/32.0) * options_table.frame.size.height,
+                                                  options_table.frame.size.width,
+                                                  (10.0/32.0) * options_table.frame.size.height))
+    table.backgroundColor = UIColor.yellowColor
+
+    logo = UIImageView.alloc.initWithFrame(CGRectMake(0.1 * options_table.frame.size.width,
+                                                      (22.0/32.0) * options_table.frame.size.height,
+                                                      0.8 * options_table.frame.size.width,
+                                                      (7.0/32.0) * options_table.frame.size.height))
+    logo.image = UIImage.imageNamed("Logo_Orange.png")
+
+    version_number = UILabel.alloc.initWithFrame(CGRectMake(0,
+                                                            (30.0/32.0) * options_table.frame.size.height,
+                                                            options_table.frame.size.width,
+                                                            (1.0/32.0) * options_table.frame.size.height))
+    version_number.text = app.version
+    version_number.font = UIFont.fontWithName("Enriqueta-Regularsize", size:8)
+    version_number.textAlignment = UITextAlignmentCenter
+
+    options_table.addSubview(parent_image)
+    options_table.addSubview(table)
+    options_table.addSubview(logo)
+    options_table.addSubview(version_number)
+
+    @options_view.hidden = true
+    @options_view.addSubview(options_table)
+    @parentmenu.addSubview(@options_view)
+  end
+
+  ##
   # Adds a element with a button and a label under this button
   #
   # @param image Image for the button
@@ -331,7 +381,7 @@ class ParentScreen < PM::Screen
                                                      0.5 * element.frame.size.height))
     button.setImage(image, forState:UIControlStateNormal)
 
-    button.addTarget(self, action: action, forControlEvents: UIControlEventTouchUpInside)
+    button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0,
                                                    0.65 * element.frame.size.height,
@@ -395,8 +445,9 @@ class ParentScreen < PM::Screen
     rmq.screen.open_root_screen(StartScreen)
   end
 
-  def goto_options
-
+  def open_options(button)
+    @options_view.hidden = !@options_view.hidden?
+    @options_button_background.hidden = !@options_button_background.hidden?
   end
 
   def goto_games(sender)
@@ -527,6 +578,8 @@ class ParentScreen < PM::Screen
   # init the tips and tricks collection cell
   def make_tips_collection_view_cells(itemSize)
 
+    @tips_collection_view_cells = []
+
     3.times do |index|
       view = UIView.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
       view.backgroundColor = UIColor.whiteColor
@@ -584,6 +637,9 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   ##
   # init the story collection view cells
   def make_story_collection_view_cells(itemSize)
+
+    @story_collection_view_cells = []
+
     @stories.each_with_index do |d,index|
 
       view = UIView.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
