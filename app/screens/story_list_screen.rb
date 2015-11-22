@@ -69,7 +69,7 @@ class StoryListScreen < PM::TableScreen
       editing_style: :delete,
       accessory: { view: detail_button },
 
-      action: :play_story,
+      action: :open_story,
       arguments: { bundle: bundle }
     }
   end
