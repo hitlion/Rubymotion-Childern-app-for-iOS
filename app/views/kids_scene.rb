@@ -261,7 +261,7 @@ class KidsScene < SKScene
       clip.scale = (0.2 * texture.size.height) / clip.size.height
       story.addChild clip
 
-      user_picture = SKSpriteNode.spriteNodeWithImageNamed("avatar_Vater")
+      user_picture = SKSpriteNode.spriteNodeWithImageNamed("dummy_parent.png")
       user_picture.zPosition = 1
       user_picture.position = CGPointMake(0.5 * texture.size.width, - 1 * texture.size.height)
       user_picture.scale = (0.35 * texture.size.height) / user_picture.size.height

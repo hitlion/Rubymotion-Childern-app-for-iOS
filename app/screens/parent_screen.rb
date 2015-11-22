@@ -333,16 +333,59 @@ class ParentScreen < PM::Screen
                                                           0.25 * @options_view.frame.size.width, @options_view.frame.size.height))
     options_table.image = UIImage.imageNamed("option_background.png")
 
-    parent_image = UIImageView.alloc.initWithFrame(CGRectMake(0, (1.0/32.0) * options_table.frame.size.height,
-                                                              options_table.frame.size.width,
-                                                              (10.0/32.0) * options_table.frame.size.height))
-    parent_image.backgroundColor = UIColor.blueColor
+    parent_image = UIImageView.alloc.initWithFrame(CGRectMake(0.1 * options_table.frame.size.width,
+                                                              (1.0/32.0) * options_table.frame.size.height,
+                                                              0.8 * options_table.frame.size.width,
+                                                              (9.0/32.0) * options_table.frame.size.height))
+    parent_image.backgroundColor = UIColor.clearColor
+    parent_image.image = UIImage.imageNamed("dummy_parent.png")
+
+    parent_name = UILabel.alloc.initWithFrame(CGRectMake(0,
+                                                         (10/32.0) * options_table.frame.size.height,
+                                                         options_table.frame.size.width,
+                                                         (1.0/32.0) * options_table.frame.size.height))
+    parent_name.text = "Username"
+    parent_name.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
+    parent_name.textColor = @babbo_orange
+    parent_name.textAlignment = UITextAlignmentCenter
 
     table = UIView.alloc.initWithFrame(CGRectMake(0,
                                                   (12.0/32.0) * options_table.frame.size.height,
                                                   options_table.frame.size.width,
                                                   (10.0/32.0) * options_table.frame.size.height))
     table.backgroundColor = UIColor.yellowColor
+
+    tableButton_1 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.0 * table.frame.size.height,
+                                                            table.frame.size.width,
+                                                            0.2 * table.frame.size.height))
+    tableButton_1.backgroundColor = UIColor.greenColor
+
+
+    tableButton_2 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.2 * table.frame.size.height,
+                                                            table.frame.size.width,
+                                                            0.2 * table.frame.size.height))
+    tableButton_2.backgroundColor = UIColor.blueColor
+
+    tableButton_3 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.4 * table.frame.size.height,
+                                                            table.frame.size.width,
+                                                            0.2 * table.frame.size.height))
+    tableButton_3.backgroundColor = UIColor.greenColor
+
+    tableButton_4 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.6 * table.frame.size.height,
+                                                            table.frame.size.width,
+                                                            0.2 * table.frame.size.height))
+    tableButton_4.backgroundColor = UIColor.blueColor
+
+    tableButton_5 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.8 * table.frame.size.height,
+                                                            table.frame.size.width,
+                                                            0.2 * table.frame.size.height))
+    tableButton_5.backgroundColor = UIColor.greenColor
+
+    table.addSubview(tableButton_1)
+    table.addSubview(tableButton_2)
+    table.addSubview(tableButton_3)
+    table.addSubview(tableButton_4)
+    table.addSubview(tableButton_5)
 
     logo = UIImageView.alloc.initWithFrame(CGRectMake(0.1 * options_table.frame.size.width,
                                                       (22.0/32.0) * options_table.frame.size.height,
@@ -355,10 +398,11 @@ class ParentScreen < PM::Screen
                                                             options_table.frame.size.width,
                                                             (1.0/32.0) * options_table.frame.size.height))
     version_number.text = app.version
-    version_number.font = UIFont.fontWithName("Enriqueta-Regularsize", size:8)
+    version_number.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
     version_number.textAlignment = UITextAlignmentCenter
 
     options_table.addSubview(parent_image)
+    options_table.addSubview(parent_name)
     options_table.addSubview(table)
     options_table.addSubview(logo)
     options_table.addSubview(version_number)
@@ -647,12 +691,15 @@ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       left_button.setBackgroundImage(UIImage.imageNamed("button_grey.png"), forState:UIControlStateNormal)
       left_button.setTitle("Mehr", forState: UIControlStateNormal)
       left_button.addTarget(self, action: "cell_left_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
+      left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+
       right_button = UIButton.alloc.initWithFrame(CGRectMake(0.55 * layer.frame.size.width,0.6 * layer.frame.size.height,
                                                              0.3 * layer.frame.size.width, 0.3 * layer.frame.size.height))
       right_button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
       right_button.setTitle("Öffnen", forState: UIControlStateNormal)
       right_button.addTarget(self, action: "open_story:", forControlEvents: UIControlEventTouchUpInside)
       right_button.tag = d[0].object_id
+      right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
 
       selectedStoryMarker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(view.bounds)- 0.05 *  view.frame.size.width,
                                                                        view.frame.size.height - 0.05 * view.frame.size.width,
