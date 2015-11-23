@@ -20,6 +20,7 @@ class StandardAppearance
       UIView.appearance.tap do |o|
         o.setTintColor(rmq.color.babbo_orange)
       end
+
     end
   end
 end

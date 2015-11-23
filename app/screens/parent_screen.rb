@@ -40,6 +40,7 @@ class ParentScreen < PM::Screen
     add_tips_and_tricks_view
     add_tab_bar
     add_options
+    add_parent_overlay
 
   end
 
@@ -412,6 +413,13 @@ class ParentScreen < PM::Screen
     @parentmenu.addSubview(@options_view)
   end
 
+  def add_parent_overlay
+    @parent_overlay ||= MenuOverlay.alloc.initWithFrame(CGRectMake(0, 0, device.screen_width, device.screen_height))
+    @parent_overlay.overlay_type = :parent_menu
+    @parent_overlay.hidden = true
+    @parentmenu.addSubview(@parent_overlay)
+  end
+
   ##
   # Adds a element with a button and a label under this button
   #
@@ -516,10 +524,10 @@ class ParentScreen < PM::Screen
 
     story = @story_list.find {|e| e.object_id == id}
 
-    StartScreen.next_story = story
-    StartScreen.next_screen = :story_player
-    StartScreen.last_screen = :parent_menu
-    rmq.screen.open_root_screen(StartScreen)
+    @parent_overlay.reloadViewWithStory(story)
+    @parent_overlay.hidden = !@parent_overlay.hidden?
+
+
   end
 
   ##
