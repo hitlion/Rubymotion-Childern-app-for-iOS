@@ -16,8 +16,8 @@ module Story
     # attributes parsed from :meta
     attr_reader :document_id, :dataset_id, :branch_creator_id,
                 :creator_impressum, :branch_name, :editor_id,
-                :set_name, :thumbnail, :status, :modified_conveyable,
-                :timestamp, :body
+                :set_name, :thumbnail, :screenshot, :description,
+                :status, :modified_conveyable, :timestamp, :body
 
     # Initialize a new Document instance
     def initialize
@@ -76,6 +76,8 @@ module Story
           @editor_id           = meta[:editor_id]
           @set_name            = meta[:set_name]
           @thumbnail           = meta[:thumbnail]
+          @screenshot          = meta[:screenshot]
+          @description         = meta[:description]
           @status              = meta[:status]
           @modified_conveyable = meta[:modified_conveyable]
           @timestamp           = meta[:timestamp]
