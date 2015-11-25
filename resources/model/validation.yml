@@ -18,6 +18,8 @@ meta:
   editor_id:             { default:  null, type: String, as: to_s }
   set_name:              { required: false, as: to_s }
   thumbnail:             { required: true, as: to_s }
+  screenshot:            { required: false, as: to_s }
+  description:           { required: false, as: to_s, default: "oh damnit!" }
   status:                { required: true, as: to_sym }
   modified_conveyable:   { required: true }
   timestamp:             { required: true, as: to_s }
