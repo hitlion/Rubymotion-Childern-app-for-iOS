@@ -23,9 +23,9 @@ class MenuOverlay < UIView
   end
 
   def buildView
-    backgroundView = UIView.alloc.initWithFrame(CGRectMake(0,0,
+    backgroundView = UIImageView.alloc.initWithFrame(CGRectMake(0,0,
                                                            self.frame.size.width, self.frame.size.height))
-    backgroundView.backgroundColor = UIColor.clearColor
+    backgroundView.image = UIImage.imageNamed("background_grey_trans.png")
 
     overlayView = UIView.alloc.initWithFrame(CGRectMake(0.2 * self.frame.size.width, 0.15 * self.frame.size.height,
                                                         0.6 * self.frame.size.width, 0.75 * self.frame.size.height))
@@ -78,8 +78,8 @@ class MenuOverlay < UIView
     end
 
     cancel_button = UIButton.alloc.initWithFrame(CGRectMake(0.9 * topView.frame.size.width,0.05 * topView.frame.size.height,
-                                                          0.1 * topView.frame.size.width, 0.2 * topView.frame.size.height))
-    cancel_button.setBackgroundImage(UIImage.imageNamed("stop_control.png"), forState:UIControlStateNormal)
+                                                          0.05 * topView.frame.size.width, 0.05 * topView.frame.size.width))
+    cancel_button.setBackgroundImage(UIImage.imageNamed("icon_close_black.png"), forState:UIControlStateNormal)
     cancel_button.addTarget(self, action: "cancel_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
 
     @buttons_in_button_line = ["Bearbeiten", "Neu", "Löschen"]
@@ -111,6 +111,8 @@ class MenuOverlay < UIView
     topView.addSubview(cancel_button)
     topView.addSubview(button_line)
     topView.addSubview(line)
+
+
 
     overlayView.addSubview(topView)
     overlayView.addSubview(bottomView)
@@ -153,16 +155,10 @@ class MenuOverlay < UIView
   def button_line_value_changed(element)
     lp element.selectedSegmentIndex
 
-    if(element.selectedSegmentIndex == 0)
-      edit_story
-    elsif (element.selectedSegmentIndex == 1)
-      new_story
-    elsif (element.selectedSegmentIndex == 2)
-      remove_story
-    elsif (element.selectedSegmentIndex == 3)
-
-    elsif (element.selectedSegmentIndex == 4)
-
+    if (@overlay_type == :parent_menu)
+      edit_story   if element.selectedSegmentIndex == 0
+      new_story    if element.selectedSegmentIndex == 1
+      remove_story if element.selectedSegmentIndex == 2
     end
   end
 end
