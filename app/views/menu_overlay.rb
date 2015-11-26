@@ -84,7 +84,7 @@ class MenuOverlay < UIView
       right_button.hidden = true
     end
 
-    cancel_button = UIButton.alloc.initWithFrame(CGRectMake(0.9 * topView.frame.size.width,0.05 * topView.frame.size.height,
+    cancel_button = UIButton.alloc.initWithFrame(CGRectMake(0.9 * topView.frame.size.width,0.1 * topView.frame.size.height,
                                                           0.05 * topView.frame.size.width, 0.05 * topView.frame.size.width))
     cancel_button.setBackgroundImage(UIImage.imageNamed("icon_close_black.png"), forState:UIControlStateNormal)
     cancel_button.addTarget(self, action: "cancel_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
@@ -104,7 +104,7 @@ class MenuOverlay < UIView
 
     line = UIView.alloc.initWithFrame(CGRectMake(0.05 * topView.frame.size.width, topView.frame.size.height - 1 ,
                                                  0.9 * topView.frame.size.width, 1))
-    line.backgroundColor = UIColor.blackColor
+    line.backgroundColor = @babbo_line_grey
 
     topView.addSubview(image)
     topView.addSubview(name)
