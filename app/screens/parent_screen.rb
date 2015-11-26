@@ -8,7 +8,7 @@ class ParentScreen < PM::Screen
   LEFT_BUTTON_X_POS     = 0.5   # * navbar width
   MIDDLE_BUTTON_X_POS   = 0.6   # * navbar width
   RIGHT_BUTTON_X_POS    = 0.7   # * navbar width
-  NAV_BAR_HEIGHT         = 0.125 # * screen_height
+  NAV_BAR_HEIGHT        = 0.125 # * screen_height
   STORY_VIEW_HEIGHT     = 0.39  # * screen_height
   SUB_HEADER_HEIGHT     = 0.08  # * screen_height
   SUB_LINE_HEIGHT       = 0.02  # * screen_height
@@ -20,14 +20,14 @@ class ParentScreen < PM::Screen
 
   def will_appear
 
-    @story_list = StoryBundle.bundles.select { |b| b.valid? }
-
     @babbo_bar_grey = UIColor.colorWithRed(247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha:1.0)
     @babbo_line_grey = UIColor.colorWithRed(200.0/255.0, green: 200.0/255.0, blue: 200.0/255.0, alpha:1.0)
     @babbo_orange = UIColor.colorWithRed(249.0/255.0, green: 188.0/255.0, blue: 52.0/255.0, alpha:1.0)
 
     @parentmenu = UIView.alloc.initWithFrame(CGRectMake(0 ,0, device.screen_width, device.screen_height))
     @parentmenu.backgroundColor = UIColor.colorWithRed(255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha:1.0)
+
+    @choosen_story_index ||= 0
 
     add @parentmenu
 
@@ -136,12 +136,10 @@ class ParentScreen < PM::Screen
 
     @story_layout.itemSize = size
 
-    make_story_collection_view_cells(size)
-
     @story_collection_view.contentInset = UIEdgeInsetsMake(0, 0 * @story_collection_view.frame.size.width, 0, 0 * @story_collection_view.frame.size.width)
 
 
-    @story_collection_view.registerClass(UICollectionViewCell, forCellWithReuseIdentifier:CellIdentifier)
+    @story_collection_view.registerClass(MenuStoryCell, forCellWithReuseIdentifier:CellIdentifier)
     @story_collection_view.backgroundColor = UIColor.clearColor
 
     @parentmenu.addSubview(@story_collection_view)
@@ -191,24 +189,24 @@ class ParentScreen < PM::Screen
 
     @tips_layout.itemSize = size
 
-    make_tips_collection_view_cells(size)
+    make_tips_list
 
     @tips_collection_view.contentInset = UIEdgeInsetsMake(0,0,0,0)
     @tips_collection_view.backgroundColor = UIColor.clearColor
-    @tips_collection_view.registerClass(UICollectionViewCell, forCellWithReuseIdentifier:CellIdentifier)
+    @tips_collection_view.registerClass(MenuTipsCell, forCellWithReuseIdentifier:CellIdentifier)
 
     @tips_view.addSubview(@tips_collection_view)
 
     @button_left = UIButton.alloc.initWithFrame(CGRectMake(0, 0,
-                                                           0.1 * @tips_view.frame.size.width,
+                                                           0.075 * @tips_view.frame.size.width,
                                                            @tips_view.frame.size.height))
     @button_left.setImage(UIImage.imageNamed("previous"), forState:UIControlStateNormal)
 
     @button_left.addTarget(self, action: "scroll_tips_list:", forControlEvents: UIControlEventTouchUpInside)
     @button_left.tag = -1
 
-    @button_right = UIButton.alloc.initWithFrame(CGRectMake(0.9 * @tips_view.frame.size.width , 0,
-                                                            0.1 * @tips_view.frame.size.width,
+    @button_right = UIButton.alloc.initWithFrame(CGRectMake(0.925 * @tips_view.frame.size.width , 0,
+                                                            0.075 * @tips_view.frame.size.width,
                                                             @tips_view.frame.size.height))
     @button_right.setImage(UIImage.imageNamed("next"), forState:UIControlStateNormal)
 
@@ -250,11 +248,9 @@ class ParentScreen < PM::Screen
 
     @level_layout.itemSize = size
 
-    make_level_collection_view_cells(size, @stories[0])
-
     @level_collection_view.contentInset = UIEdgeInsetsMake(0,0,0,0)
     @level_collection_view.backgroundColor = UIColor.clearColor
-    @level_collection_view.registerClass(UICollectionViewCell, forCellWithReuseIdentifier:CellIdentifier)
+    @level_collection_view.registerClass(MenuLevelCell, forCellWithReuseIdentifier:CellIdentifier)
 
     @level_view.addSubview(@level_collection_view)
 
@@ -518,51 +514,66 @@ class ParentScreen < PM::Screen
 
   end
 
-  def open_story(button)
+  ##
+  # instance methods for MenuStoryCell
 
-    id  = button.tag
-
+  def menuStoryCell(cell, rightButtonPressed: source)
+    id  = source.tag
     story = @story_list.find {|e| e.object_id == id}
 
     @parent_overlay.reloadViewWithStory(story)
     @parent_overlay.hidden = !@parent_overlay.hidden?
-
-
   end
 
-  ##
-  # called if the more / less (left) button was pressed
-  # @param button the pressed button object
-  def cell_left_button_pressed(button)
+  def menuStoryCell(cell, leftButtonPressed: source)
+    id  = source.tag
 
-    cell  = button.superview.superview.superview
-    path = @story_collection_view.indexPathForCell(cell)
-    story_level_list = @stories[path.row]
+    story_level_list = @stories.find {|e| e[0].object_id == id}
+    index = @stories.index (story_level_list)
+    path = NSIndexPath.indexPathForRow(index, inSection:0)
+
+    @choosen_story_index = index
 
     if(@pressed_more_button)
-      if(@pressed_more_button == button)
+      if(@pressed_more_button == source)
         @pressed_more_button = nil
         less(story_level_list)
-        button.setTitle("Mehr", forState: UIControlStateNormal)
+        source.setTitle("Mehr", forState: UIControlStateNormal)
+        cell.hide_marker
       else
-        button.setTitle("Weniger", forState: UIControlStateNormal)
+        source.setTitle("Weniger", forState: UIControlStateNormal)
         @pressed_more_button.setTitle("Mehr", forState: UIControlStateNormal)
         more(story_level_list, path: path)
-        @pressed_more_button = button
+        @pressed_more_button = source
+        cell.show_marker
+        @lastSelectedCell.hide_marker
       end
     else
       more(story_level_list, path: path)
-      button.setTitle("Weniger", forState: UIControlStateNormal)
-      @pressed_more_button = button
+      source.setTitle("Weniger", forState: UIControlStateNormal)
+      @pressed_more_button = source
+      cell.show_marker
     end
+
+    @lastSelectedCell = cell
   end
 
   ##
-  # more was pressed (left button in story view cell)
+  # instance methods for MenuLevelCell
+  def menuLevelCell(cell, buttonPressed: source)
+    id  = source.tag
+    story = @story_list.find {|e| e.object_id == id}
+
+    @parent_overlay.reloadViewWithStory(story)
+    @parent_overlay.hidden = !@parent_overlay.hidden?
+  end
+
+  ##
+  # more was pressed (left button in menu story view cell)
   # rebuild the level list and open the level collection view
   # hide the tipps and tricks section
   def more(list, path: path)
-    make_level_collection_view_cells(@level_layout.itemSize, list)
+    reload_level_collection_view_cells
     @sub_header.text = "Erstellte Level"
     @level_view.hidden = false
     @tips_view.hidden = true
@@ -571,7 +582,7 @@ class ParentScreen < PM::Screen
   end
 
   ##
-  # less was pressed (left button in story view cell)
+  # less was pressed (left button in menu story view cell)
   # open the tipss and tricks collection view
   # hide the level list section
   def less(story)
@@ -620,6 +631,7 @@ class ParentScreen < PM::Screen
   end
 
   def build_story_list
+   @story_list = StoryBundle.bundles.select { |b| b.valid? }
    stories = {}
 
    @story_list.each do |s|
@@ -633,193 +645,44 @@ class ParentScreen < PM::Screen
 
   ##
   # init the tips and tricks collection cell
-  def make_tips_collection_view_cells(itemSize)
-
-    @tips_collection_view_cells = []
-
-    3.times do |index|
-      view = UIView.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
-      view.backgroundColor = UIColor.whiteColor
-
-      label = UILabel.alloc.initWithFrame(CGRectMake(0.05 * view.frame.size.width, 0,
-                                                     0.5 * view.frame.size.width, 0.15  * view.frame.size.height))
-      label.text = "Super Coole Überschrift"
-      label.font = UIFont.fontWithName("Enriqueta-Bold", size:25)
-      label.textAlignment = UITextAlignmentCenter
-
-      textView = UITextView.alloc.initWithFrame(CGRectMake(0.05 * view.frame.size.width, 0.2 * view.frame.size.height,
-                                                           0.5 * view.frame.size.width, 0.75 * view.frame.size.height ))
-      textView.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
-      textView.textAlignment = UITextAlignmentLeft
-
-      textView.text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
- sanctus est Lorem ipsum dolor sit amet."
-
-      image = UIImageView.alloc.initWithFrame(CGRectMake(0.55 * view.frame.size.width,0,0.35 * view.frame.size.width, view.frame.size.height))
-      image.image = UIImage.imageNamed("Testbild.png")
-
-      view.addSubview(textView)
-      view.addSubview(image)
-      view.addSubview(label)
-
-      @tips_collection_view_cells[index] = view
-    end
-
-  end
-
-
-
-  ##
-  # init the story collection view cells
-  def make_story_collection_view_cells(itemSize)
-
-    @story_collection_view_cells = []
-
-    @stories.each_with_index do |d,index|
-
-      view = UIView.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
-      view.backgroundColor = UIColor.redColor
-
-      image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, view.frame.size.width, view.frame.size.height))
-      image.image = UIImage.imageWithData(d[0].asset_data(d[0].document.thumbnail))
-
-      layer = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, 0.75 * view.frame.size.width, 0.33 * view.frame.size.height ))
-      layer.image = UIImage.imageNamed("cell_layer")
-
-      label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
-      label.text = d[0].document.set_name
-      label.textColor = UIColor.blackColor
-      label.font = UIFont.fontWithName("Enriqueta-Bold", size:30)
-      label.textAlignment = UITextAlignmentCenter
-
-      left_button = UIButton.alloc.initWithFrame(CGRectMake(0.15 * layer.frame.size.width,0.6 * layer.frame.size.height,
-                                                            0.3 * layer.frame.size.width, 0.3 * layer.frame.size.height))
-      left_button.setBackgroundImage(UIImage.imageNamed("button_grey.png"), forState:UIControlStateNormal)
-      left_button.setTitle("Mehr", forState: UIControlStateNormal)
-      left_button.addTarget(self, action: "cell_left_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
-      left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
-
-      right_button = UIButton.alloc.initWithFrame(CGRectMake(0.55 * layer.frame.size.width,0.6 * layer.frame.size.height,
-                                                             0.3 * layer.frame.size.width, 0.3 * layer.frame.size.height))
-      right_button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
-      right_button.setTitle("Öffnen", forState: UIControlStateNormal)
-      right_button.addTarget(self, action: "open_story:", forControlEvents: UIControlEventTouchUpInside)
-      right_button.tag = d[0].object_id
-      right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
-
-      selectedStoryMarker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(view.bounds)- 0.05 *  view.frame.size.width,
-                                                                       view.frame.size.height - 0.05 * view.frame.size.width,
-                                                                       0.1 * view.frame.size.width, 0.05 * view.frame.size.width))
-
-      selectedStoryMarker.image = UIImage.imageNamed("Marker.png")
-
-      view.addSubview(image)
-      view.addSubview(layer)
-      view.addSubview(label)
-      view.addSubview(left_button)
-      view.addSubview(right_button)
-      view.addSubview(selectedStoryMarker)
-
-      @story_collection_view_cells[index] = view
-    end
+  def make_tips_list
+    @tips_list = TipsBundle.alloc.init
   end
 
   ##
   # init the level collection view cells
-  def make_level_collection_view_cells(itemSize, levelList)
-
-    @level_collection_view_cells = []
-
-    levelList.each_with_index do |level,index|
-
-      view = UIButton.alloc.initWithFrame(CGRectMake(0,0,itemSize.width, itemSize.height))
-      view.addTarget(self, action: "open_story:", forControlEvents: UIControlEventTouchUpInside)
-      view.backgroundColor = UIColor.clearColor
-      view.tag = level.object_id
-
-      imageSize = CGSizeMake(view.frame.size.width, (view.frame.size.width / 4.0) * 3 )
-      image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, imageSize.width, imageSize.height))
-      image.image = UIImage.imageWithData(level.asset_data(level.document.thumbnail))
-
-      name = UILabel.alloc.initWithFrame(CGRectMake(0, image.frame.size.height,
-                                                    view.frame.size.width, view.frame.size.height / 8.0))
-      name.backgroundColor = UIColor.clearColor
-      name.text = level.document.set_name
-      name.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
-      name.textAlignment = UITextAlignmentLeft
-      name.textColor = @babbo_orange
-
-      date = UILabel.alloc.initWithFrame(CGRectMake(0, image.frame.size.height + name.frame.size.height,
-                                                    view.frame.size.width, view.frame.size.height / 8.0))
-      date.backgroundColor = UIColor.clearColor
-
-      time = Time.at(NSDate.dateWithNaturalLanguageString(level.document.timestamp))
-      date.text = time.strftime("%d. %B %Y").to_s
-      date.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
-      date.textAlignment = UITextAlignmentLeft
-
-      view.addSubview(image)
-      view.addSubview(name)
-      view.addSubview(date)
-
-      @level_collection_view_cells[index] = view
-    end
-
+  def reload_level_collection_view_cells
     @level_collection_view.reloadData
   end
 
   # UICollectionView Instance Methods
   def collectionView(view, numberOfItemsInSection:section)
     return @stories.length if(view == @story_collection_view)
-    return @level_collection_view_cells.length if(view == @level_collection_view)
-    return 3 if(view == @tips_collection_view)
+    return @stories[@choosen_story_index].length if(view == @level_collection_view)
+    return @tips_list.length if(view == @tips_collection_view)
   end
 
   def collectionView(view, cellForItemAtIndexPath:path)
-    c = view.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: path)
+    cell = view.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: path)
 
     if(view == @story_collection_view)
-      story = @story_collection_view_cells[path.row]
-      view = c.contentView
-
-      subviews = view.subviews
-
-      subviews.each do |v|
-        v.removeFromSuperview
-      end
-
-      view.addSubview(story)
+      list = @stories[path.row]
+      cell.delegate = self
+      cell.make_cell(list[0])
     end
 
     if(view == @level_collection_view)
-      level = @level_collection_view_cells[path.row]
-      view = c.contentView
-
-      subviews = view.subviews
-
-      subviews.each do |v|
-        v.removeFromSuperview
-      end
-
-      view.addSubview(level)
+      list = @stories[@choosen_story_index]
+      element = list[path.row]
+      cell.delegate = self
+      cell.make_cell(element)
     end
 
     if(view == @tips_collection_view)
-      tip = @tips_collection_view_cells[path.row]
-      view = c.contentView
-
-      subviews = view.subviews
-
-      subviews.each do |v|
-        v.removeFromSuperview
-      end
-
-      view.addSubview(tip)
+      cell.make_cell(@tips_list[path.row])
     end
 
-    c
+    cell
   end
 
 end

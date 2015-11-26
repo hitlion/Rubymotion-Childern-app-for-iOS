@@ -23,17 +23,24 @@ class MenuOverlay < UIView
   end
 
   def buildView
+
+    self.subviews.each do |v|
+      v.removeFromSuperview
+    end
+
     backgroundView = UIImageView.alloc.initWithFrame(CGRectMake(0,0,
                                                            self.frame.size.width, self.frame.size.height))
     backgroundView.image = UIImage.imageNamed("background_grey_trans.png")
 
     overlayView = UIView.alloc.initWithFrame(CGRectMake(0.2 * self.frame.size.width, 0.15 * self.frame.size.height,
                                                         0.6 * self.frame.size.width, 0.75 * self.frame.size.height))
-    overlayView.backgroundColor = UIColor.greenColor
+    overlayView.backgroundColor = UIColor.whiteColor
+
+    buttonSize = CGSizeMake(0.2 * overlayView.frame.size.width, 0.05 * overlayView.frame.size.height)
 
     topView = UIView.alloc.initWithFrame(CGRectMake(0, 0,
                                                     overlayView.frame.size.width, 0.4 * overlayView.frame.size.height))
-    topView.backgroundColor = UIColor.whiteColor
+    topView.backgroundColor = UIColor.clearColor
 
     image = UIImageView.alloc.initWithFrame(CGRectMake(0.05 * topView.frame.size.width, 0.1 * topView.frame.size.height,
                                                        0.3 * topView.frame.size.width, 0.6 * topView.frame.size.height))
@@ -59,7 +66,7 @@ class MenuOverlay < UIView
     end
 
     left_button = UIButton.alloc.initWithFrame(CGRectMake(0.4 * topView.frame.size.width, 0.5 * topView.frame.size.height,
-                                                          0.2 * topView.frame.size.width, 0.15 * topView.frame.size.height))
+                                                          buttonSize.width, buttonSize.height))
     left_button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
     left_button.setTitle(@textButtonLeft, forState: UIControlStateNormal)
     left_button.addTarget(self, action: "left_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
@@ -82,15 +89,15 @@ class MenuOverlay < UIView
     cancel_button.setBackgroundImage(UIImage.imageNamed("icon_close_black.png"), forState:UIControlStateNormal)
     cancel_button.addTarget(self, action: "cancel_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
 
-    @buttons_in_button_line = ["Bearbeiten", "Neu", "Löschen"]
+    @buttons_in_top_button_line = ["Bearbeiten", "Neu", "Löschen"]
 
     text_attributes = { NSFontAttributeName => UIFont.fontWithName("Enriqueta-Regular", size:17) }
 
-    button_line = UISegmentedControl.alloc.initWithItems(@buttons_in_button_line)
-    button_line.frame = CGRectMake(0.1 * topView.frame.size.width, 0.775 * topView.frame.size.height,
-                                   0.8 * topView.frame.size.width, 0.15 * topView.frame.size.height)
-    button_line.addTarget(self, action: "button_line_value_changed:", forControlEvents: UIControlEventValueChanged)
-    button_line.selectedSegmentIndex = 0
+    button_line = UISegmentedControl.alloc.initWithItems(@buttons_in_top_button_line)
+    button_line.frame = CGRectMake(0.2 * topView.frame.size.width, 0.775 * topView.frame.size.height,
+                                   3 * buttonSize.width, buttonSize.height)
+    button_line.addTarget(self, action: "button_line_top_value_changed:", forControlEvents: UIControlEventValueChanged)
+    button_line.selectedSegmentIndex = -1
     button_line.segmentedControlStyle = UISegmentedControlStylePlain
     button_line.setTitleTextAttributes(text_attributes, forState: UIControlStateNormal)
 
@@ -98,10 +105,6 @@ class MenuOverlay < UIView
     line = UIView.alloc.initWithFrame(CGRectMake(0.05 * topView.frame.size.width, topView.frame.size.height - 1 ,
                                                  0.9 * topView.frame.size.width, 1))
     line.backgroundColor = UIColor.blackColor
-
-    bottomView = UIView.alloc.initWithFrame(CGRectMake(0,0.4 * overlayView.frame.size.height,
-                                                           overlayView.frame.size.width, 0.6 * overlayView.frame.size.height))
-    bottomView.backgroundColor = UIColor.yellowColor
 
     topView.addSubview(image)
     topView.addSubview(name)
@@ -112,7 +115,28 @@ class MenuOverlay < UIView
     topView.addSubview(button_line)
     topView.addSubview(line)
 
+    bottomView = UIView.alloc.initWithFrame(CGRectMake(0,0.4 * overlayView.frame.size.height,
+                                                           overlayView.frame.size.width, 0.6 * overlayView.frame.size.height))
+    bottomView.backgroundColor = UIColor.clearColor
 
+    @buttons_in_bottom_button_line = ["Bilder", "Beschreibung"]
+    buttonLineBottom = UISegmentedControl.alloc.initWithItems(@buttons_in_bottom_button_line)
+    buttonLineBottom.frame = CGRectMake(0.3 * bottomView.frame.size.width, 0.05 * bottomView.frame.size.height,
+                                   2 * buttonSize.width, buttonSize.height)
+    buttonLineBottom.addTarget(self, action: "button_line_bottom_value_changed:", forControlEvents: UIControlEventValueChanged)
+    buttonLineBottom.selectedSegmentIndex = 1
+    buttonLineBottom.segmentedControlStyle = UISegmentedControlStylePlain
+    buttonLineBottom.setTitleTextAttributes(text_attributes, forState: UIControlStateNormal)
+
+    @textView = UITextView.alloc.initWithFrame(CGRectMake(0.05 * bottomView.frame.size.width, 0.25 * bottomView.frame.size.height,
+                                                          0.9 * bottomView.frame.size.width, 0.7 * bottomView.frame.size.height ))
+    @textView.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
+    @textView.textAlignment = UITextAlignmentLeft
+
+    @textView.text = story.document.description
+
+    bottomView.addSubview(buttonLineBottom)
+    bottomView.addSubview(@textView)
 
     overlayView.addSubview(topView)
     overlayView.addSubview(bottomView)
@@ -152,13 +176,26 @@ class MenuOverlay < UIView
 
   end
 
-  def button_line_value_changed(element)
-    lp element.selectedSegmentIndex
+  def show_screenshoots
+    @textView.hidden = true
+  end
 
+  def show_description
+    @textView.hidden = false
+  end
+
+  def button_line_top_value_changed(element)
     if (@overlay_type == :parent_menu)
       edit_story   if element.selectedSegmentIndex == 0
       new_story    if element.selectedSegmentIndex == 1
       remove_story if element.selectedSegmentIndex == 2
+    end
+  end
+
+  def button_line_bottom_value_changed(element)
+    if (@overlay_type == :parent_menu)
+      show_screenshoots   if element.selectedSegmentIndex == 0
+      show_description    if element.selectedSegmentIndex == 1
     end
   end
 end
