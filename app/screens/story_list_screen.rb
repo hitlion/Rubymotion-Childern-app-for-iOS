@@ -8,6 +8,7 @@ class StoryListScreen < PM::TableScreen
   def on_load
     @story_bundles = []
     reload_bundles
+    set_nav_bar_button :right, title: "Kids", action: :go_to_kids_menu
   end
 
   # Reload the table data
@@ -38,16 +39,8 @@ class StoryListScreen < PM::TableScreen
   #
   # @todo: Handle branch data
   def reload_bundles
-    bundle_root = File.join(Dir.system_path(:documents), 'Bundles')
-    Dir::mkdirs(bundle_root) unless Dir.exist? bundle_root
-
-    @story_bundles = []
-    Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
-      bundle = StoryBundle.new(bundle_path)
-      bundle.load
-
-      @story_bundles << bundle
-    end
+    @story_bundles = StoryBundle.bundles
+    #@story_bundles.sort{|s| s.document.timestamp}
   end
 
   # Create a ProMotion compatible cell data +Hash+ from the given +StoryBundle+
@@ -120,12 +113,22 @@ class StoryListScreen < PM::TableScreen
     return if args[:bundle].nil?
     return unless args[:bundle].valid?
 
-    open_modal StoryPlayerScreen.get(args[:bundle])
+    StartScreen.next_story = args[:bundle]
+    StartScreen.next_screen = :story_player
+    StartScreen.last_screen = :parent_menu
+    rmq.screen.open_root_screen(StartScreen)
   end
 
   def show_error_alert
     app.alert(title: 'Entschuldigung',
               message: 'Diese Story enthält Fehler und kann nicht angezeigt werden.')
   end
+
+  def go_to_kids_menu
+    StartScreen.next_screen= :kids_menu
+    StartScreen.last_screen = :parent_menu
+    rmq.screen.open_root_screen(StartScreen)
+  end
+
 end
 

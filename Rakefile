@@ -54,6 +54,8 @@ Motion::Project::App.setup do |app|
     end
   end
 
+  app.info_plist['UIAppFonts'] = ['Enriqueta-Bold.otf', 'Enriqueta-Regular.otf']
+
   # pods used in all configurations
   app.pods do
     pod 'IQAudioRecorderController'
@@ -63,7 +65,7 @@ Motion::Project::App.setup do |app|
   # pods used in staging and ad-hoc releases
   app.pods do
       pod 'Fabric'
-      pod 'Crashlytics' #, '= 3.1.0'
+      pod 'Crashlytics'
   end
 
   if ENV['staging'] == 'true' or app.development?
@@ -87,8 +89,6 @@ Motion::Project::App.setup do |app|
         'APIKey' => ENV['RM_FABRIC_API'] || 'please-set-RM_FABRIC_API-environment',
         'Kits'   => [{'KitName' => 'Crashlytics'}]
     }
-
-
   end
   # generic configuration
 
@@ -163,6 +163,5 @@ end
 task :deploy => 'archive:distribution'
 task :fabric_send => 'archive:distribution'
 task :fabric => 'beta:fabric_send'
-
 end
 
