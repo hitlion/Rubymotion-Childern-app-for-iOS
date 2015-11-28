@@ -19,7 +19,8 @@ class KidsScene < SKScene
   # Sizes (in x * screen high) for the folowing elements
   SIZE_CENTER_STORY  = 0.5
   SIZE_OTHER_STORY   = 0.25
-  SIZE_BUTTON_LINE_ELEMENT = 0.25
+  SIZE_ELEMENT_IN_BUTTON_LINE = 0.2
+  SIZE_ELEMENT_IN_BUTTON_LINE_SMALL = 0.15
 
   # Sprite node names
   BUTTON_PARENT_NAME = "PARENT"
@@ -59,7 +60,7 @@ class KidsScene < SKScene
     add_background
 
     add_element_in_buttonline("avatar_Kind", BUTTON_CHILD_NAME, CHILD_BUTTON_X, 10)
-    add_element_in_buttonline("avatar_Vater", BUTTON_PARENT_NAME, PARENT_BUTTON_X, 10)
+    add_element_in_buttonline("dummy_parent.png", BUTTON_PARENT_NAME, PARENT_BUTTON_X, 10)
     add_element_in_buttonline("Logo", BUTTON_LOGO_NAME, LOGO_BUTTON_X, 10)
 
     add_story_list
@@ -114,11 +115,16 @@ class KidsScene < SKScene
     story = @story_list.select{|s| s.document.set_name == @center_node.name}.first
 
     if @center_node.equal?(node)
-      play_story(story)
+      @story_selected = true
+      @selected_story = story
     elsif (@story_list.select{|s| s.document.set_name == node.name}.first) && (!node.equal?(@center_node))
       scale_all_small
       move_rope_by_x(@center_point.x - node.position.x, 0.35)
+
       @center_node = node
+
+      @story_selected = false
+      @selected_story = nil
     end
   end
 
@@ -134,13 +140,17 @@ class KidsScene < SKScene
     location = touch.locationInView(self.view)
     prev_location = touch.previousLocationInView(self.view)
 
-    move_rope_by_x(location.x - prev_location.x, 0.01)
+    move_rope_by_x(1.5 * (location.x - prev_location.x), 0.02)
+
+    @story_selected = false
+    @selected_story = nil
   end
 
   ##
   # Called when the touch ended
   #
   def touchesEnded(touches, withEvent: event)
+
     moveSequence = SKAction.sequence([SKAction.waitForDuration(0.35, withRange: 0.01),
                                       SKAction.performSelector("center_story_pics", onTarget: self),
                                       SKAction.waitForDuration(0.2, withRange: 0.05),
@@ -148,8 +158,10 @@ class KidsScene < SKScene
 
     self.runAction(moveSequence)
 
-
-
+    if(@story_selected && @selected_story)
+      play_story(@selected_story)
+      @story_selected = false
+    end
   end
 
   #######################
@@ -183,7 +195,9 @@ class KidsScene < SKScene
     element.name = name
     element.zPosition = z_pos
     element.position = CGPointMake(x_pos * @width, BUTTON_LINE_Y * @height)
-    element.scale = ((@height * SIZE_BUTTON_LINE_ELEMENT) / (element.size.height))
+    @button_scale = (@height * SIZE_ELEMENT_IN_BUTTON_LINE) / (element.size.height)
+    @button_clicked_scale = (@height * SIZE_ELEMENT_IN_BUTTON_LINE_SMALL) / (element.size.height)
+    element.scale = @button_scale
 
     addChild element
   end
@@ -213,6 +227,8 @@ class KidsScene < SKScene
 
       story.name = s.document.set_name
 
+      lp story.name
+
       story.physicsBody = SKPhysicsBody.bodyWithRectangleOfSize(story.size)
       story.physicsBody.dynamic = true
       story.physicsBody.angularDamping = 5.0
@@ -225,11 +241,17 @@ class KidsScene < SKScene
       story_frame.position = CGPointMake(0, -texture.size.height)
       story.addChild story_frame
 
-      story_picture = SKSpriteNode.spriteNodeWithTexture(SKTexture.textureWithImage (UIImage.imageWithData(s.asset_data(s.document.thumbnail))))
+      if(s.asset_data(s.document.thumbnail))
+        image = SKTexture.textureWithImage (UIImage.imageWithData(s.asset_data(s.document.thumbnail)))
+      else
+        image = SKTexture.textureWithImage (UIImage.imageNamed("Testbild.png"))
+      end
+
+      story_picture = SKSpriteNode.spriteNodeWithTexture(image)
       story_picture.zPosition = -3
       story_picture.anchorPoint = CGPointMake(0.5, 0.5)
       story_picture.position = CGPointMake(0, - 0.63 * texture.size.height)
-      story_picture.scale = (0.68 * texture.size.height) / story_picture.size.height
+      story_picture.scale = (0.4 * texture.size.height) / story_picture.size.height
       story.addChild story_picture
 
       clip = SKSpriteNode.spriteNodeWithImageNamed("Klammer")
@@ -239,13 +261,13 @@ class KidsScene < SKScene
       clip.scale = (0.2 * texture.size.height) / clip.size.height
       story.addChild clip
 
-      user_picture = SKSpriteNode.spriteNodeWithImageNamed("avatar_Vater")
+      user_picture = SKSpriteNode.spriteNodeWithImageNamed("dummy_parent.png")
       user_picture.zPosition = 1
       user_picture.position = CGPointMake(0.5 * texture.size.width, - 1 * texture.size.height)
       user_picture.scale = (0.35 * texture.size.height) / user_picture.size.height
       user_picture.name = ELEMENT_USER_PICTURE
 
-      story.addChild user_picture
+      # story.addChild user_picture
 
       label = SKLabelNode.labelNodeWithText(s.document.set_name)
       label.position = CGPointMake(0, - 0.35 * texture.size.height )
@@ -346,7 +368,7 @@ class KidsScene < SKScene
     label = SKLabelNode.labelNodeWithText(app.version)
     label.position = CGPointMake(30,10)
     label.zPosition = 100
-    label.fontSize = 15
+    label.fontSize = 25
     label.fontColor = UIColor.blackColor
     label.fontName = FONT
     addChild label
@@ -356,6 +378,22 @@ class KidsScene < SKScene
   # Touch Event / clicked Methods
   #################
   def parent_button_clicked
+    parent_button_sequence = SKAction.sequence([SKAction.performSelector("toogle_parent_button", onTarget: self),
+                                                SKAction.waitForDuration(0.25, withRange: 0.05),
+                                                SKAction.performSelector("goto_parent_menu", onTarget: self)])
+
+
+    self.runAction(parent_button_sequence)
+  end
+
+  def toogle_parent_button
+
+    childNodeWithName(BUTTON_PARENT_NAME).runAction(SKAction.scaleTo(@button_clicked_scale, duration: 0.1))
+  end
+
+  def goto_parent_menu
+    childNodeWithName(BUTTON_PARENT_NAME).runAction(SKAction.scaleTo(@button_scale, duration: 0.1))
+    SKAction.waitForDuration(0.15, withRange: 0.05)
     StartScreen.next_screen = :age_verification_screen
     StartScreen.last_screen = :kids_menu
     rmq.screen.open_root_screen(StartScreen)
@@ -421,7 +459,7 @@ class KidsScene < SKScene
   def scale_mid_big
     scale_all_small
     if(!@center_node.nil?)
-      @center_node.scale = @big_scale
+      @center_node.runAction(SKAction.scaleTo(@big_scale, duration: 0.35))
     end
   end
 
@@ -431,7 +469,7 @@ class KidsScene < SKScene
   def scale_all_small
     if(!@story_list.empty?)
       @story_list.each do |s|
-        childNodeWithName(s.document.set_name).scale = @small_scale
+        childNodeWithName(s.document.set_name).runAction(SKAction.scaleTo(@small_scale, duration: 0.2))
       end
     end
   end
@@ -440,11 +478,10 @@ class KidsScene < SKScene
   # If the current position of the @center_node is not the @center_point, than move the rope
   # by the diff between these two points
   def center_story_pics
-
     return if @center_node.nil? || !@init
 
     if @init && @center_node.position != @center_point
-      move_rope_by_x(@center_point.x - @center_node.position.x,0.05)
+      move_rope_by_x(@center_point.x - @center_node.position.x,0.85)
     end
   end
 

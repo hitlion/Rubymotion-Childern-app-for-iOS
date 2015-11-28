@@ -16,15 +16,15 @@ class StartScreen < PM::Screen
     append(UIImageView, :logo)
   end
 
-  def go_to_kids
+  def goto_kids
     open KidsScreen.new
   end
 
-  def go_to_parent
+  def goto_parent
     open ParentScreen.new
   end
 
-  def go_to_age_verification
+  def goto_age_verification
     open AgeVerificationScreen.new
   end
 
@@ -33,30 +33,37 @@ class StartScreen < PM::Screen
     open_modal StoryPlayerScreen.get(StartScreen.next_story)
   end
 
-  def go_to_test
+  def goto_test
     open TestScreen.new
   end
 
+  def goto_shop
+    open StoryListScreen.new(nav_bar:true)
+  end
   def on_appear(args={})
 
     if(StartScreen.next_screen.nil?)
-      go_to_parent
+      goto_parent
     end
 
     if StartScreen.next_screen == :parent_menu
-      go_to_parent
+      goto_parent
     end
 
     if StartScreen.next_screen == :kids_menu
-      go_to_kids
+      goto_kids
     end
 
     if StartScreen.next_screen == :age_verification_screen
-      go_to_age_verification
+      goto_age_verification
     end
 
     if StartScreen.next_screen == :story_player
       start_story
+    end
+
+    if StartScreen.next_screen == :shop_menu
+      goto_shop
     end
 
   end
