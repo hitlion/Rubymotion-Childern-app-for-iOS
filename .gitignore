@@ -24,3 +24,6 @@ ib.xcode*
 doc
 .yardoc
 screenshot_*.png
+*.o
+build-iPhoneOS/
+build-iPhoneSimulator/
