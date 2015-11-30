@@ -43,7 +43,7 @@ class StartScreen < PM::Screen
   def on_appear(args={})
 
     if(StartScreen.next_screen.nil?)
-      goto_parent
+      goto_shop
     end
 
     if StartScreen.next_screen == :parent_menu

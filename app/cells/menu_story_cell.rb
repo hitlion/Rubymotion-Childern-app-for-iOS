@@ -73,9 +73,8 @@ class MenuStoryCell < UICollectionViewCell
   end
 
   def right_button_pressed (source)
-    if(@delegate != self)
-      @delegate.send('menuStoryCell:rightButtonPressed:', self, source)
-    end
+    @delegate.menuStoryCell(self, rightButtonPressed: source) unless @delegate == self
+    @delegate.menuStoryCell(self, rightButtonPressed: source) if @delegate.respond_to? 'menuStoryCell:rightButtonPressed:' #optinal
   end
 
   def left_button_pressed (source)
