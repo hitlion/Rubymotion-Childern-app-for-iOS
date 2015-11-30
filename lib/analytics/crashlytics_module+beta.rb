@@ -5,7 +5,17 @@ module CrashlyticsIntegration
     return if device.is_simulator?
 
     lp 'Initializing Crashlytics'
+    Crashlytics.sharedInstance.delegate = self
     Fabric.with([ Crashlytics.sharedInstance ])
+  end
+
+  def crashlyticsDidDetectReportForLastExecution(report, completionHandler: handler)
+    unless @did_show_crash_notice
+      @did_show_crash_notice = true
+      app.alert(title: "Crashlytics", message: "Babbo ist beim letzten start abgestürzt. Sende Crashreport...")
+    end
+
+    NSOperationQueue.mainQueue.addOperationWithBlock(->{ handler.call(true) })
   end
 end
 

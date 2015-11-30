@@ -56,7 +56,6 @@ Motion::Project::App.setup do |app|
 
   app.info_plist['UIAppFonts'] = ['Enriqueta-Bold.otf', 'Enriqueta-Regular.otf']
 
-
   # pods used in all configurations
   app.pods do
     pod 'IQAudioRecorderController'
@@ -66,7 +65,7 @@ Motion::Project::App.setup do |app|
   # pods used in staging and ad-hoc releases
   app.pods do
       pod 'Fabric'
-      pod 'Crashlytics', '= 3.1.0'
+      pod 'Crashlytics'
   end
 
   if ENV['staging'] == 'true' or app.development?
@@ -76,8 +75,7 @@ Motion::Project::App.setup do |app|
 
     if ENV['staging'] == 'true'
       app.entitlements['get-task-allow'] = false
-      #app.instance_eval{ @embed_dsym = true }
-      app.embed_dsym = true # embedd dsyms in ad-hoc releases
+      #app.embed_dsym = true # embedd dsyms in ad-hoc releases
 
       Motion::Project::App.info('Setup', 'Configuring ad-hoc development build')
       app.provisioning_profile = ENV['RM_ADHOC_PROFILE']
@@ -91,15 +89,12 @@ Motion::Project::App.setup do |app|
         'APIKey' => ENV['RM_FABRIC_API'] || 'please-set-RM_FABRIC_API-environment',
         'Kits'   => [{'KitName' => 'Crashlytics'}]
     }
-
-
   end
   # generic configuration
 
   app.name = 'Babbo-Voco'
-  #app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.identifier = 'com.rsc.babbo'
-  app.short_version = app.version = '1.0.135'
+  app.identifier = 'de.tuluh-tec.babbo-voco'
+  app.short_version = app.version = '1.0.136'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :landscape_right]
@@ -146,6 +141,7 @@ task :fabric_send do
 
   fabric_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Fabric', 'Fabric.framework', 'run')
   crashlytics_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'Crashlytics.framework', 'submit')
+  upload_dsym_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'Crashlytics.framework', 'uploadDSYM')
 
   fabric_api = ENV['RM_FABRIC_API']
   fabric_key = ENV['RM_FABRIC_KEY']
@@ -154,16 +150,18 @@ task :fabric_send do
     app.fail('Please set the RM_FABRIC_API and RM_FABRIC_KEY environment variables to your API-Key and Build-Secret.')
   end
 
+  app.info('fabric.io', 'Submitting to fabric..')
   system("#{fabric_run} #{fabric_api} #{fabric_key}")
+
+  app.info('fabric.io', 'Uploading dSYM..')
+  system("#{upload_dsym_run} #{fabric_api} #{fabric_key}")
+
+  app.info('fabric.io', 'Uploading to Beta..')
   system("#{crashlytics_run} #{fabric_api} #{fabric_key} -ipaPath #{app.config.archive()} -notifications YES -debug YES")
 end
 
 task :deploy => 'archive:distribution'
 task :fabric_send => 'archive:distribution'
 task :fabric => 'beta:fabric_send'
-
-
-
-
 end
 
