@@ -693,9 +693,19 @@ class ParentScreen < PM::Screen
 
   # UICollectionView Instance Methods
   def collectionView(view, numberOfItemsInSection:section)
-    return @stories.length if(view == @story_collection_view)
-    return @stories[@choosen_story_index].length if(view == @level_collection_view)
-    return @tips_list.length if(view == @tips_collection_view)
+    if(view == @story_collection_view)
+      return @stories.length if(!@stories.nil?)
+    end
+
+    if(view == @level_collection_view)
+      return @stories[@choosen_story_index].length if(!@stories[@choosen_story_index].nil?)
+    end
+
+    if(view == @tips_collection_view)
+      return @tips_list.length if(!@tips_list.nil?)
+    end
+
+    return 0
   end
 
   def collectionView(view, cellForItemAtIndexPath:path)
