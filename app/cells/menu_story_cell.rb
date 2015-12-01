@@ -44,10 +44,10 @@ class MenuStoryCell < UICollectionViewCell
     right_button.tag = element.object_id
     right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
 
-    @selectedStoryMarker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(view.bounds)- 0.05 *  view.frame.size.width,
+    @selected_story_marker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(view.bounds)- 0.05 *  view.frame.size.width,
                                                                      view.frame.size.height - 0.05 * view.frame.size.width,
                                                                      0.1 * view.frame.size.width, 0.05 * view.frame.size.width))
-    @selectedStoryMarker.image = UIImage.imageNamed("Marker.png")
+    @selected_story_marker.image = UIImage.imageNamed("Marker.png")
     hide_marker
 
     view.addSubview(image)
@@ -55,7 +55,7 @@ class MenuStoryCell < UICollectionViewCell
     view.addSubview(label)
     view.addSubview(left_button)
     view.addSubview(right_button)
-    view.addSubview(@selectedStoryMarker)
+    view.addSubview(@selected_story_marker)
 
     self.subviews.each do |s|
       s.removeFromSuperview
@@ -65,11 +65,11 @@ class MenuStoryCell < UICollectionViewCell
   end
 
   def hide_marker
-    @selectedStoryMarker.hidden = true
+    @selected_story_marker.hidden = true
   end
 
   def show_marker
-    @selectedStoryMarker.hidden = false
+    @selected_story_marker.hidden = false
   end
 
   def right_button_pressed (source)

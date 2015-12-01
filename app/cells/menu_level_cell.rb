@@ -20,8 +20,8 @@ class MenuLevelCell < UICollectionViewCell
     view.backgroundColor = UIColor.clearColor
     view.tag = element.object_id
 
-    imageSize = CGSizeMake(view.frame.size.width, (view.frame.size.width / 4.0) * 3 )
-    image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, imageSize.width, imageSize.height))
+    image_size = CGSizeMake(view.frame.size.width, (view.frame.size.width / 4.0) * 3 )
+    image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, image_size.width, image_size.height))
     image.image = UIImage.imageWithData(element.asset_data(element.document.thumbnail))
 
     name = UILabel.alloc.initWithFrame(CGRectMake(0, image.frame.size.height,
