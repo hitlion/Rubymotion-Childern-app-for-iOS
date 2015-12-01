@@ -447,8 +447,7 @@ class ParentScreen < PM::Screen
   end
 
   def add_parent_overlay
-    @parent_overlay ||= MenuOverlay.alloc.initWithFrame(CGRectMake(0, 0, device.screen_width, device.screen_height))
-    @parent_overlay.overlay_type = :parent_menu
+    @parent_overlay ||= MenuOverlay.alloc.initWithType(:parent_menu, frame: CGRectMake(0, 0, device.screen_width, device.screen_height))
     @parent_overlay.hidden = true
     @parentmenu.addSubview(@parent_overlay)
   end
@@ -558,7 +557,7 @@ class ParentScreen < PM::Screen
     id  = source.tag
     story = @story_list.find {|e| e.object_id == id}
 
-    @parent_overlay.reloadViewWithStory(story)
+    @parent_overlay.reload_view_with_story(story)
     @parent_overlay.hidden = !@parent_overlay.hidden?
   end
 
@@ -601,7 +600,7 @@ class ParentScreen < PM::Screen
     id  = source.tag
     story = @story_list.find {|e| e.object_id == id}
 
-    @parent_overlay.reloadViewWithStory(story)
+    @parent_overlay.reload_view_with_story(story)
     @parent_overlay.hidden = !@parent_overlay.hidden?
   end
 
