@@ -8,6 +8,9 @@ class MenuStoryCell < UICollectionViewCell
     self
   end
 
+  ##
+  # Build the cell with the data from the given element
+  # @param element [Story] The Story for filling the data of this cell
   def make_cell(element)
     @element = element
 
@@ -64,19 +67,31 @@ class MenuStoryCell < UICollectionViewCell
     self.addSubview(view)
   end
 
+  ##
+  # Hide the marker, that shows this story is selected
   def hide_marker
     @selected_story_marker.hidden = true
   end
 
+  ##
+  # Show the marker, that shows this story is selected
   def show_marker
     @selected_story_marker.hidden = false
   end
 
+  ##
+  # Called if the user pressed the right button of the cell
+  # than call the delegate method with the params self (this collection view cell) and the button element
+  # @param source [UIButton] the pressed cell's button
   def right_button_pressed (source)
     @delegate.menuStoryCell(self, rightButtonPressed: source) unless @delegate == self
     #@delegate.menuStoryCell(self, rightButtonPressed: source) if @delegate.respond_to? 'menuStoryCell:rightButtonPressed:' #optinal
   end
 
+  ##
+  # Called if the user pressed the left button of the cell
+  # than call the delegate method with the params self (this collection view cell) and the button element
+  # @param source [UIButton] the pressed cell's button
   def left_button_pressed (source)
     if(@delegate != self)
      @delegate.send('menuStoryCell:leftButtonPressed:', self, source)

@@ -9,12 +9,11 @@ class ParentScreen < PM::Screen
   MIDDLE_BUTTON_X_POS   = 0.6   # * navbar width
   RIGHT_BUTTON_X_POS    = 0.7   # * navbar width
   NAV_BAR_HEIGHT        = 0.125 # * screen_height
-  STORY_VIEW_HEIGHT     = 0.39  # * screen_height
+  STORY_VIEW_HEIGHT     = 0.4  # * screen_height
   SUB_HEADER_HEIGHT     = 0.08  # * screen_height
   SUB_LINE_HEIGHT       = 0.02  # * screen_height
-  LEVEL_VIEW_HEIGHT     = 0.275 # * screen_height
-  TAB_BAR_HEIGHT        = 0.11  # * screen_height
-
+  LEVEL_VIEW_HEIGHT     = 0.375 # * screen_height
+  TAB_BAR_HEIGHT        = 0.10  # * screen_height
 
   CellIdentifier = 'Cell'
 
@@ -35,7 +34,6 @@ class ParentScreen < PM::Screen
 
     add_nav_bar
     add_story_scroll_view
-    add_sub_header
     add_level_scroll_view
     add_tips_and_tricks_view
     add_tab_bar
@@ -146,146 +144,45 @@ class ParentScreen < PM::Screen
   end
 
   ##
-  # add the sub header over the level scroll view
-  def add_sub_header
-    @sub_header = UILabel.alloc.initWithFrame(CGRectMake(0.075 * device.screen_width ,
-                                                         (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT) * device.screen_height,
-                                                         0.85 * device.screen_width,
-                                                         SUB_HEADER_HEIGHT * device.screen_height))
-    @sub_header.text = "Tipps und Tricks"
-    @sub_header.font = UIFont.fontWithName("Enriqueta-Regular", size:25)
-    @parentmenu.addSubview(@sub_header)
-
-    line = horizontal_line_make(CGPointMake(0.075 * device.screen_width,
-                                            (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT) * device.screen_height + 1 ),
-                                width: 0.85 * device.screen_width)
-    @parentmenu.addSubview(line)
-  end
-
-  ##
   # adds tips and tricks collection view
   def add_tips_and_tricks_view
-    @tips_layout = UICollectionViewFlowLayout.alloc.init
-    @tips_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
-
-    @tips_view = UIView.alloc.initWithFrame(CGRectMake(0,
-                                                        (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT) * device.screen_height,
-                                                        device.screen_width,
-                                                        LEVEL_VIEW_HEIGHT * device.screen_height))
-    @tips_view.backgroundColor = UIColor.clearColor
-
-
-    @tips_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0.1 * @tips_view.frame.size.width , 0,
-                                                                             0.8 * @tips_view.frame.size.width,
-                                                                             @tips_view.frame.size.height),
-                                                                  collectionViewLayout: @tips_layout)
-    @tips_collection_view.dataSource = self
-    @tips_collection_view.delegate = self
-    @tips_collection_view.pagingEnabled = true
-
-    height = 0.95 * @tips_collection_view.frame.size.height
-    width  = @tips_collection_view.frame.size.width
-    size = CGSizeMake(width, height)
-
-    @tips_layout.itemSize = size
-
     make_tips_list
-
-    @tips_collection_view.contentInset = UIEdgeInsetsMake(0,0,0,0)
-    @tips_collection_view.backgroundColor = UIColor.clearColor
-    @tips_collection_view.registerClass(MenuTipsCell, forCellWithReuseIdentifier:CellIdentifier)
-
-    @tips_view.addSubview(@tips_collection_view)
-
-    @button_left = UIButton.alloc.initWithFrame(CGRectMake(0, 0,
-                                                           0.075 * @tips_view.frame.size.width,
-                                                           @tips_view.frame.size.height))
-    @button_left.setImage(UIImage.imageNamed("previous"), forState:UIControlStateNormal)
-
-    @button_left.addTarget(self, action: "scroll_tips_list:", forControlEvents: UIControlEventTouchUpInside)
-    @button_left.tag = -1
-
-    @button_right = UIButton.alloc.initWithFrame(CGRectMake(0.925 * @tips_view.frame.size.width , 0,
-                                                            0.075 * @tips_view.frame.size.width,
-                                                            @tips_view.frame.size.height))
-    @button_right.setImage(UIImage.imageNamed("next"), forState:UIControlStateNormal)
-
-    @button_right.addTarget(self, action: "scroll_tips_list:", forControlEvents: UIControlEventTouchUpInside)
-    @button_right.tag = +1
-
-    @tips_view.addSubview(@button_left)
-    @tips_view.addSubview(@button_right)
+    frame = CGRectMake(0,
+                       (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT) * device.screen_height,
+                       device.screen_width,
+                       LEVEL_VIEW_HEIGHT * device.screen_height)
+    @tips_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuTipsCell,
+                                                               numOfVisibleElements: 1, delegate: self)
+    @tips_view.reload_data(@tips_list)
+    @tips_view.header_text = "Tipps und Tricks"
     @parentmenu.addSubview(@tips_view)
   end
 
-  ##
-  # adds the level scroll view
   def add_level_scroll_view
 
-    @level_layout = UICollectionViewFlowLayout.alloc.init
-    @level_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
-
-    @level_view = UIView.alloc.initWithFrame(CGRectMake(0,
-                                                        (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT) * device.screen_height,
-                                                        device.screen_width,
-                                                        LEVEL_VIEW_HEIGHT * device.screen_height))
-    @level_view.backgroundColor = UIColor.clearColor
-
-
-    @level_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0.075 * @level_view.frame.size.width , 0,
-                                                                  0.85 * @level_view.frame.size.width,
-                                                                  @level_view.frame.size.height),
-                                                       collectionViewLayout: @level_layout)
-    @level_collection_view.dataSource = self
-    @level_collection_view.delegate = self
-    @level_collection_view.pagingEnabled = true
-
-    gap = 20
-    @level_layout.minimumLineSpacing = gap
-    width  = (@level_collection_view.frame.size.width - 3 * gap) / 4.0
-    height = width
-    size = CGSizeMake(width, height)
-
-    @level_layout.itemSize = size
-
-    @level_collection_view.contentInset = UIEdgeInsetsMake(0,0,0,0)
-    @level_collection_view.backgroundColor = UIColor.clearColor
-    @level_collection_view.registerClass(MenuLevelCell, forCellWithReuseIdentifier:CellIdentifier)
-
-    @level_view.addSubview(@level_collection_view)
-
-    @button_left = UIButton.alloc.initWithFrame(CGRectMake(0, 0,
-                                                           0.075 * @level_view.frame.size.width,
-                                                           @level_view.frame.size.height))
-    @button_left.setImage(UIImage.imageNamed("previous"), forState:UIControlStateNormal)
-
-    @button_left.addTarget(self, action: "scroll_level_list_right", forControlEvents: UIControlEventTouchUpInside)
-
-    @button_right = UIButton.alloc.initWithFrame(CGRectMake(0.925 * @level_view.frame.size.width , 0,
-                                                           0.075 * @level_view.frame.size.width,
-                                                           @level_view.frame.size.height))
-    @button_right.setImage(UIImage.imageNamed("next"), forState:UIControlStateNormal)
-
-    @button_right.addTarget(self, action: "scroll_level_list_left", forControlEvents: UIControlEventTouchUpInside)
-
-    @level_view.addSubview(@button_left)
-    @level_view.addSubview(@button_right)
-    @parentmenu.addSubview(@level_view)
-
+    frame = CGRectMake(0,
+                      (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT) * device.screen_height,
+                       device.screen_width,
+                       LEVEL_VIEW_HEIGHT * device.screen_height)
+    @level_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuLevelCell,
+                                                               numOfVisibleElements: 4, delegate: self)
+    @level_view.reload_data( @stories[0])
     @level_view.hidden = true
+    @level_view.header_text = "Erstellte Stories"
+    @parentmenu.addSubview(@level_view)
   end
 
   ##
   # adds the tab bar at the bottom of the screen
   def add_tab_bar
-    @tab_bar = UIView.alloc.initWithFrame(CGRectMake(0, (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT + LEVEL_VIEW_HEIGHT) * device.screen_height,
+    @tab_bar = UIView.alloc.initWithFrame(CGRectMake(0, (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT  + LEVEL_VIEW_HEIGHT) * device.screen_height,
                                                       device.screen_width, TAB_BAR_HEIGHT * device.screen_height))
     @tab_bar.backgroundColor = @babbo_bar_grey
 
     button_size = 0.8 * @tab_bar.frame.size.height
 
     line = horizontal_line_make(CGPointMake(0,
-                                            (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT + LEVEL_VIEW_HEIGHT) * device.screen_height ),
+                                            (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + LEVEL_VIEW_HEIGHT) * device.screen_height ),
                                 width: device.screen_width)
 
 
@@ -447,7 +344,7 @@ class ParentScreen < PM::Screen
   end
 
   def add_parent_overlay
-    @parent_overlay ||= MenuOverlay.alloc.initWithType(:parent_menu, frame: CGRectMake(0, 0, device.screen_width, device.screen_height))
+    @parent_overlay ||= MenuOverlay.alloc.init_with_type(:parent_menu, frame: CGRectMake(0, 0, device.screen_width, device.screen_height))
     @parent_overlay.hidden = true
     @parentmenu.addSubview(@parent_overlay)
   end
@@ -594,23 +491,17 @@ class ParentScreen < PM::Screen
     @lastSelectedCell = cell
   end
 
-  ##
-  # instance methods for MenuLevelCell
-  def menuLevelCell(cell, buttonPressed: source)
-    id  = source.tag
-    story = @story_list.find {|e| e.object_id == id}
 
-    @parent_overlay.reload_view_with_story(story)
-    @parent_overlay.hidden = !@parent_overlay.hidden?
-  end
 
   ##
   # more was pressed (left button in menu story view cell)
   # rebuild the level list and open the level collection view
   # hide the tipps and tricks section
+  # @param list [StoryList] a list with stories, that have the same document_id
+  # @param path [NSIndexPath] the path for the clicked story cell
   def more(list, path: path)
-    reload_level_collection_view_cells
-    @sub_header.text = "Erstellte Level"
+    @level_view.reload_data(list)
+
     @level_view.hidden = false
     @tips_view.hidden = true
 
@@ -622,9 +513,20 @@ class ParentScreen < PM::Screen
   # open the tipss and tricks collection view
   # hide the level list section
   def less(story)
-    @sub_header.text = "Tipps und Tricks"
     @level_view.hidden = true
     @tips_view.hidden = false
+  end
+
+  ##
+  # AdvancedColletionView instance methods
+  # @param view [AdvancedCollectionView]
+  # @param cell [UICollectionViewCell]
+  # @param button [UIButton]
+  def advancedCollectionView(view, cellPressed:cell, buttonObj:button)
+    id  = button.tag
+    story = @story_list.find {|e| e.object_id == id}
+    @parent_overlay.reload_view_with_story(story)
+    @parent_overlay.hidden = !@parent_overlay.hidden?
   end
 
   ##
@@ -697,10 +599,6 @@ class ParentScreen < PM::Screen
       return @stories.length if(!@stories.nil?)
     end
 
-    if(view == @level_collection_view)
-      return @stories[@choosen_story_index].length if(!@stories[@choosen_story_index].nil?)
-    end
-
     if(view == @tips_collection_view)
       return @tips_list.length if(!@tips_list.nil?)
     end
@@ -715,13 +613,6 @@ class ParentScreen < PM::Screen
       list = @stories[path.row]
       cell.delegate = self
       cell.make_cell(list[0])
-    end
-
-    if(view == @level_collection_view)
-      list = @stories[@choosen_story_index]
-      element = list[path.row]
-      cell.delegate = self
-      cell.make_cell(element)
     end
 
     if(view == @tips_collection_view)

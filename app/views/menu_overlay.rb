@@ -3,7 +3,7 @@ class MenuOverlay < UIView
   attr_accessor :story
   attr_accessor :overlay_type
 
-  def initWithType(type, frame: frame)
+  def init_with_type(type, frame: frame)
     self.initWithFrame(frame)
     @story = nil
     @overlay_type = type
@@ -20,10 +20,6 @@ class MenuOverlay < UIView
       @text_bottom_button_line_1 = "Beschreibung"
       @text_bottom_button_line_2 = "Bilder"
     end
-
-    @babbo_bar_grey = UIColor.colorWithRed(247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha:1.0)
-    @babbo_line_grey = UIColor.colorWithRed(200.0/255.0, green: 200.0/255.0, blue: 200.0/255.0, alpha:1.0)
-    @babbo_orange = UIColor.colorWithRed(249.0/255.0, green: 188.0/255.0, blue: 52.0/255.0, alpha:1.0)
 
     self
   end
@@ -67,7 +63,7 @@ class MenuOverlay < UIView
     name = UILabel.alloc.initWithFrame(CGRectMake(0.4 * top_view.frame.size.width, 0.1 * top_view.frame.size.height,
                                                        0.45 * top_view.frame.size.width, 0.15 * top_view.frame.size.height))
     name.text = story.document.set_name
-    name.textColor = @babbo_orange
+    name.textColor = rmq.color.babbo_orange
     name.font = UIFont.fontWithName("Enriqueta-Bold", size:30)
     name.textAlignment = UITextAlignmentLeft
     top_view.addSubview(name)
@@ -165,7 +161,7 @@ class MenuOverlay < UIView
     # Define the horizontal line
     line = UIView.alloc.initWithFrame(CGRectMake(0.05 * top_view.frame.size.width, top_view.frame.size.height - 1 ,
                                                  0.9 * top_view.frame.size.width, 1))
-    line.backgroundColor = @babbo_line_grey
+    line.backgroundColor = rmq.color.babbo_line_grey
     top_view.addSubview(line)
 
     ####
