@@ -12,8 +12,6 @@ class ServerBackend
     @story_data = {}
     @backend_dir = File.join(Dir.system_path(:documents), 'Backend')
 
-    lp @backend_dir
-
     Dir.mkdirs(@backend_dir) unless File.exists?(@backend_dir)
     Dir.glob(File.join(@backend_dir, 'story_*.yml')).each do |story_def|
       data = YAML.load(File.read(story_def))
@@ -21,7 +19,7 @@ class ServerBackend
       data = Hash.symbolicate(data) unless data.nil?
       next unless validate_definition(data)
 
-      @story_data[data[:document_id]] = data
+      @story_data["#{data[:document_id]}_#{data[:dataset_id]}"] = data
     end
 
   end
@@ -35,7 +33,8 @@ class ServerBackend
     return nil if story.nil?
     return nil unless story.valid?
 
-    @story_data[story.document.document_id][:description]
+    add_story(story)
+    @story_data[story_uuid(story)][:description]
   end
 
   # Return an +Array+ of +UIImage+ objects
@@ -50,8 +49,10 @@ class ServerBackend
     return nil if story.nil?
     return nil unless story.valid?
 
+    add_story(story)
+
     res = []
-    @story_data[story.document.document_id][:screenshots].each do |path|
+    @story_data[story_uuid(story)][:screenshots].each do |path|
       image_path = File.join(@backend_dir, path)
       next unless File.exists? image_path
 
@@ -70,7 +71,8 @@ class ServerBackend
     return nil if story.nil?
     return nil unless story.valid?
 
-    @story_data[story.document.document_id][:rating]
+    add_story(story)
+    @story_data[story_uuid(story)][:rating]
   end
 
   # Set the description for a given story.
@@ -87,8 +89,8 @@ class ServerBackend
     return nil if story.nil?
     return nil unless story.valid?
 
-    add_story(story) unless @story_data.has_key? story.document.document_id
-    @story_data[story.document.document_id][:description] = desc.to_s
+    add_story(story) unless @story_data.has_key? story_uuid(story)
+    @story_data[story_uuid(story)][:description] = desc.to_s
 
     return nil unless update_backend_files
     desc
@@ -108,9 +110,9 @@ class ServerBackend
     return nil if story.nil?
     return nil unless story.valid?
 
-    if @story_data.has_key? story.document.document_id
+    if @story_data.has_key? story_uuid(story)
       # remove old files first
-      @story_data[story.document.document_id][:screenshots].each do |path|
+      @story_data[story_uuid(story)][:screenshots].each do |path|
         File.unlink(File.join(@backend_dir, path))
       end
     else
@@ -121,14 +123,14 @@ class ServerBackend
     # where X.X is the dataset it and Y is the screenshot index.
     image_names = []
     images.each_with_index do |img, n|
-      image_path = File.join(@backend_dir, "screenshot_#{story.document.document_id}_#{n}.png")
+      image_path = File.join(@backend_dir, "screenshot_#{story_uuid(story)}_#{n}.png")
       open(image_path, 'w') do |io|
         io.write(UIImagePNGRepresentation(img))
         image_names << File.basename(image_path)
       end
     end
 
-    @story_data[story.document.document_id][:screenshots] = image_names
+    @story_data[story_uuid(story)][:screenshots] = image_names
     return nil unless update_backend_files
     images
   end
@@ -148,8 +150,8 @@ class ServerBackend
     rating = 0.0 if rating < 0.0
     rating = 5.0 if rating > 5.0
 
-    add_story(story) unless @story_data.has_key? story.document.document_id
-    @story_data[story.document.document_id][:rating] = rating.to_f
+    add_story(story) unless @story_data.has_key? story_uuid(story)
+    @story_data[story_uuid(story)][:rating] = rating.to_f
 
     return nil unless update_backend_files
     rating.to_f
@@ -173,9 +175,12 @@ class ServerBackend
   #
   # @param [StoryBundle] story The story to be added.
   def add_story( story )
+    return if @story_data.has_key? story_uuid(story)
+
     if ! story.nil? && story.valid?
-      @story_data[story.document.document_id] = {
+      @story_data[story_uuid(story)] = {
         :document_id => story.document.document_id,
+        :dataset_id => story.document.dataset_id,
         :rating => 1.0,
         :screenshots => [],
         :description => "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
@@ -195,6 +200,17 @@ class ServerBackend
       end
     end
     true
+  end
+
+  # Return a unique ID for a given story.
+  #
+  # @param [StoryBundle] story The story for which to fetch the UUID.
+  # @return [String] The unique ID as strong or +nil+ if an error occurs.
+  def story_uuid( story )
+    return nil if story.nil?
+    return nil unless story.valid?
+
+    return "#{story.document.document_id}_#{story.document.dataset_id}"
   end
 end
 
