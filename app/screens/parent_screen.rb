@@ -8,23 +8,17 @@ class ParentScreen < PM::Screen
   LEFT_BUTTON_X_POS     = 0.5   # * navbar width
   MIDDLE_BUTTON_X_POS   = 0.6   # * navbar width
   RIGHT_BUTTON_X_POS    = 0.7   # * navbar width
-  NAV_BAR_HEIGHT        = 0.125 # * screen_height
-  STORY_VIEW_HEIGHT     = 0.4  # * screen_height
-  SUB_HEADER_HEIGHT     = 0.08  # * screen_height
-  SUB_LINE_HEIGHT       = 0.02  # * screen_height
-  LEVEL_VIEW_HEIGHT     = 0.375 # * screen_height
-  TAB_BAR_HEIGHT        = 0.10  # * screen_height
+  NavbarHeight          = 0.125 # * screen_height
+  TopViewHeight         = 0.4  # * screen_height
+  BottomViewHeight      = 0.375 # * screen_height
+  TabbarHeight          = 0.10  # * screen_height
 
   CellIdentifier = 'Cell'
 
   def will_appear
 
-    @babbo_bar_grey = UIColor.colorWithRed(247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha:1.0)
-    @babbo_line_grey = UIColor.colorWithRed(200.0/255.0, green: 200.0/255.0, blue: 200.0/255.0, alpha:1.0)
-    @babbo_orange = UIColor.colorWithRed(249.0/255.0, green: 188.0/255.0, blue: 52.0/255.0, alpha:1.0)
-
     @parentmenu = UIView.alloc.initWithFrame(CGRectMake(0 ,0, device.screen_width, device.screen_height))
-    @parentmenu.backgroundColor = UIColor.colorWithRed(255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha:1.0)
+    @parentmenu.backgroundColor = UIColor.whiteColor
 
     @choosen_story_index ||= 0
 
@@ -39,7 +33,6 @@ class ParentScreen < PM::Screen
     add_tab_bar
     add_options
     add_parent_overlay
-
   end
 
   def will_disappear
@@ -49,15 +42,15 @@ class ParentScreen < PM::Screen
   ##
   # add a own navigation bar
   def add_nav_bar
-    navbar_heigth = NAV_BAR_HEIGHT * device.screen_height
+    navbar_heigth = NavbarHeight * device.screen_height
     navbar_width = device.screen_width
 
     @nav_bar = UIView.alloc.initWithFrame(CGRectMake(0 ,0, navbar_width, navbar_heigth))
-    @nav_bar.backgroundColor = @babbo_bar_grey
+    @nav_bar.backgroundColor = rmq.color.babbo_bar_grey
 
     @parentmenu.addSubview @nav_bar
 
-    line = horizontal_line_make(CGPointMake(0, -1 + (NAV_BAR_HEIGHT) * device.screen_height),
+    line = horizontal_line_make(CGPointMake(0, -1 + (NavbarHeight) * device.screen_height),
                                 width: device.screen_width)
 
     @parentmenu.addSubview line
@@ -122,8 +115,8 @@ class ParentScreen < PM::Screen
     @story_layout = UICollectionViewFlowLayout.alloc.init
     @story_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
 
-    @story_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0, NAV_BAR_HEIGHT * device.screen_height,
-                                                                             device.screen_width, STORY_VIEW_HEIGHT * device.screen_height),
+    @story_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0, NavbarHeight * device.screen_height,
+                                                                             device.screen_width, TopViewHeight * device.screen_height),
                                                                   collectionViewLayout: @story_layout)
     @story_collection_view.dataSource = self
     @story_collection_view.delegate = self
@@ -147,10 +140,10 @@ class ParentScreen < PM::Screen
   # adds tips and tricks collection view
   def add_tips_and_tricks_view
     make_tips_list
-    frame = CGRectMake(0,
-                       (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT) * device.screen_height,
+    frame = CGRectMake(0.0 * device.screen_width,
+                       (TopViewHeight + NavbarHeight) * device.screen_height,
                        device.screen_width,
-                       LEVEL_VIEW_HEIGHT * device.screen_height)
+                       BottomViewHeight * device.screen_height)
     @tips_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuTipsCell,
                                                                numOfVisibleElements: 1, delegate: self)
     @tips_view.reload_data(@tips_list)
@@ -161,9 +154,9 @@ class ParentScreen < PM::Screen
   def add_level_scroll_view
 
     frame = CGRectMake(0,
-                      (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT) * device.screen_height,
+                       (TopViewHeight + NavbarHeight) * device.screen_height,
                        device.screen_width,
-                       LEVEL_VIEW_HEIGHT * device.screen_height)
+                       BottomViewHeight * device.screen_height)
     @level_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuLevelCell,
                                                                numOfVisibleElements: 4, delegate: self)
     @level_view.reload_data( @stories[0])
@@ -175,14 +168,14 @@ class ParentScreen < PM::Screen
   ##
   # adds the tab bar at the bottom of the screen
   def add_tab_bar
-    @tab_bar = UIView.alloc.initWithFrame(CGRectMake(0, (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT  + LEVEL_VIEW_HEIGHT) * device.screen_height,
-                                                      device.screen_width, TAB_BAR_HEIGHT * device.screen_height))
-    @tab_bar.backgroundColor = @babbo_bar_grey
+    @tab_bar = UIView.alloc.initWithFrame(CGRectMake(0, (TopViewHeight + NavbarHeight  + BottomViewHeight) * device.screen_height,
+                                                     device.screen_width, TabbarHeight * device.screen_height))
+    @tab_bar.backgroundColor = rmq.color.babbo_bar_grey
 
     button_size = 0.8 * @tab_bar.frame.size.height
 
     line = horizontal_line_make(CGPointMake(0,
-                                            (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + LEVEL_VIEW_HEIGHT) * device.screen_height ),
+                                            (TopViewHeight + NavbarHeight + BottomViewHeight) * device.screen_height ),
                                 width: device.screen_width)
 
 
@@ -219,8 +212,8 @@ class ParentScreen < PM::Screen
   # add options view
   def add_options
 
-    @options_view = UIView.alloc.initWithFrame(CGRectMake(0, -1 + NAV_BAR_HEIGHT * device.screen_height ,
-                                                          device.screen_width, device.screen_height - (NAV_BAR_HEIGHT * device.screen_height)))
+    @options_view = UIView.alloc.initWithFrame(CGRectMake(0, -1 + NavbarHeight * device.screen_height ,
+                                                          device.screen_width, device.screen_height - (NavbarHeight * device.screen_height)))
     @options_view.backgroundColor = UIColor.clearColor
 
     options_table = UIImageView.alloc.initWithFrame(CGRectMake(0.75 * @options_view.frame.size.width, 0,
@@ -240,7 +233,7 @@ class ParentScreen < PM::Screen
                                                          (1.0/32.0) * options_table.frame.size.height))
     parent_name.text = "Username"
     parent_name.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
-    parent_name.textColor = @babbo_orange
+    parent_name.textColor = rmq.color.babbo_orange
     parent_name.textAlignment = UITextAlignmentCenter
 
     table = UIView.alloc.initWithFrame(CGRectMake(0,
@@ -273,7 +266,7 @@ class ParentScreen < PM::Screen
     lineBottom = UIView.alloc.initWithFrame(CGRectMake(0 * tableButton_4.frame.size.width,
                                                        tableButton_4.frame.size.height - 1,
                                                        tableButton_4.frame.size.width, 1))
-    lineBottom.backgroundColor = @babbo_line_grey
+    lineBottom.backgroundColor = rmq.color.babbo_line_grey
     tableButton_4.addSubview(lineBottom)
 
     table.addSubview(tableButton_1)
@@ -332,7 +325,7 @@ class ParentScreen < PM::Screen
     lineTop = UIView.alloc.initWithFrame(CGRectMake(0 * view.frame.size.width,
                                                     0 * view.frame.size.height,
                                                     view.frame.size.width, 1))
-    lineTop.backgroundColor = @babbo_line_grey
+    lineTop.backgroundColor = rmq.color.babbo_line_grey
 
     view.addSubview(imageView)
     view.addSubview(labelView)
@@ -395,7 +388,7 @@ class ParentScreen < PM::Screen
     search_bar.backgroundImage = UIImage.alloc.init
 
     textField = UITextField.appearanceWhenContainedIn(UISearchBar,nil)
-    textField.backgroundColor =@babbo_line_grey
+    textField.backgroundColor = UIColor.whiteColor
 
     search_bar
   end
@@ -405,10 +398,9 @@ class ParentScreen < PM::Screen
   #
   # @param position The postition fot the line
   # @param width The width of the line
-  #
   def horizontal_line_make(position, width: width)
     line = UIView.alloc.initWithFrame(CGRectMake(position.x, position.y, width, 1))
-    line.backgroundColor = @babbo_line_grey
+    line.backgroundColor = rmq.color.babbo_line_grey
     line
   end
 
@@ -417,7 +409,6 @@ class ParentScreen < PM::Screen
   #
   # set the next_screen property of StartScreen and save the current screen in last_screen
   # then open the root_screen with open_root_screen(StartScreen)
-  #
   def goto_kids_menu
     StartScreen.next_screen= :kids_menu
     StartScreen.last_screen = :parent_menu
@@ -449,7 +440,6 @@ class ParentScreen < PM::Screen
 
   ##
   # instance methods for MenuStoryCell
-
   def menuStoryCell(cell, rightButtonPressed: source)
     id  = source.tag
     story = @story_list.find {|e| e.object_id == id}
@@ -491,8 +481,6 @@ class ParentScreen < PM::Screen
     @lastSelectedCell = cell
   end
 
-
-
   ##
   # more was pressed (left button in menu story view cell)
   # rebuild the level list and open the level collection view
@@ -529,45 +517,6 @@ class ParentScreen < PM::Screen
     @parent_overlay.hidden = !@parent_overlay.hidden?
   end
 
-  ##
-  # Scroll the tips and tricks section
-  # @param source The source (button)
-  def scroll_tips_list(source)
-    cells = @tips_collection_view.visibleCells
-    path = @tips_collection_view.indexPathForCell(cells[0])
-    direction = source.tag
-    row = path.row + direction
-
-    if(row == @tips_collection_view.numberOfItemsInSection(0))
-      row = @tips_collection_view.numberOfItemsInSection(0) - 1
-    end
-
-    if(row == -1)
-      row = 0
-    end
-
-    destination = NSIndexPath.indexPathForRow(row, inSection:0)
-
-    @tips_collection_view.scrollToItemAtIndexPath(destination, atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
-
-  end
-
-  ##
-  #
-  def scroll_level_list_left
-    c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos1.frame.origin.x <=> pos2.frame.origin.x}
-    @level_collection_view.scrollToItemAtIndexPath(@level_collection_view.indexPathForCell(c[1]),
-                                                   atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
-  end
-
-  ##
-  #
-  def scroll_level_list_right
-    c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos2.frame.origin.x <=> pos1.frame.origin.x}
-    @level_collection_view.scrollToItemAtIndexPath(@level_collection_view.indexPathForCell(c[1]),
-                                                   atScrollPosition:UICollectionViewScrollPositionRight, animated:true)
-  end
-
   def build_story_list
    @story_list = StoryBundle.bundles.select { |b| b.valid? }
    stories = {}
@@ -578,7 +527,6 @@ class ParentScreen < PM::Screen
    end
 
    @stories = stories.keys.map { |k| stories[k] }
-
   end
 
   ##
@@ -587,20 +535,10 @@ class ParentScreen < PM::Screen
     @tips_list = TipsBundle.alloc.init
   end
 
-  ##
-  # init the level collection view cells
-  def reload_level_collection_view_cells
-    @level_collection_view.reloadData
-  end
-
   # UICollectionView Instance Methods
   def collectionView(view, numberOfItemsInSection:section)
     if(view == @story_collection_view)
       return @stories.length if(!@stories.nil?)
-    end
-
-    if(view == @tips_collection_view)
-      return @tips_list.length if(!@tips_list.nil?)
     end
 
     return 0
@@ -613,10 +551,6 @@ class ParentScreen < PM::Screen
       list = @stories[path.row]
       cell.delegate = self
       cell.make_cell(list[0])
-    end
-
-    if(view == @tips_collection_view)
-      cell.make_cell(@tips_list[path.row])
     end
 
     cell

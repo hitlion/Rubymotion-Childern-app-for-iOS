@@ -26,7 +26,7 @@ class MenuStoryCell < UICollectionViewCell
     layer.image = UIImage.imageNamed("cell_layer")
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
-    label.text = element.document.set_name
+    label.text = element.document.branch_name
     label.textColor = UIColor.blackColor
     label.font = UIFont.fontWithName("Enriqueta-Bold", size:30)
     label.textAlignment = UITextAlignmentCenter
