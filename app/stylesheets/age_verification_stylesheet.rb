@@ -4,24 +4,24 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def root_view(st)
-    st.background_color = rmq.color.babbo_grey
+    st.background_color = rmq.color.babbo_bar_grey
   end
 
   def view(st)
-    st.frame = {w:device.screen_width, h: device.screen_height, centered: :horizontal}
+    st.frame = {w: device.screen_width, h: device.screen_height, centered: :horizontal}
   end
 
   def back_field(st)
-    st.frame = {w:device.screen_width, h: 0.1 * device.screen_height, fb:10}
+    st.frame = {w: device.screen_width, h: 0.1 * device.screen_height, fb:10}
   end
 
   def babbo(st)
-    st.frame = {l:30, t:0.15 * device.screen_height, w: 0.3 * device.screen_width, h: 0.6 * device.screen_height}
+    st.frame = {l: 30, t: 0.15 * device.screen_height, w: 0.3 * device.screen_width, h: 0.6 * device.screen_height}
     st.image = image.resource('Babbo_1')
   end
 
   def right_view(st)
-    st.frame = {l:30, t:0.1 * device.screen_height, fr: 30, h: 0.6 * device.screen_height}
+    st.frame = {l: 30, t: 0.1 * device.screen_height, fr: 30, h: 0.6 * device.screen_height}
   end
 
   def logo(st)
@@ -31,9 +31,9 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def label1(st)
-    st.frame = {below_prev:0.025 * device.screen_height, l:30, fr:30, h: 0.05 * device.screen_height,  centered: :horizontal}
+    st.frame = {below_prev: 0.025 * device.screen_height, l: 30, fr: 30, h: 0.05 * device.screen_height,  centered: :horizontal}
     st.text = "Elternbereich"
-    st.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
+    st.font = UIFont.fontWithName("Enriqueta-Bold", size: 40)
     st.text_alignment = :center
     st.color = rmq.color.babbo_orange
   end

@@ -8,6 +8,9 @@ class MenuStoryCell < UICollectionViewCell
     self
   end
 
+  ##
+  # Build the cell with the data from the given element
+  # @param element [Story] The Story for filling the data of this cell
   def make_cell(element)
     @element = element
 
@@ -23,7 +26,7 @@ class MenuStoryCell < UICollectionViewCell
     layer.image = UIImage.imageNamed("cell_layer")
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
-    label.text = element.document.set_name
+    label.text = element.document.branch_name
     label.textColor = UIColor.blackColor
     label.font = UIFont.fontWithName("Enriqueta-Bold", size:30)
     label.textAlignment = UITextAlignmentCenter
@@ -44,10 +47,10 @@ class MenuStoryCell < UICollectionViewCell
     right_button.tag = element.object_id
     right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
 
-    @selectedStoryMarker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(view.bounds)- 0.05 *  view.frame.size.width,
+    @selected_story_marker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(view.bounds)- 0.05 *  view.frame.size.width,
                                                                      view.frame.size.height - 0.05 * view.frame.size.width,
                                                                      0.1 * view.frame.size.width, 0.05 * view.frame.size.width))
-    @selectedStoryMarker.image = UIImage.imageNamed("Marker.png")
+    @selected_story_marker.image = UIImage.imageNamed("Marker.png")
     hide_marker
 
     view.addSubview(image)
@@ -55,7 +58,7 @@ class MenuStoryCell < UICollectionViewCell
     view.addSubview(label)
     view.addSubview(left_button)
     view.addSubview(right_button)
-    view.addSubview(@selectedStoryMarker)
+    view.addSubview(@selected_story_marker)
 
     self.subviews.each do |s|
       s.removeFromSuperview
@@ -64,20 +67,31 @@ class MenuStoryCell < UICollectionViewCell
     self.addSubview(view)
   end
 
+  ##
+  # Hide the marker, that shows this story is selected
   def hide_marker
-    @selectedStoryMarker.hidden = true
+    @selected_story_marker.hidden = true
   end
 
+  ##
+  # Show the marker, that shows this story is selected
   def show_marker
-    @selectedStoryMarker.hidden = false
+    @selected_story_marker.hidden = false
   end
 
+  ##
+  # Called if the user pressed the right button of the cell
+  # than call the delegate method with the params self (this collection view cell) and the button element
+  # @param source [UIButton] the pressed cell's button
   def right_button_pressed (source)
-    if(@delegate != self)
-      @delegate.send('menuStoryCell:rightButtonPressed:', self, source)
-    end
+    @delegate.menuStoryCell(self, rightButtonPressed: source) unless @delegate == self
+    #@delegate.menuStoryCell(self, rightButtonPressed: source) if @delegate.respond_to? 'menuStoryCell:rightButtonPressed:' #optinal
   end
 
+  ##
+  # Called if the user pressed the left button of the cell
+  # than call the delegate method with the params self (this collection view cell) and the button element
+  # @param source [UIButton] the pressed cell's button
   def left_button_pressed (source)
     if(@delegate != self)
      @delegate.send('menuStoryCell:leftButtonPressed:', self, source)

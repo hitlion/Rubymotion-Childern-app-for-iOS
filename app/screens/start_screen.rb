@@ -40,6 +40,7 @@ class StartScreen < PM::Screen
   def goto_shop
     open StoryListScreen.new(nav_bar:true)
   end
+
   def on_appear(args={})
 
     if(StartScreen.next_screen.nil?)
