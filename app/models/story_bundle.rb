@@ -6,19 +6,47 @@ class StoryBundle
     # request.
     #
     # @param [Hash] args Optional parameters
-    # @option [Bool] args :reload Force a reload from disk
+    # @option [Boolean] args :reload Force a reload from disk
+    # @option [Boolean] args :async Perform asynchronous loading
+    #   in the background (will return an empty list on first call).
+    # @option [Proc] args :callback For use in combination with :async.
+    #   Expects a callback of the form cb(total, loaded) to be called
+    #   when background loading progresses.
     # @return [Array<StoryBundle>] The list of available
     #   story bundles.
     def bundles( args={} )
+      async_load = args.fetch(:async, false)
+      async_cb   = args.fetch(:callback, nil)
+
       if self.bundle_list.nil? || args.fetch(:reload, false)
         bundle_root = File.join(Dir.system_path(:documents), 'Bundles')
         Dir::mkdirs(bundle_root) unless Dir.exist? bundle_root
 
         self.bundle_list = []
-        Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
-          bundle = StoryBundle.new(bundle_path)
-          bundle.load
-          self.bundle_list << bundle
+        if async_load
+          weak_self = WeakRef.new(self)
+          Dispatch::Queue.concurrent.async do
+            bundle_count = Dir.glob("#{bundle_root}/*.babbo").count
+            async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
+
+            Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
+              bundle = StoryBundle.new(bundle_path)
+              bundle.load
+              weak_self.bundle_list << bundle
+              async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
+            end
+          end
+        else
+          Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
+            bundle = StoryBundle.new(bundle_path)
+            bundle.load
+            self.bundle_list << bundle
+          end
+        end
+      else
+        if async_load
+          count = self.bundle_list.count
+          Dispatch::Queue.concurrenc.async { async_cb.call(count, count) unless async_cb.nil? }
         end
       end
       self.bundle_list
