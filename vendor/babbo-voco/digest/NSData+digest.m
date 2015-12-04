@@ -10,7 +10,7 @@
 
 +( NSString* )sha1FromContentsOfFile:( NSString* )path
 {
-	return [[NSData dataWithContentsOfFile:path] sha1];
+  return [[NSData dataWithContentsOfFile:path options:NSDataReadingMappedAlways error:nil] sha1];
 }
 
 +( NSString* )sha256FromBytes:( const void* )bytes length:( NSUInteger )length;
@@ -20,7 +20,7 @@
 
 +( NSString* )sha256FromContentsOfFile:( NSString* )path
 {
-	return [[NSData dataWithContentsOfFile:path] sha256];
+	return [[NSData dataWithContentsOfFile:path options:NSDataReadingMappedAlways error:nil] sha256];
 }
 
 +( NSString* )md5FromBytes:( const void* )bytes length:( NSUInteger )length;
@@ -30,7 +30,7 @@
 
 +( NSString* )md5FromContentsOfFile:( NSString* )path
 {
-	return [[NSData dataWithContentsOfFile:path] md5];
+	return [[NSData dataWithContentsOfFile:path options:NSDataReadingMappedAlways error:nil] md5];
 }
 
 -( NSString* )sha1
