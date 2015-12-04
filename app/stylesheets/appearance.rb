@@ -24,6 +24,9 @@ class StandardAppearance
         o.setTintColor(rmq.color.babbo_orange)
       end
 
+      UIProgressView.appearance.tap do |o|
+        o.setTintColor(rmq.color.white)
+      end
     end
   end
 end

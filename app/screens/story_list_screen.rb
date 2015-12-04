@@ -39,7 +39,7 @@ class StoryListScreen < PM::TableScreen
   #
   # @todo: Handle branch data
   def reload_bundles
-    @story_bundles = StoryBundle.bundles
+    @story_bundles = StoryBundle.bundles(reload: true)
     #@story_bundles.sort{|s| s.document.timestamp}
   end
 
