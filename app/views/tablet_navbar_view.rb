@@ -7,13 +7,13 @@ class TabletNavbarView < UIView
   # This values are the factor, that is multiplied with self.frame.size.width
   # and defines the x coordinate for the element
   PosXLeftButton = 0.00
-  PosXLabel      = 0.05
+  PosXLabel      = 0.1
   PosXButton1    = 0.55
   PosXButton2    = 0.65
   PosXButton3    = 0.75
   PosXSearchBar  = 0.85
   PosYSearchbar  = 0.175
-  PosYLabel      = 0.15
+  PosYLabel      = 0.05
 
   ##
   # other constants
@@ -62,8 +62,7 @@ class TabletNavbarView < UIView
     frame = CGRectMake(PosXButton1 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
                        ButtonWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
     button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_playground.png"), displayName: "Spielplatz",
-                                            frame: frame, action: "button_pressed:")
-    button1.tag = 1
+                                            frame: frame, action: "button_pressed:", id: 1)
     self.addSubview(button1)
 
     ####
@@ -71,8 +70,7 @@ class TabletNavbarView < UIView
     frame = CGRectMake(PosXButton2 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
                        ButtonWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
     button2 = add_button_element_with_image(UIImage.imageNamed("icon_button_shop.png"), displayName: "Shop",
-                                                      frame: frame, action: "button_pressed:")
-    button2.tag = 2
+                                                      frame: frame, action: "button_pressed:", id: 2)
     self.addSubview(button2)
 
     ####
@@ -80,8 +78,7 @@ class TabletNavbarView < UIView
     frame = CGRectMake(PosXButton3 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
                        ButtonWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
     button3 = add_button_element_with_image(UIImage.imageNamed("icon_button_options.png"), displayName: "Optionen",
-                                                      frame: frame, action: "button_pressed:")
-    button3.tag = 3
+                                                      frame: frame, action: "button_pressed:", id: 3)
     self.addSubview(button3)
 
     ####
@@ -98,6 +95,7 @@ class TabletNavbarView < UIView
     line = UIView.alloc.initWithFrame(frame)
     line.backgroundColor = rmq.color.babbo_line_grey
     self.addSubview(line)
+
   end
 
   ##
@@ -106,7 +104,7 @@ class TabletNavbarView < UIView
   # @param name Text for the label
   # @param frame [CGRect] The frame for the button
   # @param action [String] The delegate action fot the button
-  def add_button_element_with_image(image, displayName: name, frame: frame, action: action)
+  def add_button_element_with_image(image, displayName: name, frame: frame, action: action,  id: id)
     element =  UIView.alloc.initWithFrame(frame)
 
     button = UIButton.alloc.initWithFrame(CGRectMake(0.25 * element.frame.size.width,
@@ -116,6 +114,7 @@ class TabletNavbarView < UIView
     button.setImage(image, forState:UIControlStateNormal)
 
     button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
+    button.tag = id
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0,
                                                    0.65 * element.frame.size.height,
@@ -153,7 +152,15 @@ class TabletNavbarView < UIView
   # than call the delegate method with the params self (this navbar) and the pressed button element
   # @param source [UIButton] the pressed cell's button the whole cell is the button
   def button_pressed (source)
-    @delegate.tabletNavBarView(self, buttonPressed: source) if @delegate.respond_to? 'tabletNavBarView:buttonPressed:'
+    @delegate.tabletNavbarView(self, buttonPressed: source) if @delegate.respond_to? 'tabletNavbarView:buttonPressed:'
+  end
+
+  def hide_back_button
+    @leftButton.hidden = true
+  end
+
+  def show_back_button
+    @leftButton.hidden = false
   end
 
 end

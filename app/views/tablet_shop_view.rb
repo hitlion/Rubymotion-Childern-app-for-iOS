@@ -1,0 +1,3 @@
+class TabletShopView < UIView
+
+end

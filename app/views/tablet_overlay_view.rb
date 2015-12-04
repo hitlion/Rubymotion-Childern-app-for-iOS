@@ -1,4 +1,4 @@
-class MenuOverlay < UIView
+class TabletOverlayView < UIView
 
   attr_accessor :story
   attr_accessor :overlay_type

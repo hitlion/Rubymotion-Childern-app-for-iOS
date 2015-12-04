@@ -44,8 +44,7 @@ class TabbarView < UIView
     frame = CGRectMake(PosXButton1 * self.frame.size.width, SpaceHeight *  self.frame.size.height,
                        ElementHeight * self.frame.size.height, ElementHeight * self.frame.size.height)
     button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_books.png"), displayName: "Stories",
-                                            frame: frame, action: "button_pressed:")
-    button1.tag = 1
+                                            frame: frame, action: "button_pressed:", id: 1)
     self.addSubview(button1)
 
     ####
@@ -53,8 +52,7 @@ class TabbarView < UIView
     frame = CGRectMake(PosXButton2 * self.frame.size.width, SpaceHeight *  self.frame.size.height,
                        ElementHeight * self.frame.size.height, ElementHeight * self.frame.size.height)
     button2 = add_button_element_with_image(UIImage.imageNamed("icon_button_videos.png"), displayName: "Videos",
-                                            frame: frame, action: "button_pressed:")
-    button2.tag = 2
+                                            frame: frame, action: "button_pressed:", id: 2)
     self.addSubview(button2)
 
     ####
@@ -62,8 +60,7 @@ class TabbarView < UIView
     frame = CGRectMake(PosXButton3 * self.frame.size.width, SpaceHeight *  self.frame.size.height,
                        ElementHeight * self.frame.size.height, ElementHeight * self.frame.size.height)
     button3 = add_button_element_with_image(UIImage.imageNamed("icon_button_games.png"), displayName: "Spiele",
-                                            frame: frame, action: "button_pressed:")
-    button3.tag = 3
+                                            frame: frame, action: "button_pressed:", id: 3)
     self.addSubview(button3)
 
   end
@@ -74,7 +71,8 @@ class TabbarView < UIView
   # @param name Text for the label
   # @param frame [CGRect] The frame for the button
   # @param action [String] The delegate action fot the button
-  def add_button_element_with_image(image, displayName: name, frame: frame, action: action)
+  # @param id [Integer] A unique ID (in this class) to identify the button later
+  def add_button_element_with_image(image, displayName: name, frame: frame, action: action, id: id)
     element =  UIView.alloc.initWithFrame(frame)
 
     button = UIButton.alloc.initWithFrame(CGRectMake(0.25 * element.frame.size.width,
@@ -82,8 +80,8 @@ class TabbarView < UIView
                                                      0.50 * element.frame.size.width,
                                                      0.50 * element.frame.size.height))
     button.setImage(image, forState:UIControlStateNormal)
-
     button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
+    button.tag = id
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0,
                                                    0.65 * element.frame.size.height,

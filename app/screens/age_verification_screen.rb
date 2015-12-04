@@ -20,7 +20,6 @@ class AgeVerificationScreen < PM::Screen
     right_view.append(UILabel, :label1)
     right_view.append(UILabel, :label2)
 
-
     @year_picker = right_view.append!(UIPickerView, :age_input_field)
     @year_picker.delegate = self
     @year_picker.dataSource = self

@@ -25,7 +25,7 @@ class StartScreen < PM::Screen
   end
 
   def goto_parent
-    open ParentScreen.new
+    open TabletParentScreen.new
   end
 
   def goto_age_verification
