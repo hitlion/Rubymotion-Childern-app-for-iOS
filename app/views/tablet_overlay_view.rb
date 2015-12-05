@@ -3,6 +3,10 @@ class TabletOverlayView < UIView
   attr_accessor :story
   attr_accessor :overlay_type
 
+  ##
+  # Identifier for all cells
+  CellIdentifier = 'Cell'
+
   def init_with_type(type, frame: frame)
     self.initWithFrame(frame)
     @story = nil
@@ -205,14 +209,43 @@ class TabletOverlayView < UIView
     bottom_view.addSubview(bottom_button_line)
 
     ###
+    # Define the screenshot collection view
+
+    @screen_shots = ServerBackend.get.screenshots_for_story(story)
+    layout = UICollectionViewFlowLayout.alloc.init
+    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
+
+    frame = CGRectMake(0.05 * bottom_view.frame.size.width, 0.25 * bottom_view.frame.size.height,
+                       0.9 * bottom_view.frame.size.width, 0.7 * bottom_view.frame.size.height )
+
+    @screen_shot_collection_view = UICollectionView.alloc.initWithFrame(frame, collectionViewLayout: layout)
+    @screen_shot_collection_view.dataSource = self
+    @screen_shot_collection_view.delegate = self
+
+    height = @screen_shot_collection_view.frame.size.height
+    width  = (4 * height) / 3
+    size = CGSizeMake(width, height)
+
+    layout.itemSize = size
+
+    @screen_shot_collection_view.contentInset = UIEdgeInsetsMake(0, 0 * @screen_shot_collection_view.frame.size.width,
+                                                           0, 0 * @screen_shot_collection_view.frame.size.width)
+
+    @screen_shot_collection_view.registerClass(OverlayScreenshotCell, forCellWithReuseIdentifier: CellIdentifier)
+    @screen_shot_collection_view.backgroundColor = UIColor.clearColor
+    @screen_shot_collection_view.hidden = true
+
+    bottom_view.addSubview(@screen_shot_collection_view)
+
+
+    ###
     # Build the textfield
     @text_view = UITextView.alloc.initWithFrame(CGRectMake(0.05 * bottom_view.frame.size.width, 0.25 * bottom_view.frame.size.height,
                                                           0.9 * bottom_view.frame.size.width, 0.7 * bottom_view.frame.size.height ))
     @text_view.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
     @text_view.textAlignment = UITextAlignmentLeft
 
-    @text_view.text = "story.document.description"
-
+    @text_view.text = ServerBackend.get.description_for_story(story)
     bottom_view.addSubview(@text_view)
 
     ####
@@ -257,10 +290,12 @@ class TabletOverlayView < UIView
 
   def show_screenshoots
     @text_view.hidden = true
+    @screen_shot_collection_view.hidden = false
   end
 
   def show_description
     @text_view.hidden = false
+    @screen_shot_collection_view.hidden = true
   end
 
 
@@ -302,5 +337,27 @@ class TabletOverlayView < UIView
 
     show_description    if element.tag == 0
     show_screenshoots   if element.tag == 1
+  end
+
+  # UICollectionView Instance Methods
+  def collectionView(view, numberOfItemsInSection:section)
+
+    if(view == @screen_shot_collection_view)
+      return @screen_shots.length if(!@screen_shots.nil?)
+    end
+
+    return 0
+  end
+
+  def collectionView(view, cellForItemAtIndexPath:path)
+    cell = view.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: path)
+
+    if(view == @screen_shot_collection_view)
+       screenshot = @screen_shots[path.row]
+       cell.delegate = self
+       cell.make_cell(screenshot)
+    end
+
+    cell
   end
 end

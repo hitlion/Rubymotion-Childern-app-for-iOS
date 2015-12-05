@@ -46,6 +46,7 @@ class TabletNavbarView < UIView
     @leftButton.setImage(UIImage.imageNamed("previous.png"), forState:UIControlStateNormal)
     @leftButton.addTarget(self, action: "button_pressed:", forControlEvents: UIControlEventTouchUpInside)
     @leftButton.tag = 0
+    @leftButton.hidden = true
     self.addSubview(@leftButton)
 
     ####

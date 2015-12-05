@@ -71,7 +71,6 @@ class TabletParentScreen < PM::Screen
   def tabletNavbarView(view, buttonPressed: button)
     button_id = button.tag
 
-    lp button.tag
     if (button_id == 0)
       lp "back button pressed"
     elsif (button_id == 1)

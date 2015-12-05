@@ -102,8 +102,6 @@ class KidsScene < SKScene
     touch = touches.anyObject
     node = nodeAtPoint(touch.locationInNode(self))
 
-    puts node.name
-
     if node.name == BUTTON_CHILD_NAME
       child_button_clicked
     elsif node.name == BUTTON_PARENT_NAME
@@ -173,7 +171,7 @@ class KidsScene < SKScene
   #
   def init_values
     @story_list = StoryBundle.bundles.select { |b| b.valid? }
-   # @story_list.sort{|s| s.document.timestamp}
+    # @story_list.sort{|s| s.document.timestamp}
     @height     ||= CGRectGetHeight(self.frame)
     @width      ||= CGRectGetWidth(self.frame)
     @rope_line  ||= @height * ROPE_LINE_Y
@@ -224,11 +222,7 @@ class KidsScene < SKScene
       story.zPosition = 10
       story.anchorPoint = CGPointMake(0.5, 0.98)
       story.position = CGPointMake(mid_x + i * distance_between_storyicons, @story_pos_y)
-
       story.name = s.document.set_name
-
-      lp story.name
-
       story.physicsBody = SKPhysicsBody.bodyWithRectangleOfSize(story.size)
       story.physicsBody.dynamic = true
       story.physicsBody.angularDamping = 5.0
