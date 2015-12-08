@@ -49,14 +49,12 @@ class TabletParentScreen < PM::Screen
   ##
   # add options view
   def add_options
-    frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height,
+    frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height - 1,
                        @parentmenu.frame.size.width,
-                       @parentmenu.frame.size.height - NavbarHeight * @parentmenu.frame.size.height)
+                       @parentmenu.frame.size.height - NavbarHeight * @parentmenu.frame.size.height + 1)
     @options_view = TabletOptionView.alloc.init_with_frame(frame)
     @parentmenu.addSubview(@options_view)
   end
-
-
 
   def add_parent_overlay
     @parent_overlay ||= TabletOverlayView.alloc.init_with_type(:parent_menu, frame: CGRectMake(0, 0, device.screen_width, device.screen_height))

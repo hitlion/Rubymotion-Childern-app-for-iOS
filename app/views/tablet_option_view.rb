@@ -15,7 +15,7 @@ class TabletOptionView < UIView
 
     @options_table = UIImageView.alloc.initWithFrame(CGRectMake(0.75 * self.frame.size.width, 0,
                                                                0.25 * self.frame.size.width, self.frame.size.height))
-    @options_table.image = UIImage.imageNamed("option_background.png")
+    @options_table.image = UIImage.imageNamed("tablet_background_option.png")
 
     parent_image = UIImageView.alloc.initWithFrame(CGRectMake(0.1 * @options_table.frame.size.width,
                                                               (1.0/32.0) * @options_table.frame.size.height,

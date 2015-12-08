@@ -12,9 +12,6 @@ class OverlayScreenshotCell < UICollectionViewCell
   # Build the cell with the data from the given element
   # @param element [UIImage] The Story for filling the data of this cell
   def make_cell(element)
-
-    lp element
-
     @screenshot = element
 
     return if(@screenshot.nil?)
