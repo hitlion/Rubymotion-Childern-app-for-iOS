@@ -26,8 +26,8 @@ class TabletParentScreen < PM::Screen
   # add a own navigation bar
   def add_nav_bar
     frame = CGRectMake(0, 0, @parentmenu.frame.size.width, NavbarHeight * @parentmenu.frame.size.height)
-    navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Spiele", delegate: self)
-    @parentmenu.addSubview(navbar)
+    @navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Spiele", delegate: self)
+    @parentmenu.addSubview(@navbar)
   end
 
   def add_menu_view
@@ -52,7 +52,7 @@ class TabletParentScreen < PM::Screen
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height - 1,
                        @parentmenu.frame.size.width,
                        @parentmenu.frame.size.height - NavbarHeight * @parentmenu.frame.size.height + 1)
-    @options_view = TabletOptionView.alloc.init_with_frame(frame)
+    @options_view = TabletOptionView.alloc.init_with_frame(frame, delegate: self)
     @parentmenu.addSubview(@options_view)
   end
 
@@ -63,7 +63,15 @@ class TabletParentScreen < PM::Screen
   end
 
   ##
-  # instance method for TabletNavbarView
+  # instance method for TabletOptionView
+  # called if the optionview is closed
+  # @param view [TabletNavbarView] The view object
+  def tabletOptionViewClosed(view)
+    @navbar.set_last_selected_button_inactive
+  end
+
+  ##
+  # instance method for TabletNavbarView, called if a button is pressed
   # @param view [TabletNavbarView] The navbar object
   # @param button [UIButton] The button object with unique tags
   def tabletNavbarView(view, buttonPressed: button)
@@ -72,7 +80,7 @@ class TabletParentScreen < PM::Screen
     if (button_id == 0)
       lp "back button pressed"
     elsif (button_id == 1)
-      StartScreen.next_screen= :shop_menu
+      StartScreen.next_screen= :kids_menu
       StartScreen.last_screen = :parent_menu
       rmq.screen.open_root_screen(StartScreen)
     elsif (button_id == 2)

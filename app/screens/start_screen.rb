@@ -37,12 +37,16 @@ class StartScreen < PM::Screen
     open_modal StoryPlayerScreen.get(StartScreen.next_story)
   end
 
+  def goto_story_list
+    open StoryListScreen.new(nav_bar:true)
+  end
+
   def goto_test
     open TestScreen.new
   end
 
   def goto_shop
-    open StoryListScreen.new(nav_bar:true)
+
   end
 
   def on_appear(args={})
@@ -75,26 +79,19 @@ class StartScreen < PM::Screen
   def dispatch
     if(StartScreen.next_screen.nil?)
       goto_parent
-    end
-
-    if StartScreen.next_screen == :parent_menu
+    elsif StartScreen.next_screen == :parent_menu
       goto_parent
-    end
-
-    if StartScreen.next_screen == :kids_menu
+    elsif StartScreen.next_screen == :kids_menu
       goto_kids
-    end
-
-    if StartScreen.next_screen == :age_verification_screen
+    elsif StartScreen.next_screen == :age_verification_screen
       goto_age_verification
-    end
-
-    if StartScreen.next_screen == :story_player
+    elsif StartScreen.next_screen == :story_player
       start_story
-    end
-
-    if StartScreen.next_screen == :shop_menu
+    elsif StartScreen.next_screen == :shop_menu
       goto_shop
+    elsif StartScreen.next_screen == :story_list
+      goto_story_list
     end
   end
+
 end

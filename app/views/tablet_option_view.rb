@@ -1,7 +1,11 @@
 class TabletOptionView < UIView
 
-  def init_with_frame(frame)
+  attr_reader :delegate
+
+  def init_with_frame(frame, delegate: delegate)
     self.initWithFrame(frame)
+
+    @delegate = delegate
 
     build_view
 
@@ -140,6 +144,7 @@ class TabletOptionView < UIView
 
   def close_options
     self.hidden = true
+    @delegate.tabletOptionViewClosed(self) if @delegate.respond_to? 'tabletOptionViewClosed:'
   end
 
 end

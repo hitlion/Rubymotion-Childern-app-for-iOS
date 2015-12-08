@@ -78,8 +78,8 @@ class TabletNavbarView < UIView
     # Define third button
     frame = CGRectMake(PosXButton3 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
                        ButtonWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
-    button3 = add_button_element_with_image(UIImage.imageNamed("icon_button_options.png"), displayName: "Optionen",
-                                                      frame: frame, action: "button_pressed:", id: 3)
+    image = UIImage.imageNamed("icon_button_options.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
+    button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: "button_pressed:", id: 3)
     self.addSubview(button3)
 
     ####
@@ -108,11 +108,14 @@ class TabletNavbarView < UIView
   def add_button_element_with_image(image, displayName: name, frame: frame, action: action,  id: id)
     element =  UIView.alloc.initWithFrame(frame)
 
-    button = UIButton.alloc.initWithFrame(CGRectMake(0.25 * element.frame.size.width,
-                                                     0.05 * element.frame.size.height,
-                                                     0.50 * element.frame.size.width,
-                                                     0.50 * element.frame.size.height))
+    button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
+    button.frame = CGRectMake(0.25 * element.frame.size.width,
+                              0.05 * element.frame.size.height,
+                              0.50 * element.frame.size.width,
+                              0.50 * element.frame.size.height)
     button.setImage(image, forState:UIControlStateNormal)
+    button.backgroundColor = UIColor.clearColor
+    button.tintColor = rmq.color.babbo_button_grey
 
     button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
     button.tag = id
@@ -154,6 +157,18 @@ class TabletNavbarView < UIView
   # @param source [UIButton] the pressed cell's button the whole cell is the button
   def button_pressed (source)
     @delegate.tabletNavbarView(self, buttonPressed: source) if @delegate.respond_to? 'tabletNavbarView:buttonPressed:'
+
+    if(source.tintColor != rmq.color.babbo_orange)
+      source.tintColor = rmq.color.babbo_orange
+      if(!@last_selected_button.nil? && @last_selected_button != source )
+        @last_selected_button.tintColor = rmq.color.babbo_button_grey
+      end
+    else
+      source.tintColor = rmq.color.babbo_button_grey
+    end
+
+    @last_selected_button = source
+
   end
 
   def hide_back_button
@@ -162,6 +177,12 @@ class TabletNavbarView < UIView
 
   def show_back_button
     @leftButton.hidden = false
+  end
+
+  def set_last_selected_button_inactive
+    return if (@last_selected_button.nil?)
+    @last_selected_button.tintColor = rmq.color.babbo_button_grey
+    @last_selected_button = nil
   end
 
 end
