@@ -171,6 +171,16 @@ class AdvancedCollectionView < UIView
     end
   end
 
+  ##
+  # instance methods for MenuLevelCell
+  # @param cell [MenuLevelCell] the pressed cell
+  # @param source [UIButton] the pressed button object
+  def shopBasicCell(cell, buttonPressed: source)
+    if (@delegate.respond_to? 'advancedCollectionView:cellPressed:buttonObj:')
+      @delegate.advancedCollectionView(self, cellPressed: cell, buttonObj: source)
+    end
+  end
+
   # UICollectionView Instance Methods
   def collectionView(view, numberOfItemsInSection:section)
     return @elements.length if(!@elements.nil?)

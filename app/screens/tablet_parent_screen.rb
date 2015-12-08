@@ -17,6 +17,7 @@ class TabletParentScreen < PM::Screen
 
     add_nav_bar
     add_menu_view
+    add_shop_view
     add_tab_bar
     add_options
     add_parent_overlay
@@ -26,7 +27,7 @@ class TabletParentScreen < PM::Screen
   # add a own navigation bar
   def add_nav_bar
     frame = CGRectMake(0, 0, @parentmenu.frame.size.width, NavbarHeight * @parentmenu.frame.size.height)
-    @navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Spiele", delegate: self)
+    @navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Stories", delegate: self)
     @parentmenu.addSubview(@navbar)
   end
 
@@ -37,13 +38,21 @@ class TabletParentScreen < PM::Screen
     @parentmenu.addSubview(@menu_view)
   end
 
+  def add_shop_view
+    frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height,
+                       @parentmenu.frame.size.width, MiddleViewHeight * @parentmenu.frame.size.height)
+    @shop_view = TabletShopView.alloc.init_with_frame(frame, delegate: self)
+    @shop_view.hidden = true
+    @parentmenu.addSubview(@shop_view)
+  end
+
   ##
   # adds the tab bar at the bottom of the screen
   def add_tab_bar
     frame = CGRectMake(0, (NavbarHeight + MiddleViewHeight) *  @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, TabbarHeight * @parentmenu.frame.size.height)
     @tab_bar = TabbarView.alloc.init_with_frame(frame, delegate: self)
-    @parentmenu.addSubview(@tab_bar)
+    #@parentmenu.addSubview(@tab_bar)
   end
 
   ##
@@ -77,19 +86,30 @@ class TabletParentScreen < PM::Screen
   def tabletNavbarView(view, buttonPressed: button)
     button_id = button.tag
 
+    lp button_id
     if (button_id == 0)
-      lp "back button pressed"
+      @shop_view.hidden = true
+      @menu_view.hidden = false
+      @navbar.hide_back_button
+      @navbar.set_title_text("Alle Stories")
+      @navbar.set_last_selected_button_inactive
     elsif (button_id == 1)
       StartScreen.next_screen= :kids_menu
       StartScreen.last_screen = :parent_menu
       rmq.screen.open_root_screen(StartScreen)
     elsif (button_id == 2)
-      lp "go to shop"
-      StartScreen.next_screen= :shop_menu
-      StartScreen.last_screen = :parent_menu
-      rmq.screen.open_root_screen(StartScreen)
+      if(@shop_view.hidden?)
+        @navbar.set_title_text("Shop")
+        @shop_view.hidden = false
+        @menu_view.hidden = true
+        @navbar.show_back_button
+      end
     elsif (button_id == 3)
       @options_view.hidden = !@options_view.hidden?
+      @shop_view.hidden = true
+      @menu_view.hidden = false
+      @navbar.hide_back_button
+      @navbar.set_title_text("Alle Stories")
     end
   end
 

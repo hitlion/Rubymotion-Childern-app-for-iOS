@@ -26,7 +26,7 @@ class TabletNavbarView < UIView
   def init_with_frame(frame, titleText: titleText, delegate: delegate)
     self.initWithFrame(frame)
 
-    @titleText = titleText
+    @title_text = titleText
     @delegate  = delegate
     build_view
 
@@ -53,10 +53,10 @@ class TabletNavbarView < UIView
     # Define title label
     frame = CGRectMake(PosXLabel * self.frame.size.width, PosYLabel * self.frame.size.height,
                        LabelWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
-    title_label = UILabel.alloc.initWithFrame(frame)
-    title_label.text = @titleText
-    title_label.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
-    self.addSubview(title_label)
+    @title_label = UILabel.alloc.initWithFrame(frame)
+    @title_label.text = @title_text
+    @title_label.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
+    self.addSubview(@title_label)
 
     ####
     # Define first button
@@ -164,7 +164,9 @@ class TabletNavbarView < UIView
         @last_selected_button.tintColor = rmq.color.babbo_button_grey
       end
     else
-      source.tintColor = rmq.color.babbo_button_grey
+      if(source.tag == 3)
+        source.tintColor = rmq.color.babbo_button_grey
+      end
     end
 
     @last_selected_button = source
@@ -177,6 +179,11 @@ class TabletNavbarView < UIView
 
   def show_back_button
     @leftButton.hidden = false
+  end
+
+  def set_title_text(text)
+    @title_label.text = text
+    @title_text = text
   end
 
   def set_last_selected_button_inactive
