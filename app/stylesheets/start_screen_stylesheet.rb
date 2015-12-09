@@ -16,7 +16,6 @@ class StartScreenStyleSheet < ApplicationStylesheet
   def load_progress(st)
     st.frame = {l:100, fr:100, fb:25}
     st.progress_view_style = UIProgressViewStyleDefault
-    st.progress_view_tint_color = rmq.color.green
   end
 end
 
