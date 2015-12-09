@@ -4,8 +4,6 @@ module JavaScript
 
     javascript_export :b_b_v_j_s_bridged_cache
 
-    attr_reader :props
-
     # Setup a new +Cache+
     def initialize
       @properties = {}
