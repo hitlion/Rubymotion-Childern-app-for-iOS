@@ -6,9 +6,9 @@ class TabbarView < UIView
   # UI elements position constants
   # This values are the factor, that is multiplied with self.frame.size.width
   # and defines the x coordinate for the element
-  PosXButton1    = 0.35
-  PosXButton2    = 0.465
-  PosXButton3    = 0.60
+  PosXButton1    = 0.33
+  PosXButton2    = 0.47
+  PosXButton3    = 0.61
 
   ##
   # other constants
