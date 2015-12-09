@@ -17,7 +17,7 @@ class StartScreen < PM::Screen
     set_nav_bar_button :left, title: "Parent", action: :go_to_parent
 
     append(UIImageView, :logo)
-    append(UIProgressView, :load_progress)
+    append(UIProgressView, :load_progress).hide
   end
 
   def goto_kids
@@ -49,14 +49,16 @@ class StartScreen < PM::Screen
     # perform asynchronous loading exactly *once*
     Dispatch.once do
       progress_callback = -> (total, progress) do
-        if total > 0
+        if total > progress
           Dispatch::Queue.main.sync do
+            rmq(:load_progress).show
             rmq(:load_progress).get.setProgress(progress.to_f / total.to_f, animated: true)
           end
         end
         if total == progress
           Dispatch::Queue.main.async do
             StartScreen.warmup_done = true
+            rmq(:load_progress).hide
             dispatch
           end
         end
