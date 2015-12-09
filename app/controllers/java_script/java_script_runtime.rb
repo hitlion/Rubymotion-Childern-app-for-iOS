@@ -37,17 +37,18 @@ module JavaScript
 
       # see #send_event
       def send_event( target, name, args={} )
-        get.send_event(target, name, args)
+        autorelease_pool{ get.send_event(target, name, args) }
       end
 
       # see #call_slot
       def call_slot( target, name )
-        get.call_slot(target, name)
+        autorelease_pool{ get.call_slot(target, name) }
       end
     end
 
     attr_accessor :story_bundle
     attr_accessor :scene_root
+    attr_accessor :script_cache
 
     # @private
     def initialize
@@ -55,15 +56,11 @@ module JavaScript
       @scene_root   = nil
 
       @script_vm    = JSVirtualMachine.alloc.init
-      @script_state = begin
-        ctx = JSContext.alloc.initWithVirtualMachine(@script_vm)
-        ctx.evaluateScript('$$ = new Array();')
-        ctx
-      end
+      @script_cache = JavaScript::Cache.new
     end
 
     def tear_down
-      @script_state = nil
+      @script_cache = nil
       @script_vm    = nil
     end
 
@@ -163,26 +160,8 @@ module JavaScript
       variables = collect_variables(slot.variables, receiver.path)
       return false if variables.nil?
 
-      # synchronize @script_state
-      ctx = JSContext.currentContext
-      self.script_state = ctx['$$']
       dispatch_script_block(receiver_proxy, variables, script_action, false)
-      ctx['$$'] = self.script_state
       true
-    end
-
-    # Fetch the shared script state
-    #
-    # @return [JSValue] The current sharde script state ('$$')
-    def script_state
-      @script_state['$$']
-    end
-
-    # Replace the shared script state
-    #
-    # @param [JSValue] val The new value for the shared state ('$$')
-    def script_state=( val )
-      @script_state['$$'] = val
     end
 
     private
@@ -191,31 +170,41 @@ module JavaScript
     # +variables+ and +receiver+.
     def dispatch_script_block( receiver, variables, action, async = true )
       block = proc do
-        script_context = JSContext.alloc.initWithVirtualMachine(@script_vm)
-
-        if export_variables(variables, script_context)
-          # setup fixed globals
-          script_context['$']  = JavaScript::Global.new
-          script_context['$$'] = self.script_state
-
-          unless receiver.nil?
-            # body and level may have slots but no proxy representation
-            script_context['$self'] = receiver
+        autorelease_pool do
+          unless async == true || JSContext.currentContext.nil?
+            # reuse the existing VM for synchronous calls
+            script_vm = JSContext.currentContext.virtualMachine
           end
 
-          script_context.setExceptionHandler(lambda do |context, value|
-            lp "[JavaScriptException]: #{value.toString}", force_color: :red, log_js: true
-          end)
-          script_context.evaluateScript(action)
-          self.script_state = script_context['$$']
+          script_vm ||= JSVirtualMachine.alloc.init
+          script_context = JSContext.alloc.initWithVirtualMachine(script_vm)
+
+          if export_variables(variables, script_context)
+            # setup fixed globals
+            script_context['$']  = JavaScript::Global.new
+            script_context['$$'] = self.script_cache
+
+            unless receiver.nil?
+              # body and level may have slots but no proxy representation
+              script_context['$self'] = receiver
+            end
+
+            script_context.setExceptionHandler(lambda do |context, value|
+              lp "[JavaScriptException]: #{value.toString}", force_color: :red, log_js: true
+            end)
+            script_context.evaluateScript(File.read(Dir.resource('js/bootstrap.js')))
+            script_context.evaluateScript(action)
+
+            purge_variables(variables, script_context)
+          end
+          lp "dealloc script_context"
+          script_context = nil
+          script_vm = nil
         end
-        lp "dealloc script_context"
-        purge_variables(variables, script_context)
-        script_context = nil
-      end
+      end.weak!
 
       if async # Qeue async event execution
-        Dispatch::Queue.new('babbo.js-exec').async { block.call }
+        Dispatch::Queue.concurrent.async { block.call }
       else
         block.call
       end
