@@ -116,9 +116,11 @@ class StoryLoggerView < UIView
     Dispatch::Queue.main.async do
       text = log_view.attributedText.mutableCopy
 
-      while text.length + message.length >= 2048
-            line_range = text.mutableString.lineRangeForRange(NSMakeRange(0, 1))
-            text.deleteCharactersInRange(line_range)
+      while text.length && (text.length + message.length >= 2048)
+        break if text.length == 0
+
+        line_range = text.mutableString.lineRangeForRange(NSMakeRange(0, 1))
+        text.deleteCharactersInRange(line_range)
       end
       text.appendAttributedString(message)
       log_view.attributedText = text
