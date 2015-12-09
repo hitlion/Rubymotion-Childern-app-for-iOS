@@ -39,9 +39,11 @@ class AssetStore
   def purge!
     return false unless valid?
 
-    Dir.foreach(@cache_path) do |entry|
-      path = File.join(@cache_path, entry)
-      File.unlink(path) if File.file? path
+    autorelease_pool do
+      Dir.foreach(@cache_path) do |entry|
+        path = File.join(@cache_path, entry)
+        File.unlink(path) if File.file? path
+      end
     end
 
     true
@@ -56,9 +58,11 @@ class AssetStore
   def compact!
     return false unless valid?
 
-    Dir.foreach(@cache_path) do |entry|
-      path = File.join(@cache_path, entry)
-      File.unlink(path) if File.stat(path).nlink < 2
+    autorelease_pool do
+      Dir.foreach(@cache_path) do |entry|
+        path = File.join(@cache_path, entry)
+        File.unlink(path) if File.stat(path).nlink < 2
+      end
     end
 
     true
@@ -88,7 +92,9 @@ class AssetStore
   # @return [String] The unique hash for +path+'s data.
   #   If +path+ could net be read this will be an empty string.
   def compute_hash( path )
-    NSData.sha1FromContentsOfFile(path)
+    res = '0'
+    autorelease_pool { res = NSData.sha1FromContentsOfFile(path) }
+    res
   end
 
   # Locate a resource file given it's resource hash.
