@@ -158,8 +158,8 @@ class TabletNavbarView < UIView
   def button_pressed (source)
     @delegate.tabletNavbarView(self, buttonPressed: source) if @delegate.respond_to? 'tabletNavbarView:buttonPressed:'
 
-    if(source.tintColor != rmq.color.babbo_orange)
-      source.tintColor = rmq.color.babbo_orange
+    if(source.tintColor != rmq.color.babbo_button_orange)
+      source.tintColor = rmq.color.babbo_button_orange
       if(!@last_selected_button.nil? && @last_selected_button != source )
         @last_selected_button.tintColor = rmq.color.babbo_button_grey
       end

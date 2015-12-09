@@ -20,7 +20,9 @@ class TabletParentScreen < PM::Screen
     add_shop_view
     add_tab_bar
     add_options
-    add_parent_overlay
+    add_menu_overlay
+    add_shop_premium_overlay
+    add_shop_basic_overlay
   end
 
   ##
@@ -52,7 +54,7 @@ class TabletParentScreen < PM::Screen
     frame = CGRectMake(0, (NavbarHeight + MiddleViewHeight) *  @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, TabbarHeight * @parentmenu.frame.size.height)
     @tab_bar = TabbarView.alloc.init_with_frame(frame, delegate: self)
-    #@parentmenu.addSubview(@tab_bar)
+    @parentmenu.addSubview(@tab_bar)
   end
 
   ##
@@ -65,10 +67,25 @@ class TabletParentScreen < PM::Screen
     @parentmenu.addSubview(@options_view)
   end
 
-  def add_parent_overlay
-    @parent_overlay ||= TabletOverlayView.alloc.init_with_type(:parent_menu, frame: CGRectMake(0, 0, device.screen_width, device.screen_height))
-    @parent_overlay.hidden = true
-    @parentmenu.addSubview(@parent_overlay)
+  def add_menu_overlay
+    frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
+    @parent_menu_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayMenuStandard.alloc.init, frame: frame)
+    @parent_menu_overlay.hidden = true
+    @parentmenu.addSubview(@parent_menu_overlay)
+  end
+
+  def add_shop_premium_overlay
+    frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
+    @parent_shop_premium_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayShopPremium.alloc.init, frame: frame)
+    @parent_shop_premium_overlay.hidden = true
+    @parentmenu.addSubview(@parent_shop_premium_overlay)
+  end
+
+  def add_shop_basic_overlay
+    frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
+    @parent_shop_basic_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayShopBasic.alloc.init, frame: frame)
+    @parent_shop_basic_overlay.hidden = true
+    @parentmenu.addSubview(@parent_shop_basic_overlay)
   end
 
   ##
@@ -103,6 +120,7 @@ class TabletParentScreen < PM::Screen
         @shop_view.hidden = false
         @menu_view.hidden = true
         @navbar.show_back_button
+        @options_view.hidden = true
       end
     elsif (button_id == 3)
       @options_view.hidden = !@options_view.hidden?
@@ -120,8 +138,25 @@ class TabletParentScreen < PM::Screen
   # @param source [UIButton] The pressed button object
   def tabletMenuView(view, storyObject: story)
     if(view == @menu_view)
-      @parent_overlay.reload_view_with_story(story)
-      @parent_overlay.hidden = !@parent_overlay.hidden?
+      @parent_menu_overlay.reload_view_with_story(story)
+      @parent_menu_overlay.hidden = !@parent_menu_overlay.hidden?
+    end
+  end
+
+  ##
+  # instance method for TabletShopView, called if a cell (story) is pressed
+  # @param view [TabletMenuView] The tabletMenuView object
+  # @param cell [UICollectioViewCell] The pressed cell
+  # @param source [UIButton] The pressed button object
+  def tabletShopView(view, cell: cell, storyObject: story)
+    if(view == @shop_view)
+      if(cell.class == ShopPremiumCell)
+        @parent_shop_premium_overlay.reload_view_with_story(story)
+        @parent_shop_premium_overlay.hidden = !@parent_shop_premium_overlay.hidden?
+      elsif(cell.class == ShopBasicCell)
+        @parent_shop_basic_overlay.reload_view_with_story(story)
+        @parent_shop_basic_overlay.hidden = !@parent_shop_basic_overlay.hidden?
+      end
     end
   end
 

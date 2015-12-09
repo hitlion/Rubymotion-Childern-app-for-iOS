@@ -12,18 +12,16 @@ class TabletOverlayView < UIView
     @story = nil
     @overlay_type = type
 
-    if(type == :parent_menu)
-      @text_top_button_left   = "Starten"
-      @text_top_button_right  = "---"
-      @text_top_button_line_1 = "Bearbeiten"
-      @text_top_button_line_2 = "Neu"
-      @text_top_button_line_3 = "Löschen"
-      @text_top_button_line_4 = "Verkaufen"
-      @text_top_button_line_5 = "Teilen"
+    @text_top_button_left   = type.text_top_button_left
+    @text_top_button_right  = type.text_top_button_right
+    @text_top_button_line_1 = type.text_top_button_line_1
+    @text_top_button_line_2 = type.text_top_button_line_2
+    @text_top_button_line_3 = type.text_top_button_line_3
+    @text_top_button_line_4 = type.text_top_button_line_4
+    @text_top_button_line_5 = type.text_top_button_line_5
 
-      @text_bottom_button_line_1 = "Beschreibung"
-      @text_bottom_button_line_2 = "Bilder"
-    end
+    @text_bottom_button_line_1 = type.text_bottom_button_line_1
+    @text_bottom_button_line_2 = type.text_bottom_button_line_2
 
     self
   end
@@ -90,7 +88,7 @@ class TabletOverlayView < UIView
     left_button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
     left_button.setTitle(@text_top_button_left, forState: UIControlStateNormal)
     left_button.addTarget(self, action: "left_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
+    left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
     left_button.tag = story.object_id
     top_view.addSubview(left_button)
 
@@ -101,12 +99,12 @@ class TabletOverlayView < UIView
     right_button.setBackgroundImage(UIImage.imageNamed("button_grey.png"), forState:UIControlStateNormal)
     right_button.setTitle(@text_top_button_right, forState: UIControlStateNormal)
     right_button.addTarget(self, action: "right_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
-    if(@overlay_type == :parent_menu)
-      right_button.hidden = true
+    right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+
+    if(@overlay_type.class == OverlayShopPremium)
+      top_view.addSubview(right_button)
     end
 
-    top_view.addSubview(right_button)
 
     ###
     # Define cancel button
@@ -159,7 +157,10 @@ class TabletOverlayView < UIView
     top_button_line.addSubview(top_button_line_1)
     top_button_line.addSubview(top_button_line_2)
     top_button_line.addSubview(top_button_line_3)
-    top_view.addSubview(top_button_line)
+
+    if(@overlay_type.class == OverlayMenuStandard)
+      top_view.addSubview(top_button_line)
+    end
 
     ###
     # Define the horizontal line
@@ -258,7 +259,7 @@ class TabletOverlayView < UIView
 
   def left_button_pressed(button)
 
-    if(@overlay_type == :parent_menu)
+    if(@overlay_type.class == OverlayMenuStandard)
       StartScreen.next_story = @story
       StartScreen.next_screen = :story_player
       StartScreen.last_screen = :parent_menu
@@ -301,7 +302,7 @@ class TabletOverlayView < UIView
   ##
   # called if one of the buttons in the top button line ie pressed
   def top_button_line_pressed(element)
-    if (@overlay_type == :parent_menu)
+    if (@overlay_type.class == OverlayMenuStandard)
       edit_story   if element.tag == 0
       new_story    if element.tag == 1
       remove_story if element.tag == 2

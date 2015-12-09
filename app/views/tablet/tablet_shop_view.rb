@@ -85,14 +85,28 @@ class TabletShopView < UIView
     @basic_stories = StoryBundle.bundle_list
   end
 
-  def shopPremiumCell(cell, buttonPressed: source)
+  def shopPremiumCell(cell, buttonPressed: button)
     path = @premium_collection_view.indexPathForCell(cell)
     @premium_collection_view.scrollToItemAtIndexPath(path,
                                 atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally, animated:true)
+    lp"2"
+
+    id  = button.tag
+    story = @all_stories.find {|e| e.object_id == id}
+    @delegate.tabletShopView(self, cell: cell, storyObject: story) if @delegate.respond_to? 'tabletShopView:cell:storyObject:'
   end
 
-  def advancedCollectionView(view, cellPressed:cell, buttonObj: source)
-
+  ##
+  # AdvancedColletionView instance methods
+  # @param view [AdvancedCollectionView]
+  # @param cell [UICollectionViewCell]
+  # @param button [UIButton]
+  def advancedCollectionView(view, cellPressed:cell, buttonObj:button)
+    if(view == @basic_view)
+      id  = button.tag
+      story = @all_stories.find {|e| e.object_id == id}
+      @delegate.tabletShopView(self, cell: cell, storyObject: story) if @delegate.respond_to? 'tabletShopView:cell:storyObject:'
+    end
   end
 
   # UICollectionView Instance Methods

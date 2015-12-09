@@ -43,7 +43,7 @@ class TabbarView < UIView
     # Define first button
     frame = CGRectMake(PosXButton1 * self.frame.size.width, SpaceHeight *  self.frame.size.height,
                        ElementHeight * self.frame.size.height, ElementHeight * self.frame.size.height)
-    button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_books.png"), displayName: "Stories",
+    button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_book.png"), displayName: "Stories",
                                             frame: frame, action: "button_pressed:", id: 1)
     self.addSubview(button1)
 
@@ -75,13 +75,14 @@ class TabbarView < UIView
   def add_button_element_with_image(image, displayName: name, frame: frame, action: action, id: id)
     element =  UIView.alloc.initWithFrame(frame)
 
-    button = UIButton.alloc.initWithFrame(CGRectMake(0.25 * element.frame.size.width,
-                                                     0.05 * element.frame.size.height,
-                                                     0.50 * element.frame.size.width,
-                                                     0.50 * element.frame.size.height))
+    button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
+    button.frame = CGRectMake(0.25 * element.frame.size.width, 0.05 * element.frame.size.height,
+                              0.50 * element.frame.size.width, 0.50 * element.frame.size.height)
     button.setImage(image, forState:UIControlStateNormal)
     button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
     button.tag = id
+    button.backgroundColor = UIColor.clearColor
+    button.tintColor = rmq.color.babbo_button_grey
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0,
                                                    0.65 * element.frame.size.height,
