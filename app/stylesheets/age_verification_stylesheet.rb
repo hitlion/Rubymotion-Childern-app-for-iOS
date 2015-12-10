@@ -1,6 +1,11 @@
 class AgeVerificationStylesheet < ApplicationStylesheet
 
+  IPadFontSizeFac = 1.5
+  OtherDevicesFontSizeFac = 1.0
+
   def setup
+    @font_fac = 1.0
+    @font_fac = 1.5 if (device.ipad?)
   end
 
   def root_view(st)
@@ -33,28 +38,28 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   def label1(st)
     st.frame = {below_prev: 0.025 * device.screen_height, l: 30, fr: 30, h: 0.05 * device.screen_height,  centered: :horizontal}
     st.text = "Elternbereich"
-    st.font = UIFont.fontWithName("Enriqueta-Bold", size: 40)
+    st.font = UIFont.fontWithName("Enriqueta-Bold", size: 20 * @font_fac)
     st.text_alignment = :center
     st.color = rmq.color.babbo_orange
   end
 
   def label2(st)
-    st.frame = {below_prev:0.025 * device.screen_height, l:30, fr:30, h: 0.05 * device.screen_height,  centered: :horizontal}
+    st.frame = {below_prev:0.025 * device.screen_height, l:30, fr:30, h: 0.075 * device.screen_height,  centered: :horizontal}
     st.text = "In welchem Jahr bist du geboren?"
-    st.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
+    st.font = UIFont.fontWithName("Enriqueta-Regular", size:12 * @font_fac)
     st.text_alignment = :center
     st.color = rmq.color.black
   end
 
   def age_input_field(st)
-    st.frame = {w: 0.3 * device.screen_width, below_prev:0.025 * device.screen_height,  h: 162, centered: :horizontal}
+    st.frame = {w: 0.3 * device.screen_width, below_prev:0.08 * device.screen_height,  h: 50, centered: :horizontal}
   end
 
   def go_on_button(st)
-    st.frame = {w: 0.15 * device.screen_width, t:0.75 * device.screen_height,  h: 0.05 * device.screen_height, centered: :horizontal}
+    st.frame = {w: 0.15 * device.screen_width, t:0.75 * device.screen_height,  h: 0.075 * device.screen_height, centered: :horizontal}
     st.color = rmq.color.white
     st.text = "Weiter"
-    st.font = UIFont.fontWithName("Enriqueta-Regular", size:25)
+    st.font = UIFont.fontWithName("Enriqueta-Regular", size:15 * @font_fac)
   end
 
   def left_button(st)
@@ -63,9 +68,9 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def left_label(st)
-    st.frame = {l: 0.1 * device.screen_width, w: 0.3 * device.screen_width, h: 0.05 * device.screen_height, centered: :vertical}
+    st.frame = {l: 0.1 * device.screen_width, w: 0.4 * device.screen_width, h: 0.05 * device.screen_height, centered: :vertical}
     st.text = "Zurück zum Spielplatz"
-    st.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
+    st.font = UIFont.fontWithName("Enriqueta-Regular", size:12 * @font_fac)
     st.text_alignment = :center
     st.color = rmq.color.black
   end

@@ -102,8 +102,6 @@ class KidsScene < SKScene
     touch = touches.anyObject
     node = nodeAtPoint(touch.locationInNode(self))
 
-    puts node.name
-
     if node.name == BUTTON_CHILD_NAME
       child_button_clicked
     elsif node.name == BUTTON_PARENT_NAME
@@ -173,7 +171,7 @@ class KidsScene < SKScene
   #
   def init_values
     @story_list = StoryBundle.bundles.select { |b| b.valid? }
-   # @story_list.sort{|s| s.document.timestamp}
+    # @story_list.sort{|s| s.document.timestamp}
     @height     ||= CGRectGetHeight(self.frame)
     @width      ||= CGRectGetWidth(self.frame)
     @rope_line  ||= @height * ROPE_LINE_Y
@@ -224,11 +222,7 @@ class KidsScene < SKScene
       story.zPosition = 10
       story.anchorPoint = CGPointMake(0.5, 0.98)
       story.position = CGPointMake(mid_x + i * distance_between_storyicons, @story_pos_y)
-
       story.name = s.document.set_name
-
-      lp story.name
-
       story.physicsBody = SKPhysicsBody.bodyWithRectangleOfSize(story.size)
       story.physicsBody.dynamic = true
       story.physicsBody.angularDamping = 5.0
@@ -251,7 +245,7 @@ class KidsScene < SKScene
       story_picture.zPosition = -3
       story_picture.anchorPoint = CGPointMake(0.5, 0.5)
       story_picture.position = CGPointMake(0, - 0.63 * texture.size.height)
-      story_picture.scale = (0.4 * texture.size.height) / story_picture.size.height
+      story_picture.scale = (0.5 * texture.size.height) / story_picture.size.height
       story.addChild story_picture
 
       clip = SKSpriteNode.spriteNodeWithImageNamed("Klammer")
@@ -333,14 +327,13 @@ class KidsScene < SKScene
     texture = SKTexture.textureWithImageNamed("Seil.png")
 
     width = device.screen_width
-
     y = (rope_width / width).round
 
     y.times do |i|
       rope_part = SKSpriteNode.spriteNodeWithTexture(texture)
       rope_part.size = CGSizeMake(width,15)
       rope_part.anchorPoint = CGPointMake(0,0.5)
-      rope_part.position = CGPointMake (0 + i * 1024 , 0)
+      rope_part.position = CGPointMake (0 + i * device.screen_width , 0)
       rope_part.zPosition = 0
 
       rope.addChild rope_part
@@ -366,9 +359,10 @@ class KidsScene < SKScene
 
   def add_version_number
     label = SKLabelNode.labelNodeWithText(app.version)
-    label.position = CGPointMake(30,10)
+    label.position = CGPointMake(100,10)
     label.zPosition = 100
-    label.fontSize = 25
+    label.fontSize = 25 if (device.ipad?)
+    label.fontSize = 15 if (!device.ipad?)
     label.fontColor = UIColor.blackColor
     label.fontName = FONT
     addChild label

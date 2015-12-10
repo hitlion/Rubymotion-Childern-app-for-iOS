@@ -1,4 +1,4 @@
-class MenuLevelCell < UICollectionViewCell
+class ShopBasicCell < UICollectionViewCell
 
   attr_accessor :delegate, :element
 
@@ -35,7 +35,7 @@ class MenuLevelCell < UICollectionViewCell
     name.textColor = rmq.color.babbo_orange
 
     date = UILabel.alloc.initWithFrame(CGRectMake(0, image.frame.size.height + name.frame.size.height,
-                                                   view.frame.size.width, view.frame.size.height / 8.0))
+                                                  view.frame.size.width, view.frame.size.height / 8.0))
     date.backgroundColor = UIColor.clearColor
 
     time = Time.at(NSDate.dateWithNaturalLanguageString(element.document.timestamp))
@@ -59,9 +59,7 @@ class MenuLevelCell < UICollectionViewCell
   # than call the delegate method with the params self (this collection view cell) and the button element
   # @param source [UIButton] the pressed cell's button the whole cell is the button
   def cell_pressed (source)
-    if(@delegate != self)
-      @delegate.send('menuLevelCell:buttonPressed:', self, source)
-    end
+    @delegate.shopBasicCell(self, buttonPressed: source) if @delegate.respond_to? 'shopBasicCell:buttonPressed:'
   end
 
 end

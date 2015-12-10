@@ -1,25 +1,27 @@
-class MenuOverlay < UIView
+class TabletOverlayView < UIView
 
   attr_accessor :story
   attr_accessor :overlay_type
+
+  ##
+  # Identifier for all cells
+  CellIdentifier = 'Cell'
 
   def init_with_type(type, frame: frame)
     self.initWithFrame(frame)
     @story = nil
     @overlay_type = type
 
-    if(type == :parent_menu)
-      @text_top_button_left   = "Starten"
-      @text_top_button_right  = "---"
-      @text_top_button_line_1 = "Bearbeiten"
-      @text_top_button_line_2 = "Neu"
-      @text_top_button_line_3 = "Löschen"
-      @text_top_button_line_4 = "Verkaufen"
-      @text_top_button_line_5 = "Teilen"
+    @text_top_button_left   = type.text_top_button_left
+    @text_top_button_right  = type.text_top_button_right
+    @text_top_button_line_1 = type.text_top_button_line_1
+    @text_top_button_line_2 = type.text_top_button_line_2
+    @text_top_button_line_3 = type.text_top_button_line_3
+    @text_top_button_line_4 = type.text_top_button_line_4
+    @text_top_button_line_5 = type.text_top_button_line_5
 
-      @text_bottom_button_line_1 = "Beschreibung"
-      @text_bottom_button_line_2 = "Bilder"
-    end
+    @text_bottom_button_line_1 = type.text_bottom_button_line_1
+    @text_bottom_button_line_2 = type.text_bottom_button_line_2
 
     self
   end
@@ -36,14 +38,14 @@ class MenuOverlay < UIView
     end
 
     background_view = UIImageView.alloc.initWithFrame(CGRectMake(0,0,
-                                                           self.frame.size.width, self.frame.size.height))
+                                                           self.frame.size.width+1, self.frame.size.height))
     background_view.image = UIImage.imageNamed("background_grey_trans.png")
 
-    overlay_view = UIView.alloc.initWithFrame(CGRectMake(0.2 * self.frame.size.width, 0.15 * self.frame.size.height,
-                                                        0.6 * self.frame.size.width, 0.75 * self.frame.size.height))
+    overlay_view = UIView.alloc.initWithFrame(CGRectMake(0.225 * self.frame.size.width, 0.13 * self.frame.size.height,
+                                                        0.55 * self.frame.size.width, 0.75 * self.frame.size.height))
     overlay_view.backgroundColor = UIColor.whiteColor
 
-    button_size = CGSizeMake((1.0 / 5.0) * overlay_view.frame.size.width, (1.0 / 20.0) * overlay_view.frame.size.height)
+    button_size = CGSizeMake((1.0 / 5.0) * overlay_view.frame.size.width, (1.75 / 30.0) * overlay_view.frame.size.height)
 
     ####
     # Build the bottom view (all over the horizontal line)
@@ -86,7 +88,7 @@ class MenuOverlay < UIView
     left_button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
     left_button.setTitle(@text_top_button_left, forState: UIControlStateNormal)
     left_button.addTarget(self, action: "left_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
+    left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
     left_button.tag = story.object_id
     top_view.addSubview(left_button)
 
@@ -97,12 +99,12 @@ class MenuOverlay < UIView
     right_button.setBackgroundImage(UIImage.imageNamed("button_grey.png"), forState:UIControlStateNormal)
     right_button.setTitle(@text_top_button_right, forState: UIControlStateNormal)
     right_button.addTarget(self, action: "right_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
-    if(@overlay_type == :parent_menu)
-      right_button.hidden = true
+    right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+
+    if(@overlay_type.class == OverlayShopPremium)
+      top_view.addSubview(right_button)
     end
 
-    top_view.addSubview(right_button)
 
     ###
     # Define cancel button
@@ -155,7 +157,10 @@ class MenuOverlay < UIView
     top_button_line.addSubview(top_button_line_1)
     top_button_line.addSubview(top_button_line_2)
     top_button_line.addSubview(top_button_line_3)
-    top_view.addSubview(top_button_line)
+
+    if(@overlay_type.class == OverlayMenuStandard)
+      top_view.addSubview(top_button_line)
+    end
 
     ###
     # Define the horizontal line
@@ -205,14 +210,42 @@ class MenuOverlay < UIView
     bottom_view.addSubview(bottom_button_line)
 
     ###
+    # Define the screenshot collection view
+
+    @screenshots = ServerBackend.get.screenshots_for_story(story)
+    layout = UICollectionViewFlowLayout.alloc.init
+    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
+
+    frame = CGRectMake(0.025 * bottom_view.frame.size.width, 0.2 * bottom_view.frame.size.height,
+                       0.95  * bottom_view.frame.size.width, 0.7 * bottom_view.frame.size.height )
+
+    @screenshot_collection_view = UICollectionView.alloc.initWithFrame(frame, collectionViewLayout: layout)
+    @screenshot_collection_view.dataSource = self
+    @screenshot_collection_view.delegate = self
+
+    height = @screenshot_collection_view.frame.size.height
+    width  = (4 * height) / 3
+    size = CGSizeMake(width, height)
+
+    layout.itemSize = size
+
+    @screenshot_collection_view.contentInset = UIEdgeInsetsMake(0, 0 * @screenshot_collection_view.frame.size.width,
+                                                           0, 0 * @screenshot_collection_view.frame.size.width)
+
+    @screenshot_collection_view.registerClass(OverlayScreenshotCell, forCellWithReuseIdentifier: CellIdentifier)
+    @screenshot_collection_view.backgroundColor = UIColor.clearColor
+    @screenshot_collection_view.hidden = true
+
+    bottom_view.addSubview(@screenshot_collection_view)
+
+
+    ###
     # Build the textfield
-    @text_view = UITextView.alloc.initWithFrame(CGRectMake(0.05 * bottom_view.frame.size.width, 0.25 * bottom_view.frame.size.height,
-                                                          0.9 * bottom_view.frame.size.width, 0.7 * bottom_view.frame.size.height ))
+    @text_view = UITextView.alloc.initWithFrame(frame)
     @text_view.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
     @text_view.textAlignment = UITextAlignmentLeft
 
-    @text_view.text = "story.document.description"
-
+    @text_view.text = ServerBackend.get.description_for_story(story)
     bottom_view.addSubview(@text_view)
 
     ####
@@ -226,7 +259,7 @@ class MenuOverlay < UIView
 
   def left_button_pressed(button)
 
-    if(@overlay_type == :parent_menu)
+    if(@overlay_type.class == OverlayMenuStandard)
       StartScreen.next_story = @story
       StartScreen.next_screen = :story_player
       StartScreen.last_screen = :parent_menu
@@ -257,17 +290,19 @@ class MenuOverlay < UIView
 
   def show_screenshoots
     @text_view.hidden = true
+    @screenshot_collection_view.hidden = false
   end
 
   def show_description
     @text_view.hidden = false
+    @screenshot_collection_view.hidden = true
   end
 
 
   ##
   # called if one of the buttons in the top button line ie pressed
   def top_button_line_pressed(element)
-    if (@overlay_type == :parent_menu)
+    if (@overlay_type.class == OverlayMenuStandard)
       edit_story   if element.tag == 0
       new_story    if element.tag == 1
       remove_story if element.tag == 2
@@ -302,5 +337,27 @@ class MenuOverlay < UIView
 
     show_description    if element.tag == 0
     show_screenshoots   if element.tag == 1
+  end
+
+  # UICollectionView Instance Methods
+  def collectionView(view, numberOfItemsInSection:section)
+
+    if(view == @screenshot_collection_view)
+      return @screenshots.length if(!@screenshots.nil?)
+    end
+
+    return 0
+  end
+
+  def collectionView(view, cellForItemAtIndexPath:path)
+    cell = view.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: path)
+
+    if(view == @screenshot_collection_view)
+       screenshot = @screenshots[path.row]
+       cell.delegate = self
+       cell.make_cell(screenshot)
+    end
+
+    cell
   end
 end

@@ -20,7 +20,6 @@ class AgeVerificationScreen < PM::Screen
     right_view.append(UILabel, :label1)
     right_view.append(UILabel, :label2)
 
-
     @year_picker = right_view.append!(UIPickerView, :age_input_field)
     @year_picker.delegate = self
     @year_picker.dataSource = self
@@ -40,8 +39,6 @@ class AgeVerificationScreen < PM::Screen
     end
 
     back_view.append(UILabel, :left_label)
-
-
   end
 
   def will_appear
@@ -94,8 +91,6 @@ class AgeVerificationScreen < PM::Screen
     @num3 = row   if component == 3
 
     @num = @num0 * 1000 + @num1 * 100 + @num2 * 10 + @num3
-
-    lp @num
   end
 
 end
