@@ -42,70 +42,9 @@ class ParentScreen < PM::Screen
   ##
   # add a own navigation bar
   def add_nav_bar
-    navbar_heigth = NavbarHeight * device.screen_height
-    navbar_width = device.screen_width
-
-    @nav_bar = UIView.alloc.initWithFrame(CGRectMake(0 ,0, navbar_width, navbar_heigth))
-    @nav_bar.backgroundColor = rmq.color.babbo_bar_grey
-
-    @parentmenu.addSubview @nav_bar
-
-    line = horizontal_line_make(CGPointMake(0, -1 + (NavbarHeight) * device.screen_height),
-                                width: device.screen_width)
-
-    @parentmenu.addSubview line
-
-    @left_label = UILabel.alloc.initWithFrame(CGRectMake(0.02 * @nav_bar.frame.size.width,
-                                                         0.15 * @nav_bar.frame.size.height,
-                                                         0.5  * @nav_bar.frame.size.width,
-                                                         0.85 * @nav_bar.frame.size.height))
-    @left_label.text = "Alle Spiele"
-    @left_label.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
-
-    @nav_bar.addSubview @left_label
-
-    @goto_kids_button = add_button_element_with_image(UIImage.imageNamed("Spielplatz_64.png"),
-                                  displayName: "Spielplatz",
-                                  fontSize: 13,
-                                  position: CGPointMake(0.55 * @nav_bar.frame.size.width, 0.2 *  @nav_bar.frame.size.height),
-                                  size: CGSizeMake(0.075 * @nav_bar.frame.size.width,
-                                                   0.075 * @nav_bar.frame.size.width),
-                                  action: "goto_kids_menu")
-
-    @goto_shop_button = add_button_element_with_image(UIImage.imageNamed("Shop_64.png"),
-                                  displayName: "Shop",
-                                  fontSize: 13,
-                                  position: CGPointMake(0.65 * @nav_bar.frame.size.width, 0.2 *  @nav_bar.frame.size.height),
-                                  size: CGSizeMake(0.075 * @nav_bar.frame.size.width,
-                                                   0.075 * @nav_bar.frame.size.width),
-                                  action: "goto_shop")
-
-    @goto_option_button = add_button_element_with_image(UIImage.imageNamed("Menu_64.png"),
-                                  displayName: "Optionen",
-                                  fontSize: 13,
-                                  position: CGPointMake(0.75 * @nav_bar.frame.size.width, 0.2 *  @nav_bar.frame.size.height),
-                                  size: CGSizeMake(0.075 * @nav_bar.frame.size.width,
-                                                   0.075 * @nav_bar.frame.size.width),
-                                  action: "open_options:")
-
-    @options_button_background = UIImageView.alloc.initWithFrame(CGRectMake(0.75 * @nav_bar.frame.size.width,
-                                                                            0.2  * @nav_bar.frame.size.height,
-                                                                            0.075 * @nav_bar.frame.size.width,
-                                                                            0.8 * @nav_bar.frame.size.height+1))
-    @options_button_background.image = UIImage.imageNamed("option_button_background.png")
-    @options_button_background.hidden = true
-
-
-    @search_bar = add_seach_bar_at_position(CGPointMake(0.83 * @nav_bar.frame.size.width, 0.07 *  @nav_bar.frame.size.height),
-                              size: CGSizeMake(0.155 * @nav_bar.frame.size.width, 0.75 * @nav_bar.frame.size.height),
-                              placeholder: "Suchen")
-
-    @nav_bar.addSubview @goto_kids_button
-    @nav_bar.addSubview @goto_shop_button
-    @nav_bar.addSubview @options_button_background
-    @nav_bar.addSubview @goto_option_button
-    @nav_bar.addSubview @search_bar
-
+    frame = CGRectMake(0,0, @parentmenu.frame.size.width, NavbarHeight * @parentmenu.frame.size.height)
+    navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Spiele", delegate: self)
+    @parentmenu.addSubview(navbar)
   end
 
   ##
@@ -145,67 +84,34 @@ class ParentScreen < PM::Screen
                        device.screen_width,
                        BottomViewHeight * device.screen_height)
     @tips_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuTipsCell,
-                                                               numOfVisibleElements: 1, delegate: self)
+                                                              numOfVisibleElements: 1, delegate: self,
+                                                              headerText: "Tipps und Tricks")
     @tips_view.reload_data(@tips_list)
-    @tips_view.header_text = "Tipps und Tricks"
     @parentmenu.addSubview(@tips_view)
   end
 
+  ##
+  # adds level collection scroll view
   def add_level_scroll_view
-
     frame = CGRectMake(0,
                        (TopViewHeight + NavbarHeight) * device.screen_height,
                        device.screen_width,
                        BottomViewHeight * device.screen_height)
     @level_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuLevelCell,
-                                                               numOfVisibleElements: 4, delegate: self)
+                                                               numOfVisibleElements: 4, delegate: self,
+                                                               headerText: "Erstellte Stories")
     @level_view.reload_data( @stories[0])
     @level_view.hidden = true
-    @level_view.header_text = "Erstellte Stories"
     @parentmenu.addSubview(@level_view)
   end
 
   ##
   # adds the tab bar at the bottom of the screen
   def add_tab_bar
-    @tab_bar = UIView.alloc.initWithFrame(CGRectMake(0, (TopViewHeight + NavbarHeight  + BottomViewHeight) * device.screen_height,
-                                                     device.screen_width, TabbarHeight * device.screen_height))
-    @tab_bar.backgroundColor = rmq.color.babbo_bar_grey
-
-    button_size = 0.8 * @tab_bar.frame.size.height
-
-    line = horizontal_line_make(CGPointMake(0,
-                                            (TopViewHeight + NavbarHeight + BottomViewHeight) * device.screen_height ),
-                                width: device.screen_width)
-
-
-    @goto_stories_button = add_button_element_with_image(UIImage.imageNamed("Buch_64.png"),
-                                                        displayName: "Stories",
-                                                        fontSize: 15,
-                                                        position: CGPointMake(0.33 * @tab_bar.frame.size.width, 0.1 * @tab_bar.frame.size.height),
-                                                        size: CGSizeMake(button_size, button_size),
-                                                        action: "goto_stories")
-
-    @goto_videos_button = add_button_element_with_image(UIImage.imageNamed("Videos_64.png"),
-                                                       displayName: "Videos",
-                                                       fontSize: 15,
-                                                       position: CGPointMake(0.465 * @tab_bar.frame.size.width, 0.1 * @tab_bar.frame.size.height),
-                                                       size: CGSizeMake(button_size, button_size),
-                                                       action: "goto_videos")
-
-    @goto_games_button = add_button_element_with_image(UIImage.imageNamed("Spiele_64.png"),
-                                                       displayName: "Spiele",
-                                                       fontSize: 15,
-                                                       position: CGPointMake(0.6 * @tab_bar.frame.size.width, 0.1 * @tab_bar.frame.size.height),
-                                                       size: CGSizeMake(button_size, button_size),
-                                                       action: "goto_games:")
-
-    @tab_bar.addSubview(@goto_stories_button)
-    @tab_bar.addSubview(@goto_videos_button)
-    @tab_bar.addSubview(@goto_games_button)
-
+    frame = CGRectMake(0, (NavbarHeight + TopViewHeight + BottomViewHeight) *  @parentmenu.frame.size.height,
+                       @parentmenu.frame.size.width, TabbarHeight * @parentmenu.frame.size.height)
+    @tab_bar = TabbarView.alloc.init_with_frame(frame, delegate: self)
     @parentmenu.addSubview(@tab_bar)
-    @parentmenu.addSubview(line)
   end
 
   ##

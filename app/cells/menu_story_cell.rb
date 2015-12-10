@@ -84,8 +84,7 @@ class MenuStoryCell < UICollectionViewCell
   # than call the delegate method with the params self (this collection view cell) and the button element
   # @param source [UIButton] the pressed cell's button
   def right_button_pressed (source)
-    @delegate.menuStoryCell(self, rightButtonPressed: source) unless @delegate == self
-    #@delegate.menuStoryCell(self, rightButtonPressed: source) if @delegate.respond_to? 'menuStoryCell:rightButtonPressed:' #optinal
+    @delegate.menuStoryCell(self, rightButtonPressed: source) if @delegate.respond_to? 'menuStoryCell:rightButtonPressed:'
   end
 
   ##
@@ -93,8 +92,6 @@ class MenuStoryCell < UICollectionViewCell
   # than call the delegate method with the params self (this collection view cell) and the button element
   # @param source [UIButton] the pressed cell's button
   def left_button_pressed (source)
-    if(@delegate != self)
-     @delegate.send('menuStoryCell:leftButtonPressed:', self, source)
-    end
+    @delegate.menuStoryCell(self, leftButtonPressed: source) if @delegate.respond_to? 'menuStoryCell:leftButtonPressed:'
   end
 end

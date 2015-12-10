@@ -1,7 +1,6 @@
 class AdvancedCollectionView < UIView
 
-  attr_reader :visible_elements, :cell_type, :elements, :delegate
-  attr_accessor :header_text
+  attr_reader :visible_elements, :cell_type, :elements, :delegate, :header_text
 
   ###
   # Constants to design the layout.
@@ -24,17 +23,18 @@ class AdvancedCollectionView < UIView
   ##
   # Init the advanced collection view
   # @param frame [CGRect] The whole view's frame
-  # @param cellType [Class] The class for the collection view cells
+  # @param cellType [Class] The class for the collection view cells (Subclass of UICollectionViewCell)
   # @param visibleElements [Integer] The number of visible cells in the collection view
-  # @param delegate [class] the delegate class
-  def init_with_frame(frame, cellType: cellType, numOfVisibleElements: visibleElements, delegate: delegate)
+  # @param delegate [class] The delegate class
+  # @param headerText [String] The text for the header
+  def init_with_frame(frame, cellType: cellType, numOfVisibleElements: visibleElements, delegate: delegate, headerText: headerText)
     self.initWithFrame(frame)
 
     @cell_type        = cellType
     @visible_elements = visibleElements
     @delegate         = delegate
+    @header_text      = headerText
 
-    @header_text = "Dummy"
     build_view
 
     self

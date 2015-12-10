@@ -43,7 +43,7 @@ class MenuOverlay < UIView
                                                         0.6 * self.frame.size.width, 0.75 * self.frame.size.height))
     overlay_view.backgroundColor = UIColor.whiteColor
 
-    button_size = CGSizeMake((1.0 / 5.0) * overlay_view.frame.size.width, (1.0 / 20.0) * overlay_view.frame.size.height)
+    button_size = CGSizeMake((1.0 / 5.0) * overlay_view.frame.size.width, (1.75 / 30.0) * overlay_view.frame.size.height)
 
     ####
     # Build the bottom view (all over the horizontal line)

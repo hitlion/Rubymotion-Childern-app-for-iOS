@@ -59,9 +59,7 @@ class MenuLevelCell < UICollectionViewCell
   # than call the delegate method with the params self (this collection view cell) and the button element
   # @param source [UIButton] the pressed cell's button the whole cell is the button
   def cell_pressed (source)
-    if(@delegate != self)
-      @delegate.send('menuLevelCell:buttonPressed:', self, source)
-    end
+    @delegate.menuLevelCell(self, buttonPressed: source) if @delegate.respond_to? 'menuLevelCell:buttonPressed:'
   end
 
 end
