@@ -131,6 +131,15 @@ class TabletParentScreen < PM::Screen
     end
   end
 
+  def tabbarView(view, buttonPressed: source)
+    id = source.tag
+    if (id == 1)
+      StartScreen.next_screen= :story_list
+      StartScreen.last_screen = :parent_menu
+      rmq.screen.open_root_screen(StartScreen)
+    end
+  end
+
   ##
   # instance method for TabletMenuView
   # @param view [TabletMenuView] The tabletMenuView object

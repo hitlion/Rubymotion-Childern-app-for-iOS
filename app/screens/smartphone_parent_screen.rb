@@ -18,7 +18,7 @@ class SmartphoneParentScreen < PM::Screen
     add_nav_bar
     add_menu_view
     add_shop_view
-    #add_tab_bar
+    add_tab_bar
     add_options
     add_menu_overlay
     add_shop_premium_overlay
@@ -128,6 +128,15 @@ class SmartphoneParentScreen < PM::Screen
       @menu_view.hidden = false
       @navbar.hide_back_button
       @navbar.set_title_text("Alle Stories")
+    end
+  end
+
+  def tabbarView(view, buttonPressed: source)
+    id = source.tag
+    if (id == 1)
+      StartScreen.next_screen= :story_list
+      StartScreen.last_screen = :parent_menu
+      rmq.screen.open_root_screen(StartScreen)
     end
   end
 

@@ -327,12 +327,7 @@ class KidsScene < SKScene
     texture = SKTexture.textureWithImageNamed("Seil.png")
 
     width = device.screen_width
-    lp "w:"
-    lp width
-
     y = (rope_width / width).round
-
-    lp y
 
     y.times do |i|
       rope_part = SKSpriteNode.spriteNodeWithTexture(texture)

@@ -39,8 +39,6 @@ class AgeVerificationScreen < PM::Screen
     end
 
     back_view.append(UILabel, :left_label)
-
-
   end
 
   def will_appear
@@ -93,8 +91,6 @@ class AgeVerificationScreen < PM::Screen
     @num3 = row   if component == 3
 
     @num = @num0 * 1000 + @num1 * 100 + @num2 * 10 + @num3
-
-    lp @num
   end
 
 end
