@@ -36,6 +36,12 @@ class StoryPlayerScreen < PM::Screen
     @player.presentScene(nil)
     @player.presentScene(scene)
 
+    NSNotificationCenter.defaultCenter.removeObserver(self)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                  selector: 'on_screen_event:',
+                                                  name: 'screen_exit_event',
+                                                  object: nil)
+
     JavaScript::Runtime.prepare_for(@story_bundle, scene)
   end
 
@@ -45,7 +51,16 @@ class StoryPlayerScreen < PM::Screen
   end
 
   def will_disappear
+    NSNotificationCenter.defaultCenter.removeObserver(self)
+
     unless @player.scene.nil?
+      @player.scene.enumerateChildNodesWithName('//*', usingBlock: -> (node, stop){
+        if node.is_a?(Scene::VideoNode) || 
+           node.is_a?(Scene::GIFVideoNode) ||
+           node.is_a?(Scene::AudioNode)
+           node.stop
+        end
+      }.weak!)
       @player.scene.removeAllChildren
       @player.scene.removeAllActions
       @player.scene.removeFromParent
@@ -58,10 +73,28 @@ class StoryPlayerScreen < PM::Screen
     JavaScript::Runtime.tear_down
   end
 
+  def on_screen_event( notification )
+    info = Hash.symbolicate(notification.userInfo || {})
+    Dispatch::Queue.main.async do
+      if info.has_key? :exit_to
+        show_scene(info[:exit_to])
+      else
+        close
+      end
+    end
+  end
+
   def show_scene( target )
     transition_image = create_transition_image
 
     unless @player.scene.nil?
+      @player.scene.enumerateChildNodesWithName('//*', usingBlock: -> (node, stop){
+        if node.is_a?(Scene::VideoNode) || 
+           node.is_a?(Scene::GIFVideoNode) ||
+           node.is_a?(Scene::AudioNode)
+           node.stop
+        end
+      }.weak!)
       @player.scene.removeAllChildren
       @player.scene.removeAllActions
       @player.scene.removeFromParent

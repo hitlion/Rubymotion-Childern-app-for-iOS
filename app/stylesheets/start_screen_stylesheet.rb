@@ -13,5 +13,9 @@ class StartScreenStyleSheet < ApplicationStylesheet
     st.image = image.resource('Logo')
   end
 
+  def load_progress(st)
+    st.frame = {l:100, fr:100, fb:25}
+    st.progress_view_style = UIProgressViewStyleDefault
+  end
 end
 

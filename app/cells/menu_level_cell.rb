@@ -5,10 +5,12 @@ class MenuLevelCell < UICollectionViewCell
   def initWithFrame(frame)
     super(frame)
     @delegate = self
-    @babbo_orange = UIColor.colorWithRed(249.0/255.0, green: 188.0/255.0, blue: 52.0/255.0, alpha:1.0)
     self
   end
 
+  ##
+  # Build the cell with the data from the given element
+  # @param element [Story] The Story for filling the data of this cell
   def make_cell(element)
 
     @element = element
@@ -20,8 +22,8 @@ class MenuLevelCell < UICollectionViewCell
     view.backgroundColor = UIColor.clearColor
     view.tag = element.object_id
 
-    imageSize = CGSizeMake(view.frame.size.width, (view.frame.size.width / 4.0) * 3 )
-    image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, imageSize.width, imageSize.height))
+    image_size = CGSizeMake(view.frame.size.width, (view.frame.size.width / 4.0) * 3 )
+    image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, image_size.width, image_size.height))
     image.image = UIImage.imageWithData(element.asset_data(element.document.thumbnail))
 
     name = UILabel.alloc.initWithFrame(CGRectMake(0, image.frame.size.height,
@@ -30,7 +32,7 @@ class MenuLevelCell < UICollectionViewCell
     name.text = element.document.set_name
     name.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
     name.textAlignment = UITextAlignmentLeft
-    name.textColor = @babbo_orange
+    name.textColor = rmq.color.babbo_orange
 
     date = UILabel.alloc.initWithFrame(CGRectMake(0, image.frame.size.height + name.frame.size.height,
                                                    view.frame.size.width, view.frame.size.height / 8.0))
@@ -52,6 +54,10 @@ class MenuLevelCell < UICollectionViewCell
     self.addSubview(view)
   end
 
+  ##
+  # Called if the user pressed on one cell
+  # than call the delegate method with the params self (this collection view cell) and the button element
+  # @param source [UIButton] the pressed cell's button the whole cell is the button
   def cell_pressed (source)
     if(@delegate != self)
       @delegate.send('menuLevelCell:buttonPressed:', self, source)

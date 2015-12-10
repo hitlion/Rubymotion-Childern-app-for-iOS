@@ -1,14 +1,16 @@
 class MenuTipsCell < UICollectionViewCell
 
-  attr_accessor :element
+  attr_accessor :element, :delegate
 
   def initWithFrame(frame)
     super(frame)
     @delegate = self
-    @babbo_orange = UIColor.colorWithRed(249.0/255.0, green: 188.0/255.0, blue: 52.0/255.0, alpha:1.0)
     self
   end
 
+  ##
+  # Build the cell with the data from the given element
+  # @param element [TipsItem] The Story for filling the data of this cell
   def make_cell(element)
 
     @element = element
@@ -23,19 +25,19 @@ class MenuTipsCell < UICollectionViewCell
     label.text = element.header
     label.font = UIFont.fontWithName("Enriqueta-Bold", size:25)
     label.textAlignment = UITextAlignmentLeft
-    label.textColor = @babbo_orange
+    label.textColor = rmq.color.babbo_orange
 
-    textView = UITextView.alloc.initWithFrame(CGRectMake(0.0 * view.frame.size.width, 0.2 * view.frame.size.height,
+    text_view = UITextView.alloc.initWithFrame(CGRectMake(0.0 * view.frame.size.width, 0.2 * view.frame.size.height,
                                                          0.55 * view.frame.size.width, 0.75 * view.frame.size.height ))
-    textView.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
-    textView.textAlignment = UITextAlignmentLeft
+    text_view.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
+    text_view.textAlignment = UITextAlignmentLeft
 
-    textView.text = element.text
+    text_view.text = element.text
 
     image = UIImageView.alloc.initWithFrame(CGRectMake(0.6 * view.frame.size.width,0,0.35 * view.frame.size.width, view.frame.size.height))
     image.image = element.image
 
-    view.addSubview(textView)
+    view.addSubview(text_view)
     view.addSubview(image)
     view.addSubview(label)
 

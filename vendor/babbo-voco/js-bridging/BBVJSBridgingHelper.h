@@ -8,6 +8,16 @@
 -( NSArray* )shuffle:( NSArray* )base;
 @end
 
+@protocol BBVJSBridgedCache <JSExport>
+// read-only attribute access
+@property(readonly) NSArray* props;
+
+-( id )get:( NSString* )name;
+JSExportAs(set,
+    -( void )set:( NSString* )name value:( id )val
+);
+@end
+
 @protocol BBVJSBridgedObject <JSExport>
 // read-only attribute access
 @property(readonly) NSString* name;

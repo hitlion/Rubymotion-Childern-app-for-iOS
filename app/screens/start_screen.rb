@@ -4,16 +4,20 @@ class StartScreen < PM::Screen
     attr_accessor :next_screen
     attr_accessor :next_story
     attr_accessor :last_screen
+    attr_accessor :warmup_done
   end
 
   title "Start Screen"
   stylesheet StartScreenStyleSheet
 
   def on_load
+    StartScreen.warmup_done ||= false
+
     set_nav_bar_button :right, title: "Kids", action: :go_to_kids
     set_nav_bar_button :left, title: "Parent", action: :go_to_parent
 
     append(UIImageView, :logo)
+    append(UIProgressView, :load_progress).hide
   end
 
   def goto_kids
@@ -40,8 +44,35 @@ class StartScreen < PM::Screen
   def goto_shop
     open StoryListScreen.new(nav_bar:true)
   end
-  def on_appear(args={})
 
+  def on_appear(args={})
+    # perform asynchronous loading exactly *once*
+    Dispatch.once do
+      progress_callback = -> (total, progress) do
+        if total > progress
+          Dispatch::Queue.main.sync do
+            rmq(:load_progress).show
+            rmq(:load_progress).get.setProgress(progress.to_f / total.to_f, animated: true)
+          end
+        end
+        if total == progress
+          Dispatch::Queue.main.async do
+            StartScreen.warmup_done = true
+            rmq(:load_progress).hide
+            dispatch
+          end
+        end
+      end
+
+      # background loading with progress status
+      StoryBundle.bundles(async: true, callback: progress_callback)
+    end
+
+    # dispatch only after StoryBundle was loaded at least once
+    dispatch if StartScreen.warmup_done
+  end
+
+  def dispatch
     if(StartScreen.next_screen.nil?)
       goto_parent
     end
@@ -65,7 +96,5 @@ class StartScreen < PM::Screen
     if StartScreen.next_screen == :shop_menu
       goto_shop
     end
-
   end
-
 end

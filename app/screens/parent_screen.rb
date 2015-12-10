@@ -8,24 +8,17 @@ class ParentScreen < PM::Screen
   LEFT_BUTTON_X_POS     = 0.5   # * navbar width
   MIDDLE_BUTTON_X_POS   = 0.6   # * navbar width
   RIGHT_BUTTON_X_POS    = 0.7   # * navbar width
-  NAV_BAR_HEIGHT        = 0.125 # * screen_height
-  STORY_VIEW_HEIGHT     = 0.39  # * screen_height
-  SUB_HEADER_HEIGHT     = 0.08  # * screen_height
-  SUB_LINE_HEIGHT       = 0.02  # * screen_height
-  LEVEL_VIEW_HEIGHT     = 0.275 # * screen_height
-  TAB_BAR_HEIGHT        = 0.11  # * screen_height
-
+  NavbarHeight          = 0.125 # * screen_height
+  TopViewHeight         = 0.4  # * screen_height
+  BottomViewHeight      = 0.375 # * screen_height
+  TabbarHeight          = 0.10  # * screen_height
 
   CellIdentifier = 'Cell'
 
   def will_appear
 
-    @babbo_bar_grey = UIColor.colorWithRed(247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha:1.0)
-    @babbo_line_grey = UIColor.colorWithRed(200.0/255.0, green: 200.0/255.0, blue: 200.0/255.0, alpha:1.0)
-    @babbo_orange = UIColor.colorWithRed(249.0/255.0, green: 188.0/255.0, blue: 52.0/255.0, alpha:1.0)
-
     @parentmenu = UIView.alloc.initWithFrame(CGRectMake(0 ,0, device.screen_width, device.screen_height))
-    @parentmenu.backgroundColor = UIColor.colorWithRed(255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha:1.0)
+    @parentmenu.backgroundColor = UIColor.whiteColor
 
     @choosen_story_index ||= 0
 
@@ -35,13 +28,11 @@ class ParentScreen < PM::Screen
 
     add_nav_bar
     add_story_scroll_view
-    add_sub_header
     add_level_scroll_view
     add_tips_and_tricks_view
     add_tab_bar
     add_options
     add_parent_overlay
-
   end
 
   def will_disappear
@@ -51,15 +42,15 @@ class ParentScreen < PM::Screen
   ##
   # add a own navigation bar
   def add_nav_bar
-    navbar_heigth = NAV_BAR_HEIGHT * device.screen_height
+    navbar_heigth = NavbarHeight * device.screen_height
     navbar_width = device.screen_width
 
     @nav_bar = UIView.alloc.initWithFrame(CGRectMake(0 ,0, navbar_width, navbar_heigth))
-    @nav_bar.backgroundColor = @babbo_bar_grey
+    @nav_bar.backgroundColor = rmq.color.babbo_bar_grey
 
     @parentmenu.addSubview @nav_bar
 
-    line = horizontal_line_make(CGPointMake(0, -1 + (NAV_BAR_HEIGHT) * device.screen_height),
+    line = horizontal_line_make(CGPointMake(0, -1 + (NavbarHeight) * device.screen_height),
                                 width: device.screen_width)
 
     @parentmenu.addSubview line
@@ -124,8 +115,8 @@ class ParentScreen < PM::Screen
     @story_layout = UICollectionViewFlowLayout.alloc.init
     @story_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
 
-    @story_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0, NAV_BAR_HEIGHT * device.screen_height,
-                                                                             device.screen_width, STORY_VIEW_HEIGHT * device.screen_height),
+    @story_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0, NavbarHeight * device.screen_height,
+                                                                             device.screen_width, TopViewHeight * device.screen_height),
                                                                   collectionViewLayout: @story_layout)
     @story_collection_view.dataSource = self
     @story_collection_view.delegate = self
@@ -146,146 +137,45 @@ class ParentScreen < PM::Screen
   end
 
   ##
-  # add the sub header over the level scroll view
-  def add_sub_header
-    @sub_header = UILabel.alloc.initWithFrame(CGRectMake(0.075 * device.screen_width ,
-                                                         (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT) * device.screen_height,
-                                                         0.85 * device.screen_width,
-                                                         SUB_HEADER_HEIGHT * device.screen_height))
-    @sub_header.text = "Tipps und Tricks"
-    @sub_header.font = UIFont.fontWithName("Enriqueta-Regular", size:25)
-    @parentmenu.addSubview(@sub_header)
-
-    line = horizontal_line_make(CGPointMake(0.075 * device.screen_width,
-                                            (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT) * device.screen_height + 1 ),
-                                width: 0.85 * device.screen_width)
-    @parentmenu.addSubview(line)
-  end
-
-  ##
   # adds tips and tricks collection view
   def add_tips_and_tricks_view
-    @tips_layout = UICollectionViewFlowLayout.alloc.init
-    @tips_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
-
-    @tips_view = UIView.alloc.initWithFrame(CGRectMake(0,
-                                                        (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT) * device.screen_height,
-                                                        device.screen_width,
-                                                        LEVEL_VIEW_HEIGHT * device.screen_height))
-    @tips_view.backgroundColor = UIColor.clearColor
-
-
-    @tips_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0.1 * @tips_view.frame.size.width , 0,
-                                                                             0.8 * @tips_view.frame.size.width,
-                                                                             @tips_view.frame.size.height),
-                                                                  collectionViewLayout: @tips_layout)
-    @tips_collection_view.dataSource = self
-    @tips_collection_view.delegate = self
-    @tips_collection_view.pagingEnabled = true
-
-    height = 0.95 * @tips_collection_view.frame.size.height
-    width  = @tips_collection_view.frame.size.width
-    size = CGSizeMake(width, height)
-
-    @tips_layout.itemSize = size
-
     make_tips_list
-
-    @tips_collection_view.contentInset = UIEdgeInsetsMake(0,0,0,0)
-    @tips_collection_view.backgroundColor = UIColor.clearColor
-    @tips_collection_view.registerClass(MenuTipsCell, forCellWithReuseIdentifier:CellIdentifier)
-
-    @tips_view.addSubview(@tips_collection_view)
-
-    @button_left = UIButton.alloc.initWithFrame(CGRectMake(0, 0,
-                                                           0.075 * @tips_view.frame.size.width,
-                                                           @tips_view.frame.size.height))
-    @button_left.setImage(UIImage.imageNamed("previous"), forState:UIControlStateNormal)
-
-    @button_left.addTarget(self, action: "scroll_tips_list:", forControlEvents: UIControlEventTouchUpInside)
-    @button_left.tag = -1
-
-    @button_right = UIButton.alloc.initWithFrame(CGRectMake(0.925 * @tips_view.frame.size.width , 0,
-                                                            0.075 * @tips_view.frame.size.width,
-                                                            @tips_view.frame.size.height))
-    @button_right.setImage(UIImage.imageNamed("next"), forState:UIControlStateNormal)
-
-    @button_right.addTarget(self, action: "scroll_tips_list:", forControlEvents: UIControlEventTouchUpInside)
-    @button_right.tag = +1
-
-    @tips_view.addSubview(@button_left)
-    @tips_view.addSubview(@button_right)
+    frame = CGRectMake(0.0 * device.screen_width,
+                       (TopViewHeight + NavbarHeight) * device.screen_height,
+                       device.screen_width,
+                       BottomViewHeight * device.screen_height)
+    @tips_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuTipsCell,
+                                                               numOfVisibleElements: 1, delegate: self)
+    @tips_view.reload_data(@tips_list)
+    @tips_view.header_text = "Tipps und Tricks"
     @parentmenu.addSubview(@tips_view)
   end
 
-  ##
-  # adds the level scroll view
   def add_level_scroll_view
 
-    @level_layout = UICollectionViewFlowLayout.alloc.init
-    @level_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
-
-    @level_view = UIView.alloc.initWithFrame(CGRectMake(0,
-                                                        (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT) * device.screen_height,
-                                                        device.screen_width,
-                                                        LEVEL_VIEW_HEIGHT * device.screen_height))
-    @level_view.backgroundColor = UIColor.clearColor
-
-
-    @level_collection_view = UICollectionView.alloc.initWithFrame(CGRectMake(0.075 * @level_view.frame.size.width , 0,
-                                                                  0.85 * @level_view.frame.size.width,
-                                                                  @level_view.frame.size.height),
-                                                       collectionViewLayout: @level_layout)
-    @level_collection_view.dataSource = self
-    @level_collection_view.delegate = self
-    @level_collection_view.pagingEnabled = true
-
-    gap = 20
-    @level_layout.minimumLineSpacing = gap
-    width  = (@level_collection_view.frame.size.width - 3 * gap) / 4.0
-    height = width
-    size = CGSizeMake(width, height)
-
-    @level_layout.itemSize = size
-
-    @level_collection_view.contentInset = UIEdgeInsetsMake(0,0,0,0)
-    @level_collection_view.backgroundColor = UIColor.clearColor
-    @level_collection_view.registerClass(MenuLevelCell, forCellWithReuseIdentifier:CellIdentifier)
-
-    @level_view.addSubview(@level_collection_view)
-
-    @button_left = UIButton.alloc.initWithFrame(CGRectMake(0, 0,
-                                                           0.075 * @level_view.frame.size.width,
-                                                           @level_view.frame.size.height))
-    @button_left.setImage(UIImage.imageNamed("previous"), forState:UIControlStateNormal)
-
-    @button_left.addTarget(self, action: "scroll_level_list_right", forControlEvents: UIControlEventTouchUpInside)
-
-    @button_right = UIButton.alloc.initWithFrame(CGRectMake(0.925 * @level_view.frame.size.width , 0,
-                                                           0.075 * @level_view.frame.size.width,
-                                                           @level_view.frame.size.height))
-    @button_right.setImage(UIImage.imageNamed("next"), forState:UIControlStateNormal)
-
-    @button_right.addTarget(self, action: "scroll_level_list_left", forControlEvents: UIControlEventTouchUpInside)
-
-    @level_view.addSubview(@button_left)
-    @level_view.addSubview(@button_right)
-    @parentmenu.addSubview(@level_view)
-
+    frame = CGRectMake(0,
+                       (TopViewHeight + NavbarHeight) * device.screen_height,
+                       device.screen_width,
+                       BottomViewHeight * device.screen_height)
+    @level_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuLevelCell,
+                                                               numOfVisibleElements: 4, delegate: self)
+    @level_view.reload_data( @stories[0])
     @level_view.hidden = true
+    @level_view.header_text = "Erstellte Stories"
+    @parentmenu.addSubview(@level_view)
   end
 
   ##
   # adds the tab bar at the bottom of the screen
   def add_tab_bar
-    @tab_bar = UIView.alloc.initWithFrame(CGRectMake(0, (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT + LEVEL_VIEW_HEIGHT) * device.screen_height,
-                                                      device.screen_width, TAB_BAR_HEIGHT * device.screen_height))
-    @tab_bar.backgroundColor = @babbo_bar_grey
+    @tab_bar = UIView.alloc.initWithFrame(CGRectMake(0, (TopViewHeight + NavbarHeight  + BottomViewHeight) * device.screen_height,
+                                                     device.screen_width, TabbarHeight * device.screen_height))
+    @tab_bar.backgroundColor = rmq.color.babbo_bar_grey
 
     button_size = 0.8 * @tab_bar.frame.size.height
 
     line = horizontal_line_make(CGPointMake(0,
-                                            (STORY_VIEW_HEIGHT + NAV_BAR_HEIGHT + SUB_HEADER_HEIGHT + SUB_LINE_HEIGHT + LEVEL_VIEW_HEIGHT) * device.screen_height ),
+                                            (TopViewHeight + NavbarHeight + BottomViewHeight) * device.screen_height ),
                                 width: device.screen_width)
 
 
@@ -322,8 +212,8 @@ class ParentScreen < PM::Screen
   # add options view
   def add_options
 
-    @options_view = UIView.alloc.initWithFrame(CGRectMake(0, -1 + NAV_BAR_HEIGHT * device.screen_height ,
-                                                          device.screen_width, device.screen_height - (NAV_BAR_HEIGHT * device.screen_height)))
+    @options_view = UIView.alloc.initWithFrame(CGRectMake(0, -1 + NavbarHeight * device.screen_height ,
+                                                          device.screen_width, device.screen_height - (NavbarHeight * device.screen_height)))
     @options_view.backgroundColor = UIColor.clearColor
 
     options_table = UIImageView.alloc.initWithFrame(CGRectMake(0.75 * @options_view.frame.size.width, 0,
@@ -343,55 +233,57 @@ class ParentScreen < PM::Screen
                                                          (1.0/32.0) * options_table.frame.size.height))
     parent_name.text = "Username"
     parent_name.font = UIFont.fontWithName("Enriqueta-Regular", size:20)
-    parent_name.textColor = @babbo_orange
+    parent_name.textColor = rmq.color.babbo_orange
     parent_name.textAlignment = UITextAlignmentCenter
 
     table = UIView.alloc.initWithFrame(CGRectMake(0,
                                                   (12.0/32.0) * options_table.frame.size.height,
                                                   options_table.frame.size.width,
                                                   (10.0/32.0) * options_table.frame.size.height))
-    table.backgroundColor = UIColor.yellowColor
+    table.backgroundColor = UIColor.clearColor
 
-    tableButton_1 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.0 * table.frame.size.height,
-                                                            table.frame.size.width,
-                                                            0.2 * table.frame.size.height))
-    tableButton_1.backgroundColor = UIColor.greenColor
+    tableButton_1 = create_option_buttons(UIImage.imageNamed("icon_close_black.png"),
+                                          displayName: "Gutscheine",
+                                          frame:CGRectMake(0, 0,
+                                                           table.frame.size.width, 0.25 * table.frame.size.height),
+                                          action: "action")
+    tableButton_2 = create_option_buttons(UIImage.imageNamed("icon_close_black.png"),
+                                          displayName: "Unterstützer",
+                                          frame:CGRectMake(0, 0.25 * table.frame.size.height,
+                                                           table.frame.size.width, 0.25 * table.frame.size.height),
+                                          action: "action")
+    tableButton_3 = create_option_buttons(UIImage.imageNamed("icon_close_black.png"),
+                                          displayName: "Impressum",
+                                          frame:CGRectMake(0, 0.5 * table.frame.size.height,
+                                                           table.frame.size.width, 0.25 * table.frame.size.height),
+                                          action: "action")
+    tableButton_4 = create_option_buttons(UIImage.imageNamed("icon_close_black.png"),
+                                          displayName: "weiterer Eintrag",
+                                          frame:CGRectMake(0, 0.75 * table.frame.size.height,
+                                                           table.frame.size.width, 0.25 * table.frame.size.height),
+                                          action: "action")
 
-
-    tableButton_2 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.2 * table.frame.size.height,
-                                                            table.frame.size.width,
-                                                            0.2 * table.frame.size.height))
-    tableButton_2.backgroundColor = UIColor.blueColor
-
-    tableButton_3 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.4 * table.frame.size.height,
-                                                            table.frame.size.width,
-                                                            0.2 * table.frame.size.height))
-    tableButton_3.backgroundColor = UIColor.greenColor
-
-    tableButton_4 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.6 * table.frame.size.height,
-                                                            table.frame.size.width,
-                                                            0.2 * table.frame.size.height))
-    tableButton_4.backgroundColor = UIColor.blueColor
-
-    tableButton_5 = UIButton.alloc.initWithFrame(CGRectMake(0, 0.8 * table.frame.size.height,
-                                                            table.frame.size.width,
-                                                            0.2 * table.frame.size.height))
-    tableButton_5.backgroundColor = UIColor.greenColor
+    lineBottom = UIView.alloc.initWithFrame(CGRectMake(0 * tableButton_4.frame.size.width,
+                                                       tableButton_4.frame.size.height - 1,
+                                                       tableButton_4.frame.size.width, 1))
+    lineBottom.backgroundColor = rmq.color.babbo_line_grey
+    tableButton_4.addSubview(lineBottom)
 
     table.addSubview(tableButton_1)
     table.addSubview(tableButton_2)
     table.addSubview(tableButton_3)
     table.addSubview(tableButton_4)
-    table.addSubview(tableButton_5)
+
+
 
     logo = UIImageView.alloc.initWithFrame(CGRectMake(0.1 * options_table.frame.size.width,
                                                       (22.0/32.0) * options_table.frame.size.height,
                                                       0.8 * options_table.frame.size.width,
-                                                      (7.0/32.0) * options_table.frame.size.height))
+                                                      (9.0/32.0) * options_table.frame.size.height))
     logo.image = UIImage.imageNamed("Logo_Orange.png")
 
     version_number = UILabel.alloc.initWithFrame(CGRectMake(0,
-                                                            (30.0/32.0) * options_table.frame.size.height,
+                                                            (31.0/32.0) * options_table.frame.size.height,
                                                             options_table.frame.size.width,
                                                             (1.0/32.0) * options_table.frame.size.height))
     version_number.text = app.version
@@ -409,9 +301,43 @@ class ParentScreen < PM::Screen
     @parentmenu.addSubview(@options_view)
   end
 
+  def create_option_buttons(image, displayName: name, frame:frame, action: action)
+
+    button =  UIButton.alloc.initWithFrame(frame)
+
+    view = UIView.alloc.initWithFrame(button.bounds)
+
+    imageView = UIImageView.alloc.initWithFrame(CGRectMake(0.1 * view.frame.size.width,
+                                                       0.25 * view.frame.size.height,
+                                                       0.1  * view.frame.size.width,
+                                                       0.5 * view.frame.size.height))
+    imageView.image = image
+
+    labelView = UILabel.alloc.initWithFrame(CGRectMake(0.3 * view.frame.size.width,
+                                                       0.05 * view.frame.size.height,
+                                                       0.7  * view.frame.size.width,
+                                                       0.9 * view.frame.size.height))
+
+    labelView.text = name
+    labelView.font = UIFont.fontWithName("Enriqueta-Regular", size:18)
+    labelView.textAlignment = UITextAlignmentLeft
+
+    lineTop = UIView.alloc.initWithFrame(CGRectMake(0 * view.frame.size.width,
+                                                    0 * view.frame.size.height,
+                                                    view.frame.size.width, 1))
+    lineTop.backgroundColor = rmq.color.babbo_line_grey
+
+    view.addSubview(imageView)
+    view.addSubview(labelView)
+    view.addSubview(lineTop)
+
+    button.addSubview(view)
+
+    button
+  end
+
   def add_parent_overlay
-    @parent_overlay ||= MenuOverlay.alloc.initWithFrame(CGRectMake(0, 0, device.screen_width, device.screen_height))
-    @parent_overlay.overlay_type = :parent_menu
+    @parent_overlay ||= MenuOverlay.alloc.init_with_type(:parent_menu, frame: CGRectMake(0, 0, device.screen_width, device.screen_height))
     @parent_overlay.hidden = true
     @parentmenu.addSubview(@parent_overlay)
   end
@@ -462,7 +388,7 @@ class ParentScreen < PM::Screen
     search_bar.backgroundImage = UIImage.alloc.init
 
     textField = UITextField.appearanceWhenContainedIn(UISearchBar,nil)
-    textField.backgroundColor =@babbo_line_grey
+    textField.backgroundColor = UIColor.whiteColor
 
     search_bar
   end
@@ -472,10 +398,9 @@ class ParentScreen < PM::Screen
   #
   # @param position The postition fot the line
   # @param width The width of the line
-  #
   def horizontal_line_make(position, width: width)
     line = UIView.alloc.initWithFrame(CGRectMake(position.x, position.y, width, 1))
-    line.backgroundColor = @babbo_line_grey
+    line.backgroundColor = rmq.color.babbo_line_grey
     line
   end
 
@@ -484,7 +409,6 @@ class ParentScreen < PM::Screen
   #
   # set the next_screen property of StartScreen and save the current screen in last_screen
   # then open the root_screen with open_root_screen(StartScreen)
-  #
   def goto_kids_menu
     StartScreen.next_screen= :kids_menu
     StartScreen.last_screen = :parent_menu
@@ -516,12 +440,11 @@ class ParentScreen < PM::Screen
 
   ##
   # instance methods for MenuStoryCell
-
   def menuStoryCell(cell, rightButtonPressed: source)
     id  = source.tag
     story = @story_list.find {|e| e.object_id == id}
 
-    @parent_overlay.reloadViewWithStory(story)
+    @parent_overlay.reload_view_with_story(story)
     @parent_overlay.hidden = !@parent_overlay.hidden?
   end
 
@@ -559,22 +482,14 @@ class ParentScreen < PM::Screen
   end
 
   ##
-  # instance methods for MenuLevelCell
-  def menuLevelCell(cell, buttonPressed: source)
-    id  = source.tag
-    story = @story_list.find {|e| e.object_id == id}
-
-    @parent_overlay.reloadViewWithStory(story)
-    @parent_overlay.hidden = !@parent_overlay.hidden?
-  end
-
-  ##
   # more was pressed (left button in menu story view cell)
   # rebuild the level list and open the level collection view
   # hide the tipps and tricks section
+  # @param list [StoryList] a list with stories, that have the same document_id
+  # @param path [NSIndexPath] the path for the clicked story cell
   def more(list, path: path)
-    reload_level_collection_view_cells
-    @sub_header.text = "Erstellte Level"
+    @level_view.reload_data(list)
+
     @level_view.hidden = false
     @tips_view.hidden = true
 
@@ -586,48 +501,20 @@ class ParentScreen < PM::Screen
   # open the tipss and tricks collection view
   # hide the level list section
   def less(story)
-    @sub_header.text = "Tipps und Tricks"
     @level_view.hidden = true
     @tips_view.hidden = false
   end
 
   ##
-  # Scroll the tips and tricks section
-  # @param source The source (button)
-  def scroll_tips_list(source)
-    cells = @tips_collection_view.visibleCells
-    path = @tips_collection_view.indexPathForCell(cells[0])
-    direction = source.tag
-    row = path.row + direction
-
-    if(row == @tips_collection_view.numberOfItemsInSection(0))
-      row = @tips_collection_view.numberOfItemsInSection(0) - 1
-    end
-
-    if(row == -1)
-      row = 0
-    end
-
-    destination = NSIndexPath.indexPathForRow(row, inSection:0)
-
-    @tips_collection_view.scrollToItemAtIndexPath(destination, atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
-
-  end
-
-  ##
-  #
-  def scroll_level_list_left
-    c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos1.frame.origin.x <=> pos2.frame.origin.x}
-    @level_collection_view.scrollToItemAtIndexPath(@level_collection_view.indexPathForCell(c[1]),
-                                                   atScrollPosition:UICollectionViewScrollPositionLeft, animated:true)
-  end
-
-  ##
-  #
-  def scroll_level_list_right
-    c = @level_collection_view.visibleCells.sort!{|pos1, pos2| pos2.frame.origin.x <=> pos1.frame.origin.x}
-    @level_collection_view.scrollToItemAtIndexPath(@level_collection_view.indexPathForCell(c[1]),
-                                                   atScrollPosition:UICollectionViewScrollPositionRight, animated:true)
+  # AdvancedColletionView instance methods
+  # @param view [AdvancedCollectionView]
+  # @param cell [UICollectionViewCell]
+  # @param button [UIButton]
+  def advancedCollectionView(view, cellPressed:cell, buttonObj:button)
+    id  = button.tag
+    story = @story_list.find {|e| e.object_id == id}
+    @parent_overlay.reload_view_with_story(story)
+    @parent_overlay.hidden = !@parent_overlay.hidden?
   end
 
   def build_story_list
@@ -640,7 +527,6 @@ class ParentScreen < PM::Screen
    end
 
    @stories = stories.keys.map { |k| stories[k] }
-
   end
 
   ##
@@ -649,17 +535,13 @@ class ParentScreen < PM::Screen
     @tips_list = TipsBundle.alloc.init
   end
 
-  ##
-  # init the level collection view cells
-  def reload_level_collection_view_cells
-    @level_collection_view.reloadData
-  end
-
   # UICollectionView Instance Methods
   def collectionView(view, numberOfItemsInSection:section)
-    return @stories.length if(view == @story_collection_view)
-    return @stories[@choosen_story_index].length if(view == @level_collection_view)
-    return @tips_list.length if(view == @tips_collection_view)
+    if(view == @story_collection_view)
+      return @stories.length if(!@stories.nil?)
+    end
+
+    return 0
   end
 
   def collectionView(view, cellForItemAtIndexPath:path)
@@ -669,17 +551,6 @@ class ParentScreen < PM::Screen
       list = @stories[path.row]
       cell.delegate = self
       cell.make_cell(list[0])
-    end
-
-    if(view == @level_collection_view)
-      list = @stories[@choosen_story_index]
-      element = list[path.row]
-      cell.delegate = self
-      cell.make_cell(element)
-    end
-
-    if(view == @tips_collection_view)
-      cell.make_cell(@tips_list[path.row])
     end
 
     cell

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
  $:.unshift('/Library/RubyMotion/lib')
 
+require 'rake/task_arguments'
+
 require 'motion/project/template/ios'
 require 'motion-yaml'
 
@@ -94,12 +96,12 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.136'
+  app.short_version = app.version = '1.0.138'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :landscape_right]
 
-  app.sdk_version = '9.1'
+  app.sdk_version = '9.2'
   app.deployment_target = '8.0'
   app.icons = ['AppIcon']
 
@@ -115,6 +117,32 @@ Motion::Project::App.setup do |app|
 end
 
 YARD::Rake::YardocTask.new # include YARD rake task
+
+namespace :prep do
+  desc "Create symbolic links to [bundle_path] inside the CoreSimulator environment(s)"
+  task :link_bundles, [:bundles_path] do |t, args|
+
+    app = Motion::Project::App
+    app.fail('usage: rake prep:link_bundles[/absolute/path/to/your/bundles/folder]') if args[:bundles_path].nil?
+    app.fail('usage: rake prep:link_bundles [/absolute/path/to/your/bundles/folder]') unless args[:bundles_path].start_with? '/'
+    app.fail("'#{args[:bundles_path]}' is not a valid directory!") unless File.directory? args[:bundles_path]
+
+    Dir.glob("#{ENV['HOME']}/Library/Developer/CoreSimulator/**/Documents/Bundles").each do |link_path|
+      log_path = link_path.gsub(ENV['HOME'], '~')
+
+      if File.symlink? link_path
+        app.info('Symlink', "removing old link '#{log_path}'")
+        File.unlink(link_path)
+      else
+        new_path = "#{link_path}.%03d" % Dir.glob("#{link_path}*").length
+        app.info('Symlink', "'#{log_path}' is not a symbolic link, renaming it to '#{File.basename(new_path)}'")
+        File.rename(link_path, new_path)
+      end
+      app.info('Symlink', "Add link to #{log_path}")
+      File.symlink(args[:bundles_path], link_path)
+    end
+  end
+end
 
 namespace :beta do
 

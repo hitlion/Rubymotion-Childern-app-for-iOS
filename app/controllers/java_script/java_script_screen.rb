@@ -24,11 +24,11 @@ module JavaScript
     #
     # @param [String] target The scene path to the target screen.
     def exit_to( target )
-      Dispatch::Queue.main.async do
-        # FIXME: I think this works by accident..
-        story_player_screen = StoryPlayerScreen.get(nil)
-        story_player_screen.show_scene(target) unless story_player_screen.nil?
-      end
+      NSNotificationCenter.defaultCenter.postNotificationName('screen_exit_event',
+                                                              object: nil,
+                                                              userInfo: {
+                                                                :exit_to => target
+                                                              })
     end
 
     # @private
@@ -36,9 +36,9 @@ module JavaScript
     def exit_story
       JavaScript::Runtime::send_event(':body', :at_end, async: false)
 
-      # FIXME: I think this works by accident..
-      story_player_screen = StoryPlayerScreen.get(nil)
-      story_player_screen.close unless story_player_screen.nil?
+      NSNotificationCenter.defaultCenter.postNotificationName('screen_exit_event',
+                                                              object: nil,
+                                                              userInfo: {})
     end
   end
 end

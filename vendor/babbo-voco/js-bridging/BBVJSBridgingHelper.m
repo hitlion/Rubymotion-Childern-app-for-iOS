@@ -14,6 +14,7 @@
   (void)@protocol(BBVJSBridgedObjectScreen);
   (void)@protocol(BBVJSBridgedFuture);
   (void)@protocol(BBVJSBridgedGlobal);
+  (void)@protocol(BBVJSBridgedCache);
 
   Protocol *p = objc_getProtocol( [protocolName cStringUsingEncoding:NSUTF8StringEncoding] );
   if( p != NULL )
