@@ -12,8 +12,9 @@ class TabbarView < UIView
 
   ##
   # other constants
-  ElementHeight = 0.8
-  SpaceHeight   = 0.1
+  ButtonHeight     = 64
+  ButtonIconHeight = 32
+
 
 
   def init_with_frame(frame, delegate: delegate)
@@ -31,6 +32,7 @@ class TabbarView < UIView
   def build_view
     self.backgroundColor = rmq.color.babbo_bar_grey
 
+    gap = (self.frame.size.height - ButtonHeight) / 2.0
     ####
     # Define horizontal line
     frame = CGRectMake(0.0 * self.frame.size.width, 0.0 * self.frame.size.height,
@@ -41,24 +43,21 @@ class TabbarView < UIView
 
     ####
     # Define first button
-    frame = CGRectMake(PosXButton1 * self.frame.size.width, SpaceHeight *  self.frame.size.height,
-                       ElementHeight * self.frame.size.height, ElementHeight * self.frame.size.height)
+    frame = CGRectMake(PosXButton1 * self.frame.size.width, gap, ButtonHeight, ButtonHeight)
     button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_book.png"), displayName: "Stories",
                                             frame: frame, action: "button_pressed:", id: 1)
     self.addSubview(button1)
 
     ####
     # Define second button
-    frame = CGRectMake(PosXButton2 * self.frame.size.width, SpaceHeight *  self.frame.size.height,
-                       ElementHeight * self.frame.size.height, ElementHeight * self.frame.size.height)
+    frame = CGRectMake(PosXButton2 * self.frame.size.width, gap, ButtonHeight, ButtonHeight)
     button2 = add_button_element_with_image(UIImage.imageNamed("icon_button_videos.png"), displayName: "Videos",
                                             frame: frame, action: "button_pressed:", id: 2)
     self.addSubview(button2)
 
     ####
     # Define third button
-    frame = CGRectMake(PosXButton3 * self.frame.size.width, SpaceHeight *  self.frame.size.height,
-                       ElementHeight * self.frame.size.height, ElementHeight * self.frame.size.height)
+    frame = CGRectMake(PosXButton3 * self.frame.size.width, gap, ButtonHeight, ButtonHeight)
     button3 = add_button_element_with_image(UIImage.imageNamed("icon_button_games.png"), displayName: "Spiele",
                                             frame: frame, action: "button_pressed:", id: 3)
     self.addSubview(button3)
@@ -77,7 +76,7 @@ class TabbarView < UIView
 
     button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
     button.frame = CGRectMake(0.25 * element.frame.size.width, 0.05 * element.frame.size.height,
-                              0.50 * element.frame.size.width, 0.50 * element.frame.size.height)
+                              ButtonIconHeight, ButtonIconHeight)
     button.setImage(image, forState:UIControlStateNormal)
     button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
     button.tag = id

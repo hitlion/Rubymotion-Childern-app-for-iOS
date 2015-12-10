@@ -13,13 +13,14 @@ class TabletNavbarView < UIView
   PosXButton3    = 0.75
   PosXSearchBar  = 0.85
   PosYSearchbar  = 0.175
-  PosYLabel      = 0.05
+  PosYLabel      = 0.1
 
   ##
   # other constants
-  HeightStatusbar = 0.15
+  HeightStatusbar = 0.25
   HeightNavbar    = 0.85
-  ButtonWidth     = 0.075
+  ButtonIconSize  = 32
+  ButtonWidth     = 64
   LabelWidth      = 0.4
   SearchbarWidth  = 0.15
 
@@ -41,7 +42,7 @@ class TabletNavbarView < UIView
     ####
     # Define the left button
     frame = CGRectMake(PosXLeftButton * self.frame.size.width, HeightStatusbar * self.frame.size.height,
-                       ButtonWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
+                       ButtonWidth, ButtonWidth)
     @leftButton = UIButton.alloc.initWithFrame(frame)
     @leftButton.setImage(UIImage.imageNamed("previous.png"), forState:UIControlStateNormal)
     @leftButton.addTarget(self, action: "button_pressed:", forControlEvents: UIControlEventTouchUpInside)
@@ -61,7 +62,7 @@ class TabletNavbarView < UIView
     ####
     # Define first button
     frame = CGRectMake(PosXButton1 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
-                       ButtonWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
+                       ButtonWidth, ButtonWidth)
     button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_playground.png"), displayName: "Spielplatz",
                                             frame: frame, action: "button_pressed:", id: 1)
     self.addSubview(button1)
@@ -69,7 +70,7 @@ class TabletNavbarView < UIView
     ####
     # Define second button
     frame = CGRectMake(PosXButton2 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
-                       ButtonWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
+                       ButtonWidth, ButtonWidth)
     button2 = add_button_element_with_image(UIImage.imageNamed("icon_button_shop.png"), displayName: "Shop",
                                                       frame: frame, action: "button_pressed:", id: 2)
     self.addSubview(button2)
@@ -77,7 +78,7 @@ class TabletNavbarView < UIView
     ####
     # Define third button
     frame = CGRectMake(PosXButton3 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
-                       ButtonWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
+                       ButtonWidth, ButtonWidth)
     image = UIImage.imageNamed("icon_button_options.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
     button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: "button_pressed:", id: 3)
     self.addSubview(button3)
@@ -111,14 +112,13 @@ class TabletNavbarView < UIView
     button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
     button.frame = CGRectMake(0.25 * element.frame.size.width,
                               0.05 * element.frame.size.height,
-                              0.50 * element.frame.size.width,
-                              0.50 * element.frame.size.height)
+                              ButtonIconSize,
+                              ButtonIconSize)
     button.setImage(image, forState:UIControlStateNormal)
-    button.backgroundColor = UIColor.clearColor
-    button.tintColor = rmq.color.babbo_button_grey
 
     button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
     button.tag = id
+    button.tintColor = rmq.color.babbo_button_grey
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0,
                                                    0.65 * element.frame.size.height,
