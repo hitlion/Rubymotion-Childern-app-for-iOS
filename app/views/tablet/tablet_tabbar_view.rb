@@ -1,4 +1,4 @@
-class TabbarView < UIView
+class TabletTabbarView < UIView
 
   attr_reader :delegate
 

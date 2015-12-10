@@ -25,7 +25,11 @@ class StartScreen < PM::Screen
   end
 
   def goto_parent
-    open TabletParentScreen.new
+    if(device.ipad?)
+      open TabletParentScreen.new
+    else
+      open SmartphoneParentScreen.new
+    end
   end
 
   def goto_age_verification

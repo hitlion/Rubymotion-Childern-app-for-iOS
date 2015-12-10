@@ -1,8 +1,8 @@
-class TabletParentScreen < PM::Screen
+class SmartphoneParentScreen < PM::Screen
 
-  NavbarHeight          = 0.125 # * screen_height
-  MiddleViewHeight      = 0.775 # * screen_height
-  TabbarHeight          = 0.100 # * screen_height
+  NavbarHeight          = 0.150 # * screen_height
+  MiddleViewHeight      = 0.700 # * screen_height
+  TabbarHeight          = 0.150 # * screen_height
 
   CellIdentifier = 'Cell'
 
@@ -29,7 +29,7 @@ class TabletParentScreen < PM::Screen
   # add a own navigation bar
   def add_nav_bar
     frame = CGRectMake(0, 0, @parentmenu.frame.size.width, NavbarHeight * @parentmenu.frame.size.height)
-    @navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Stories", delegate: self)
+    @navbar = SmartphoneNavbarView.alloc.init_with_frame(frame, titleText: "Alle Spiele", delegate: self)
     @parentmenu.addSubview(@navbar)
   end
 
@@ -53,7 +53,7 @@ class TabletParentScreen < PM::Screen
   def add_tab_bar
     frame = CGRectMake(0, (NavbarHeight + MiddleViewHeight) *  @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, TabbarHeight * @parentmenu.frame.size.height)
-    @tab_bar = TabletTabbarView.alloc.init_with_frame(frame, delegate: self)
+    @tab_bar = SmartphoneTabbarView.alloc.init_with_frame(frame, delegate: self)
     @parentmenu.addSubview(@tab_bar)
   end
 
