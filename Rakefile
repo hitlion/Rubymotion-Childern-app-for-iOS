@@ -92,7 +92,7 @@ Motion::Project::App.setup do |app|
         'Kits'   => [{'KitName' => 'Crashlytics'}]
     }
   end
-  # generic configuration
+  # generic configuration 
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
