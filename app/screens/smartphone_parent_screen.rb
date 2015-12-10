@@ -18,7 +18,7 @@ class SmartphoneParentScreen < PM::Screen
     add_nav_bar
     add_menu_view
     add_shop_view
-    add_tab_bar
+    #add_tab_bar
     add_options
     add_menu_overlay
     add_shop_premium_overlay
@@ -36,7 +36,7 @@ class SmartphoneParentScreen < PM::Screen
   def add_menu_view
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, MiddleViewHeight * @parentmenu.frame.size.height)
-    @menu_view = TabletMenuView.alloc.init_with_frame(frame, delegate: self)
+    @menu_view = SmartphoneMenuView.alloc.init_with_frame(frame, delegate: self)
     @parentmenu.addSubview(@menu_view)
   end
 

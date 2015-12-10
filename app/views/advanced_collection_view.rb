@@ -1,6 +1,6 @@
 class AdvancedCollectionView < UIView
 
-  attr_reader :visible_elements, :cell_type, :elements, :delegate, :header_text
+  attr_reader :visible_elements, :cell_type, :elements, :delegate, :header_text, :font_fac
 
   ###
   # Constants to design the layout.
@@ -13,10 +13,10 @@ class AdvancedCollectionView < UIView
   # + CollectionViewWidthFak * Width
   # + ScrollButtonWidthFak * Width
   # Also 2 * ScrollButtonWidthFak + CollectionViewWidthFak must be 1
-  TopViewHeightFak       = 0.25
-  BottomViewHeightFak    = 0.75
-  ScrollButtonWidthFak   = 0.075
-  CollectionViewWidthFak = 0.85
+  TopViewHeightFac       = 0.20
+  BottomViewHeightFac    = 0.80
+  ScrollButtonWidthFac   = 0.075
+  CollectionViewWidthFac = 0.85
 
   CellIdentifier = 'Cell'
 
@@ -35,6 +35,12 @@ class AdvancedCollectionView < UIView
     @delegate         = delegate
     @header_text      = headerText
 
+    if(device.ipad?)
+      @font_fac = 2
+    else
+      @font_fac = 1
+    end
+
     build_view
 
     self
@@ -46,40 +52,40 @@ class AdvancedCollectionView < UIView
     ####
     # Define the top view and add it as subview of self
     frame = CGRectMake(0.0 * self.frame.size.width, 0.0 * self.frame.size.height,
-                       1.0 * self.frame.size.width, TopViewHeightFak * self.frame.size.height)
+                       1.0 * self.frame.size.width, TopViewHeightFac * self.frame.size.height)
     top_view    = UIView.alloc.initWithFrame(frame)
     self.addSubview(top_view)
 
     ###
     # Define top header label
-    frame = CGRectMake(ScrollButtonWidthFak * top_view.frame.size.width, 0.0 * top_view.frame.size.height,
-                       CollectionViewWidthFak * top_view.frame.size.width, 0.95 * top_view.frame.size.height)
+    frame = CGRectMake(ScrollButtonWidthFac * top_view.frame.size.width, 0.0 * top_view.frame.size.height,
+                       CollectionViewWidthFac * top_view.frame.size.width, 0.95 * top_view.frame.size.height)
     header_label = UILabel.alloc.initWithFrame(frame)
     header_label.text = @header_text
     header_label.textColor = UIColor.blackColor
-    header_label.font = UIFont.fontWithName("Enriqueta-Regular", size:25)
+    header_label.font = UIFont.fontWithName("Enriqueta-Regular", size:13 * @font_fac)
     header_label.textAlignment = UITextAlignmentLeft
     top_view.addSubview(header_label)
 
     ###
     # Define top header underline
-    frame = CGRectMake(ScrollButtonWidthFak * top_view.frame.size.width, 1.0 * top_view.frame.size.height - 1,
-                       CollectionViewWidthFak * top_view.frame.size.width, 1)
+    frame = CGRectMake(ScrollButtonWidthFac * top_view.frame.size.width, 1.0 * top_view.frame.size.height - 1,
+                       CollectionViewWidthFac * top_view.frame.size.width, 1)
     header_line = UIView.alloc.initWithFrame(frame)
     header_line.backgroundColor = rmq.color.babbo_line_grey
     top_view.addSubview(header_line)
 
     ####
     # Define the bottom view and add it as subview of self
-    frame = CGRectMake(0.0 * self.frame.size.width, TopViewHeightFak * self.frame.size.height,
-                       1.0 * self.frame.size.width, BottomViewHeightFak * self.frame.size.height)
+    frame = CGRectMake(0.0 * self.frame.size.width, TopViewHeightFac * self.frame.size.height,
+                       1.0 * self.frame.size.width, BottomViewHeightFac * self.frame.size.height)
     bottom_view = UIView.alloc.initWithFrame(frame)
     self.addSubview(bottom_view)
 
     ###
     # Define scroll left button
     frame = CGRectMake(0.0 * bottom_view.frame.size.width, 0.0 * bottom_view.frame.size.height,
-                       ScrollButtonWidthFak * bottom_view.frame.size.width, 1.0 * bottom_view.frame.size.height)
+                       ScrollButtonWidthFac * bottom_view.frame.size.width, 1.0 * bottom_view.frame.size.height)
     scroll_button_left = UIButton.alloc.initWithFrame(frame)
     scroll_button_left.setImage(UIImage.imageNamed("previous.png"), forState:UIControlStateNormal)
     scroll_button_left.addTarget(self, action: "scroll_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
@@ -91,22 +97,27 @@ class AdvancedCollectionView < UIView
     collection_view_layout = UICollectionViewFlowLayout.alloc.init
     collection_view_layout.scrollDirection = UICollectionViewScrollDirectionHorizontal
 
-    frame = CGRectMake(ScrollButtonWidthFak * bottom_view.frame.size.width, 0.0 * bottom_view.frame.size.height,
-                       CollectionViewWidthFak * bottom_view.frame.size.width, 1.0 * bottom_view.frame.size.height)
+    frame = CGRectMake(ScrollButtonWidthFac * bottom_view.frame.size.width, 0.0 * bottom_view.frame.size.height,
+                       CollectionViewWidthFac * bottom_view.frame.size.width, 1.0 * bottom_view.frame.size.height)
     @collection_view = UICollectionView.alloc.initWithFrame(frame, collectionViewLayout: collection_view_layout)
-
     @collection_view.dataSource = self
     @collection_view.delegate = self
     @collection_view.pagingEnabled = true
 
-    minimumLineSpacing = 25
+    minimumLineSpacing = 20  if(visible_elements >= 2)
+    minimumLineSpacing = 0   if(visible_elements == 1)
+
     collection_view_layout.minimumLineSpacing = minimumLineSpacing
     width  = (@collection_view.frame.size.width - (@visible_elements - 1) * minimumLineSpacing) / @visible_elements
 
-    if( width < 0.9 * @collection_view.frame.size.height)
+    if(width < 0.9 * @collection_view.frame.size.height)
       height = width
     else
+
       height = 0.9 * @collection_view.frame.size.height
+      if(@cell_type == MenuLevelCell)
+        width = height
+      end
     end
 
     collection_view_layout.itemSize = CGSizeMake(width, height)
@@ -119,9 +130,9 @@ class AdvancedCollectionView < UIView
 
     ###
     # Define scroll right button
-    frame = CGRectMake((ScrollButtonWidthFak + CollectionViewWidthFak) * bottom_view.frame.size.width,
+    frame = CGRectMake((ScrollButtonWidthFac + CollectionViewWidthFac) * bottom_view.frame.size.width,
                        0.0 * bottom_view.frame.size.height,
-                       ScrollButtonWidthFak * bottom_view.frame.size.width, 1.0 * bottom_view.frame.size.height)
+                       ScrollButtonWidthFac * bottom_view.frame.size.width, 1.0 * bottom_view.frame.size.height)
     scroll_button_right = UIButton.alloc.initWithFrame(frame)
     scroll_button_right.setImage(UIImage.imageNamed("next.png"), forState:UIControlStateNormal)
     scroll_button_right.addTarget(self, action: "scroll_button_pressed:", forControlEvents: UIControlEventTouchUpInside)

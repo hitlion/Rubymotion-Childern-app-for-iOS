@@ -20,7 +20,7 @@ class SmartphoneNavbarView < UIView
   HeightStatusbar = 0.00
   HeightNavbar    = 0.85
   ButtonIconSize  = 32
-  ButtonWidth     = 64
+  ButtonWidth     = 32
   LabelWidth      = 0.4
   SearchbarWidth  = 0.25
 
@@ -61,7 +61,10 @@ class SmartphoneNavbarView < UIView
 
     ####
     # Define first button
-    frame = CGRectMake(PosXButton1 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
+
+    gap = (self.frame.size.height - ButtonWidth) / 2.0
+
+    frame = CGRectMake(PosXButton1 * self.frame.size.width, gap,
                        ButtonWidth, ButtonWidth)
     button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_playground.png"), displayName: "Spielplatz",
                                             frame: frame, action: "button_pressed:", id: 1)
@@ -69,7 +72,7 @@ class SmartphoneNavbarView < UIView
 
     ####
     # Define second button
-    frame = CGRectMake(PosXButton2 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
+    frame = CGRectMake(PosXButton2 * self.frame.size.width, gap,
                        ButtonWidth, ButtonWidth)
     button2 = add_button_element_with_image(UIImage.imageNamed("icon_button_shop.png"), displayName: "Shop",
                                                       frame: frame, action: "button_pressed:", id: 2)
@@ -77,7 +80,7 @@ class SmartphoneNavbarView < UIView
 
     ####
     # Define third button
-    frame = CGRectMake(PosXButton3 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
+    frame = CGRectMake(PosXButton3 * self.frame.size.width, gap,
                        ButtonWidth, ButtonWidth)
     image = UIImage.imageNamed("icon_button_options.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
     button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: "button_pressed:", id: 3)
@@ -110,8 +113,7 @@ class SmartphoneNavbarView < UIView
     element =  UIView.alloc.initWithFrame(frame)
 
     button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-    button.frame = CGRectMake(0.25 * element.frame.size.width, 0.05 * element.frame.size.height,
-                              ButtonIconSize, ButtonIconSize)
+    button.frame = element.bounds
     button.setImage(image, forState:UIControlStateNormal)
 
     button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
@@ -127,7 +129,7 @@ class SmartphoneNavbarView < UIView
     label.textAlignment = UITextAlignmentCenter
 
     element.addSubview button
-    element.addSubview label
+    #element.addSubview label
 
     element
   end

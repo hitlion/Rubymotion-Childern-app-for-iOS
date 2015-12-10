@@ -5,6 +5,13 @@ class MenuTipsCell < UICollectionViewCell
   def initWithFrame(frame)
     super(frame)
     @delegate = self
+
+    if(device.ipad?)
+      @font_fac = 1.5
+    else
+      @font_fac = 1
+    end
+
     self
   end
 
@@ -23,18 +30,18 @@ class MenuTipsCell < UICollectionViewCell
     label = UILabel.alloc.initWithFrame(CGRectMake(0.0 * view.frame.size.width, 0,
                                                    0.55 * view.frame.size.width, 0.15  * view.frame.size.height))
     label.text = element.header
-    label.font = UIFont.fontWithName("Enriqueta-Bold", size:25)
+    label.font = UIFont.fontWithName("Enriqueta-Bold", size:15 * @font_fac)
     label.textAlignment = UITextAlignmentLeft
     label.textColor = rmq.color.babbo_orange
 
     text_view = UITextView.alloc.initWithFrame(CGRectMake(0.0 * view.frame.size.width, 0.2 * view.frame.size.height,
                                                          0.55 * view.frame.size.width, 0.75 * view.frame.size.height ))
-    text_view.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
+    text_view.font = UIFont.fontWithName("Enriqueta-Regular", size:10 * @font_fac)
     text_view.textAlignment = UITextAlignmentLeft
 
     text_view.text = element.text
 
-    image = UIImageView.alloc.initWithFrame(CGRectMake(0.6 * view.frame.size.width,0,0.35 * view.frame.size.width, view.frame.size.height))
+    image = UIImageView.alloc.initWithFrame(CGRectMake(0.6 * view.frame.size.width,0,0.40 * view.frame.size.width, view.frame.size.height))
     image.image = element.image
 
     view.addSubview(text_view)
