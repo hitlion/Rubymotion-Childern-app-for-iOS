@@ -9,8 +9,8 @@ class StartScreenStyleSheet < ApplicationStylesheet
   end
 
   def logo(st)
-    st.frame = {l:100, fr:100, below_prev:20, fb:20}
-    st.image = image.resource('Logo')
+    st.frame = {l:0, fr:0, below_prev:0, fb:0}
+    st.image = image.resource('start_screen_background.png')
   end
 
   def load_progress(st)

@@ -245,7 +245,7 @@ class KidsScene < SKScene
       story_picture.zPosition = -3
       story_picture.anchorPoint = CGPointMake(0.5, 0.5)
       story_picture.position = CGPointMake(0, - 0.63 * texture.size.height)
-      story_picture.scale = (0.4 * texture.size.height) / story_picture.size.height
+      story_picture.scale = (0.5 * texture.size.height) / story_picture.size.height
       story.addChild story_picture
 
       clip = SKSpriteNode.spriteNodeWithImageNamed("Klammer")
@@ -327,14 +327,18 @@ class KidsScene < SKScene
     texture = SKTexture.textureWithImageNamed("Seil.png")
 
     width = device.screen_width
+    lp "w:"
+    lp width
 
     y = (rope_width / width).round
+
+    lp y
 
     y.times do |i|
       rope_part = SKSpriteNode.spriteNodeWithTexture(texture)
       rope_part.size = CGSizeMake(width,15)
       rope_part.anchorPoint = CGPointMake(0,0.5)
-      rope_part.position = CGPointMake (0 + i * 1024 , 0)
+      rope_part.position = CGPointMake (0 + i * device.screen_width , 0)
       rope_part.zPosition = 0
 
       rope.addChild rope_part
@@ -360,9 +364,10 @@ class KidsScene < SKScene
 
   def add_version_number
     label = SKLabelNode.labelNodeWithText(app.version)
-    label.position = CGPointMake(30,10)
+    label.position = CGPointMake(100,10)
     label.zPosition = 100
-    label.fontSize = 25
+    label.fontSize = 25 if (device.ipad?)
+    label.fontSize = 15 if (!device.ipad?)
     label.fontColor = UIColor.blackColor
     label.fontName = FONT
     addChild label
