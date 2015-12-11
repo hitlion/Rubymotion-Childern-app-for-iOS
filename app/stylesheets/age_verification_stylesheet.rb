@@ -52,11 +52,11 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def age_input_field(st)
-    st.frame = {w: 0.3 * device.screen_width, below_prev:0.08 * device.screen_height,  h: 50, centered: :horizontal}
+    st.frame = {w: 0.3 * device.screen_width, below_prev:0.08 * device.screen_height,  h: 0.125 * device.screen_height, centered: :horizontal}
   end
 
   def go_on_button(st)
-    st.frame = {w: 0.15 * device.screen_width, t:0.75 * device.screen_height,  h: 0.075 * device.screen_height, centered: :horizontal}
+    st.frame = {w: 0.15 * device.screen_width, t:0.75 * device.screen_height,  h: 0.065 * device.screen_height, centered: :horizontal}
     st.color = rmq.color.white
     st.text = "Weiter"
     st.font = UIFont.fontWithName("Enriqueta-Regular", size:15 * @font_fac)

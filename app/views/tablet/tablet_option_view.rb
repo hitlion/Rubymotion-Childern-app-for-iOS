@@ -26,7 +26,7 @@ class TabletOptionView < UIView
                                                               0.8 * @options_table.frame.size.width,
                                                               (9.0/32.0) * @options_table.frame.size.height))
     parent_image.backgroundColor = UIColor.clearColor
-    parent_image.image = UIImage.imageNamed("dummy_parent.png")
+    parent_image.image = UIImage.imageNamed("avatar_parent.png")
 
     parent_name = UILabel.alloc.initWithFrame(CGRectMake(0,
                                                          (10/32.0) * @options_table.frame.size.height,

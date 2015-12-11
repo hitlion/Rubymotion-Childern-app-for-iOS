@@ -5,19 +5,80 @@ class StartScreen < PM::Screen
     attr_accessor :next_story
     attr_accessor :last_screen
     attr_accessor :warmup_done
+    attr_reader   :animation_a, :animation_b
   end
 
   title "Start Screen"
   stylesheet StartScreenStyleSheet
 
+  NamesAnimationA = ["animations/load_screen_babbo_animation_A0.png", "animations/load_screen_babbo_animation_A1.png",
+                    "animations/load_screen_babbo_animation_A2.png", "animations/load_screen_babbo_animation_A3.png",
+                    "animations/load_screen_babbo_animation_A4.png", "animations/load_screen_babbo_animation_A5.png",
+                    "animations/load_screen_babbo_animation_A6.png"]
+  NamesAnimationB = ["animations/load_screen_babbo_animation_B0.png", "animations/load_screen_babbo_animation_B1.png"]
+
   def on_load
+    lp"onload"
     StartScreen.warmup_done ||= false
 
     set_nav_bar_button :right, title: "Kids", action: :go_to_kids
     set_nav_bar_button :left, title: "Parent", action: :go_to_parent
 
-    append(UIImageView, :logo)
-    append(UIProgressView, :load_progress).hide
+    append(UIImageView, :background)
+    append(UIProgressView, :load_progress)
+
+    load_images
+
+    build_animation
+  end
+
+  def load_images
+    return if(!@animation_a.nil? && !@animation_b.nil?)
+
+    @animation_a = []
+    @animation_b = []
+
+    NamesAnimationA.each do |name|
+      @animation_a.addObject(UIImage.imageNamed(name))
+    end
+
+    NamesAnimationB.each do |name|
+      @animation_b.addObject(UIImage.imageNamed(name))
+    end
+  end
+
+  def build_animation
+
+    @count ||= 0
+    lp @count
+    @count = @count + 1
+    frame = CGRectMake(0.25 * self.frame.size.width, 0.25 * self.frame.size.height,
+                       0.3 * self.frame.size.width, 0.4 * self.frame.size.height)
+
+    @babbo_animation = UIImageView.alloc.initWithFrame(frame)
+
+
+    time = 1.0
+    @babbo_animation.animationImages = @animation_a
+    @babbo_animation.animationDuration = time
+    @babbo_animation.startAnimating
+
+    add @babbo_animation
+
+    NSTimer.scheduledTimerWithTimeInterval(1, target: self , selector: "start_animation_b", userInfo: nil, repeats: false)
+  end
+
+  def start_animation_b
+    @babbo_animation.stopAnimating
+    @babbo_animation.hidden = true
+    frame = CGRectMake(0.25 * self.frame.size.width, 0.25 * self.frame.size.height,
+                       0.3 * self.frame.size.width, 0.4 * self.frame.size.height)
+    animation = UIImageView.alloc.initWithFrame(frame)
+    time = 0.25
+    animation.animationImages = @animation_b
+    animation.animationDuration = time
+    animation.startAnimating
+    add animation
   end
 
   def goto_kids

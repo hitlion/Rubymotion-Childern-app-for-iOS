@@ -8,7 +8,7 @@ class StartScreenStyleSheet < ApplicationStylesheet
     st.background_color = rmq.color.babbo_orange
   end
 
-  def logo(st)
+  def background(st)
     st.frame = {l:0, fr:0, below_prev:0, fb:0}
     st.image = image.resource('start_screen_background.png')
   end
