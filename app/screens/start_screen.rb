@@ -55,7 +55,8 @@ class StartScreen < PM::Screen
 
   def on_appear(args={})
     # perform asynchronous loading exactly *once*
-    Dispatch.once do
+    #Dispatch.once do
+    unless StartScreen.warmup_done
       progress_callback = -> (total, progress) do
         if total > progress
           Dispatch::Queue.main.sync do
