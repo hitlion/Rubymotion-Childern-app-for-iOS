@@ -96,7 +96,7 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.141'
+  app.short_version = app.version = '1.0.142'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :landscape_right]
@@ -167,9 +167,9 @@ task :fabric_send do
   ENV['XCODE_VERSION_ACTUAL'] = `/usr/libexec/PlistBuddy #{app.config.xcode_dir}/../Info.plist -c 'print:DTXcode'`.strip
   ENV['PROJECT_FILE_PATH'] = File.absolute_path(File.join(File.dirname(__FILE__), 'vendor', 'Pods', 'Pods.xcodeproj'))
 
-  fabric_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Fabric', 'Fabric.framework', 'run')
-  crashlytics_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'Crashlytics.framework', 'submit')
-  upload_dsym_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'Crashlytics.framework', 'uploadDSYM')
+  fabric_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Fabric', 'run')
+  crashlytics_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'submit')
+  upload_dsym_run = File.join(Dir.pwd, 'vendor', 'Pods', 'Crashlytics', 'iOS', 'Crashlytics.framework', 'uploadDSYM')
 
   fabric_api = ENV['RM_FABRIC_API']
   fabric_key = ENV['RM_FABRIC_KEY']
