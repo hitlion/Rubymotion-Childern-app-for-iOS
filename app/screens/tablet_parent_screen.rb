@@ -15,32 +15,32 @@ class TabletParentScreen < PM::Screen
 
     add @parentmenu
 
-    add_nav_bar
-    add_menu_view
-    add_shop_view
-    add_tab_bar
-    add_options
-    add_menu_overlay
-    add_shop_premium_overlay
-    add_shop_basic_overlay
+    setup_nav_bar
+    setup_menu_view
+    setup_shop_view
+    setup_tab_bar
+    setup_options
+    setup_menu_overlay
+    setup_shop_premium_overlay
+    setup_shop_basic_overlay
   end
 
   ##
   # add a own navigation bar
-  def add_nav_bar
+  def setup_nav_bar
     frame = CGRectMake(0, 0, @parentmenu.frame.size.width, NavbarHeight * @parentmenu.frame.size.height)
     @navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Stories", delegate: self)
     @parentmenu.addSubview(@navbar)
   end
 
-  def add_menu_view
+  def setup_menu_view
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, MiddleViewHeight * @parentmenu.frame.size.height)
     @menu_view = TabletMenuView.alloc.init_with_frame(frame, delegate: self)
     @parentmenu.addSubview(@menu_view)
   end
 
-  def add_shop_view
+  def setup_shop_view
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, MiddleViewHeight * @parentmenu.frame.size.height)
     @shop_view = TabletShopView.alloc.init_with_frame(frame, delegate: self)
@@ -50,7 +50,7 @@ class TabletParentScreen < PM::Screen
 
   ##
   # adds the tab bar at the bottom of the screen
-  def add_tab_bar
+  def setup_tab_bar
     frame = CGRectMake(0, (NavbarHeight + MiddleViewHeight) *  @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, TabbarHeight * @parentmenu.frame.size.height)
     @tab_bar = TabletTabbarView.alloc.init_with_frame(frame, delegate: self)
@@ -59,7 +59,7 @@ class TabletParentScreen < PM::Screen
 
   ##
   # add options view
-  def add_options
+  def setup_options
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height - 1,
                        @parentmenu.frame.size.width,
                        @parentmenu.frame.size.height - NavbarHeight * @parentmenu.frame.size.height + 1)
@@ -67,21 +67,21 @@ class TabletParentScreen < PM::Screen
     @parentmenu.addSubview(@options_view)
   end
 
-  def add_menu_overlay
+  def setup_menu_overlay
     frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
     @parent_menu_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayMenuStandard.alloc.init, frame: frame)
     @parent_menu_overlay.hidden = true
     @parentmenu.addSubview(@parent_menu_overlay)
   end
 
-  def add_shop_premium_overlay
+  def setup_shop_premium_overlay
     frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
     @parent_shop_premium_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayShopPremium.alloc.init, frame: frame)
     @parent_shop_premium_overlay.hidden = true
     @parentmenu.addSubview(@parent_shop_premium_overlay)
   end
 
-  def add_shop_basic_overlay
+  def setup_shop_basic_overlay
     frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
     @parent_shop_basic_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayShopBasic.alloc.init, frame: frame)
     @parent_shop_basic_overlay.hidden = true
