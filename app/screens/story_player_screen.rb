@@ -54,13 +54,6 @@ class StoryPlayerScreen < PM::Screen
     NSNotificationCenter.defaultCenter.removeObserver(self)
 
     unless @player.scene.nil?
-      @player.scene.enumerateChildNodesWithName('//*', usingBlock: -> (node, stop){
-        if node.is_a?(Scene::VideoNode) || 
-           node.is_a?(Scene::GIFVideoNode) ||
-           node.is_a?(Scene::AudioNode)
-           node.stop
-        end
-      }.weak!)
       @player.scene.removeAllChildren
       @player.scene.removeAllActions
       @player.scene.removeFromParent
@@ -88,13 +81,6 @@ class StoryPlayerScreen < PM::Screen
     transition_image = create_transition_image
 
     unless @player.scene.nil?
-      @player.scene.enumerateChildNodesWithName('//*', usingBlock: -> (node, stop){
-        if node.is_a?(Scene::VideoNode) || 
-           node.is_a?(Scene::GIFVideoNode) ||
-           node.is_a?(Scene::AudioNode)
-           node.stop
-        end
-      }.weak!)
       @player.scene.removeAllChildren
       @player.scene.removeAllActions
       @player.scene.removeFromParent
