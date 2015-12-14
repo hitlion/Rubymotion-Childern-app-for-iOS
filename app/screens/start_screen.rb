@@ -67,6 +67,7 @@ class StartScreen < PM::Screen
         if total == progress
           Dispatch::Queue.main.async do
             StartScreen.warmup_done = true
+            CLSLog('Bundle preload done, dispatching')
             rmq(:load_progress).hide
             dispatch
           end
@@ -74,6 +75,7 @@ class StartScreen < PM::Screen
       end
 
       # background loading with progress status
+      CLSLog('Calling out for initial bundle pre-load')
       StoryBundle.bundles(async: true, callback: progress_callback)
     end
 
