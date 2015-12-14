@@ -12,5 +12,5 @@ gem 'json'
 # required inside the Application
 gem 'cocoapods', '~> 0.38.2'
 gem 'motion-cocoapods', '~> 1.7.3'
-gem 'motion-yaml'
+gem 'motion-yaml', '1.5.5'
 gem 'redpotion'
