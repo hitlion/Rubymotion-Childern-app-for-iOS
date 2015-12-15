@@ -17,8 +17,8 @@ class StartScreen < PM::Screen
                     "animations/load_screen_babbo_animation_A6.png"]
   NamesAnimationB = ["animations/load_screen_babbo_animation_B0.png", "animations/load_screen_babbo_animation_B1.png"]
 
+
   def on_load
-    lp"onload"
     StartScreen.warmup_done ||= false
 
     set_nav_bar_button :right, title: "Kids", action: :go_to_kids
@@ -26,6 +26,8 @@ class StartScreen < PM::Screen
 
     append(UIImageView, :background)
     append(UIProgressView, :load_progress)
+
+    @current_index = 0
 
     load_images
 
@@ -49,36 +51,26 @@ class StartScreen < PM::Screen
 
   def build_animation
 
-    @count ||= 0
-    lp @count
-    @count = @count + 1
-    frame = CGRectMake(0.25 * self.frame.size.width, 0.25 * self.frame.size.height,
-                       0.3 * self.frame.size.width, 0.4 * self.frame.size.height)
+    @animation_frame = UIImageView.alloc.initWithFrame(CGRectMake(0.25 * self.frame.size.width, 0.25 * self.frame.size.height,
+                                                                  0.3 * self.frame.size.width, 0.4 * self.frame.size.height))
+    add @animation_frame
 
-    @babbo_animation = UIImageView.alloc.initWithFrame(frame)
-
-
-    time = 1.0
-    @babbo_animation.animationImages = @animation_a
-    @babbo_animation.animationDuration = time
-    @babbo_animation.startAnimating
-
-    add @babbo_animation
-
-    NSTimer.scheduledTimerWithTimeInterval(1, target: self , selector: "start_animation_b", userInfo: nil, repeats: false)
+    animate_animation_a
   end
 
-  def start_animation_b
-    @babbo_animation.stopAnimating
-    @babbo_animation.hidden = true
-    frame = CGRectMake(0.25 * self.frame.size.width, 0.25 * self.frame.size.height,
-                       0.3 * self.frame.size.width, 0.4 * self.frame.size.height)
-    animation = UIImageView.alloc.initWithFrame(frame)
-    time = 0.25
-    animation.animationImages = @animation_b
-    animation.animationDuration = time
-    animation.startAnimating
-    add animation
+  def animate_animation_a
+    duration = 0.1 * @animation_a.length
+    @animation_frame.animationImages = @animation_a
+    @animation_frame.animationDuration = duration
+    @animation_frame.startAnimating
+    self.performSelector("animate_animation_b", withObject: nil, afterDelay: duration)
+  end
+
+  def animate_animation_b
+    @animation_frame.stopAnimating
+    @animation_frame.animationImages = @animation_b
+    @animation_frame.animationDuration = 0.1 * @animation_b.length
+    @animation_frame.startAnimating
   end
 
   def goto_kids
