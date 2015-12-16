@@ -43,9 +43,11 @@ class TabletNavbarView < UIView
     # Define the left button
     frame = CGRectMake(PosXLeftButton * self.frame.size.width, HeightStatusbar * self.frame.size.height,
                        ButtonWidth, ButtonWidth)
-    @leftButton = UIButton.alloc.initWithFrame(frame)
-    @leftButton.setImage(UIImage.imageNamed("previous.png"), forState:UIControlStateNormal)
+    @leftButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
+    @leftButton.frame = frame
+    @leftButton.setImage(UIImage.imageNamed("icons/arrow_left.png"), forState:UIControlStateNormal)
     @leftButton.addTarget(self, action: "button_pressed:", forControlEvents: UIControlEventTouchUpInside)
+    @leftButton.tintColor = rmq.color.babbo_button_grey
     @leftButton.tag = 0
     @leftButton.hidden = true
     self.addSubview(@leftButton)
@@ -63,7 +65,7 @@ class TabletNavbarView < UIView
     # Define first button
     frame = CGRectMake(PosXButton1 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
                        ButtonWidth, ButtonWidth)
-    button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_playground.png"), displayName: "Spielplatz",
+    button1 = add_button_element_with_image(UIImage.imageNamed("icons/playground.png"), displayName: "Spielplatz",
                                             frame: frame, action: "button_pressed:", id: 1)
     self.addSubview(button1)
 
@@ -71,7 +73,7 @@ class TabletNavbarView < UIView
     # Define second button
     frame = CGRectMake(PosXButton2 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
                        ButtonWidth, ButtonWidth)
-    button2 = add_button_element_with_image(UIImage.imageNamed("icon_button_shop.png"), displayName: "Shop",
+    button2 = add_button_element_with_image(UIImage.imageNamed("icons/shop.png"), displayName: "Shop",
                                                       frame: frame, action: "button_pressed:", id: 2)
     self.addSubview(button2)
 
@@ -79,7 +81,7 @@ class TabletNavbarView < UIView
     # Define third button
     frame = CGRectMake(PosXButton3 * self.frame.size.width, HeightStatusbar *  self.frame.size.height,
                        ButtonWidth, ButtonWidth)
-    image = UIImage.imageNamed("icon_button_options.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
+    image = UIImage.imageNamed("icons/option.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
     button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: "button_pressed:", id: 3)
     self.addSubview(button3)
 
