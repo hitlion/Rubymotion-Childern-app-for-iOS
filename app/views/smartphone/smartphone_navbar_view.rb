@@ -7,20 +7,20 @@ class SmartphoneNavbarView < UIView
   # This values are the factor, that is multiplied with self.frame.size.width
   # and defines the x coordinate for the element
   PosXLeftButton = 0.00
-  PosXLabel      = 0.4
+  PosXLabel      = 0.075
   PosXButton1    = 0.7
   PosXButton2    = 0.8
   PosXButton3    = 0.9
   PosXSearchbar  = 0.00
   PosYSearchbar  = 0.25
-  PosYLabel      = 0.1
+  PosYLabel      = 0.0
 
   ##
   # other constants
   HeightStatusbar = 0.00
   HeightNavbar    = 0.85
-  ButtonIconSize  = 32
-  ButtonWidth     = 32
+  ButtonIconSize  = 24
+  ButtonWidth     = 48
   LabelWidth      = 0.4
   SearchbarWidth  = 0.25
 
@@ -41,12 +41,17 @@ class SmartphoneNavbarView < UIView
 
     ####
     # Define the left button
-    frame = CGRectMake(PosXLeftButton * self.frame.size.width, HeightStatusbar * self.frame.size.height,
-                       ButtonWidth, ButtonWidth)
-    @leftButton = UIButton.alloc.initWithFrame(frame)
+    gap = (self.frame.size.height - ButtonIconSize) / 2.0
+    gap = 0 if gap < 0
+
+    frame = CGRectMake(PosXLeftButton * self.frame.size.width, gap,
+                       ButtonIconSize, ButtonIconSize)
+    @leftButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
+    @leftButton.frame = frame
     @leftButton.setImage(UIImage.imageNamed("icons/arrow_left.png"), forState:UIControlStateNormal)
     @leftButton.addTarget(self, action: "button_pressed:", forControlEvents: UIControlEventTouchUpInside)
     @leftButton.tag = 0
+    @leftButton.tintColor = rmq.color.babbo_button_grey
     @leftButton.hidden = true
     self.addSubview(@leftButton)
 
@@ -61,8 +66,8 @@ class SmartphoneNavbarView < UIView
 
     ####
     # Define first button
-
     gap = (self.frame.size.height - ButtonWidth) / 2.0
+    gap = 0 if gap < 0
 
     frame = CGRectMake(PosXButton1 * self.frame.size.width, gap,
                        ButtonWidth, ButtonWidth)
@@ -91,7 +96,7 @@ class SmartphoneNavbarView < UIView
     frame = CGRectMake(PosXSearchbar * self.frame.size.width, PosYSearchbar * self.frame.size.height,
                        SearchbarWidth * self.frame.size.width, 0.5 * HeightNavbar * self.frame.size.height)
     search_bar = add_seach_bar_with_frame(frame, placeholder: "Suchen")
-    self.addSubview(search_bar)
+    #self.addSubview(search_bar)
 
     ####
     # Define navbars underline
@@ -113,7 +118,10 @@ class SmartphoneNavbarView < UIView
     element =  UIView.alloc.initWithFrame(frame)
 
     button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-    button.frame = element.bounds
+    button.frame = CGRectMake(0.25 * element.frame.size.width,
+                              0.10 * element.frame.size.height,
+                              ButtonIconSize,
+                              ButtonIconSize)
     button.setImage(image, forState:UIControlStateNormal)
 
     button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
@@ -121,15 +129,15 @@ class SmartphoneNavbarView < UIView
     button.tintColor = rmq.color.babbo_button_grey
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0,
-                                                   0.55 * element.frame.size.height,
+                                                   0.60 * element.frame.size.height,
                                                    element.frame.size.width,
-                                                   0.3 * element.frame.size.height))
+                                                   0.4 * element.frame.size.height))
     label.text = name
     label.font = UIFont.fontWithName("Enriqueta-Regular", size:10)
     label.textAlignment = UITextAlignmentCenter
 
     element.addSubview button
-    #element.addSubview label
+    element.addSubview label
 
     element
   end

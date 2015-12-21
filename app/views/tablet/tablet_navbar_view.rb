@@ -58,7 +58,7 @@ class TabletNavbarView < UIView
                        LabelWidth * self.frame.size.width, HeightNavbar * self.frame.size.height)
     @title_label = UILabel.alloc.initWithFrame(frame)
     @title_label.text = @title_text
-    @title_label.font = UIFont.fontWithName("Enriqueta-Bold", size:40)
+    @title_label.font = UIFont.fontWithName(Util.get_font_standard(:regular), size: Util.get_font_size(:xl))
     self.addSubview(@title_label)
 
     ####

@@ -15,6 +15,7 @@ class SmartphoneParentScreen < PM::Screen
 
     add @parentmenu
 
+    lp FONT_SIZE
     setup_nav_bar
     setup_menu_view
     setup_shop_view
