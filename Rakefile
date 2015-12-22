@@ -114,6 +114,9 @@ Motion::Project::App.setup do |app|
   app.frameworks << 'SpriteKit'
   app.frameworks << 'CoreImage'
   app.frameworks << 'AVFoundation'
+
+  # See: http://hipbyte.myjetbrains.com/youtrack/issue/RM-1004
+  app.opt_level = 2
 end
 
 YARD::Rake::YardocTask.new # include YARD rake task

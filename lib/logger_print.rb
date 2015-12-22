@@ -1,7 +1,7 @@
 module LoggerPrint
   module_function
   def split_ansi( string )
-    Dispatch.once { define_colors }
+    define_colors unless rmq.color.respond_to? :term_white
 
     parts = []
     # basically reverse what MotionPrint does for colors
