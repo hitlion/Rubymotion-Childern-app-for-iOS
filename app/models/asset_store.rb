@@ -85,6 +85,16 @@ class AssetStore
     copy_resource(resource_hash, path)
   end
 
+  # @private
+  def register_manifest( path, checksum )
+    copy_resource(checksum, path)
+  end
+
+  # @private
+  def valid_manifest?( checksum )
+    return find_resource(checksum) != nil
+  end
+
   private
 
   # Compute a unique hash of the file contents at +path+ and return it
