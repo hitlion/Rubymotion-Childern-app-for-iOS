@@ -13,7 +13,7 @@ class StoryListScreen < PM::TableScreen
 
   # Reload the table data
   def on_refresh
-    reload_bundles
+    reload_bundles(true)
     stop_refreshing
     update_table_data
   end
@@ -38,8 +38,8 @@ class StoryListScreen < PM::TableScreen
   # of the 'Bundles' directory on disk.
   #
   # @todo: Handle branch data
-  def reload_bundles
-    @story_bundles = StoryBundle.bundles(reload: true)
+  def reload_bundles(force_reload=false)
+    @story_bundles = StoryBundle.bundles(reload: force_reload)
     #@story_bundles.sort{|s| s.document.timestamp}
   end
 
@@ -69,7 +69,7 @@ class StoryListScreen < PM::TableScreen
       editing_style: :delete,
       accessory: { view: detail_button },
 
-      action: :open_story,
+      action: :play_story,
       arguments: { bundle: bundle }
     }
   end
@@ -115,7 +115,7 @@ class StoryListScreen < PM::TableScreen
 
     StartScreen.next_story = args[:bundle]
     StartScreen.next_screen = :story_player
-    StartScreen.last_screen = :parent_menu
+    StartScreen.last_screen = :story_list
     rmq.screen.open_root_screen(StartScreen)
   end
 
