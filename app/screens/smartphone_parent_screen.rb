@@ -43,7 +43,7 @@ class SmartphoneParentScreen < PM::Screen
   def setup_shop_view
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, MiddleViewHeight * @parentmenu.frame.size.height)
-    @shop_view = TabletShopView.alloc.init_with_frame(frame, delegate: self)
+    @shop_view = SmartphoneShopView.alloc.init_with_frame(frame, delegate: self)
     @shop_view.hidden = true
     @parentmenu.addSubview(@shop_view)
   end
