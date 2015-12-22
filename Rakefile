@@ -107,8 +107,9 @@ Motion::Project::App.setup do |app|
 
   app.manifest_assets << {:kind => 'software-package', :url => '__URL__'}
 
-  app.vendor_project('vendor/babbo-voco/js-bridging', :static, :cflags => '-fobjc-arc -F JavaScriptCore')
-  app.vendor_project('vendor/babbo-voco/digest'     , :static, :cflags => '-fobjc-arc')
+  app.vendor_project('vendor/babbo-voco/js-bridging' , :static, :cflags => '-fobjc-arc -F JavaScriptCore')
+  app.vendor_project('vendor/babbo-voco/digest'      , :static, :cflags => '-fobjc-arc')
+  app.vendor_project('vendor/babbo-voco/native-utils', :static, :cflags => '-fobjc-arc')
 
   app.frameworks << 'JavaScriptCore'
   app.frameworks << 'SpriteKit'
