@@ -7,6 +7,7 @@ class TabletNavbarView < UIView
     self.initWithFrame(frame)
 
     init_navbar_with_delegate(delegate, titleText: titleText)
+
     build_view
 
     self

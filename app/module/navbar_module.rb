@@ -51,7 +51,7 @@ module NavbarModule
   # build the whole view
   def build_view
 
-    init_design_values if @init.nil? || !@init
+    init_navbar_with_delegate(self, titleText: "No Text") if @init.nil? || !@init
 
     self.backgroundColor = rmq.color.babbo_bar_grey
 
