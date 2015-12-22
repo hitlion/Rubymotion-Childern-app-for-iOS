@@ -26,4 +26,5 @@ class Util
     return FONT_STANDARD_BOLD if type == :bold
     return FONT_STANDARD_REGULAR
   end
+
 end
