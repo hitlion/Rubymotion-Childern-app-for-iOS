@@ -19,3 +19,6 @@ FONT_SIZE_IPHONE_XL     = 30
 # Define by FONT_'type'_'identifier' = "font name"
 FONT_STANDARD_REGULAR   = "Enriqueta-Regular"
 FONT_STANDARD_BOLD      = "Enriqueta-Bold"
+
+# Types and names
+CELL_IDENTIFIER = "Cell"

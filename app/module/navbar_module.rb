@@ -27,7 +27,7 @@ module NavbarModule
   # @title_text         = titleText
   # @delegate           = delegate
   # @init = true
-  def init_navbar_with_delegate(delegate, titleText: titleText)
+  def init_view_with_delegate(delegate, titleText: titleText)
     @pos_x_back_button  = 0.00
     @pos_x_label        = 0.10
     @pos_x_button_1     = 0.55
@@ -51,7 +51,7 @@ module NavbarModule
   # build the whole view
   def build_view
 
-    init_navbar_with_delegate(self, titleText: "No Text") if @init.nil? || !@init
+    init_view_with_delegate(self, titleText: "No Text") if @init.nil? || !@init
 
     self.backgroundColor = rmq.color.babbo_bar_grey
 

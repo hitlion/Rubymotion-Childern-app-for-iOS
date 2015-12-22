@@ -11,7 +11,7 @@ module TabbarModule
   #
   # @delegate           = delegate
   # @init = true
-  def init_navbar_with_delegate(delegate)
+  def init_view_with_delegate(delegate)
     @pos_x_button_1     = 0.33
     @pos_x_button_2     = 0.47
     @pos_x_button_3     = 0.61
@@ -27,7 +27,7 @@ module TabbarModule
   ##
   # build the whole view
   def build_view
-    init_navbar_with_delegate(self) if @init.nil? || !@init
+    init_view_with_delegate(self) if @init.nil? || !@init
 
     self.backgroundColor = rmq.color.babbo_bar_grey
 

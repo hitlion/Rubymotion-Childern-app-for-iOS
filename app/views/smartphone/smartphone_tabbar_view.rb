@@ -5,14 +5,14 @@ class SmartphoneTabbarView < UIView
   def init_with_frame(frame, delegate: delegate)
     self.initWithFrame(frame)
 
-    init_navbar_with_delegate(delegate)
+    init_view_with_delegate(delegate)
 
     build_view
 
     self
   end
 
-  def init_navbar_with_delegate(delegate)
+  def init_view_with_delegate(delegate)
     @pos_x_button_1     = 0.25
     @pos_x_button_2     = 0.475
     @pos_x_button_3     = 0.70

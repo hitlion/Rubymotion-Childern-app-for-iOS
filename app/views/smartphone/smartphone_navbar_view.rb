@@ -5,14 +5,14 @@ class SmartphoneNavbarView < UIView
   def init_with_frame(frame, titleText: titleText, delegate: delegate)
     self.initWithFrame(frame)
 
-    init_navbar_with_delegate(delegate, titleText: titleText)
+    init_view_with_delegate(delegate, titleText: titleText)
 
     build_view
 
     self
   end
 
-  def init_navbar_with_delegate(delegate, titleText: titleText )
+  def init_view_with_delegate(delegate, titleText: titleText )
     @pos_x_back_button  = 0.00
     @pos_x_label        = 0.085
     @pos_x_button_1     = 0.7

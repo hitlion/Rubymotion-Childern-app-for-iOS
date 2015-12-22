@@ -5,7 +5,7 @@ class TabletTabbarView < UIView
   def init_with_frame(frame, delegate: delegate)
     self.initWithFrame(frame)
 
-    init_navbar_with_delegate(delegate)
+    init_view_with_delegate(delegate)
 
     build_view
 
