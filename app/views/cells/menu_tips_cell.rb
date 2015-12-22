@@ -6,12 +6,6 @@ class MenuTipsCell < UICollectionViewCell
     super(frame)
     @delegate = self
 
-    if(device.ipad?)
-      @font_fac = 1.5
-    else
-      @font_fac = 1
-    end
-
     self
   end
 
@@ -30,13 +24,13 @@ class MenuTipsCell < UICollectionViewCell
     label = UILabel.alloc.initWithFrame(CGRectMake(0.0 * view.frame.size.width, 0,
                                                    0.55 * view.frame.size.width, 0.15  * view.frame.size.height))
     label.text = element.header
-    label.font = UIFont.fontWithName("Enriqueta-Bold", size:15 * @font_fac)
+    label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
     label.textAlignment = UITextAlignmentLeft
     label.textColor = rmq.color.babbo_orange
 
     text_view = UITextView.alloc.initWithFrame(CGRectMake(0.0 * view.frame.size.width, 0.2 * view.frame.size.height,
                                                          0.55 * view.frame.size.width, 0.75 * view.frame.size.height ))
-    text_view.font = UIFont.fontWithName("Enriqueta-Regular", size:10 * @font_fac)
+    text_view.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     text_view.textAlignment = UITextAlignmentLeft
 
     text_view.text = element.text

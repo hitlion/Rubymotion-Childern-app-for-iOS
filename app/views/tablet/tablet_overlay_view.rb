@@ -66,7 +66,7 @@ class TabletOverlayView < UIView
                                                        0.45 * top_view.frame.size.width, 0.15 * top_view.frame.size.height))
     name.text = story.document.set_name
     name.textColor = rmq.color.babbo_orange
-    name.font = UIFont.fontWithName("Enriqueta-Bold", size:30)
+    name.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
     name.textAlignment = UITextAlignmentLeft
     top_view.addSubview(name)
 
@@ -77,7 +77,7 @@ class TabletOverlayView < UIView
     time = Time.at(NSDate.dateWithNaturalLanguageString(story.document.timestamp))
     date.text = time.strftime("%d. %B %Y").to_s
     date.textColor = UIColor.blackColor
-    date.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+    date.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:medium))
     date.textAlignment = UITextAlignmentLeft
     top_view.addSubview(date)
 
@@ -88,7 +88,7 @@ class TabletOverlayView < UIView
     left_button.setBackgroundImage(UIImage.imageNamed("button_orange.png"), forState:UIControlStateNormal)
     left_button.setTitle(@text_top_button_left, forState: UIControlStateNormal)
     left_button.addTarget(self, action: "left_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+    left_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     left_button.tag = story.object_id
     top_view.addSubview(left_button)
 
@@ -99,7 +99,7 @@ class TabletOverlayView < UIView
     right_button.setBackgroundImage(UIImage.imageNamed("button_grey.png"), forState:UIControlStateNormal)
     right_button.setTitle(@text_top_button_right, forState: UIControlStateNormal)
     right_button.addTarget(self, action: "right_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+    right_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
 
     if(@overlay_type.class == OverlayShopPremium)
       top_view.addSubview(right_button)
@@ -125,7 +125,7 @@ class TabletOverlayView < UIView
     top_button_line_1.setBackgroundImage(UIImage.imageNamed("button_bg_left_white.png"), forState:UIControlStateNormal)
     top_button_line_1.setTitle(@text_top_button_line_1, forState: UIControlStateNormal)
     top_button_line_1.addTarget(self, action: "top_button_line_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    top_button_line_1.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+    top_button_line_1.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     top_button_line_1.setTitleColor(UIColor.blackColor, forState: UIControlStateNormal)
     top_button_line_1.setTitleColor(UIColor.whiteColor, forState: UIControlStateHighlighted)
     top_button_line_1.tag = 0
@@ -137,7 +137,7 @@ class TabletOverlayView < UIView
     top_button_line_2.setBackgroundImage(UIImage.imageNamed("button_bg_middle_white.png"), forState:UIControlStateNormal)
     top_button_line_2.setTitle(@text_top_button_line_2, forState: UIControlStateNormal)
     top_button_line_2.addTarget(self, action: "top_button_line_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    top_button_line_2.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+    top_button_line_2.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     top_button_line_2.setTitleColor(UIColor.blackColor, forState: UIControlStateNormal)
     top_button_line_2.setTitleColor(UIColor.whiteColor, forState: UIControlStateHighlighted)
     top_button_line_2.tag = 1
@@ -149,7 +149,7 @@ class TabletOverlayView < UIView
     top_button_line_3.setBackgroundImage(UIImage.imageNamed("button_bg_right_white.png"), forState:UIControlStateNormal)
     top_button_line_3.setTitle(@text_top_button_line_3, forState: UIControlStateNormal)
     top_button_line_3.addTarget(self, action: "top_button_line_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    top_button_line_3.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+    top_button_line_3.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     top_button_line_3.setTitleColor(UIColor.blackColor, forState: UIControlStateNormal)
     top_button_line_3.setTitleColor(UIColor.whiteColor, forState: UIControlStateHighlighted)
     top_button_line_3.tag = 2
@@ -187,7 +187,7 @@ class TabletOverlayView < UIView
     bottom_left_button.setBackgroundImage(UIImage.imageNamed("button_bg_left_grey.png"), forState:UIControlStateNormal)
     bottom_left_button.setTitle(@text_bottom_button_line_1, forState: UIControlStateNormal)
     bottom_left_button.addTarget(self, action: "bottom_button_line_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    bottom_left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+    bottom_left_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     bottom_left_button.setTitleColor(UIColor.whiteColor, forState: UIControlStateNormal)
     bottom_left_button.setTitleColor(UIColor.blackColor, forState: UIControlStateHighlighted)
     bottom_left_button.tag = 0
@@ -200,7 +200,7 @@ class TabletOverlayView < UIView
     bottom_right_button.setBackgroundImage(UIImage.imageNamed("button_bg_right_white.png"), forState:UIControlStateNormal)
     bottom_right_button.setTitle(@text_bottom_button_line_2, forState: UIControlStateNormal)
     bottom_right_button.addTarget(self, action: "bottom_button_line_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    bottom_right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:15)
+    bottom_right_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     bottom_right_button.setTitleColor(UIColor.blackColor, forState: UIControlStateNormal)
     bottom_right_button.setTitleColor(UIColor.whiteColor, forState: UIControlStateHighlighted)
     bottom_right_button.tag = 1
@@ -242,7 +242,7 @@ class TabletOverlayView < UIView
     ###
     # Build the textfield
     @text_view = UITextView.alloc.initWithFrame(frame)
-    @text_view.font = UIFont.fontWithName("Enriqueta-Regular", size:17)
+    @text_view.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     @text_view.textAlignment = UITextAlignmentLeft
 
     @text_view.text = ServerBackend.get.description_for_story(story)

@@ -1,16 +1,10 @@
 class MenuStoryCell < UICollectionViewCell
 
-  attr_accessor :delegate, :element, :font_fac
+  attr_accessor :delegate, :element
 
   def initWithFrame(frame)
     super(frame)
     @delegate = self
-
-    if(device.ipad?)
-      @font_fac = 1.5
-    else
-      @font_fac = 1
-    end
 
     self
   end
@@ -35,7 +29,7 @@ class MenuStoryCell < UICollectionViewCell
     label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
     label.text = element.document.branch_name
     label.textColor = UIColor.blackColor
-    label.font = UIFont.fontWithName("Enriqueta-Bold", size:20 * @font_fac)
+    label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
     label.textAlignment = UITextAlignmentCenter
 
     left_button = UIButton.alloc.initWithFrame(CGRectMake(0.15 * layer.frame.size.width,0.6 * layer.frame.size.height,
@@ -44,7 +38,7 @@ class MenuStoryCell < UICollectionViewCell
     left_button.setTitle("Mehr", forState: UIControlStateNormal)
     left_button.addTarget(self, action: "left_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
     left_button.tag = element.object_id
-    left_button.font = UIFont.fontWithName("Enriqueta-Regular", size:10 * @font_fac)
+    left_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
 
     right_button = UIButton.alloc.initWithFrame(CGRectMake(0.55 * layer.frame.size.width,0.6 * layer.frame.size.height,
                                                            0.3 * layer.frame.size.width, 0.3 * layer.frame.size.height))
@@ -52,7 +46,7 @@ class MenuStoryCell < UICollectionViewCell
     right_button.setTitle("Öffnen", forState: UIControlStateNormal)
     right_button.addTarget(self, action: "right_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
     right_button.tag = element.object_id
-    right_button.font = UIFont.fontWithName("Enriqueta-Regular", size:10 * @font_fac)
+    right_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
 
     @selected_story_marker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(view.bounds)- 0.05 *  view.frame.size.width,
                                                                      view.frame.size.height - 0.05 * view.frame.size.width,

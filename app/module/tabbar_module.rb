@@ -88,7 +88,7 @@ module TabbarModule
     label = UILabel.alloc.initWithFrame(CGRectMake(0, 0.65 * element.frame.size.height,
                                                    element.frame.size.width, 0.35 * element.frame.size.height))
     label.text = name
-    label.font = UIFont.fontWithName(Util.get_font_standard(:regular), size: Util.get_font_size(:small))
+    label.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     label.textAlignment = UITextAlignmentCenter
 
     element.addSubview button

@@ -1,4 +1,4 @@
-class Util
+class TTUtil
 
   # Get the standard font size in depency of the device
   # @param size define the size with one of the following tags
