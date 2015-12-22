@@ -86,8 +86,10 @@ class AdvancedCollectionView < UIView
     # Define scroll left button
     frame = CGRectMake(0.0 * bottom_view.frame.size.width, 0.0 * bottom_view.frame.size.height,
                        ScrollButtonWidthFac * bottom_view.frame.size.width, 1.0 * bottom_view.frame.size.height)
-    scroll_button_left = UIButton.alloc.initWithFrame(frame)
-    scroll_button_left.setImage(UIImage.imageNamed("previous.png"), forState:UIControlStateNormal)
+    scroll_button_left = UIButton.buttonWithType(UIButtonTypeRoundedRect)
+    scroll_button_left.frame = frame
+    scroll_button_left.tintColor = rmq.color.babbo_button_grey
+    scroll_button_left.setImage(UIImage.imageNamed("icons/arrow_left.png"), forState:UIControlStateNormal)
     scroll_button_left.addTarget(self, action: "scroll_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
     scroll_button_left.tag = -1
     bottom_view.addSubview(scroll_button_left)
@@ -133,8 +135,10 @@ class AdvancedCollectionView < UIView
     frame = CGRectMake((ScrollButtonWidthFac + CollectionViewWidthFac) * bottom_view.frame.size.width,
                        0.0 * bottom_view.frame.size.height,
                        ScrollButtonWidthFac * bottom_view.frame.size.width, 1.0 * bottom_view.frame.size.height)
-    scroll_button_right = UIButton.alloc.initWithFrame(frame)
-    scroll_button_right.setImage(UIImage.imageNamed("next.png"), forState:UIControlStateNormal)
+    scroll_button_right = UIButton.buttonWithType(UIButtonTypeRoundedRect)
+    scroll_button_right.frame = frame
+    scroll_button_right.tintColor = rmq.color.babbo_button_grey
+    scroll_button_right.setImage(UIImage.imageNamed("icons/arrow_right.png"), forState:UIControlStateNormal)
     scroll_button_right.addTarget(self, action: "scroll_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
     scroll_button_right.tag = +1
     bottom_view.addSubview(scroll_button_right)

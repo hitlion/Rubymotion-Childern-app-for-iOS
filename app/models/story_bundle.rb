@@ -191,6 +191,8 @@ class StoryBundle
 
     lp "#{File.basename(control_path)} contains a valid document."
     @document = document
+    @manifest = File.absolute_path(control_path)
+    autorelease_pool { @checksum = NSData.sha1FromContentsOfFile(@manifest)}
   end
 
   # Collect all assets referenced in this story and
@@ -199,6 +201,14 @@ class StoryBundle
     # Assets are only contained in objects
     lp 'Collecting assets..'
     asset_list = []
+    asset_store = AssetStore.new
+
+    if asset_store.valid_manifest? @checksum
+      lp 'Assets are still valid (checksum match).'
+      asset_store.compact!
+      return true
+    end
+
     @document.body.levels.each do |level|
       level.screens.each do |screen|
         screen.objects.each do |object|
@@ -219,7 +229,6 @@ class StoryBundle
     end
 
     if @load_errors.empty?
-      asset_store = AssetStore.new
       asset_list.each do |asset|
         lp "Caching '#{asset}'..", force_color: :yellow if app.development?
 
@@ -227,6 +236,7 @@ class StoryBundle
           @load_errors << "Failed to cache asset '#{asset}'"
         end
       end
+      asset_store.register_manifest(@manifest, @checksum)
       asset_store.compact!
       lp "Cached #{asset_list.count} assets."
     end

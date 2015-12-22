@@ -96,7 +96,7 @@ Motion::Project::App.setup do |app|
 
   app.name = 'Babbo-Voco'
   app.identifier = 'de.tuluh-tec.babbo-voco'
-  app.short_version = app.version = '1.0.142'
+  app.short_version = app.version = '1.0.143'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :landscape_right]
@@ -107,13 +107,17 @@ Motion::Project::App.setup do |app|
 
   app.manifest_assets << {:kind => 'software-package', :url => '__URL__'}
 
-  app.vendor_project('vendor/babbo-voco/js-bridging', :static, :cflags => '-fobjc-arc -F JavaScriptCore')
-  app.vendor_project('vendor/babbo-voco/digest'     , :static, :cflags => '-fobjc-arc')
+  app.vendor_project('vendor/babbo-voco/js-bridging' , :static, :cflags => '-fobjc-arc -F JavaScriptCore')
+  app.vendor_project('vendor/babbo-voco/digest'      , :static, :cflags => '-fobjc-arc')
+  app.vendor_project('vendor/babbo-voco/native-utils', :static, :cflags => '-fobjc-arc')
 
   app.frameworks << 'JavaScriptCore'
   app.frameworks << 'SpriteKit'
   app.frameworks << 'CoreImage'
   app.frameworks << 'AVFoundation'
+
+  # See: http://hipbyte.myjetbrains.com/youtrack/issue/RM-1004
+  app.opt_level = 2
 end
 
 YARD::Rake::YardocTask.new # include YARD rake task

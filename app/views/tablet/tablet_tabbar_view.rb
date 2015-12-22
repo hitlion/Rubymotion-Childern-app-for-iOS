@@ -44,21 +44,21 @@ class TabletTabbarView < UIView
     ####
     # Define first button
     frame = CGRectMake(PosXButton1 * self.frame.size.width, gap, ButtonHeight, ButtonHeight)
-    button1 = add_button_element_with_image(UIImage.imageNamed("icon_button_book.png"), displayName: "Stories",
+    button1 = add_button_element_with_image(UIImage.imageNamed("icons/book.png"), displayName: "Stories",
                                             frame: frame, action: "button_pressed:", id: 1)
     self.addSubview(button1)
 
     ####
     # Define second button
     frame = CGRectMake(PosXButton2 * self.frame.size.width, gap, ButtonHeight, ButtonHeight)
-    button2 = add_button_element_with_image(UIImage.imageNamed("icon_button_videos.png"), displayName: "Videos",
+    button2 = add_button_element_with_image(UIImage.imageNamed("icons/video.png"), displayName: "Videos",
                                             frame: frame, action: "button_pressed:", id: 2)
     self.addSubview(button2)
 
     ####
     # Define third button
     frame = CGRectMake(PosXButton3 * self.frame.size.width, gap, ButtonHeight, ButtonHeight)
-    button3 = add_button_element_with_image(UIImage.imageNamed("icon_button_games.png"), displayName: "Spiele",
+    button3 = add_button_element_with_image(UIImage.imageNamed("icons/games.png"), displayName: "Spiele",
                                             frame: frame, action: "button_pressed:", id: 3)
     self.addSubview(button3)
 

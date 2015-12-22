@@ -59,9 +59,9 @@ class KidsScene < SKScene
 
     add_background
 
-    add_element_in_buttonline("avatar_Kind", BUTTON_CHILD_NAME, CHILD_BUTTON_X, 10)
-    add_element_in_buttonline("dummy_parent.png", BUTTON_PARENT_NAME, PARENT_BUTTON_X, 10)
-    add_element_in_buttonline("Logo", BUTTON_LOGO_NAME, LOGO_BUTTON_X, 10)
+    add_element_in_buttonline("avatar_kid.png", BUTTON_CHILD_NAME, CHILD_BUTTON_X, 10)
+    add_element_in_buttonline("avatar_parent.png", BUTTON_PARENT_NAME, PARENT_BUTTON_X, 10)
+    add_element_in_buttonline("Logo.png", BUTTON_LOGO_NAME, LOGO_BUTTON_X, 10)
 
     add_story_list
 
@@ -255,7 +255,7 @@ class KidsScene < SKScene
       clip.scale = (0.2 * texture.size.height) / clip.size.height
       story.addChild clip
 
-      user_picture = SKSpriteNode.spriteNodeWithImageNamed("dummy_parent.png")
+      user_picture = SKSpriteNode.spriteNodeWithImageNamed("avatar_parent.png")
       user_picture.zPosition = 1
       user_picture.position = CGPointMake(0.5 * texture.size.width, - 1 * texture.size.height)
       user_picture.scale = (0.35 * texture.size.height) / user_picture.size.height
@@ -345,7 +345,7 @@ class KidsScene < SKScene
   # Add and define the background sprite
   #
   def add_background
-    texture = SKTexture.textureWithImageNamed("BG.png")
+    texture = SKTexture.textureWithImageNamed("background_kids_menu.png")
 
     background = SKSpriteNode.spriteNodeWithTexture(texture)
     background.position = CGPointMake(mid_x, mid_y)

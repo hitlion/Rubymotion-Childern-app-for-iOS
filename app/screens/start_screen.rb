@@ -5,10 +5,18 @@ class StartScreen < PM::Screen
     attr_accessor :next_story
     attr_accessor :last_screen
     attr_accessor :warmup_done
+    attr_reader   :animation_a, :animation_b
   end
 
   title "Start Screen"
   stylesheet StartScreenStyleSheet
+
+  NamesAnimationA = ["animations/load_screen_babbo_animation_A0.png", "animations/load_screen_babbo_animation_A1.png",
+                    "animations/load_screen_babbo_animation_A2.png", "animations/load_screen_babbo_animation_A3.png",
+                    "animations/load_screen_babbo_animation_A4.png", "animations/load_screen_babbo_animation_A5.png",
+                    "animations/load_screen_babbo_animation_A6.png"]
+  NamesAnimationB = ["animations/load_screen_babbo_animation_B0.png", "animations/load_screen_babbo_animation_B1.png"]
+
 
   def on_load
     StartScreen.warmup_done ||= false
@@ -16,8 +24,53 @@ class StartScreen < PM::Screen
     set_nav_bar_button :right, title: "Kids", action: :go_to_kids
     set_nav_bar_button :left, title: "Parent", action: :go_to_parent
 
-    append(UIImageView, :logo)
-    append(UIProgressView, :load_progress).hide
+    append(UIImageView, :background)
+    append(UIProgressView, :load_progress)
+
+    @current_index = 0
+
+    load_images
+
+    build_animation
+  end
+
+  def load_images
+    return if(!@animation_a.nil? && !@animation_b.nil?)
+
+    @animation_a = []
+    @animation_b = []
+
+    NamesAnimationA.each do |name|
+      @animation_a.addObject(UIImage.imageNamed(name))
+    end
+
+    NamesAnimationB.each do |name|
+      @animation_b.addObject(UIImage.imageNamed(name))
+    end
+  end
+
+  def build_animation
+
+    @animation_frame = UIImageView.alloc.initWithFrame(CGRectMake(0.25 * self.frame.size.width, 0.25 * self.frame.size.height,
+                                                                  0.3 * self.frame.size.width, 0.4 * self.frame.size.height))
+    add @animation_frame
+
+    animate_animation_a
+  end
+
+  def animate_animation_a
+    duration = 0.1 * @animation_a.length
+    @animation_frame.animationImages = @animation_a
+    @animation_frame.animationDuration = duration
+    @animation_frame.startAnimating
+    self.performSelector("animate_animation_b", withObject: nil, afterDelay: duration)
+  end
+
+  def animate_animation_b
+    @animation_frame.stopAnimating
+    @animation_frame.animationImages = @animation_b
+    @animation_frame.animationDuration = 0.1 * @animation_b.length
+    @animation_frame.startAnimating
   end
 
   def goto_kids

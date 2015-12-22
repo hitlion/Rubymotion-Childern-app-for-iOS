@@ -3,11 +3,17 @@ class AppDelegate < PM::Delegate
   tint_color rmq.color.white
 
   include CrashlyticsIntegration if defined? CrashlyticsIntegration
+  include Devmode if defined? Devmode
 
   def on_load( app, options )
     return if RUBYMOTION_ENV == 'test'
 
+    self.setupDevmode if self.respond_to? :setupDevmode
     self.setupCrashlytics if self.respond_to? :setupCrashlytics
+
+    if defined? Devmode
+      StartScreen.next_screen = self.devmode_start_screen || nil
+    end
 
     open StartScreen.new
 
