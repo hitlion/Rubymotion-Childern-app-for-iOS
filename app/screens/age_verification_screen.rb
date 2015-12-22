@@ -24,6 +24,10 @@ class AgeVerificationScreen < PM::Screen
     @year_picker.delegate = self
     @year_picker.dataSource = self
 
+    if(device.iphone?)
+      @year_picker.transform = CGAffineTransformMakeScale(0.75, 0.75);
+    end
+
     button = view.append!(UIButton, :go_on_button)
 
     button.on(:touch) do
