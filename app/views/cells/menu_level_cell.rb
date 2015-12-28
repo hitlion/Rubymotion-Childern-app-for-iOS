@@ -1,16 +1,10 @@
 class MenuLevelCell < UICollectionViewCell
 
-  attr_accessor :delegate, :element, :font_fac
+  attr_accessor :delegate, :element
 
   def initWithFrame(frame)
     super(frame)
     @delegate = self
-
-    if(device.ipad?)
-      @font_fac = 1.5
-    else
-      @font_fac = 1
-    end
 
     self
   end
@@ -37,7 +31,7 @@ class MenuLevelCell < UICollectionViewCell
                                                   view.frame.size.width, view.frame.size.height / 8.0))
     name.backgroundColor = UIColor.clearColor
     name.text = element.document.set_name
-    name.font = UIFont.fontWithName("Enriqueta-Regular", size:10 * @font_fac)
+    name.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     name.textAlignment = UITextAlignmentLeft
     name.textColor = rmq.color.babbo_orange
 
@@ -47,7 +41,7 @@ class MenuLevelCell < UICollectionViewCell
 
     time = Time.at(NSDate.dateWithNaturalLanguageString(element.document.timestamp))
     date.text = time.strftime("%d. %B %Y").to_s
-    date.font = UIFont.fontWithName("Enriqueta-Regular", size:10 * @font_fac)
+    date.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     date.textAlignment = UITextAlignmentLeft
 
     view.addSubview(image)

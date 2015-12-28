@@ -52,7 +52,7 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   end
 
   def age_input_field(st)
-    st.frame = {w: 0.3 * device.screen_width, below_prev:0.08 * device.screen_height,  h: 0.125 * device.screen_height, centered: :horizontal}
+    st.frame = {w: 0.3 * device.screen_width, below_prev:0.035 * device.screen_height,  h: 0.2 * device.screen_height, centered: :horizontal}
   end
 
   def go_on_button(st)

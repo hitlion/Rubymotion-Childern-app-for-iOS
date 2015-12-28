@@ -30,7 +30,7 @@ class ShopPremiumCell < UICollectionViewCell
     label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
     label.text = element.document.branch_name
     label.textColor = UIColor.blackColor
-    label.font = UIFont.fontWithName("Enriqueta-Bold", size:30)
+    label.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:large))
     label.textAlignment = UITextAlignmentLeft
 
 

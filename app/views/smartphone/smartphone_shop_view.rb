@@ -1,6 +1,6 @@
-class SmartphoneTabbarView < UIView
+class SmartphoneShopView < UIScrollView
 
-  include TabbarModule
+  include ShopViewModule
 
   def init_with_frame(frame, delegate: delegate)
     self.initWithFrame(frame)
@@ -13,17 +13,11 @@ class SmartphoneTabbarView < UIView
   end
 
   def init_view_with_delegate(delegate)
-    @pos_x_button_1     = 0.25
-    @pos_x_button_2     = 0.475
-    @pos_x_button_3     = 0.70
-
-    @element_size       = 48
-    @icon_size          = 24
+    @top_view_height    = 0.75
+    @bottom_view_height = 0.75
 
     @delegate           = delegate
 
     @init = true
   end
-
-
 end
