@@ -33,6 +33,7 @@ class StoryBundle
               bundle = StoryBundle.new(bundle_path)
               bundle.load
               weak_self.bundle_list << bundle
+              weak_self.bundle_list += bundle.changesets if bundle.has_changesets?
               async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
             end
           end
@@ -41,6 +42,7 @@ class StoryBundle
             bundle = StoryBundle.new(bundle_path)
             bundle.load
             self.bundle_list << bundle
+            self.bundle_list += bundle.changesets if bundle.has_changesets?
           end
         end
       else
@@ -53,7 +55,7 @@ class StoryBundle
     end
   end
 
-  attr_reader :document, :load_errors, :path
+  attr_reader :document, :load_errors, :path, :ruleset
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -64,6 +66,7 @@ class StoryBundle
     @path  = bundle_path
     @paths = nil
     @valid = false
+    @ruleset = nil
     @load_errors = []
   end
 
@@ -88,6 +91,8 @@ class StoryBundle
 
     collect_and_cache_assets
     @valid = true if @load_errors.empty?
+
+    load_ruleset
     valid?
   end
 
@@ -154,6 +159,39 @@ class StoryBundle
     end
   end
 
+  # Return a list of +StoryBundle+ objects containing
+  # one item for each changeset located in the bundles data directory.
+  # @return [Array<StoryBundle>] A list of modified version of this bundle
+  #   matching the changesets located inside of the bundle.
+  def changesets
+    changesets   = []
+    return changesets unless valid?
+
+    control_path = File.absolute_path(File.join(@path, 'SMIL'))
+    runner = Story::Changelog::Runner.new
+
+    Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do |change_path|
+      change_data = File.read(change_path)
+      unless change_data.nil?
+        bundle = Marshal.load(Marshal.dump(self))
+        runner.apply(bundle, change_data)
+        bundle.document.dataset_id = -1 * index if bundle.document.dataset_id == self.document.dataset_id
+        changesets << bundle
+      end
+    end
+    changesets
+  end
+
+  # Check if the bundle contains any changesets.
+  # @return [Boolean] +true+ if the bundle has changesets available
+  #   +false+ otherwise.
+  def has_changesets?
+    return false unless valid?
+
+    control_path = File.absolute_path(File.join(@path, 'SMIL'))
+    ! Dir.glob(File.join(control_path, 'changes_branch_*.js')).empty?
+  end
+
   private
 
   # Load the story definition from `SMIL/control.[yml/json]`.
@@ -193,6 +231,35 @@ class StoryBundle
     @document = document
     @manifest = File.absolute_path(control_path)
     autorelease_pool { @checksum = NSData.sha1FromContentsOfFile(@manifest)}
+  end
+
+  # Load the splice ruleset from `SMIL/splice-rules.[yml/json]`.
+  # If a YAML file is present it will be prefered over JSON.
+  #
+  # Any errors while loading will result in an empty ruleset
+  # which in turn produces an immutable document.
+  def load_ruleset
+    base_path = File.join(@path, 'SMIL')
+    if File.exists? File.join(base_path, 'splice.yml')
+      rules_path = File.join(base_path, 'splice.yml')
+      rules_data = YAML.load(File.read(rules_path))
+
+    elsif File.exists? File.join(base_path, 'splice.json')
+      rules_path = File.join(base_path, 'splice.json')
+      rules_data = JSON.load(File.read(rules_path))
+    else
+      @ruleset = Story::Changelog::Ruleset.new([])
+      return
+    end
+
+    lp "Read ruleset data from: '#{rules_path}'"
+    if rules_data.nil?
+      lp "Ruleset data is empty or invalid", force_color: :red
+      @ruleset = Story::Changelog::Ruleset.new([])
+      return
+    end
+
+    @ruleset = Story::Changelog::Ruleset.new(rules_data)
   end
 
   # Collect all assets referenced in this story and

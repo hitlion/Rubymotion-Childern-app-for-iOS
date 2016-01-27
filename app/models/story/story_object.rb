@@ -13,9 +13,9 @@ module Story
     has_events :at_start, :at_end, :on_click, :on_swipe,
                :start_moving, :end_moving, :new_poition
 
-    attr_reader :id, :name, :type, :processable, :resize, :moveable, :path,
+    attr_reader :id, :type, :processable, :resize, :moveable, :path,
                 :changes, :mask
-    attr_accessor :content, :position, :size, :layer, :transparency
+    attr_accessor :name, :content, :position, :size, :layer, :transparency
 
     # Initialize a new Object instance
     #
@@ -124,6 +124,12 @@ module Story
       @changes[:transparency] ||= { :value => nil, :original => @transparency }
       @changes[:transparency][:value] = new_transparency
       @transparency = new_transparency
+    end
+
+
+    def fix_path( parent_path )
+      @path = "#{parent_path}:object[-1]"
+      @path.gsub!(/:object\[[^\]]*\]$/, ":object[#{@id}]")
     end
   end
 end

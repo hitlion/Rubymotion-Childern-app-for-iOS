@@ -14,7 +14,7 @@ module Story
     # attributes parsed from :head
     attr_reader :data_language, :data_language_version, :template_id
     # attributes parsed from :meta
-    attr_reader :document_id, :dataset_id, :branch_creator_id,
+    attr_accessor :document_id, :dataset_id, :branch_creator_id,
                 :creator_impressum, :branch_name, :editor_id,
                 :set_name, :thumbnail, :screenshot, :description,
                 :status, :modified_conveyable, :timestamp, :body
