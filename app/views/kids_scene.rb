@@ -70,7 +70,10 @@ class KidsScene < SKScene
     add_joints
 
     add_version_number
+  end
 
+  def willMoveFromView(view)
+    @background_audio.stop
   end
 
   ##
@@ -78,6 +81,8 @@ class KidsScene < SKScene
   #
   def update(current_time)
     super
+
+    add_background_audio
 
     if !@init
       return
@@ -366,6 +371,18 @@ class KidsScene < SKScene
     label.fontColor = UIColor.blackColor
     label.fontName = FONT
     addChild label
+  end
+
+  def add_background_audio
+
+    return if !@background_audio.nil?
+
+    url = NSBundle.mainBundle.URLForResource("sounds/kids_background.mp3", withExtension:nil)
+
+    @background_audio ||= AVAudioPlayer.alloc.initWithContentsOfURL(url, error:nil)
+    @background_audio.numberOfLoops = -1
+    @background_audio.prepareToPlay
+    @background_audio.play
   end
 
   #################
