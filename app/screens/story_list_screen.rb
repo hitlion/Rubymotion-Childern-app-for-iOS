@@ -3,6 +3,7 @@ class StoryListScreen < PM::TableScreen
   stylesheet StoryListStylesheet
 
   refreshable
+  longpressable
 
   # Initial view setup
   def on_load
@@ -70,6 +71,7 @@ class StoryListScreen < PM::TableScreen
       accessory: { view: detail_button },
 
       action: :play_story,
+      long_press_action: :edit_story,
       arguments: { bundle: bundle }
     }
   end
@@ -117,6 +119,22 @@ class StoryListScreen < PM::TableScreen
     StartScreen.next_screen = :story_player
     StartScreen.last_screen = :story_list
     rmq.screen.open_root_screen(StartScreen)
+  end
+
+  # Start the +StoryEditorScreen+ for modifying a given +StoryBundle+
+  def edit_story( args )
+    return if args[:bundle].nil?
+    return unless args[:bundle].valid?
+
+    if args[:bundle].ruleset.rules.empty?
+      app.alert(title: 'Entschuldigung',
+                message: 'Diese Story kann nicht bearbeitet werden.')
+    else
+      StartScreen.next_story = args[:bundle]
+      StartScreen.next_screen = :story_editor
+      StartScreen.last_screen = :story_list
+      rmq.screen.open_root_screen(StartScreen)
+    end
   end
 
   def show_error_alert

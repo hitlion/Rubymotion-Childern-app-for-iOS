@@ -83,6 +83,14 @@ module Story
     ## mark: Change tracking
 
     # @private
+    # Track modifications to the objects {#name} property
+    def name=( new_name )
+      @changes[:object_name] ||= { :value => nil, :original => @name }
+      @changes[:object_name][:value] = new_name
+      @name = new_name
+    end
+
+    # @private
     # Track modifications to the objects {#content} property
     def content=( new_content )
       @changes[:object_content] ||= { :value => nil, :original => @content }
@@ -127,6 +135,8 @@ module Story
     end
 
 
+    # @private
+    # Fix the ojebcts {#path} after copying it
     def fix_path( parent_path )
       @path = "#{parent_path}:object[-1]"
       @path.gsub!(/:object\[[^\]]*\]$/, ":object[#{@id}]")

@@ -94,6 +94,11 @@ class StartScreen < PM::Screen
     open_modal StoryPlayerScreen.get(StartScreen.next_story)
   end
 
+  def edit_story
+    StartScreen.next_screen = StartScreen.last_screen
+    open_modal StoryEditorScreen.get(StartScreen.next_story)
+  end
+
   def goto_story_list
     open StoryListScreen.new(nav_bar:true)
   end
@@ -137,20 +142,23 @@ class StartScreen < PM::Screen
   end
 
   def dispatch
-    if(StartScreen.next_screen.nil?)
-      goto_parent
-    elsif StartScreen.next_screen == :parent_menu
-      goto_parent
-    elsif StartScreen.next_screen == :kids_menu
-      goto_kids
-    elsif StartScreen.next_screen == :age_verification_screen
-      goto_age_verification
-    elsif StartScreen.next_screen == :story_player
-      start_story
-    elsif StartScreen.next_screen == :shop_menu
-      goto_shop
-    elsif StartScreen.next_screen == :story_list
-      goto_story_list
+    case StartScreen.next_screen
+      when :parent_menu
+        goto_parent
+      when :kids_menu
+        goto_kids
+      when :age_verification_screen
+        goto_age_verification
+      when :story_player
+        start_story
+      when :story_editor
+        edit_story
+      when :shop_menu
+        goto_shop
+      when :story_list
+        goto_story_list
+      else
+        goto_parent
     end
   end
 

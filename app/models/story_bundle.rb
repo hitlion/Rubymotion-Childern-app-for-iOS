@@ -55,7 +55,7 @@ class StoryBundle
     end
   end
 
-  attr_reader :document, :load_errors, :path, :ruleset
+  attr_reader :document, :load_errors, :path, :ruleset, :changelog
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -68,6 +68,7 @@ class StoryBundle
     @valid = false
     @ruleset = nil
     @load_errors = []
+    @changelog = nil
   end
 
   # Check if this level is valid.
@@ -176,6 +177,7 @@ class StoryBundle
         bundle = Marshal.load(Marshal.dump(self))
         runner.apply(bundle, change_data)
         bundle.document.dataset_id = -1 * index if bundle.document.dataset_id == self.document.dataset_id
+        bundle.instance_eval { @changelog = change_data }
         changesets << bundle
       end
     end
