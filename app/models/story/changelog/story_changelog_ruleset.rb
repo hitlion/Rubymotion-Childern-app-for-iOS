@@ -89,7 +89,7 @@ module Story
         return {} if screen.nil?
 
         res = {}
-        scren.objects.each do |obj|
+        screen.objects.each do |obj|
           options = options_for_object(bundle, obj.path)
           res[obj.path] = options unless options.empty?
         end
