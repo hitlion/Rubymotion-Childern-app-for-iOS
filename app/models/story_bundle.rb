@@ -160,6 +160,27 @@ class StoryBundle
     end
   end
 
+  # Return a relative path for a new asset of +type+
+  # @param [Symbol] type The type for the new asset.
+  #   One of :video, :picture, :audio
+  # @return [String] The relative asset path or +nil+ if the bundle is
+  #   invalid or if any error occured.
+  def asset_path_for_new_item_of_type( type )
+    return nil unless [:video, :picture, :audio].include? type
+
+    base_name = NSUUID.UUID.UUIDString
+    case type
+    when :video
+      File.join('..', 'content', "#{base_name}.m4v")
+    when :picture
+      File.join('..', 'content', "#{base_name}.png")
+    when :audio
+      File.join('..', 'content', "#{base_name}.m4a")
+    else
+      nil
+    end
+  end
+
   # Return a list of +StoryBundle+ objects containing
   # one item for each changeset located in the bundles data directory.
   # @return [Array<StoryBundle>] A list of modified version of this bundle
