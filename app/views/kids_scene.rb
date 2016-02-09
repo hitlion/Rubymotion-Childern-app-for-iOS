@@ -93,7 +93,7 @@ class KidsScene < SKScene
 
     #todo
 
-    if (@story_list.select{|s| s.document.set_name == nodeAtPoint(@center_point).name}.first)
+    if (@story_list.select{|s| s.document.document_id.to_s + ":" + s.document.dataset_id.to_s == nodeAtPoint(@center_point).name}.first)
       @center_node = nodeAtPoint(@center_point)
     end
   end
@@ -114,13 +114,12 @@ class KidsScene < SKScene
     elsif node.name == BUTTON_LOGO_NAME
       printf("Logo button clicked \n")
     end
-
-    story = @story_list.select{|s| s.document.set_name == @center_node.name}.first
+    story = @story_list.select{|s| s.document.document_id.to_s + ":" + s.document.dataset_id.to_s == @center_node.name}.first
 
     if @center_node.equal?(node)
       @story_selected = true
       @selected_story = story
-    elsif (@story_list.select{|s| s.document.set_name == node.name}.first) && (!node.equal?(@center_node))
+    elsif (@story_list.select{|s| s.document.document_id.to_s + ":" + s.document.dataset_id.to_s == node.name}.first) && (!node.equal?(@center_node))
       scale_all_small
       move_rope_by_x(@center_point.x - node.position.x, 0.35)
 
@@ -227,7 +226,9 @@ class KidsScene < SKScene
       story.zPosition = 10
       story.anchorPoint = CGPointMake(0.5, 0.98)
       story.position = CGPointMake(mid_x + i * distance_between_storyicons, @story_pos_y)
-      story.name = s.document.set_name
+      name = s.document.document_id.to_s + ":" + s.document.dataset_id.to_s
+      story.name = name
+      lp story.name
       story.physicsBody = SKPhysicsBody.bodyWithRectangleOfSize(story.size)
       story.physicsBody.dynamic = true
       story.physicsBody.angularDamping = 5.0
@@ -279,7 +280,8 @@ class KidsScene < SKScene
     end
 
     if(!@story_list.empty?)
-      @center_node = childNodeWithName(@story_list.first.document.set_name)
+      name = @story_list.first.document.document_id.to_s + ":" + @story_list.first.document.dataset_id.to_s
+      @center_node = childNodeWithName(name)
     end
 
 
@@ -293,10 +295,11 @@ class KidsScene < SKScene
   def add_joints
 
     @story_list.each do |s|
-      joint = SKPhysicsJointPin.jointWithBodyA(childNodeWithName(s.document.set_name).physicsBody,
+      name = s.document.document_id.to_s + ":" + s.document.dataset_id.to_s
+      joint = SKPhysicsJointPin.jointWithBodyA(childNodeWithName(name).physicsBody,
                                                bodyB:childNodeWithName(ELEMENT_ROPE_NAME).physicsBody,
-                                               anchor:CGPointMake(childNodeWithName(s.document.set_name).position.x,
-                                                                  childNodeWithName(s.document.set_name).position.y+50))
+                                               anchor:CGPointMake(childNodeWithName(name).position.x,
+                                                                  childNodeWithName(name).position.y+50))
 
       joint.lowerAngleLimit = -0.1
       joint.upperAngleLimit = 0.1
@@ -314,7 +317,9 @@ class KidsScene < SKScene
 
     return if @story_list.empty?
 
-    rope_width = childNodeWithName(@story_list.last.document.set_name).position.x - childNodeWithName(@story_list.first.document.set_name).position.x + 3 * device.screen_width
+    name_1 = @story_list.last.document.document_id.to_s + ":" + @story_list.last.document.dataset_id.to_s
+    name_2 = @story_list.first.document.document_id.to_s + ":" + @story_list.first.document.dataset_id.to_s
+    rope_width = childNodeWithName(name_1).position.x - childNodeWithName(name_2).position.x + 3 * device.screen_width
 
     rope = SKSpriteNode.spriteNodeWithColor(UIColor.clearColor, size: CGSizeMake(rope_width, @height / 100))
     rope.name = ELEMENT_ROPE_NAME
@@ -436,13 +441,15 @@ class KidsScene < SKScene
 
     return if (rope.nil? || @story_list.empty?)
 
-    if @center_node.equal?(childNodeWithName(@story_list.first.document.set_name)) &&
-        childNodeWithName(@story_list.first.document.set_name).position == @center_point && x_distance >= 0
+    name = @story_list.first.document.document_id.to_s + ":" + @story_list.first.document.dataset_id.to_s
+    if @center_node.equal?(childNodeWithName(name)) &&
+        childNodeWithName(name).position == @center_point && x_distance >= 0
       return
     end
 
-    if @center_node.equal?(childNodeWithName(@story_list.last.document.set_name)) &&
-        childNodeWithName(@story_list.last.document.set_name).position == @center_point && x_distance <= 0
+    name = @story_list.last.document.document_id.to_s + ":" + @story_list.last.document.dataset_id.to_s
+    if @center_node.equal?(childNodeWithName(name)) &&
+        childNodeWithName(name).position == @center_point && x_distance <= 0
       return
     end
 
@@ -480,7 +487,8 @@ class KidsScene < SKScene
   def scale_all_small
     if(!@story_list.empty?)
       @story_list.each do |s|
-        childNodeWithName(s.document.set_name).runAction(SKAction.scaleTo(@small_scale, duration: 0.2))
+        name = s.document.document_id.to_s + ":" + s.document.dataset_id.to_s
+        childNodeWithName(name).runAction(SKAction.scaleTo(@small_scale, duration: 0.2))
       end
     end
   end
