@@ -19,7 +19,7 @@ class StoryEditorToolbox < UIView
 
       append(UILabel, :object_name_label)
       append(UIButton, :edit_name).on(:tap) do |_|
-        app.alert(title: "Name ändern", message: "", style: :custom, fields: {input: {placeholder: @target.name}}) do |_, fields|
+        app.alert(title: 'Name ändern', style: :custom, fields: {input: {placeholder: @target.name}}) do |_, fields|
           unless fields[:input].text.empty?
             @target.name = fields[:input].text
             update_display_values
@@ -27,7 +27,17 @@ class StoryEditorToolbox < UIView
         end
       end
 
-      append(UIButton, :edit_content)
+      append(UIButton, :edit_content).on(:tap) do |_|
+        case @target.type
+        when :picture
+          rmq.screen.present_photo_chooser
+        when :video
+          rmq.screen.present_video_chooser
+        when :audio
+          path = rmq.screen.bundle.asset_path_for_new_item_of_type(:audio)
+          rmq.screen.present_audio_recorder(path)
+        end
+      end
 
       append(UILabel, :resize_width_label)
       append(UISlider, :resize_width_slider).on(:change) do |sender, _|
@@ -58,7 +68,7 @@ class StoryEditorToolbox < UIView
       append(UILabel, :layer_select_label)
       append(UIStepper, :layer_select_stepper).on(:change) do |sender, _|
         unless @target.nil? or @node.nil?
-          @node.zPosition = sender.value
+          @node.zPosition = 999_800 + sender.value
           @target.layer = sender.value
 
           update_display_values
@@ -155,6 +165,43 @@ class StoryEditorToolbox < UIView
 
     # disable touch capturing
     off
+  end
+
+  def media_chooser_popup_anchor
+    rmq(:edit_content).get
+  end
+
+  def photo_available( image )
+    path = rmq.screen.bundle.asset_path_for_new_item_of_type(:picture)
+    texture = SKTexture.textureWithImage(image)
+    @node.texture = texture
+    @target.content = path
+
+    path = rmq.screen.bundle.asset_path(path)
+    UIImagePNGRepresentation(image).writeToFile(path, atomically: true)
+  end
+
+  def photo_canceled
+  end
+
+  def video_available( media_url )
+    path = rmq.screen.bundle.asset_path_for_new_item_of_type(:video)
+    # TODO: update @node?
+    @target.content = path
+
+    path = rmq.screen.bundle.asset_path(path)
+    File.rename(media_url.fileSystemRepresentation, path)
+  end
+
+  def video_canceled
+  end
+
+  def audio_available( media_url )
+    # FIXME: this should be done by StoryBundle..
+    @target.content = media_url.gsub(/^.*\/contents/, '../contents')
+  end
+
+  def audio_canceled
   end
 
   private

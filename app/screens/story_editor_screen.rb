@@ -2,15 +2,25 @@ class StoryEditorScreen < PM::Screen
   title 'Babbo Voco'
   stylesheet StoryEditorStylesheet
 
+  include MediaChooser
+  include AudioRecorder
+
   attr_accessor :story_bundle
 
   class << self
     attr_accessor :instance
 
-    def get( bundle )
+    def get( bundle, edit_existing=false )
       StoryEditorScreen.instance ||= StoryEditorScreen.new(nav_bar: false)
       unless bundle.nil?
-        StoryEditorScreen.instance.story_bundle = bundle
+        if edit_existing
+          # modify the existing bundle object
+          StoryEditorScreen.instance.story_bundle = bundle
+        else
+          # create a copy and work on that
+          bundle.instance_eval { @paths = nil }
+          StoryEditorScreen.instance.story_bundle = Marshal.load(Marshal.dump(bundle))
+        end
       end
       StoryEditorScreen.instance
     end
@@ -82,9 +92,11 @@ class StoryEditorScreen < PM::Screen
     @player.presentScene(nil)
 
     @story_bundle.document.body.levels.each do |l|
+      puts write_level_changes(l)
       l.screens.each do |s|
+        puts write_screen_changes(s)
         s.objects.each do |o|
-          lp write_object_changes(o)
+          puts write_object_changes(o)
         end
       end
     end
@@ -207,6 +219,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   def setup_editor_mode(scene)
+    scene.backgroundColor = rmq.color.white
     scene.enumerateChildNodesWithName('//*', usingBlock: ->(node, _){
       if @editable.has_key? node.name
         node.alpha = 1.0
@@ -237,6 +250,22 @@ class StoryEditorScreen < PM::Screen
     items
   end
 
+  def write_level_changes(level)
+    res = "/* additional screens */\n"
+    level.changes.each do |change|
+      res += "copy('#{change}');\n"
+    end
+    res
+  end
+
+  def write_screen_changes(screen)
+    res = "/* additional objects */\n"
+    screen.changes.each do |change|
+      res += "copy('#{change}');\n"
+    end
+    res
+  end
+
   def write_object_changes(object)
     changes = []
     object.changes.each do |key, val|
@@ -250,8 +279,39 @@ class StoryEditorScreen < PM::Screen
     end
 
     unless changes.empty?
+      "/* update #{object.path} */\n" + \
       "change('#{object.path}', {\n#{changes.join(",\n")}\n});\n"
     end
+  end
+
+  # Mark: media chooser helpers
+
+  public
+
+  # @private
+  def media_chooser_popup_anchor
+    res = nil
+    rmq(:toolbox).map { |tb| res = tb.media_chooser_popup_anchor }
+    res
+  end
+
+  # @private
+  def photo_available( image )
+    rmq(:toolbox).map { |tb| tb.photo_available(image) }
+  end
+
+  # @private
+  def photo_canceled
+    rmq(:toolbox).map { |tb| tb.photo_canceled }
+  end
+  # @private
+  def video_available( media_url )
+    rmq(:toolbox).map { |tb| tb.video_available(media_url) }
+  end
+
+  # @private
+  def video_canceled
+    rmq(:toolbox).map { |tb| tb.video_canceled }
   end
 end
 
