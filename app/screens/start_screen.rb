@@ -5,6 +5,7 @@ class StartScreen < PM::Screen
     attr_accessor :next_story
     attr_accessor :last_screen
     attr_accessor :warmup_done
+    attr_accessor :editor_mode
     attr_reader   :animation_a, :animation_b
   end
 
@@ -20,6 +21,7 @@ class StartScreen < PM::Screen
 
   def on_load
     StartScreen.warmup_done ||= false
+    StartScreen.editor_mode ||= :edit
 
     set_nav_bar_button :right, title: "Kids", action: :go_to_kids
     set_nav_bar_button :left, title: "Parent", action: :go_to_parent
@@ -96,7 +98,8 @@ class StartScreen < PM::Screen
 
   def edit_story
     StartScreen.next_screen = StartScreen.last_screen
-    open_modal StoryEditorScreen.get(StartScreen.next_story)
+    open_modal StoryEditorScreen.get(StartScreen.next_story,
+                                     StartScreen.editor_mode == :edit)
   end
 
   def goto_story_list
