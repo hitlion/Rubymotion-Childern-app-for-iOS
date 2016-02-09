@@ -8,7 +8,7 @@ module Story
 
     has_events :at_load, :at_next
 
-    attr_reader :id, :path
+    attr_reader :id, :path, :changes
     attr_accessor :name, :objects
 
     # Initialize a new Screen instance
@@ -19,6 +19,7 @@ module Story
       @name    = 'undefined'
       @valid   = false
       @path    = "#{parent_path}:screen[-1]"
+      @changes = []
     end
 
     # Check if this screen is valid.
@@ -89,6 +90,7 @@ module Story
       end
       new_object.fix_path(@path)
       @objects << new_object
+      @changes << object.path
       true
     end
 

@@ -9,7 +9,7 @@ module Story
 
     validation_scope :level
 
-    attr_reader :id, :path
+    attr_reader :id, :path, :changes
     attr_accessor :screens
 
     # Initialize a new Level instance
@@ -17,6 +17,7 @@ module Story
       @id      = -1
       @valid   = false
       @path    = ':level[-1]'
+      @changes = []
     end
 
     # Check if this level is valid.
@@ -78,6 +79,7 @@ module Story
       end
       new_screen.fix_path(self.path, true)
       @screens << new_screen
+      @changes << screen.path
       true
     end
 
