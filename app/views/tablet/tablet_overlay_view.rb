@@ -277,7 +277,16 @@ class TabletOverlayView < UIView
   end
 
   def edit_story
-
+    if @story.ruleset.rules.empty?
+      app.alert(title: 'Entschuldigung',
+                message: 'Diese Story kann nicht bearbeitet werden.')
+    else
+      StartScreen.next_story = @story
+      StartScreen.next_screen = :story_editor
+      StartScreen.last_screen = :story_list
+      StartScreen.editor_mode = :edit
+      rmq.screen.open_root_screen(StartScreen)
+    end
   end
 
   def remove_story
@@ -285,7 +294,16 @@ class TabletOverlayView < UIView
   end
 
   def new_story
-
+    if @story.ruleset.rules.empty?
+      app.alert(title: 'Entschuldigung',
+                message: 'Diese Story kann nicht bearbeitet werden.')
+    else
+      StartScreen.next_story = @story
+      StartScreen.next_screen = :story_editor
+      StartScreen.last_screen = :story_list
+      StartScreen.editor_mode = :new
+      rmq.screen.open_root_screen(StartScreen)
+    end
   end
 
   def show_screenshoots
