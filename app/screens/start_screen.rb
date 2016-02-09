@@ -138,7 +138,7 @@ class StartScreen < PM::Screen
 
   def dispatch
     if(StartScreen.next_screen.nil?)
-      goto_parent
+      goto_kids
     elsif StartScreen.next_screen == :parent_menu
       goto_parent
     elsif StartScreen.next_screen == :kids_menu
