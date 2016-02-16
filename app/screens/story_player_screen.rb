@@ -78,7 +78,7 @@ class StoryPlayerScreen < PM::Screen
   end
 
   def show_scene( target )
-   # transition_image = create_transition_image
+    transition_image = create_transition_image
 
     unless @player.scene.nil?
       @player.scene.removeAllChildren
@@ -94,7 +94,7 @@ class StoryPlayerScreen < PM::Screen
       lp "bailouto"
       return
     end
-    #scene.addChild(transition_image)
+    scene.addChild(transition_image)
 
     @player.presentScene(scene)
 
