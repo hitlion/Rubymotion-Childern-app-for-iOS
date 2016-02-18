@@ -6,6 +6,7 @@ class StoryEditorScreen < PM::Screen
   include AudioRecorder
 
   attr_accessor :story_bundle
+  attr_reader :level, :screen
 
   class << self
     attr_accessor :instance
@@ -46,9 +47,18 @@ class StoryEditorScreen < PM::Screen
     @toolbox = rmq(self.view).append(StoryEditorToolbox).tag(:toolbox).get
     rmq(@toolbox).hide
     rmq(@player).append(@toolbox) unless @toolbox.nil?
+
+    @level = 1
+    @screen = 1
+    @change_screen_box = rmq(self.view).append(StoryEditorChangeScreenBox).tag(:change_screen_box).get
+    @change_screen_box.hide
+    @change_screen_box.set_editor(self)
+
+    rmq(@player).append(@change_screen_box) unless @change_screen_box.nil?
   end
 
   def will_appear
+
     scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]')
     @editable = @story_bundle.ruleset.editable_objects_for_screen( @story_bundle, ':level[1]:screen[1]')
     setup_editor_mode(scene)
@@ -105,18 +115,15 @@ class StoryEditorScreen < PM::Screen
     JavaScript::Runtime.tear_down
   end
 
-  def on_screen_event( notification )
-    info = Hash.symbolicate(notification.userInfo || {})
-    Dispatch::Queue.main.async do
-      if info.has_key? :exit_to
-        show_scene(info[:exit_to])
-      else
-        close
-      end
-    end
-  end
+  def show_scene_with_level( level, screen: screen)
+    target = ':level[' + level.to_s + ']:screen[' + screen.to_s + ']'
 
-  def show_scene( target )
+    new_scene = SceneFactory.create_scene(@story_bundle, target)
+
+    if new_scene.nil?
+      lp [target + "doesnt exists, stay at the current level and screen"]
+      return
+    end
     transition_image = create_transition_image
 
     unless @player.scene.nil?
@@ -126,19 +133,16 @@ class StoryEditorScreen < PM::Screen
     end
     @player.presentScene(nil)
 
-    scene  = SceneFactory.create_scene(@story_bundle, target)
     @editable = @story_bundle.ruleset.editable_objects_for_screen(@story_bundle, target)
 
-    if scene.nil?
-      # FIXME
-      lp "bailouto"
-      return
-    end
+    scene = new_scene
+
     setup_editor_mode(scene)
     scene.addChild(transition_image)
 
     @player.presentScene(scene)
-
+    @level = level
+    @screen = screen
     JavaScript::Runtime.get.scene_root = scene
   end
 
@@ -151,25 +155,36 @@ class StoryEditorScreen < PM::Screen
       tb.hide
     end
 
-    if notification.userInfo[:object]
-      return unless @editable.has_key? notification.userInfo[:object]
-
-      @edit_info = notification.userInfo
-      Dispatch::Queue.main.after(0.25) do
-        self.view.becomeFirstResponder
-
-        rmq(:toolbox).map { |tb| tb.hide }
-
-        menu = UIMenuController.sharedMenuController
-        menu.menuItems = menu_for_object(notification.userInfo[:object])
-        menu.setTargetRect([notification.userInfo[:location], [ 1, 1 ]], inView: self.view)
-        menu.setMenuVisible(true, animated: true)
-      end
+    rmq(:change_screen_box).map do |csb|
+      csb.hide
     end
+
+    @edit_info = notification.userInfo
+    Dispatch::Queue.main.after(0.25) do
+      self.view.becomeFirstResponder
+
+      rmq(:toolbox).map { |tb| tb.hide }
+
+      menu = UIMenuController.sharedMenuController
+      menu.menuItems = menu_for_object(notification.userInfo[:object])
+      menu.setTargetRect([notification.userInfo[:location], [ 1, 1 ]], inView: self.view)
+      menu.setMenuVisible(true, animated: true)
+    end
+
   end
 
   def on_editor_swipe(notification)
     lp ["on_editor_swipe:", notification.userInfo]
+  end
+
+  def change_screen
+    rmq(:change_screen_box).map do |csb|
+      csb.show
+    end
+  end
+
+  def close_editor
+    close
   end
 
   #
@@ -180,7 +195,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   def canPerformAction(action, withSender: sender)
-    [:edit_object, :move_object].include? action.to_sym
+    [:edit_object, :move_object, :close_editor, :change_screen].include? action.to_sym
   end
 
   #
@@ -235,18 +250,23 @@ class StoryEditorScreen < PM::Screen
     object  = @story_bundle.object_for_path(path)
     actions = @editable[path]
 
-    return [] if object.nil? or actions.nil?
-
     items = []
+
+    items << UIMenuItem.alloc.initWithTitle('Editor beenden', action: :close_editor)
+    items << UIMenuItem.alloc.initWithTitle('Seite wechseln', action: :change_screen)
+
+    return items if object.nil? or actions.nil?
+
     if actions[:object_name]  || actions[:object_content] ||
        actions[:size_x]       || actions[:size_y]         ||
        actions[:transparency] || actions[:layer]
-      items << UIMenuItem.alloc.initWithTitle('Ändern..', action: :edit_object)
+      items << UIMenuItem.alloc.initWithTitle('Ändern...', action: :edit_object)
     end
 
     if actions[:position_x] || actions[:position_y]
       items << UIMenuItem.alloc.initWithTitle('Bewegen', action: :move_object)
     end
+
     items
   end
 

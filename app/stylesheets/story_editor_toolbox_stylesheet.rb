@@ -25,7 +25,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
   end
 
   def object_name_label( st )
-    st.frame = {t: 5, l: 5, fr: 5, h: 18}
+    st.frame = {t: 25, l: 5, fr: 5, h: 18}
     st.font  = rmq.font.font_with_name(FONT_STANDARD_BOLD, 16)
     st.text  = ''
     st.color = rmq.color.babbo_orange
