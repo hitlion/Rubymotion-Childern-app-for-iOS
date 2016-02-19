@@ -45,16 +45,24 @@ class StoryEditorScreen < PM::Screen
     end
 
     @toolbox = rmq(self.view).append(StoryEditorToolbox).tag(:toolbox).get
+    @toolbox.set_editor(self)
     rmq(@toolbox).hide
     rmq(@player).append(@toolbox) unless @toolbox.nil?
 
     @level = 1
     @screen = 1
+
     @change_screen_box = rmq(self.view).append(StoryEditorChangeScreenBox).tag(:change_screen_box).get
     @change_screen_box.hide
     @change_screen_box.set_editor(self)
-
     rmq(@player).append(@change_screen_box) unless @change_screen_box.nil?
+
+    @edit_object_box = rmq(self.view).append(StoryEditorToolboxOld).tag(:edit_object_box).get
+    @edit_object_box.hide
+    rmq(@player).append(@edit_object_box) unless @edit_object_box.nil?
+
+
+
   end
 
   def will_appear
@@ -150,26 +158,31 @@ class StoryEditorScreen < PM::Screen
     lp ["on_editor_tap:", notification.userInfo]
 
     @edit_info = {}
-    rmq(:toolbox).map do |tb|
-      tb.set_target(nil, node: nil, actions: nil)
-      tb.hide
-    end
-
-    rmq(:change_screen_box).map do |csb|
-      csb.hide
-    end
-
     @edit_info = notification.userInfo
-    Dispatch::Queue.main.after(0.25) do
-      self.view.becomeFirstResponder
 
-      rmq(:toolbox).map { |tb| tb.hide }
+    rmq(:change_screen_box).get.hide
+    rmq(:edit_object_box).get.hide
 
-      menu = UIMenuController.sharedMenuController
-      menu.menuItems = menu_for_object(notification.userInfo[:object])
-      menu.setTargetRect([notification.userInfo[:location], [ 1, 1 ]], inView: self.view)
-      menu.setMenuVisible(true, animated: true)
+    # toogle toolbox
+    if(rmq(:toolbox).get.hidden?)
+      open_toolbox
+    else
+      rmq(:toolbox).map do |tb|
+        tb.set_target(nil, node: nil)
+        tb.hide
+      end
     end
+
+    #Dispatch::Queue.main.after(0.25) do
+    #  self.view.becomeFirstResponder
+
+    #  rmq(:toolbox).map { |tb| tb.hide }
+
+    #  menu = UIMenuController.sharedMenuController
+    #  menu.menuItems = menu_for_object(notification.userInfo[:object])
+    #  menu.setTargetRect([notification.userInfo[:location], [ 1, 1 ]], inView: self.view)
+    #  menu.setMenuVisible(true, animated: true)
+    #end
 
   end
 
@@ -178,12 +191,15 @@ class StoryEditorScreen < PM::Screen
   end
 
   def change_screen
+    rmq(:toolbox).get.hide
+
     rmq(:change_screen_box).map do |csb|
       csb.show
     end
   end
 
   def close_editor
+    rmq(:toolbox).get.hide
     close
   end
 
@@ -202,13 +218,34 @@ class StoryEditorScreen < PM::Screen
   #
   #
   def edit_object
+    rmq(:toolbox).get.hide
+
+    path = @edit_info[:object]
+    node = @player.node_for_path(path)
+    object = @story_bundle.object_for_path(path)
+    actions = @editable[path]
+
+    rmq(:edit_object_box).map do |eob|
+      eob.set_target(object, node:node, actions:actions)
+      eob.show(@edit_info[:location])
+    end
+  end
+
+  #
+  #
+  #
+  def open_toolbox
     path = @edit_info[:object]
     node = @player.node_for_path(path)
     object = @story_bundle.object_for_path(path)
     actions = @editable[path]
 
     rmq(:toolbox).map do |tb|
-      tb.set_target(object, node: node, actions: actions)
+      if(actions.nil?)
+        tb.set_target(nil, node: nil)
+      else
+        tb.set_target(object, node: node)
+      end
       tb.show(@edit_info[:location])
     end
   end

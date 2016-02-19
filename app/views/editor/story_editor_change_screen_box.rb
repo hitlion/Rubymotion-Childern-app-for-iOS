@@ -46,7 +46,9 @@ class StoryEditorChangeScreenBox < UIView
     return if @hidden
     @hidden = true
 
-    rmq(self).hide
+    rmq(self).animate(duration: 0.5, animations: ->(q){
+        q.move top: device.screen_height + 20
+    })
 
     # disable touch capturing
     off
@@ -62,6 +64,9 @@ class StoryEditorChangeScreenBox < UIView
       @new_screen = @editor.screen.to_i
     end
 
+    rmq(self).animate(duration: 0.5, animations: ->(q){
+      q.move from_bottom: 20
+    })
 
     update_display_values
 
