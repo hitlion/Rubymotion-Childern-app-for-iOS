@@ -7,13 +7,13 @@ class StoryEditorToolboxStylesheetOld < ApplicationStylesheet
     st.alpha = 1.0
     st.tint_color = rmq.color.black
     st.background_color = rmq.color.babbo_orange
-    st.corner_radius = 25
+    st.corner_radius = 12.5
   end
 
   def background_layer( st )
     st.frame = {t: 5, l: 5, fr: 5, fb: 5}
     st.background_color = rmq.color.white
-    st.corner_radius = 25
+    st.corner_radius = 12.5
   end
 
   def object_name_label( st )
@@ -30,7 +30,7 @@ class StoryEditorToolboxStylesheetOld < ApplicationStylesheet
     st.text  = 'Name ändern'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
-    st.corner_radius = 25
+    st.corner_radius = 12.5
   end
 
   def edit_content( st )
@@ -39,7 +39,7 @@ class StoryEditorToolboxStylesheetOld < ApplicationStylesheet
     st.text  = 'Inhalt ändern'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
-    st.corner_radius =  25
+    st.corner_radius =  12.5
   end
 
   def resize_width_label( st )

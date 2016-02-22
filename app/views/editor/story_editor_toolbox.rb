@@ -19,7 +19,9 @@ class StoryEditorToolbox < UIView
 
       @object_name_label = append!(UILabel, :object_name_label)
 
-      append(UIButton, :move_object)
+      append(UIButton, :move_object).on(:tap) do
+        @editor.move_object
+      end
 
       append(UIButton, :edit_object).on(:tap) do
         @editor.edit_object
@@ -44,12 +46,14 @@ class StoryEditorToolbox < UIView
     @editor = editor
   end
 
-  def set_target(target, node: n)
+  def set_target(target, node: n, actions: actions)
     @target = nil
     @node = nil
+    @actions = nil
 
     @target = target
     @node   = n
+    @actions = actions
 
     update_display_values
   end
@@ -147,10 +151,17 @@ class StoryEditorToolbox < UIView
       rmq(:move_object).hide
     else
       @object_name_label.text = @target.name
-      rmq(:edit_object).show
-      rmq(:move_object).show
-    end
 
+      if  @actions[:object_name]  || @actions[:object_content] ||
+          @actions[:size_x]       || @actions[:size_y]         ||
+          @actions[:transparency] || @actions[:layer]
+        rmq(:edit_object).show
+      end
+
+      if @actions[:position_x] || @actions[:position_y]
+        rmq(:move_object).show
+      end
+    end
   end
 end
 

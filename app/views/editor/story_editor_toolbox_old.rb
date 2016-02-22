@@ -27,13 +27,13 @@ class StoryEditorToolboxOld < UIView
 
       append(UIButton, :edit_content).on(:tap) do |_|
         case @target.type
-        when :picture
-          rmq.screen.present_photo_chooser
-        when :video
-          rmq.screen.present_video_chooser
-        when :audio
-          path = rmq.screen.bundle.asset_path_for_new_item_of_type(:audio)
-          rmq.screen.present_audio_recorder(path)
+          when :picture
+            rmq.screen.present_photo_chooser
+          when :video
+            rmq.screen.present_video_chooser
+          when :audio
+            path = rmq.screen.bundle.asset_path_for_new_item_of_type(:audio)
+            rmq.screen.present_audio_recorder(path)
         end
       end
 

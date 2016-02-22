@@ -61,8 +61,10 @@ class StoryEditorScreen < PM::Screen
     @edit_object_box.hide
     rmq(@player).append(@edit_object_box) unless @edit_object_box.nil?
 
-
-
+    @move_view = rmq(self.view).append(MoveObjectView).tag(:move_view).get
+    @move_view.set_editor(self)
+    @move_view.hide
+    rmq(@player).append(@move_view) unless @move_view.nil?
   end
 
   def will_appear
@@ -168,7 +170,7 @@ class StoryEditorScreen < PM::Screen
       open_toolbox
     else
       rmq(:toolbox).map do |tb|
-        tb.set_target(nil, node: nil)
+        tb.set_target(nil, node: nil, actions: nil)
         tb.hide
       end
     end
@@ -187,11 +189,13 @@ class StoryEditorScreen < PM::Screen
   end
 
   def on_editor_swipe(notification)
-    lp ["on_editor_swipe:", notification.userInfo]
+    #lp ["on_editor_swipe:", notification.userInfo]
   end
 
   def change_screen
     rmq(:toolbox).get.hide
+
+    lp "Editor: change level and screen"
 
     rmq(:change_screen_box).map do |csb|
       csb.show
@@ -200,6 +204,9 @@ class StoryEditorScreen < PM::Screen
 
   def close_editor
     rmq(:toolbox).get.hide
+
+    lp "Editor: is closing"
+
     close
   end
 
@@ -225,9 +232,30 @@ class StoryEditorScreen < PM::Screen
     object = @story_bundle.object_for_path(path)
     actions = @editable[path]
 
+    lp "Editor: editing object -->  #{object.name}"
+
     rmq(:edit_object_box).map do |eob|
       eob.set_target(object, node:node, actions:actions)
       eob.show(@edit_info[:location])
+    end
+  end
+
+  #
+  #
+  #
+  def move_object
+    rmq(:toolbox).get.hide
+
+    path = @edit_info[:object]
+    node = @player.node_for_path(path)
+    object = @story_bundle.object_for_path(path)
+    actions = @editable[path]
+
+    lp "Editor: moving object -->  #{object.name}"
+
+    rmq(:move_view).map do |mv|
+      mv.set_target(object, node:node, actions: actions)
+      mv.show(@edit_info[:location])
     end
   end
 
@@ -241,11 +269,7 @@ class StoryEditorScreen < PM::Screen
     actions = @editable[path]
 
     rmq(:toolbox).map do |tb|
-      if(actions.nil?)
-        tb.set_target(nil, node: nil)
-      else
-        tb.set_target(object, node: node)
-      end
+      tb.set_target(object, node: node, actions: actions)
       tb.show(@edit_info[:location])
     end
   end

@@ -7,13 +7,13 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
     st.alpha = 1.0
     st.tint_color = rmq.color.black
     st.background_color = rmq.color.babbo_orange
-    st.corner_radius = 25
+    st.corner_radius = 12.5
   end
 
   def background_layer( st )
     st.frame = {t: 5, l: 5, fr: 5, fb: 5}
     st.background_color = rmq.color.white
-    st.corner_radius = 25
+    st.corner_radius = 12.5
   end
 
   def editable_object_table (st)
@@ -35,7 +35,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
     st.text  = 'Objekt bewegen'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
-    st.corner_radius = 25
+    st.corner_radius = 12.5
   end
 
   def edit_object (st)
@@ -44,16 +44,16 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
     st.text  = 'Objekt bearbeiten'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
-    st.corner_radius =  25
+    st.corner_radius =  12.5
   end
 
   def change_screen (st)
     st.frame = {bp: 15, l: 10, fr: 10, h: 0.075 * device.screen_height}
     st.font  = rmq.font.font_with_name(FONT_STANDARD_REGULAR, 18)
-    st.text  = 'Bildschirm wechseln'
+    st.text  = 'Level wechseln'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
-    st.corner_radius =  25
+    st.corner_radius =  12.5
   end
 
   def close_editor (st)
@@ -62,7 +62,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
     st.text  = 'Editor beenden'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
-    st.corner_radius =  25
+    st.corner_radius =  12.5
   end
 
 

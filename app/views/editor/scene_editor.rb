@@ -4,6 +4,7 @@ class SceneEditor < SKView
       on(:tap, fingers_required: 1) do |_, event|
         unless scene.nil?
           object = object_at_location(event.location)
+          lp "Editor: screen tapped at #{event.location}"
           if object
             NSNotificationCenter.defaultCenter.postNotificationName('on_editor_tap',
                                                                object: nil,
@@ -22,11 +23,12 @@ class SceneEditor < SKView
       end
 
       %w(up down left right).each do |direction|
-        on("swipe_#{direction}".to_sym) do |_, event|
+        on("swipe_#{direction}".to_sym) do |sender, event|
           unless scene.nil?
             NSNotificationCenter.defaultCenter.postNotificationName('on_editor_swipe',
                                                                object: nil,
                                                                userInfo: {
+                                                                 :sender => sender,
                                                                  :location => event.location,
                                                                  :direction => direction.to_sym
                                                                })
