@@ -70,6 +70,7 @@ class MoveObjectView < UIView
     end
 
     rmq(self).show
+    self.bringSubviewToFront(@choose_root)
 
     # catch taps on this view to prevent accidential hiding
     on(:tap) { |_, _| }

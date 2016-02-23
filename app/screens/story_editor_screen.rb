@@ -6,7 +6,7 @@ class StoryEditorScreen < PM::Screen
   include AudioRecorder
 
   attr_accessor :story_bundle
-  attr_reader :level, :screen
+  attr_reader :level, :screen, :editable, :player
 
   class << self
     attr_accessor :instance
@@ -157,7 +157,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   def on_editor_tap(notification)
-    lp ["on_editor_tap:", notification.userInfo]
+    # lp ["on_editor_tap:", notification.userInfo]
 
     @edit_info = {}
     @edit_info = notification.userInfo
@@ -274,6 +274,23 @@ class StoryEditorScreen < PM::Screen
     end
   end
 
+  def update_toolbox_selected_node(path)
+    lp @edit_info
+    @edit_info = {:location => @player.node_for_path(path).position, :object => path}
+    lp @edit_info
+    path = @edit_info[:object]
+    node = @player.node_for_path(path)
+    object = @story_bundle.object_for_path(path)
+    actions = @editable[path]
+
+    rmq(:toolbox).map do |tb|
+      tb.hide
+      tb.set_target(object, node: node, actions: actions)
+      tb.show(node.position)
+    end
+  end
+
+
   private
 
   # Create a single sprite node containing an image of
@@ -372,27 +389,27 @@ class StoryEditorScreen < PM::Screen
   # @private
   def media_chooser_popup_anchor
     res = nil
-    rmq(:toolbox).map { |tb| res = tb.media_chooser_popup_anchor }
+    rmq(:edit_object_box).map { |tb| res = tb.media_chooser_popup_anchor }
     res
   end
 
   # @private
   def photo_available( image )
-    rmq(:toolbox).map { |tb| tb.photo_available(image) }
+    rmq(:edit_object_box).map { |tb| tb.photo_available(image) }
   end
 
   # @private
   def photo_canceled
-    rmq(:toolbox).map { |tb| tb.photo_canceled }
+    rmq(:edit_object_box).map { |tb| tb.photo_canceled }
   end
   # @private
   def video_available( media_url )
-    rmq(:toolbox).map { |tb| tb.video_available(media_url) }
+    rmq(:edit_object_box).map { |tb| tb.video_available(media_url) }
   end
 
   # @private
   def video_canceled
-    rmq(:toolbox).map { |tb| tb.video_canceled }
+    rmq(:edit_object_box).map { |tb| tb.video_canceled }
   end
 end
 

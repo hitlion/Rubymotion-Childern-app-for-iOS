@@ -164,12 +164,12 @@ class StoryEditorToolboxOld < UIView
   end
 
   def photo_available( image )
-    path = rmq.screen.bundle.asset_path_for_new_item_of_type(:picture)
+    path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:picture)
     texture = SKTexture.textureWithImage(image)
     @node.texture = texture
     @target.content = path
 
-    path = rmq.screen.bundle.asset_path(path)
+    path = rmq.screen.story_bundle.asset_path(path)
     UIImagePNGRepresentation(image).writeToFile(path, atomically: true)
   end
 
@@ -177,11 +177,11 @@ class StoryEditorToolboxOld < UIView
   end
 
   def video_available( media_url )
-    path = rmq.screen.bundle.asset_path_for_new_item_of_type(:video)
+    path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:video)
     # TODO: update @node?
     @target.content = path
 
-    path = rmq.screen.bundle.asset_path(path)
+    path = rmq.screen.story_bundle.asset_path(path)
     File.rename(media_url.fileSystemRepresentation, path)
   end
 

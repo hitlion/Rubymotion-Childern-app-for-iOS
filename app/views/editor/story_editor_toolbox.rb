@@ -7,6 +7,7 @@ class StoryEditorToolbox < UIView
 
       @target = nil
       @node   = nil
+      @editable_objects = []
 
       rmq(self).stylesheet = StoryEditorToolboxStylesheet
       rmq(self).apply_style(:root)
@@ -15,7 +16,9 @@ class StoryEditorToolbox < UIView
 
       append(UIView, :background_layer)
 
-      append(UIView, :editable_object_table)
+      @object_table = append!(UITableView, :editable_object_table)
+      @object_table.dataSource = self
+      @object_table.delegate = self
 
       @object_name_label = append!(UILabel, :object_name_label)
 
@@ -61,6 +64,15 @@ class StoryEditorToolbox < UIView
   def show(avoid_location)
     return unless @hidden
     @hidden = false
+
+    if(@editor.editable)
+      @editable_objects = []
+      @editor.editable.map(&:first).each do |key, value|
+        @editable_objects << key
+      end
+
+      @object_table.reloadData
+    end
 
     update_display_values
 
@@ -152,16 +164,53 @@ class StoryEditorToolbox < UIView
     else
       @object_name_label.text = @target.name
 
-      if  @actions[:object_name]  || @actions[:object_content] ||
-          @actions[:size_x]       || @actions[:size_y]         ||
-          @actions[:transparency] || @actions[:layer]
-        rmq(:edit_object).show
-      end
+      if(@actions)
+        if  @actions[:object_name]  || @actions[:object_content] ||
+            @actions[:size_x]       || @actions[:size_y]         ||
+            @actions[:transparency] || @actions[:layer]
+          rmq(:edit_object).show
+        end
 
-      if @actions[:position_x] || @actions[:position_y]
-        rmq(:move_object).show
+        if @actions[:position_x] || @actions[:position_y]
+          rmq(:move_object).show
+        end
+      else
+        rmq(:edit_object).hide
+        rmq(:move_object).hide
       end
     end
+  end
+
+  def tableView(view, cellForRowAtIndexPath: indexPath)
+    @reuseIdentifier ||= "CELL_IDENTIFIER"
+
+    cell = view.dequeueReusableCellWithIdentifier(@reuseIdentifier) || begin
+      UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier: @reuseIdentifier)
+    end
+
+    if(@editor.player.node_for_path(@editable_objects[indexPath.row]))
+      cell.textLabel.text = @editor.story_bundle.object_for_path(@editable_objects[indexPath.row]).name
+    else
+      cell.textLabel.text = "Error: no source found"
+    end
+
+    cell
+  end
+
+  def tableView(view, numberOfRowsInSection: section)
+    count = 0
+
+    if(@editor)
+      count = @editor.editable.count
+    end
+
+    count
+  end
+
+  def tableView(tableView, didSelectRowAtIndexPath: indexPath)
+    #tableView.deselectRowAtIndexPath(indexPath, animated: true)
+
+    @editor.update_toolbox_selected_node(@editable_objects[indexPath.row])
   end
 end
 
