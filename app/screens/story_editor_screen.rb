@@ -57,7 +57,7 @@ class StoryEditorScreen < PM::Screen
     @change_screen_box.set_editor(self)
     rmq(@player).append(@change_screen_box) unless @change_screen_box.nil?
 
-    @edit_object_box = rmq(self.view).append(StoryEditorToolboxOld).tag(:edit_object_box).get
+    @edit_object_box = rmq(self.view).append(StoryEditorEditBox).tag(:edit_object_box).get
     @edit_object_box.hide
     rmq(@player).append(@edit_object_box) unless @edit_object_box.nil?
 

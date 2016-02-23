@@ -16,9 +16,16 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
     st.corner_radius = 12.5
   end
 
-  def editable_object_table (st)
+  def table_background (st)
     st.frame = {t: 0.05 * device.screen_height, l: 10, fr: 10, h: 0.45 * device.screen_height}
-    st.background_color = rmq.color.light_gray
+    st.background_color = rmq.color.babbo_orange
+    st.corner_radius = 12.5
+  end
+
+  def editable_object_table (st)
+    st.frame = {t: 5, l: 5, fr: 5, fb: 5}
+    st.background_color = rmq.color.white
+    st.corner_radius = 12.5
   end
 
   def object_name_label (st)

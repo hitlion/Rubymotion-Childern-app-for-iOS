@@ -1,4 +1,4 @@
-class StoryEditorToolboxOld < UIView
+class StoryEditorEditBox < UIView
   def initWithFrame( frame )
     super.tap do
       @hidden = false
@@ -7,7 +7,7 @@ class StoryEditorToolboxOld < UIView
       @target = nil
       @node   = nil
 
-      rmq(self).stylesheet = StoryEditorToolboxStylesheetOld
+      rmq(self).stylesheet = StoryEditorEditBoxStylesheet
       rmq(self).apply_style(:root)
 
       snap_to_right_edge(frame, true)
@@ -95,8 +95,13 @@ class StoryEditorToolboxOld < UIView
       transparency:   [ :transparency_label , :transparency_stepper ]
     }
 
+    @target = nil
+    @node   = nil
+    @actions = nil
+
     @target = target
     @node   = n
+    @actions = act
     component_map.map { |_, keys| keys }.flatten.each { |key| rmq(key).hide }
 
     unless @target.nil?
@@ -244,6 +249,47 @@ class StoryEditorToolboxOld < UIView
     rmq(:layer_select_stepper).get.value = @target.layer
     rmq(:transparency_label).get.text = 'Transparenz: %.2f' % @target.transparency
     rmq(:transparency_stepper).get.value = @target.transparency
+
+    rmq(:edit_name).hide
+    rmq(:edit_content).hide
+    rmq(:resize_height_label).hide
+    rmq(:resize_width_label).hide
+    rmq(:resize_width_slider).hide
+    rmq(:resize_height_slider).hide
+    rmq(:layer_select_label).hide
+    rmq(:layer_select_stepper).hide
+    rmq(:transparency_label).hide
+    rmq(:transparency_stepper).hide
+
+    if(@actions)
+      if @actions[:object_name]
+        rmq(:edit_name).show
+      end
+
+      if @actions[:object_content]
+        rmq(:edit_content).show
+      end
+
+      if @actions[:size_x]
+        rmq(:resize_width_slider).show
+        rmq(:resize_width_label).show
+      end
+
+      if @actions[:size_y]
+        rmq(:resize_height_slider).show
+        rmq(:resize_height_label).show
+      end
+
+      if @actions[:transparency]
+        rmq(:transparency_label).show
+        rmq(:transparency_stepper).show
+      end
+
+      if @actions[:layer]
+        rmq(:layer_select_label).show
+        rmq(:layer_select_stepper).show
+      end
+    end
   end
 end
 

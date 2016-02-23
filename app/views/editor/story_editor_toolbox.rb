@@ -16,7 +16,9 @@ class StoryEditorToolbox < UIView
 
       append(UIView, :background_layer)
 
-      @object_table = append!(UITableView, :editable_object_table)
+      table_background = append(UIView, :table_background)
+
+      @object_table = table_background.append(UITableView, :editable_object_table).get
       @object_table.dataSource = self
       @object_table.delegate = self
 

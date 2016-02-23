@@ -1,4 +1,4 @@
-class StoryEditorToolboxStylesheetOld < ApplicationStylesheet
+class StoryEditorEditBoxStylesheet < ApplicationStylesheet
   def setup
   end
 
