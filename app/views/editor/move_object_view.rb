@@ -22,6 +22,8 @@ class MoveObjectView < UIView
 
       @choose_root.append(UIButton, :accept_button).on(:tap) do
         @node.position = [@movable_object.center.x, self.size.height - @movable_object.center.y]
+        point = CGPointMake(@movable_object.frame.origin.x / device.screen_width, @movable_object.frame.origin.y / device.screen_height)
+        @target.position = point
         self.hide
       end
 
@@ -48,8 +50,6 @@ class MoveObjectView < UIView
 
     move_x = location.x - prev_location.x
     move_y = location.y - prev_location.y
-
-    lp "X: #{move_x} | Y: #{move_y}"
 
     @movable_object.center = [@movable_object.center.x + move_x, @movable_object.center.y + move_y]
   end
