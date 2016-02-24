@@ -191,17 +191,18 @@ class StoryBundle
 
     control_path = File.absolute_path(File.join(@path, 'SMIL'))
     runner = Story::Changelog::Runner.new
-
-    Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do |change_path|
+    bundle = nil
+    Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do |change_path, index|
       change_data = File.read(change_path)
+
       unless change_data.nil?
         bundle = Marshal.load(Marshal.dump(self))
         runner.apply(bundle, change_data)
         bundle.document.dataset_id = -1 * index if bundle.document.dataset_id == self.document.dataset_id
         bundle.instance_eval { @changelog = change_data }
-        changesets << bundle
       end
     end
+    changesets << bundle
     changesets
   end
 

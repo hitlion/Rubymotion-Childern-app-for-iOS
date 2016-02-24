@@ -101,6 +101,7 @@ module Story
     # @private
     # Track modifications to the objects {#position} property
     def position=( new_position )
+      lp  "new_position: #{new_position}"
       @changes[:position_x] ||= { :value => nil, :original => @position.x }
       @changes[:position_y] ||= { :value => nil, :original => @position.y }
       @changes[:position_x][:value] = new_position.x

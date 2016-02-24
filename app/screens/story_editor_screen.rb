@@ -111,12 +111,44 @@ class StoryEditorScreen < PM::Screen
     @logger.clear! unless @logger.nil?
     @player.presentScene(nil)
 
+    changes = false
     @story_bundle.document.body.levels.each do |l|
-      puts write_level_changes(l)
+      changes = !l.changes.empty? || changes
       l.screens.each do |s|
-        puts write_screen_changes(s)
+        changes = !s.changes.empty? || changes
         s.objects.each do |o|
-          puts write_object_changes(o)
+          changes = !o.changes.empty? || changes
+        end
+      end
+    end
+    lp "Changes: #{changes}"
+
+    # only write if changes exists
+    if(changes)
+      @path = @story_bundle.path
+      base_path = File.join(@path, 'SMIL')
+      count = 1
+      Dir.glob(File.join(base_path, 'changes_branch_*.js')).each_with_index do |file, index|
+        count = count + 1
+
+      end
+
+      name = "changes_branch_#{count.to_s}.js"
+      base_path = File.join(base_path, name)
+      file = File.new(base_path, "w")
+      lp "create branch file #{name}"
+
+      @story_bundle.document.body.levels.each do |l|
+
+        puts write_level_changes(l)
+        file.write(write_level_changes(l))
+        l.screens.each do |s|
+          file.write(write_screen_changes(s))
+          puts write_screen_changes(s)
+          s.objects.each do |o|
+            file.write(write_object_changes(o))
+            puts write_object_changes(o)
+          end
         end
       end
     end
@@ -131,7 +163,7 @@ class StoryEditorScreen < PM::Screen
     new_scene = SceneFactory.create_scene(@story_bundle, target)
 
     if new_scene.nil?
-      lp [target + "doesnt exists, stay at the current level and screen"]
+      lp "#{target} doesnt exists, stay at the current level and screen"
       return
     end
     transition_image = create_transition_image
