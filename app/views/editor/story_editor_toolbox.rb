@@ -42,6 +42,7 @@ class StoryEditorToolbox < UIView
       append(UIButton, :close_editor).on(:tap) do
         @editor.close_editor
       end
+
     end
   end
 

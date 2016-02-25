@@ -32,7 +32,7 @@ class StoryBundle
             Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
               bundle = StoryBundle.new(bundle_path)
               bundle.load
-              weak_self.bundle_list << bundle
+              weak_self.bundle_list << bundle if !bundle.has_changesets?
               weak_self.bundle_list += bundle.changesets if bundle.has_changesets?
               async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
             end
@@ -41,7 +41,7 @@ class StoryBundle
           Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
             bundle = StoryBundle.new(bundle_path)
             bundle.load
-            self.bundle_list << bundle
+            self.bundle_list << bundle if !bundle.has_changesets?
             self.bundle_list += bundle.changesets if bundle.has_changesets?
           end
         end

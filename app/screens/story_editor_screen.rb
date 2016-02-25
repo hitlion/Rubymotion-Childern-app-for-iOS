@@ -6,21 +6,25 @@ class StoryEditorScreen < PM::Screen
   include AudioRecorder
 
   attr_accessor :story_bundle
-  attr_reader :level, :screen, :editable, :player
+  attr_reader :level, :screen, :editable, :player, :edit_mode
 
   class << self
     attr_accessor :instance
 
     def get( bundle, edit_existing=false )
+      @edit_mode = edit_existing
       StoryEditorScreen.instance ||= StoryEditorScreen.new(nav_bar: false)
       unless bundle.nil?
-        if edit_existing
+        if @edit_mode
           # modify the existing bundle object
+          lp "Editor: modify the existing story"
           StoryEditorScreen.instance.story_bundle = bundle
         else
           # create a copy and work on that
+          lp "Editor: create a new story"
           bundle.instance_eval { @paths = nil }
           StoryEditorScreen.instance.story_bundle = Marshal.load(Marshal.dump(bundle))
+          StoryEditorScreen.instance.story_bundle.object_for_path(nil)
         end
       end
       StoryEditorScreen.instance

@@ -21,7 +21,7 @@ class StartScreen < PM::Screen
 
   def on_load
     StartScreen.warmup_done ||= false
-    StartScreen.editor_mode ||= :edit
+    StartScreen.editor_mode ||= :new
 
     set_nav_bar_button :right, title: "Kids", action: :go_to_kids
     set_nav_bar_button :left, title: "Parent", action: :go_to_parent

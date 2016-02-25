@@ -57,6 +57,12 @@ module Story
         @content      = desc[:object_content]
         @mask         = desc[:object_mask]
 
+        if(@name == 'start_message' || @name == 'background_start_screen')
+          lp '---Test---'
+          lp self.to_s
+          lp "Content: #{@content}"
+        end
+
         # now that @id is available update our @path
         @path.gsub!(/:object\[[^\]]*\]$/, ":object[#{@id}]")
 
@@ -95,6 +101,8 @@ module Story
     def content=( new_content )
       @changes[:object_content] ||= { :value => nil, :original => @content }
       @changes[:object_content][:value] = new_content
+      lp @changes[:object_content]
+      lp "new content #{new_content}"
       @content = new_content
     end
 
