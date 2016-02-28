@@ -283,7 +283,7 @@ class TabletOverlayView < UIView
     else
       StartScreen.next_story = @story
       StartScreen.next_screen = :story_editor
-      StartScreen.last_screen = :story_list
+      StartScreen.last_screen = :parent_menu
       StartScreen.editor_mode = :edit
       rmq.screen.open_root_screen(StartScreen)
     end
@@ -300,7 +300,7 @@ class TabletOverlayView < UIView
     else
       StartScreen.next_story = @story
       StartScreen.next_screen = :story_editor
-      StartScreen.last_screen = :story_list
+      StartScreen.last_screen = :parent_menu
       StartScreen.editor_mode = :new
       rmq.screen.open_root_screen(StartScreen)
     end

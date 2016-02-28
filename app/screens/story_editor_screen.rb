@@ -5,16 +5,16 @@ class StoryEditorScreen < PM::Screen
   include MediaChooser
   include AudioRecorder
 
-  attr_accessor :story_bundle
-  attr_reader :level, :screen, :editable, :player, :edit_mode
+  attr_accessor :story_bundle, :edit_mode
+  attr_reader :level, :screen, :editable, :player
 
   class << self
     attr_accessor :instance
 
     def get( bundle, mode)
-      @edit_mode = mode
-      StoryEditorScreen.instance ||= StoryEditorScreen.new(nav_bar: false)
 
+      StoryEditorScreen.instance ||= StoryEditorScreen.new(nav_bar: false)
+      StoryEditorScreen.instance.edit_mode = mode
       unless bundle.nil?
         StoryEditorScreen.instance.story_bundle = bundle
       end
@@ -121,6 +121,8 @@ class StoryEditorScreen < PM::Screen
 
     # edit or new story --> set paths and file
     @path = @story_bundle.path
+
+    lp @edit_mode
 
     if(@edit_mode == :edit)
       lp "Save edited story as new version"
