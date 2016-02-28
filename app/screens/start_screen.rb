@@ -98,8 +98,7 @@ class StartScreen < PM::Screen
 
   def edit_story
     StartScreen.next_screen = StartScreen.last_screen
-    open_modal StoryEditorScreen.get(StartScreen.next_story,
-                                     StartScreen.editor_mode == :edit)
+    open_modal StoryEditorScreen.get(StartScreen.next_story, :new)
   end
 
   def goto_story_list

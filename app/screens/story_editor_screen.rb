@@ -11,21 +11,12 @@ class StoryEditorScreen < PM::Screen
   class << self
     attr_accessor :instance
 
-    def get( bundle, edit_existing=false )
-      @edit_mode = edit_existing
+    def get( bundle, mode)
+      @edit_mode = mode
       StoryEditorScreen.instance ||= StoryEditorScreen.new(nav_bar: false)
+
       unless bundle.nil?
-        if @edit_mode
-          # modify the existing bundle object
-          lp "Editor: modify the existing story"
-          StoryEditorScreen.instance.story_bundle = bundle
-        else
-          # create a copy and work on that
-          lp "Editor: create a new story"
-          bundle.instance_eval { @paths = nil }
-          StoryEditorScreen.instance.story_bundle = Marshal.load(Marshal.dump(bundle))
-          StoryEditorScreen.instance.story_bundle.object_for_path(nil)
-        end
+        StoryEditorScreen.instance.story_bundle = bundle
       end
       StoryEditorScreen.instance
     end
@@ -115,6 +106,7 @@ class StoryEditorScreen < PM::Screen
     @logger.clear! unless @logger.nil?
     @player.presentScene(nil)
 
+    # check for changes
     changes = false
     @story_bundle.document.body.levels.each do |l|
       changes = !l.changes.empty? || changes
@@ -125,16 +117,41 @@ class StoryEditorScreen < PM::Screen
         end
       end
     end
-    lp "Changes: #{changes}"
+    lp "Changes exists: #{changes}"
+
+    # edit or new story --> set paths and file
+    @path = @story_bundle.path
+
+    if(@edit_mode == :edit)
+      lp "Save edited story as new version"
+    else
+      lp "Save edited story as new story"
+
+      dir = File.split(@story_bundle.path).first
+      source = File.split(@story_bundle.path).last
+      name = source.split('.').first
+
+      count = 1
+      if(File.exists?(File.join(dir, name + '_copy_1.babbo')))
+        Dir.glob(File.join(dir,name + '_copy_*.babbo')).each_with_index do
+          count = count + 1
+        end
+      end
+
+      dest_name = name + '_copy_' + count.to_s + '.babbo'
+      file_manager = NSFileManager.defaultManager
+      new_path = File.join(dir, dest_name)
+      file_manager.copyItemAtPath(@path, toPath: new_path, error: nil)
+      @path = new_path
+    end
 
     # only write if changes exists
     if(changes)
-      @path = @story_bundle.path
+
       base_path = File.join(@path, 'SMIL')
       count = 1
-      Dir.glob(File.join(base_path, 'changes_branch_*.js')).each_with_index do |file, index|
+      Dir.glob(File.join(base_path, 'changes_branch_*.js')).each_with_index do
         count = count + 1
-
       end
 
       name = "changes_branch_#{count.to_s}.js"

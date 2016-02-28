@@ -61,6 +61,7 @@ GEM
     molinillo (0.3.1)
     motion-cocoapods (1.7.8)
       cocoapods (>= 0.34)
+    motion-fileutils (0.1.1)
     motion-yaml (1.5.5)
     motion_print (1.2.0)
     multi_json (1.11.2)
@@ -99,6 +100,7 @@ DEPENDENCIES
   cocoapods (~> 0.38.2)
   json
   motion-cocoapods (~> 1.7.3)
+  motion-fileutils (~> 0.1.1)
   motion-yaml (= 1.5.5)
   rake
   redcarpet
@@ -106,3 +108,6 @@ DEPENDENCIES
   yard
   yard-cucumber
   yard-rspec
+
+BUNDLED WITH
+   1.11.2
