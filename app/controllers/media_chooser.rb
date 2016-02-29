@@ -62,7 +62,7 @@ module MediaChooser
   # Ask the user for the desired video source.
   # Possible responses are: 'camera' or 'album'
   def ask_for_video_source
-    rmq.app.alert(title: 'Quelle', actions: ['Kamera', 'Album', :cancel]) do |button_tag|
+    rmq.app.alert(title: 'Quelle', message: "Quelle auswählen", actions: ['Kamera', 'Album', :cancel]) do |button_tag|
       case button_tag
       when 'Kamera'
         run_video_chooser(UIImagePickerControllerSourceTypeCamera)
