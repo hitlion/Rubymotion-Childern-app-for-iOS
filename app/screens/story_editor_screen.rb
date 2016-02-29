@@ -91,6 +91,21 @@ class StoryEditorScreen < PM::Screen
   end
 
   def on_appear
+
+    # ask for new name
+    if(@edit_mode == :new)
+      name = @story_bundle.document.set_name
+
+      app.alert(title: "Welchen Namen und welches Bild soll deine neue Story haben?", message: "Bitte Namen eingeben und dann ein Foto auswählen", style: :custom, fields: {input: {placeholder: "Neuer Name"}}) do |_, fields|
+        unless fields[:input].text.empty?
+          name = fields[:input].text
+        end
+        @story_bundle.document.set_name = name
+
+        rmq.screen.present_photo_chooser
+      end
+    end
+
     #JavaScript::Runtime.send_event(@player.scene.name, :at_load)
   end
 
@@ -122,8 +137,6 @@ class StoryEditorScreen < PM::Screen
     # edit or new story --> set paths and file
     @path = @story_bundle.path
 
-    lp @edit_mode
-
     if(@edit_mode == :edit)
       lp "Save edited story as new version"
     else
@@ -140,6 +153,8 @@ class StoryEditorScreen < PM::Screen
         end
       end
 
+      @story_bundle.document.dataset_id = count
+
       dest_name = name + '_copy_' + count.to_s + '.babbo'
       file_manager = NSFileManager.defaultManager
       new_path = File.join(dir, dest_name)
@@ -149,6 +164,18 @@ class StoryEditorScreen < PM::Screen
 
     # only write if changes exists
     if(changes)
+
+      #load and save new thumbnail
+
+      if(@new_thumbnail)
+        path = File.absolute_path(File.join(@path, 'SMIL', @story_bundle.document.thumbnail))
+        UIImagePNGRepresentation(@new_thumbnail).writeToFile(path, atomically: true)
+      end
+
+      @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
+      #@story_.document.timestamp =
+
+      @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
 
       base_path = File.join(@path, 'SMIL')
       count = 1
@@ -160,6 +187,9 @@ class StoryEditorScreen < PM::Screen
       base_path = File.join(base_path, name)
       file = File.new(base_path, "w")
       lp "create branch file #{name}"
+
+      puts write_meta_changes(@story_bundle)
+      file.write(write_meta_changes(@story_bundle))
 
       @story_bundle.document.body.levels.each do |l|
 
@@ -229,18 +259,6 @@ class StoryEditorScreen < PM::Screen
         tb.hide
       end
     end
-
-    #Dispatch::Queue.main.after(0.25) do
-    #  self.view.becomeFirstResponder
-
-    #  rmq(:toolbox).map { |tb| tb.hide }
-
-    #  menu = UIMenuController.sharedMenuController
-    #  menu.menuItems = menu_for_object(notification.userInfo[:object])
-    #  menu.setTargetRect([notification.userInfo[:location], [ 1, 1 ]], inView: self.view)
-    #  menu.setMenuVisible(true, animated: true)
-    #end
-
   end
 
   def on_editor_swipe(notification)
@@ -379,28 +397,13 @@ class StoryEditorScreen < PM::Screen
     })
   end
 
-  def menu_for_object(path)
-    object  = @story_bundle.object_for_path(path)
-    actions = @editable[path]
-
-    items = []
-
-    items << UIMenuItem.alloc.initWithTitle('Editor beenden', action: :close_editor)
-    items << UIMenuItem.alloc.initWithTitle('Seite wechseln', action: :change_screen)
-
-    return items if object.nil? or actions.nil?
-
-    if actions[:object_name]  || actions[:object_content] ||
-       actions[:size_x]       || actions[:size_y]         ||
-       actions[:transparency] || actions[:layer]
-      items << UIMenuItem.alloc.initWithTitle('Ändern...', action: :edit_object)
-    end
-
-    if actions[:position_x] || actions[:position_y]
-      items << UIMenuItem.alloc.initWithTitle('Bewegen', action: :move_object)
-    end
-
-    items
+  def write_meta_changes(bundle)
+    story = bundle.document
+    res = "/* new meta informations */\n"
+    lp story.set_name
+    lp story.set_name.to_s
+    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{story.thumbnail.to_s}', '#{story.timestamp.to_s}');\n"
+    res
   end
 
   def write_level_changes(level)
@@ -444,27 +447,58 @@ class StoryEditorScreen < PM::Screen
   # @private
   def media_chooser_popup_anchor
     res = nil
-    rmq(:edit_object_box).map { |tb| res = tb.media_chooser_popup_anchor }
+    if(rmq(:edit_object_box).get.show?)
+      rmq(:edit_object_box).map { |tb| res = tb.media_chooser_popup_anchor }
+    else
+      res = rmq.screen.view
+    end
     res
   end
 
   # @private
   def photo_available( image )
-    rmq(:edit_object_box).map { |tb| tb.photo_available(image) }
+    if(rmq(:edit_object_box).get.show?)
+      rmq(:edit_object_box).map { |tb| tb.photo_available(image) }
+    else
+      path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:picture)
+      @story_bundle.document.thumbnail = path
+      @new_thumbnail = image
+    end
   end
 
   # @private
   def photo_canceled
-    rmq(:edit_object_box).map { |tb| tb.photo_canceled }
+    if(rmq(:edit_object_box).get.show?)
+      rmq(:edit_object_box).map { |tb| tb.photo_canceled }
+    else
+      lp "test"
+    end
+
   end
   # @private
   def video_available( media_url )
-    rmq(:edit_object_box).map { |tb| tb.video_available(media_url) }
+    if(rmq(:edit_object_box).get.show?)
+      rmq(:edit_object_box).map { |tb| tb.video_available(media_url) }
+    end
   end
 
   # @private
   def video_canceled
-    rmq(:edit_object_box).map { |tb| tb.video_canceled }
+    if(rmq(:edit_object_box).get.show?)
+      rmq(:edit_object_box).map { |tb| tb.video_canceled }
+    end
+  end
+
+  def audio_available( media_url )
+    if(rmq(:edit_object_box).get.show?)
+      rmq(:edit_object_box).map { |tb| tb.audio_available(media_url) }
+    end
+  end
+
+  def audio_canceled
+    if(rmq(:edit_object_box).get.show?)
+      rmq(:edit_object_box).map { |tb| tb.audio_canceled }
+    end
   end
 end
 

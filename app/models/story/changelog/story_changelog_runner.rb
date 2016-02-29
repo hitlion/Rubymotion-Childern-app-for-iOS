@@ -36,7 +36,7 @@ module Story
           script_context['$']  = JavaScript::Global.new
           script_context.addNativeMethodArg1('copy'  , withBlock: ->(arg){ self.copy(arg) }.weak! )
           script_context.addNativeMethodArg2('change', withBlock: ->(arg1, arg2){ self.change(arg1, arg2) }.weak! )
-          script_context.addNativeMethodArg3('meta'  , withBlock: ->(arg1, arg2, arg3){ self.meta(arg1, arg2, arg3) }.weak! )
+          script_context.addNativeMethodArg4('meta'  , withBlock: ->(arg1, arg2, arg3, arg4){ self.meta(arg1, arg2, arg3, arg4) }.weak! )
 
           script_context.setExceptionHandler(lambda do |context, value|
             lp "[JavaScriptException]: #{value.toString}",
@@ -59,10 +59,11 @@ module Story
       #
 
       # @private
-      def meta(dataset_id, set_name, thumbnail)
+      def meta(dataset_id, set_name, thumbnail, timestamp)
         @bundle.document.dataset_id = dataset_id.to_i unless dataset_id.nil?
         @bundle.document.set_name   = set_name.to_s   unless set_name.nil?
         @bundle.document.thumbnail  = thumbnail.to_s  unless thumbnail.nil?
+        @bundle.document.timestamp  = timestamp.to_s  unless timestamp.nil?
       end
 
       # @private

@@ -17,7 +17,7 @@ class StoryEditorEditBox < UIView
 
       @object_name_label = append!(UILabel, :object_name_label)
       append(UIButton, :edit_name).on(:tap) do |_|
-        app.alert(title: 'Name ändern', style: :custom, fields: {input: {placeholder: @target.name}}) do |_, fields|
+        app.alert(title: 'Name ändern', message: "Neuen Namen eingeben:", style: :custom, fields: {input: {placeholder: @target.name}}) do |_, fields|
           unless fields[:input].text.empty?
             @target.name = fields[:input].text
             update_display_values
@@ -117,6 +117,14 @@ class StoryEditorEditBox < UIView
 
       update_display_values
     end
+  end
+
+  def hidden?
+    return @hidden
+  end
+
+  def show?
+    return !@hidden
   end
 
   def show(avoid_location)

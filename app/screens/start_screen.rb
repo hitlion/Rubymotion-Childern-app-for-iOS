@@ -80,6 +80,11 @@ class StartScreen < PM::Screen
   end
 
   def goto_parent
+
+    if(StartScreen.last_screen == :story_editor)
+      StoryBundle.bundles(reload: true)
+    end
+
     if(device.ipad?)
       open TabletParentScreen.new
     else
@@ -99,6 +104,7 @@ class StartScreen < PM::Screen
   def edit_story
     lp "Mode: #{StartScreen.editor_mode}"
     StartScreen.next_screen = StartScreen.last_screen
+    StartScreen.last_screen = :story_editor
     open_modal StoryEditorScreen.get(StartScreen.next_story, StartScreen.editor_mode)
   end
 
@@ -108,10 +114,6 @@ class StartScreen < PM::Screen
 
   def goto_test
     open TestScreen.new
-  end
-
-  def goto_shop
-
   end
 
   def on_appear(args={})

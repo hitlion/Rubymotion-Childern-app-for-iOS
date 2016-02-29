@@ -198,7 +198,7 @@ class StoryBundle
       unless change_data.nil?
         bundle = Marshal.load(Marshal.dump(self))
         runner.apply(bundle, change_data)
-        bundle.document.dataset_id = -1 * index if bundle.document.dataset_id == self.document.dataset_id
+        # obsolete bundle.document.dataset_id = -1 * index if bundle.document.dataset_id == self.document.dataset_id
         bundle.instance_eval { @changelog = change_data }
       end
     end
