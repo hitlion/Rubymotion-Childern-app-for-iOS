@@ -219,7 +219,7 @@ class StoryEditorScreen < PM::Screen
       lp "#{target} doesnt exists, stay at the current level and screen"
       return
     end
-    transition_image = create_transition_image
+    # transition_image = create_transition_image
 
     unless @player.scene.nil?
       @player.scene.removeAllChildren
@@ -233,7 +233,7 @@ class StoryEditorScreen < PM::Screen
     scene = new_scene
 
     setup_editor_mode(scene)
-    scene.addChild(transition_image)
+    # scene.addChild(transition_image)
 
     @player.presentScene(scene)
     @level = level

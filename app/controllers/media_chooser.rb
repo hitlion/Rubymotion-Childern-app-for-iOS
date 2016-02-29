@@ -31,7 +31,7 @@ module MediaChooser
     if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceTypeCamera )
       ask_for_photo_source
     else
-       run_photo_chooser(UIImagePickerControllerSourceTypePhotoLibrary)
+      run_photo_chooser(UIImagePickerControllerSourceTypePhotoLibrary)
     end
   end
 
@@ -48,9 +48,9 @@ module MediaChooser
   # Ask the user for the desired photo source.
   # Possible responses are: 'camera' or 'album'
   def ask_for_photo_source
-    rmq.app.alert(title: 'Quelle', actions: ['Kamera', 'Album', :cancel], style: sheet) do |button_tag|
+    rmq.app.alert(title: 'Quelle', message: "Quelle auswählen", actions: ['Kamera', 'Album', :cancel]) do |button_tag|
       case button_tag
-      when 'Kamera'
+        when 'Kamera'
         run_photo_chooser(UIImagePickerControllerSourceTypeCamera)
       when 'Album'
         run_photo_chooser(UIImagePickerControllerSourceTypePhotoLibrary)
@@ -62,7 +62,7 @@ module MediaChooser
   # Ask the user for the desired video source.
   # Possible responses are: 'camera' or 'album'
   def ask_for_video_source
-    rmq.app.alert(title: 'Quelle', actions: ['Kamera', 'Album', :cancel], style: sheet) do |button_tag|
+    rmq.app.alert(title: 'Quelle', actions: ['Kamera', 'Album', :cancel]) do |button_tag|
       case button_tag
       when 'Kamera'
         run_video_chooser(UIImagePickerControllerSourceTypeCamera)
