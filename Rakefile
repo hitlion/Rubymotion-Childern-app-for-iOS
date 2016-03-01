@@ -5,6 +5,7 @@ require 'rake/task_arguments'
 
 require 'motion/project/template/ios'
 require 'motion-yaml'
+require 'motion-fileutils'
 
 require 'redcarpet'
 
