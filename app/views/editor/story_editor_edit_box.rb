@@ -32,7 +32,8 @@ class StoryEditorEditBox < UIView
           when :video
             rmq.screen.present_video_chooser
           when :audio
-            path = rmq.screen.bundle.asset_path_for_new_item_of_type(:audio)
+            @new_audio_path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:audio)
+            path = rmq.screen.story_bundle.asset_path(@new_audio_path)
             rmq.screen.present_audio_recorder(path)
         end
       end
@@ -190,11 +191,13 @@ class StoryEditorEditBox < UIView
   end
 
   def video_available( media_url )
+    NSLog(media_url.fileSystemRepresentation)
     path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:video)
     # TODO: update @node?
     @target.content = path
 
     path = rmq.screen.story_bundle.asset_path(path)
+    NSLog(path)
     File.rename(media_url.fileSystemRepresentation, path)
   end
 
@@ -203,7 +206,7 @@ class StoryEditorEditBox < UIView
 
   def audio_available( media_url )
     # FIXME: this should be done by StoryBundle..
-    @target.content = media_url.gsub(/^.*\/contents/, '../contents')
+    @target.content = @new_audio_path
   end
 
   def audio_canceled

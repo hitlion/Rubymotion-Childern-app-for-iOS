@@ -38,9 +38,9 @@ module MediaChooser
   # Present a video chooser
   def present_video_chooser
     if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceTypeCamera )
-      ask_for_photo_source
+      ask_for_video_source
     else
-       run_video_chooser(UIImagePickerControllerSourceTypePhotoLibrary)
+      run_video_chooser(UIImagePickerControllerSourceTypePhotoLibrary)
     end
   end
 
@@ -124,7 +124,7 @@ module MediaChooser
 
     video_picker = UIImagePickerController.alloc.init
     video_picker.mediaTypes = video_media_types
-    video_picker.videoQuality = UIImagePickerControllerQualityMedium
+    video_picker.videoQuality = UIImagePickerControllerQualityTypeMedium
     video_picker.allowsEditing = true
     video_picker.delegate = self
     video_picker.sourceType = source
@@ -132,7 +132,7 @@ module MediaChooser
     if device.iphone?
       self.presentModalViewController(image_picker, animated: true)
     elsif device.ipad?
-      pop_over = UIPopoverController.alloc.initWithContentViewController(image_picker)
+      pop_over = UIPopoverController.alloc.initWithContentViewController(video_picker)
       if self.respond_to? :media_chooser_popup_anchor
         anchor = self.media_chooser_popup_anchor
         center_point = self.view.convertPoint(anchor.center, fromView: anchor)

@@ -13,9 +13,10 @@ class ShopBasicCell < UICollectionViewCell
   # @param element [Story] The Story for filling the data of this cell
   def make_cell(element)
 
-    @element = element
+    return if element.nil?
+    return if element.document.nil?
 
-    return if(@element.nil?)
+    @element = element
 
     view = UIButton.alloc.initWithFrame(self.bounds)
     view.addTarget(self, action: "cell_pressed:", forControlEvents: UIControlEventTouchUpInside)

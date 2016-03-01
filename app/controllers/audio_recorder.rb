@@ -19,6 +19,7 @@ module AudioRecorder
   #
   # @param [String] path The path to save the resulting audio to
   def present_audio_recorder( path )
+    NSLog("Audio record startet")
     @audio_record_target = path
 
     recorder = IQAudioRecorderController.alloc.init
@@ -49,7 +50,8 @@ module AudioRecorder
 
   # @private
   def audioRecorderController( recorder, didFinishWithAudioAtPath: path )
-    File.rename(path, @audio_record_target)
+
+    File.rename(path.fileSystemRepresentation, @audio_record_target)
 
     if self.respond_to? :'audio_available:'
       self.audio_available(@audio_record_target)
