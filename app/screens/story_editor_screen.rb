@@ -127,15 +127,15 @@ class StoryEditorScreen < PM::Screen
 
     # check for changes
     changes =  @story_bundle.document.has_changes?
-    lp "Changes exists: #{changes}"
+    lp "Editor: Changes exists: #{changes}"
 
     # edit or new story --> set paths and file
     @path = @story_bundle.path
 
     if(@edit_mode == :edit)
-      lp "Save edited story as new version"
+      lp "Editor: save edited story as new version"
     else
-      lp "Save edited story as new story"
+      lp "Editor: save edited story as new story"
 
       dir = File.split(@story_bundle.path).first
       source = File.split(@story_bundle.path).last
@@ -153,7 +153,7 @@ class StoryEditorScreen < PM::Screen
       @story_bundle.document.dataset_id = count+1
 
       dest_name = name + '_' + count.to_s + '_' + source_id.to_s + '.babbo'
-      lp "New Name: #{dest_name}"
+      lp "Editor: new directory name: #{dest_name}"
       new_path = File.join(dir, dest_name)
       NSFileManager.defaultManager.copyItemAtPath(@path, toPath: new_path, error: nil)
       @path = new_path
@@ -184,7 +184,7 @@ class StoryEditorScreen < PM::Screen
       name = "changes_branch_#{count.to_s}.js"
       base_path = File.join(base_path, name)
       file = File.new(base_path, "w")
-      lp "create branch file #{name}"
+      lp "Editor: create branch file #{name}"
 
       puts write_meta_changes(@story_bundle)
       file.write(write_meta_changes(@story_bundle))

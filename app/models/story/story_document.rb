@@ -133,13 +133,10 @@ module Story
       changes = @new_changes
       self.body.levels.each do |l|
         changes = l.new_changes || changes
-        lp "changes at level: #{changes}"
         l.screens.each do |s|
           changes = s.new_changes || changes
-          lp "changes at screen: #{changes}"
           s.objects.each do |o|
             changes = o.new_changes || changes
-            lp "changes at object: #{changes}"
           end
         end
       end
