@@ -139,20 +139,15 @@ class StoryEditorScreen < PM::Screen
 
       dir = File.split(@story_bundle.path).first
       source = File.split(@story_bundle.path).last
-      lp source
       name = source.split('.').first
       source_id = name.split('_')[1]
       name = name.split('_').first
-
-      lp "Name: #{name}"
-      lp "Source: #{source_id}"
 
       count = 0
 
       # count how many version exists
       Dir.glob(File.join(dir,name + '_*_*.babbo')).each_with_index do
         count += 1
-        lp count
       end
 
       @story_bundle.document.dataset_id = count+1
