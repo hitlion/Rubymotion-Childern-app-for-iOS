@@ -64,6 +64,9 @@ class StoryEditorScreen < PM::Screen
 
   def will_appear
 
+    # set all has_changes flags to false
+    @story_bundle.document.reset_changes
+
     scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]')
     @editable = @story_bundle.ruleset.editable_objects_for_screen( @story_bundle, ':level[1]:screen[1]')
     setup_editor_mode(scene)
@@ -91,7 +94,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   def on_appear
-
+    @has_changes = false
     # ask for new name
     if(@edit_mode == :new)
       name = @story_bundle.document.set_name
@@ -104,6 +107,7 @@ class StoryEditorScreen < PM::Screen
 
         rmq.screen.present_photo_chooser
       end
+
     end
 
     #JavaScript::Runtime.send_event(@player.scene.name, :at_load)
@@ -122,16 +126,7 @@ class StoryEditorScreen < PM::Screen
     @player.presentScene(nil)
 
     # check for changes
-    changes = false
-    @story_bundle.document.body.levels.each do |l|
-      changes = !l.changes.empty? || changes
-      l.screens.each do |s|
-        changes = !s.changes.empty? || changes
-        s.objects.each do |o|
-          changes = !o.changes.empty? || changes
-        end
-      end
-    end
+    changes =  @story_bundle.document.has_changes?
     lp "Changes exists: #{changes}"
 
     # edit or new story --> set paths and file
@@ -144,21 +139,28 @@ class StoryEditorScreen < PM::Screen
 
       dir = File.split(@story_bundle.path).first
       source = File.split(@story_bundle.path).last
+      lp source
       name = source.split('.').first
+      source_id = name.split('_')[1]
+      name = name.split('_').first
 
-      count = 1
-      if(File.exists?(File.join(dir, name + '_copy_1.babbo')))
-        Dir.glob(File.join(dir,name + '_copy_*.babbo')).each_with_index do
-          count = count + 1
-        end
+      lp "Name: #{name}"
+      lp "Source: #{source_id}"
+
+      count = 0
+
+      # count how many version exists
+      Dir.glob(File.join(dir,name + '_*_*.babbo')).each_with_index do
+        count += 1
+        lp count
       end
 
-      @story_bundle.document.dataset_id = count
+      @story_bundle.document.dataset_id = count+1
 
-      dest_name = name + '_copy_' + count.to_s + '.babbo'
-      file_manager = NSFileManager.defaultManager
+      dest_name = name + '_' + count.to_s + '_' + source_id.to_s + '.babbo'
+      lp "New Name: #{dest_name}"
       new_path = File.join(dir, dest_name)
-      file_manager.copyItemAtPath(@path, toPath: new_path, error: nil)
+      NSFileManager.defaultManager.copyItemAtPath(@path, toPath: new_path, error: nil)
       @path = new_path
     end
 
@@ -172,8 +174,9 @@ class StoryEditorScreen < PM::Screen
         UIImagePNGRepresentation(@new_thumbnail).writeToFile(path, atomically: true)
       end
 
-      @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
-      #@story_.document.timestamp =
+      if(@story_bundle.document.dataset_id > 0)
+        @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
+      end
 
       @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
 
