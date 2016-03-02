@@ -290,7 +290,17 @@ class TabletOverlayView < UIView
   end
 
   def remove_story
-
+    app.alert(title: "Achtung!", message: "Wollen sie diese Story wirklich löschen", actions: ['JA', 'NEIN']) do |button_tag|
+      case button_tag
+        when 'JA'
+          NSFileManager.defaultManager.removeItemAtPath(@story.path, error:nil)
+          StoryBundle.bundles(reload: true)
+          StartScreen.next_screen = :parent_menu
+          StartScreen.last_screen = :parent_menu
+          rmq.screen.open_root_screen(StartScreen)
+        when 'NEIN'
+      end
+    end
   end
 
   def new_story
