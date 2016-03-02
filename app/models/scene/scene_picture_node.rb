@@ -7,9 +7,7 @@ module Scene
     # @param [StoryBundle] bundle The {StoryBundle} containing +story_object+.
     # @param [Scene::Object] story_object The object definition.
     def self.create( bundle, story_object )
-        lp '---Test---'
-        lp self.to_s
-        lp story_object
+
         if story_object.content.downcase.end_with? '.gif'
           series = UIImage.imagesFromAnimatedGifData(bundle.asset_data(story_object.content))
 

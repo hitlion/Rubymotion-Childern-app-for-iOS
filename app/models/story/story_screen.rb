@@ -8,7 +8,7 @@ module Story
 
     has_events :at_load, :at_next
 
-    attr_reader :id, :path, :changes
+    attr_reader :id, :path, :changes, :new_changes
     attr_accessor :name, :objects
 
     # Initialize a new Screen instance
@@ -20,6 +20,7 @@ module Story
       @valid   = false
       @path    = "#{parent_path}:screen[-1]"
       @changes = []
+      @new_changes = false
     end
 
     # Check if this screen is valid.
@@ -91,6 +92,7 @@ module Story
       new_object.fix_path(@path)
       @objects << new_object
       @changes << object.path
+      modified(true)
       true
     end
 
@@ -101,6 +103,10 @@ module Story
       if recursive
         @objects.each { |s| s.fix_path(@path) }
       end
+    end
+
+    def modified(value)
+      @new_changes = value
     end
   end
 end

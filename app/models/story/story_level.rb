@@ -9,7 +9,7 @@ module Story
 
     validation_scope :level
 
-    attr_reader :id, :path, :changes
+    attr_reader :id, :path, :changes, :new_changes
     attr_accessor :screens
 
     # Initialize a new Level instance
@@ -18,6 +18,7 @@ module Story
       @valid   = false
       @path    = ':level[-1]'
       @changes = []
+      @new_changes = false
     end
 
     # Check if this level is valid.
@@ -80,6 +81,7 @@ module Story
       new_screen.fix_path(self.path, true)
       @screens << new_screen
       @changes << screen.path
+      modified(true)
       true
     end
 
@@ -90,6 +92,10 @@ module Story
       if recursive
         @screens.each { |s| s.fix_path(@path, recursive) }
       end
+    end
+
+    def modified(value)
+      @new_changes = value
     end
   end
 end

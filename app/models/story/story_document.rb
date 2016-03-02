@@ -17,7 +17,7 @@ module Story
     attr_accessor :document_id, :dataset_id, :branch_creator_id,
                 :creator_impressum, :branch_name, :editor_id,
                 :set_name, :thumbnail, :screenshot, :description,
-                :status, :modified_conveyable, :timestamp, :body
+                :status, :modified_conveyable, :timestamp, :body, :new_changes
 
     # Initialize a new Document instance
     def initialize
@@ -102,6 +102,65 @@ module Story
       @valid = true if validation_errors.empty?
       valid?
     end
+
+    def set_name= (value)
+      modified(true)
+      @set_name = value
+    end
+
+    def timestamp= (value)
+      modified(true)
+       @timestamp = value
+    end
+
+    def dataset_id= (value)
+      modified(true)
+      @dataset_id = value
+    end
+
+    def thumbnail= (value)
+      modified(true)
+      @thumbnail = value
+    end
+
+    def modified(value)
+      @new_changes = value
+    end
+
+    # iterates over this document and all its parts and
+    # @return [Boolean] true if the document has changes
+    def has_changes?
+      changes = @new_changes
+      self.body.levels.each do |l|
+        changes = l.new_changes || changes
+        lp "changes at level: #{changes}"
+        l.screens.each do |s|
+          changes = s.new_changes || changes
+          lp "changes at screen: #{changes}"
+          s.objects.each do |o|
+            changes = o.new_changes || changes
+            lp "changes at object: #{changes}"
+          end
+        end
+      end
+
+      changes
+    end
+
+    # Reset the has changes flag for all levels, screens and objects
+    def reset_changes
+      self.modified(false)
+      self.body.levels.each do |l|
+        l.modified(false)
+        l.screens.each do |s|
+          s.modified(false)
+          s.objects.each do |o|
+             o.modified(false)
+          end
+        end
+      end
+    end
+
   end
 end
 
