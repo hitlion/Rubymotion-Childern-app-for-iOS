@@ -10,6 +10,7 @@ module JavaScript
 
     # Setup a new {FutureProxy} mimiking the object at +path+
     def initialize( path )
+      NSLog(path)
       @path = path
     end
 
