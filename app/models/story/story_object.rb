@@ -11,7 +11,7 @@ module Story
     validation_scope :object_attribute
 
     has_events :at_start, :at_end, :on_click, :on_swipe,
-               :start_moving, :end_moving, :new_poition
+               :start_moving, :end_moving, :new_position
 
     attr_reader :id, :type, :processable, :resize, :moveable, :path,
                 :changes, :mask, :new_changes

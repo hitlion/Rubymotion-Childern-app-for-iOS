@@ -56,7 +56,7 @@ module SceneFactory
     scene
   end
 
-  # Convert a +Story::Object+ inte it's equivalent
+  # Convert a +Story::Object+ into it's equivalent
   # +SKNode+ subclass. This method will actually return
   # a class derived from one of the specialized +SKNode+'b
   # but which is API compatible with the resto of SpriteKit.
@@ -72,6 +72,8 @@ module SceneFactory
       Scene::PictureNode.create(bundle, story_object)
     when :audio
       Scene::AudioNode.create(bundle, story_object)
+    when :text
+      Scene::TextNode.create(bundle, story_object)
     when :video
       if story_object.content.downcase.end_with? '.gif'
         Scene::GIFVideoNode.create(bundle, story_object)

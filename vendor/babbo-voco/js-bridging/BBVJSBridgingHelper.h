@@ -58,6 +58,11 @@ JSExportAs(set,
 @protocol BBVJSBridgedObjectPicture <JSExport>
 @end
 
+@protocol BBVJSBridgedObjectText <JSExport>
+-( void )color:( NSDictionary* )args;
+-( void )text:(  NSDictionary* )args;
+@end
+
 @protocol BBVJSBridgedObjectScreen <JSExport>
 @property(readonly) double screen_id;
 

@@ -312,17 +312,20 @@ class StoryBundle
     @document.body.levels.each do |level|
       level.screens.each do |screen|
         screen.objects.each do |object|
-          asset_path = object.content
 
-          # relative paths are specified from inside the SMIL directory
-          if asset_path.start_with? '../'
-            asset_path = File.absolute_path(File.join(@path, 'SMIL', asset_path))
-          end
+          if(object.type != :text)
+            asset_path = object.content
 
-          if File.exists? asset_path
-            asset_list << asset_path
-          else
-            @load_errors << "Missing asset '#{object.content}' for '#{object.path}'"
+            # relative paths are specified from inside the SMIL directory
+            if asset_path.start_with? '../'
+              asset_path = File.absolute_path(File.join(@path, 'SMIL', asset_path))
+            end
+
+            if File.exists? asset_path
+              asset_list << asset_path
+            else
+              @load_errors << "Missing asset '#{object.content}' for '#{object.path}'"
+            end
           end
         end
       end

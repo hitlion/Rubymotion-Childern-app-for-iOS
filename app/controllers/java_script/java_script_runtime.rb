@@ -252,6 +252,8 @@ module JavaScript
         JavaScript::PictureProxy.new(scene_object)
       elsif scene_object.is_a? Scene::AudioNode
         JavaScript::AudioProxy.new(scene_object)
+      elsif scene_object.is_a? Scene::TextNode
+        JavaScript::TextProxy.new(scene_object)
       elsif scene_object.is_a? Scene::VideoNode
         JavaScript::VideoProxy.new(scene_object)
       elsif scene_object.is_a? Scene::GIFVideoNode
