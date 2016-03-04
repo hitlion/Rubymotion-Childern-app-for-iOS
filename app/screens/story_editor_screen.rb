@@ -388,7 +388,9 @@ class StoryEditorScreen < PM::Screen
       if @editable.has_key? node.name
         node.alpha = 1.0
         node.zPosition += 999_800 if node.zPosition < 999_800 # ensure editable nodes are always on top
-        node.size = CGSize.new(25, 25) if node.size.width < 25
+        if(defined? node.size)
+          node.size = CGSize.new(25, 25) if node.size.width < 25
+        end
       else
         node.alpha = 0.25
       end

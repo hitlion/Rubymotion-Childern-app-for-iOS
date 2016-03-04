@@ -102,8 +102,16 @@ class MoveObjectView < UIView
 
     return if(@target.nil? || @node.nil? || @actions.nil? || @movable_object.nil?)
 
-    @movable_object.frame = CGRectMake(@node.position.x - @node.size.width / 2, device.screen_height - @node.position.y - @node.size.height / 2,
-                                      @node.size.width, @node.size.height)
+    if(defined? @node.size)
+      @movable_object.frame = CGRectMake(@node.position.x - @node.size.width / 2, device.screen_height - @node.position.y - @node.size.height / 2,
+                                         @node.size.width, @node.size.height)
+    else
+      @movable_object.frame = CGRectMake(@node.position.x - 25, device.screen_height - @node.position.y - 25,
+                                         50, 50)
+    end
+
+
+
 
     @node.hidden = true
 

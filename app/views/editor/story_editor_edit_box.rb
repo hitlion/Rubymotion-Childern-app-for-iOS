@@ -40,7 +40,7 @@ class StoryEditorEditBox < UIView
 
       append(UILabel, :resize_width_label)
       append(UISlider, :resize_width_slider).on(:change) do |sender, _|
-        unless @target.nil? or @node.nil?
+        unless @target.nil? or @node.nil? or !defined? @node.size
           size = CGSize.new(sender.value, @target.size.height)
           @node.size = @node.calculate_node_size(size, size.width / size.height, @target.resize)
           @node.position = @node.calculate_node_position(@target.position, @node.size)
@@ -53,7 +53,7 @@ class StoryEditorEditBox < UIView
 
       append(UILabel, :resize_height_label)
       append(UISlider, :resize_height_slider).on(:change) do |sender, _|
-        unless @target.nil? or @node.nil?
+        unless @target.nil? or @node.nil? or !defined? @node.size
           size = CGSize.new(@target.size.width, sender.value)
           @node.size = @node.calculate_node_size(size, size.width / size.height, @target.resize)
           @node.position = @node.calculate_node_position(@target.position, @node.size)
@@ -281,12 +281,12 @@ class StoryEditorEditBox < UIView
         rmq(:edit_content).show
       end
 
-      if @actions[:size_x]
+      if (@actions[:size_x] && defined?(@node.size))
         rmq(:resize_width_slider).show
         rmq(:resize_width_label).show
       end
 
-      if @actions[:size_y]
+      if (@actions[:size_y] && defined?(@node.size))
         rmq(:resize_height_slider).show
         rmq(:resize_height_label).show
       end
