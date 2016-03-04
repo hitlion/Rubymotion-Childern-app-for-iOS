@@ -64,6 +64,8 @@ module JavaScript
       @script_vm    = nil
     end
 
+
+
     # Send a given event to a target node inside the current scene.
     # This method will create and populate a JavaScript context
     # and then try to execute the slot connected to the event +name+
@@ -118,6 +120,10 @@ module JavaScript
       true
     end
 
+    def get_slots(target)
+      receiver = @story_bundle.object_for_path(target)
+      return receiver.slots
+    end
     # Send a given event to a target node inside the current scene.
     # This method will create and populate a JavaScript context
     # and then try to execute the slot connected to the event +name+
@@ -133,7 +139,9 @@ module JavaScript
     def call_slot( target, name )
       return false if @story_bundle.nil? || @scene_root.nil?
 
+
       receiver = @story_bundle.object_for_path(target)
+
       if receiver.nil?
         lp "send_event: no receiver named '#{target}' available."
         return false
@@ -244,6 +252,8 @@ module JavaScript
         JavaScript::PictureProxy.new(scene_object)
       elsif scene_object.is_a? Scene::AudioNode
         JavaScript::AudioProxy.new(scene_object)
+      elsif scene_object.is_a? Scene::TextNode
+        JavaScript::TextProxy.new(scene_object)
       elsif scene_object.is_a? Scene::VideoNode
         JavaScript::VideoProxy.new(scene_object)
       elsif scene_object.is_a? Scene::GIFVideoNode

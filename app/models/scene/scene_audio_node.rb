@@ -20,6 +20,7 @@ module Scene
             @av_player = nil
           else
             error = Pointer.new(:object)
+
             audio_url = bundle.asset_path(story_object.content).to_file_url
             @av_player = AVAudioPlayer.alloc.initWithContentsOfURL(audio_url, error: error)
 

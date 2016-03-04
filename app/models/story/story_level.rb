@@ -9,7 +9,7 @@ module Story
 
     validation_scope :level
 
-    attr_reader :id, :path
+    attr_reader :id, :path, :changes, :new_changes
     attr_accessor :screens
 
     # Initialize a new Level instance
@@ -17,6 +17,8 @@ module Story
       @id      = -1
       @valid   = false
       @path    = ':level[-1]'
+      @changes = []
+      @new_changes = false
     end
 
     # Check if this level is valid.
@@ -65,6 +67,35 @@ module Story
 
       @valid = true if validation_errors.empty?
       valid?
+    end
+
+    def dup_screen(path)
+      screen = @screens.find { |s| s.path == path }
+      return false if screen.nil?
+
+      new_id     = @screens.length + 1
+      new_screen = Marshal.load(Marshal.dump(screen))
+      new_screen.instance_eval do
+        @id = new_id
+      end
+      new_screen.fix_path(self.path, true)
+      @screens << new_screen
+      @changes << screen.path
+      modified(true)
+      true
+    end
+
+    def fix_path( recursive=false )
+      @path = ':level[-1]'
+      @path.gsub!(/:level\[[^\]]*\]$/, ":level[#{@id}]")
+
+      if recursive
+        @screens.each { |s| s.fix_path(@path, recursive) }
+      end
+    end
+
+    def modified(value)
+      @new_changes = value
     end
   end
 end

@@ -14,7 +14,7 @@ module JavaScript
       @node = WeakRef.new(node)
     end
 
-    # @return [Fixnum] The wrapped nodes +scren_id+.
+    # @return [Fixnum] The wrapped nodes +screen_id+.
     def screen_id
       node.screen_id
     end

@@ -11,6 +11,7 @@
   (void)@protocol(BBVJSBridgedObjectVideo);
   (void)@protocol(BBVJSBridgedObjectAudio);
   (void)@protocol(BBVJSBridgedObjectPicture);
+  (void)@protocol(BBVJSBridgedObjectText);
   (void)@protocol(BBVJSBridgedObjectScreen);
   (void)@protocol(BBVJSBridgedFuture);
   (void)@protocol(BBVJSBridgedGlobal);

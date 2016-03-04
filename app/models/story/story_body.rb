@@ -63,6 +63,19 @@ module Story
       @valid = true if validation_errors.empty?
       valid?
     end
+
+    def dup_level(path)
+      level = @levels.find { |l| l.path == path }
+      return false if level.nil?
+
+      new_id    = @levels.length + 1
+      new_level = Marshal.load(Marshal.dump(level))
+      new_level.instance_eval do
+        @id = new_id
+      end
+      new_level.fix_path(true)
+      @levels << new_level
+    end
   end
 end
 

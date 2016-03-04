@@ -277,15 +277,43 @@ class TabletOverlayView < UIView
   end
 
   def edit_story
-
+    if @story.ruleset.rules.empty?
+      app.alert(title: 'Entschuldigung',
+                message: 'Diese Story kann nicht bearbeitet werden.')
+    else
+      StartScreen.next_story = @story
+      StartScreen.next_screen = :story_editor
+      StartScreen.last_screen = :parent_menu
+      StartScreen.editor_mode = :edit
+      rmq.screen.open_root_screen(StartScreen)
+    end
   end
 
   def remove_story
-
+    app.alert(title: "Achtung!", message: "Wollen sie diese Story wirklich löschen", actions: ['JA', 'NEIN']) do |button_tag|
+      case button_tag
+        when 'JA'
+          NSFileManager.defaultManager.removeItemAtPath(@story.path, error:nil)
+          StoryBundle.bundles(reload: true)
+          StartScreen.next_screen = :parent_menu
+          StartScreen.last_screen = :parent_menu
+          rmq.screen.open_root_screen(StartScreen)
+        when 'NEIN'
+      end
+    end
   end
 
   def new_story
-
+    if @story.ruleset.rules.empty?
+      app.alert(title: 'Entschuldigung',
+                message: 'Diese Story kann nicht bearbeitet werden.')
+    else
+      StartScreen.next_story = @story
+      StartScreen.next_screen = :story_editor
+      StartScreen.last_screen = :parent_menu
+      StartScreen.editor_mode = :new
+      rmq.screen.open_root_screen(StartScreen)
+    end
   end
 
   def show_screenshoots

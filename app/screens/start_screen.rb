@@ -5,6 +5,7 @@ class StartScreen < PM::Screen
     attr_accessor :next_story
     attr_accessor :last_screen
     attr_accessor :warmup_done
+    attr_accessor :editor_mode
     attr_reader   :animation_a, :animation_b
   end
 
@@ -20,6 +21,7 @@ class StartScreen < PM::Screen
 
   def on_load
     StartScreen.warmup_done ||= false
+    StartScreen.editor_mode ||= :new
 
     set_nav_bar_button :right, title: "Kids", action: :go_to_kids
     set_nav_bar_button :left, title: "Parent", action: :go_to_parent
@@ -78,6 +80,11 @@ class StartScreen < PM::Screen
   end
 
   def goto_parent
+
+    if(StartScreen.last_screen == :story_editor)
+      StoryBundle.bundles(reload: true)
+    end
+
     if(device.ipad?)
       open TabletParentScreen.new
     else
@@ -94,16 +101,19 @@ class StartScreen < PM::Screen
     open_modal StoryPlayerScreen.get(StartScreen.next_story)
   end
 
+  def edit_story
+    lp "Mode: #{StartScreen.editor_mode}"
+    StartScreen.next_screen = StartScreen.last_screen
+    StartScreen.last_screen = :story_editor
+    open_modal StoryEditorScreen.get(StartScreen.next_story, StartScreen.editor_mode)
+  end
+
   def goto_story_list
     open StoryListScreen.new(nav_bar:true)
   end
 
   def goto_test
     open TestScreen.new
-  end
-
-  def goto_shop
-
   end
 
   def on_appear(args={})
@@ -137,20 +147,23 @@ class StartScreen < PM::Screen
   end
 
   def dispatch
-    if(StartScreen.next_screen.nil?)
-      goto_kids
-    elsif StartScreen.next_screen == :parent_menu
-      goto_parent
-    elsif StartScreen.next_screen == :kids_menu
-      goto_kids
-    elsif StartScreen.next_screen == :age_verification_screen
-      goto_age_verification
-    elsif StartScreen.next_screen == :story_player
-      start_story
-    elsif StartScreen.next_screen == :shop_menu
-      goto_shop
-    elsif StartScreen.next_screen == :story_list
-      goto_story_list
+    case StartScreen.next_screen
+      when :parent_menu
+        goto_parent
+      when :kids_menu
+        goto_kids
+      when :age_verification_screen
+        goto_age_verification
+      when :story_player
+        start_story
+      when :story_editor
+        edit_story
+      when :shop_menu
+        goto_shop
+      when :story_list
+        goto_story_list
+      else
+        goto_parent
     end
   end
 

@@ -3,6 +3,8 @@
 #import <JavaScriptCore/JSExport.h>
 
 @protocol BBVJSBridgedGlobal <JSExport>
+-( void )cancelTimer;
+-( void )onTimedOut:( NSDictionary* )args;
 -( void )log:( NSString* )message;
 -( void )msleep:( useconds_t )millisec;
 -( NSArray* )shuffle:( NSArray* )base;
@@ -54,6 +56,11 @@ JSExportAs(set,
 @end
 
 @protocol BBVJSBridgedObjectPicture <JSExport>
+@end
+
+@protocol BBVJSBridgedObjectText <JSExport>
+-( void )color:( NSDictionary* )args;
+-( void )text:(  NSDictionary* )args;
 @end
 
 @protocol BBVJSBridgedObjectScreen <JSExport>

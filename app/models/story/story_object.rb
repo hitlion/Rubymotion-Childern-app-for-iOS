@@ -11,11 +11,11 @@ module Story
     validation_scope :object_attribute
 
     has_events :at_start, :at_end, :on_click, :on_swipe,
-               :start_moving, :end_moving, :new_poition
+               :start_moving, :end_moving, :new_position
 
-    attr_reader :id, :name, :type, :processable, :resize, :moveable, :path,
-                :changes, :mask
-    attr_accessor :content, :position, :size, :layer, :transparency
+    attr_reader :id, :type, :processable, :resize, :moveable, :path,
+                :changes, :mask, :new_changes
+    attr_accessor :name, :content, :position, :size, :layer, :transparency
 
     # Initialize a new Object instance
     #
@@ -26,6 +26,7 @@ module Story
       @changes = {}
       @valid   = false
       @path    = "#{parent_path}:object[-1]"
+      @new_changes = false
     end
 
     # Check if this object is valid.
@@ -83,10 +84,21 @@ module Story
     ## mark: Change tracking
 
     # @private
+    # Track modifications to the objects {#name} property
+    def name=( new_name )
+      @changes[:object_name] ||= { :value => nil, :original => @name }
+      @changes[:object_name][:value] = new_name
+      modified(true)
+      @name = new_name
+    end
+
+    # @private
     # Track modifications to the objects {#content} property
     def content=( new_content )
       @changes[:object_content] ||= { :value => nil, :original => @content }
       @changes[:object_content][:value] = new_content
+      lp @changes[:object_content]
+      modified(true)
       @content = new_content
     end
 
@@ -97,6 +109,7 @@ module Story
       @changes[:position_y] ||= { :value => nil, :original => @position.y }
       @changes[:position_x][:value] = new_position.x
       @changes[:position_y][:value] = new_position.y
+      modified(true)
       @position = new_position
     end
 
@@ -107,6 +120,7 @@ module Story
       @changes[:size_y] ||= { :value => nil, :original => @size.height }
       @changes[:size_x][:value] = new_size.width
       @changes[:size_y][:value] = new_size.height
+      modified(true)
       @size = new_size
     end
 
@@ -115,6 +129,7 @@ module Story
     def layer=( new_layer )
       @changes[:layer] ||= { :value => nil, :original => @layer }
       @changes[:layer][:value] = new_layer
+      modified(true)
       @layer = new_layer
     end
 
@@ -123,7 +138,21 @@ module Story
     def transparency=( new_transparency )
       @changes[:transparency] ||= { :value => nil, :original => @transparency }
       @changes[:transparency][:value] = new_transparency
+      modified(true)
       @transparency = new_transparency
+
+    end
+
+    # @private
+    # Fix the objects {#path} after copying it
+    def fix_path( parent_path )
+      @path = "#{parent_path}:object[-1]"
+      modified(true)
+      @path.gsub!(/:object\[[^\]]*\]$/, ":object[#{@id}]")
+    end
+
+    def modified(value)
+      @new_changes = value
     end
   end
 end

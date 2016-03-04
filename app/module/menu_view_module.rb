@@ -100,6 +100,14 @@ module MenuViewModule
     build_view
   end
 
+  # Reload the cached +StoryBundle+'s based on the contents
+  # of the 'Bundles' directory on disk.
+  #
+  def reload_bundles(force_reload=false)
+    @story_bundles = StoryBundle.bundles(reload: force_reload)
+    #@story_bundles.sort{|s| s.document.timestamp}
+  end
+
   ##
   # Get the whole story list a build a second one, grouped by the
   # document_id

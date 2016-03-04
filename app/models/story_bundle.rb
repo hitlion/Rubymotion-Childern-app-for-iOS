@@ -32,7 +32,8 @@ class StoryBundle
             Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
               bundle = StoryBundle.new(bundle_path)
               bundle.load
-              weak_self.bundle_list << bundle
+              weak_self.bundle_list << bundle if !bundle.has_changesets?
+              weak_self.bundle_list += bundle.changesets if bundle.has_changesets?
               async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
             end
           end
@@ -40,7 +41,8 @@ class StoryBundle
           Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
             bundle = StoryBundle.new(bundle_path)
             bundle.load
-            self.bundle_list << bundle
+            self.bundle_list << bundle if !bundle.has_changesets?
+            self.bundle_list += bundle.changesets if bundle.has_changesets?
           end
         end
       else
@@ -53,7 +55,7 @@ class StoryBundle
     end
   end
 
-  attr_reader :document, :load_errors, :path
+  attr_reader :document, :load_errors, :path, :ruleset, :changelog
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -64,7 +66,9 @@ class StoryBundle
     @path  = bundle_path
     @paths = nil
     @valid = false
+    @ruleset = nil
     @load_errors = []
+    @changelog = nil
   end
 
   # Check if this level is valid.
@@ -88,6 +92,8 @@ class StoryBundle
 
     collect_and_cache_assets
     @valid = true if @load_errors.empty?
+
+    load_ruleset
     valid?
   end
 
@@ -154,6 +160,71 @@ class StoryBundle
     end
   end
 
+  # Return a relative path for a new asset of +type+
+  # @param [Symbol] type The type for the new asset.
+  #   One of :video, :picture, :audio
+  # @return [String] The relative asset path or +nil+ if the bundle is
+  #   invalid or if any error occured.
+  def asset_path_for_new_item_of_type( type )
+    return nil unless [:video, :picture, :audio].include? type
+
+    base_name = NSUUID.UUID.UUIDString
+    case type
+    when :video
+      File.join('..', 'content', "#{base_name}.m4v")
+    when :picture
+      File.join('..', 'content', "#{base_name}.png")
+    when :audio
+      File.join('..', 'content', "#{base_name}.m4a")
+    else
+      nil
+    end
+  end
+
+  # Return a list of +StoryBundle+ objects containing
+  # one item for each changeset located in the bundles data directory.
+  # @return [Array<StoryBundle>] A list of modified version of this bundle
+  #   matching the changesets located inside of the bundle.
+  def changesets
+    changesets   = []
+    return changesets unless valid?
+
+    control_path = File.absolute_path(File.join(@path, 'SMIL'))
+    runner = Story::Changelog::Runner.new
+    bundle = nil
+
+    i = 0
+    Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do
+      i+=1
+    end
+
+    if(i > 0)
+      name = 'changes_branch_' + i.to_s + '.js'
+      lp name
+      change_data = File.read(File.join(control_path, name))
+
+      unless change_data.nil?
+        bundle = Marshal.load(Marshal.dump(self))
+        runner.apply(bundle, change_data)
+        # bundle.document.dataset_id = -1 * index if bundle.document.dataset_id == self.document.dataset_id
+        bundle.instance_eval { @changelog = change_data }
+      end
+    end
+
+    changesets << bundle
+    changesets
+  end
+
+  # Check if the bundle contains any changesets.
+  # @return [Boolean] +true+ if the bundle has changesets available
+  #   +false+ otherwise.
+  def has_changesets?
+    return false unless valid?
+
+    control_path = File.absolute_path(File.join(@path, 'SMIL'))
+    ! Dir.glob(File.join(control_path, 'changes_branch_*.js')).empty?
+  end
+
   private
 
   # Load the story definition from `SMIL/control.[yml/json]`.
@@ -195,6 +266,35 @@ class StoryBundle
     autorelease_pool { @checksum = NSData.sha1FromContentsOfFile(@manifest)}
   end
 
+  # Load the splice ruleset from `SMIL/splice-rules.[yml/json]`.
+  # If a YAML file is present it will be prefered over JSON.
+  #
+  # Any errors while loading will result in an empty ruleset
+  # which in turn produces an immutable document.
+  def load_ruleset
+    base_path = File.join(@path, 'SMIL')
+    if File.exists? File.join(base_path, 'splice.yml')
+      rules_path = File.join(base_path, 'splice.yml')
+      rules_data = YAML.load(File.read(rules_path))
+
+    elsif File.exists? File.join(base_path, 'splice.json')
+      rules_path = File.join(base_path, 'splice.json')
+      rules_data = JSON.load(File.read(rules_path))
+    else
+      @ruleset = Story::Changelog::Ruleset.new([])
+      return
+    end
+
+    lp "Read ruleset data from: '#{rules_path}'"
+    if rules_data.nil?
+      lp "Ruleset data is empty or invalid", force_color: :red
+      @ruleset = Story::Changelog::Ruleset.new([])
+      return
+    end
+
+    @ruleset = Story::Changelog::Ruleset.new(rules_data)
+  end
+
   # Collect all assets referenced in this story and
   # if everything is available add them to the +AssetStore+
   def collect_and_cache_assets
@@ -212,17 +312,20 @@ class StoryBundle
     @document.body.levels.each do |level|
       level.screens.each do |screen|
         screen.objects.each do |object|
-          asset_path = object.content
 
-          # relative paths are specified from inside the SMIL directory
-          if asset_path.start_with? '../'
-            asset_path = File.absolute_path(File.join(@path, 'SMIL', asset_path))
-          end
+          if(object.type != :text)
+            asset_path = object.content
 
-          if File.exists? asset_path
-            asset_list << asset_path
-          else
-            @load_errors << "Missing asset '#{object.content}' for '#{object.path}'"
+            # relative paths are specified from inside the SMIL directory
+            if asset_path.start_with? '../'
+              asset_path = File.absolute_path(File.join(@path, 'SMIL', asset_path))
+            end
+
+            if File.exists? asset_path
+              asset_list << asset_path
+            else
+              @load_errors << "Missing asset '#{object.content}' for '#{object.path}'"
+            end
           end
         end
       end

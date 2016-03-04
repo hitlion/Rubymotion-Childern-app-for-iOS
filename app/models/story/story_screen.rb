@@ -1,9 +1,6 @@
 module Story
   # A wrapper around a single screen.
   class Screen
-    #
-    # TODO: track changes to the objects array
-    #
     include Story::SlotsMixin
     include Story::AttributeValidationMixin
 
@@ -11,8 +8,8 @@ module Story
 
     has_events :at_load, :at_next
 
-    attr_reader :id, :name, :path
-    attr_accessor :objects
+    attr_reader :id, :path, :changes, :new_changes
+    attr_accessor :name, :objects
 
     # Initialize a new Screen instance
     #
@@ -22,6 +19,8 @@ module Story
       @name    = 'undefined'
       @valid   = false
       @path    = "#{parent_path}:screen[-1]"
+      @changes = []
+      @new_changes = false
     end
 
     # Check if this screen is valid.
@@ -74,6 +73,40 @@ module Story
 
       @valid = true if validation_errors.empty?
       valid?
+    end
+
+    ## mark: Change tracking
+
+    # @private
+    # Create a copy of the object matching path
+    # @param path A string specifying an object path
+    def dup_object(path)
+      object = @objects.find { |o| o.path == path }
+      return false if object.nil?
+
+      new_id     = @objects.length + 1
+      new_object = Marshal.load(Marshal.dump(object))
+      new_object.instance_eval do
+        @id = new_id
+      end
+      new_object.fix_path(@path)
+      @objects << new_object
+      @changes << object.path
+      modified(true)
+      true
+    end
+
+    def fix_path( parent_path, recursive=false )
+      @path = "#{parent_path}:screen[-1]"
+      @path.gsub!(/:screen\[[^\]]*\]$/, ":screen[#{@id}]")
+
+      if recursive
+        @objects.each { |s| s.fix_path(@path) }
+      end
+    end
+
+    def modified(value)
+      @new_changes = value
     end
   end
 end
