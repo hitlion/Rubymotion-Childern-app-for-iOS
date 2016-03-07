@@ -7,6 +7,7 @@ module Scene
     def dealloc
       self.texture = nil if self.is_a? SKSpriteNode
       lp "dealloc -> #{self}"
+      super
     end
 
     # Calculate the pixel size for a node based on a reliative size,
