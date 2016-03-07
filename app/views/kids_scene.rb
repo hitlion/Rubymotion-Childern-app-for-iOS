@@ -158,12 +158,13 @@ class KidsScene < SKScene
                                       SKAction.waitForDuration(0.2, withRange: 0.05),
                                       SKAction.performSelector("scale_mid_big", onTarget: self)])
 
-    self.runAction(moveSequence)
-
-    if(@story_selected && @selected_story)
-      play_story(@selected_story)
-      @story_selected = false
-    end
+    self.runAction(moveSequence, completion: proc {
+      self.removeAllActions
+      if(@story_selected && @selected_story)
+        play_story(@selected_story)
+        @story_selected = false
+      end
+    })
   end
 
   #######################

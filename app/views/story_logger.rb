@@ -61,7 +61,7 @@ class StoryLoggerView < UIView
 
   # @private
   def dealloc
-    NSNotificationCenter.removeObserver(self)
+    NSNotificationCenter.defaultCenter.removeObserver(self)
   end
 
   # @private
