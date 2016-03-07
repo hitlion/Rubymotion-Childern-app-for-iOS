@@ -44,7 +44,8 @@ module Scene
         unless File.exists? asset_url.fileSystemRepresentation
           lp "Video asset '#{asset_url.fileSystemRepresentation}' is missing.",
              force_color: :cyan
-
+          #TODO: FIXEN bringt einen Bug
+          lp Dir.resource('placeholder/file_warning.m4v')
           asset_url = Dir.resource('placeholder/file_warning.m4v').to_file_url
         end
 

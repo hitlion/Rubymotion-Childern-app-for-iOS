@@ -195,10 +195,11 @@ class StoryEditorEditBox < UIView
     path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:video)
     # TODO: update @node?
     @target.content = path
-
     path = rmq.screen.story_bundle.asset_path(path)
-    NSLog(path)
     File.rename(media_url.fileSystemRepresentation, path)
+
+    # reload scene for updating the video node image
+    rmq.screen.show_scene_with_level(rmq.screen.level, screen: rmq.screen.screen)
   end
 
   def video_canceled
