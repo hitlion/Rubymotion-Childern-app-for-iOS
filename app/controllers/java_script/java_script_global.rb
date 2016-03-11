@@ -49,7 +49,9 @@ module JavaScript
 
         self.log("Globaler Timer wurde mit #{time} Sekunden gestartet")
 
-        Global.timer = NSTimer.scheduledTimerWithTimeInterval(time, target:self, selector:'timer_timed_out', userInfo:nil, repeats: false)
+        Dispatch::Queue.main.async do
+          Global.timer = NSTimer.scheduledTimerWithTimeInterval(time, target:self, selector:'timer_timed_out', userInfo:nil, repeats: false)
+        end
       end
     end
 
