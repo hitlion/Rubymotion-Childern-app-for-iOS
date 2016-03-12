@@ -214,7 +214,6 @@ class StoryBundle
       end
     end
 
-    lp changesets
     changesets << bundle
     changesets
   end
@@ -297,8 +296,6 @@ class StoryBundle
     end
 
     @ruleset = Story::Changelog::Ruleset.new(rules_data)
-    lp "Rules"
-    lp @ruleset
   end
 
   # Collect all assets referenced in this story and
