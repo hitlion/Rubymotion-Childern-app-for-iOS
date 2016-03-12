@@ -4,13 +4,13 @@ class TipsBundle
   def init
     @bundle = []
 
-    testString = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-    tipA = TipsItem.alloc.initWithImage(UIImage.imageNamed("Testbild.png"), header:"Test 1", text: testString)
-    tipB = TipsItem.alloc.initWithImage(UIImage.imageNamed("Testbild.png"), header:"Test 2", text: "asfdafafafasfasfasfafasfasfasf")
-    tipC = TipsItem.alloc.initWithImage(UIImage.imageNamed("Testbild.png"), header:"Test 3", text: "afakjhasfasfasfasfasfasfasffbaikfakfal")
+    ServerBackend.get.number_of_tips.times do |index|
+      tip = TipsItem.alloc.initWithImage(ServerBackend.get.image_for_tip(index),
+                                         header: ServerBackend.get.header_for_tip(index),
+                                         text: ServerBackend.get.description_for_tip(index))
+      @bundle << tip
+    end
 
-    @bundle = [tipA, tipB, tipC]
-
-    @bundle
+    @bundle.shuffle
   end
 end

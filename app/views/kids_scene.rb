@@ -12,9 +12,9 @@ class KidsScene < SKScene
   STORY_POS_Y = 0.6
 
   # x position (in x * screen width)
-  CHILD_BUTTON_X  = 0.8
-  PARENT_BUTTON_X = 0.2
-  LOGO_BUTTON_X   = 0.5
+  CHILD_BUTTON_X  = 1.33
+  PARENT_BUTTON_X = 0.33
+  LOGO_BUTTON_X   = 0.66
 
   # Sizes (in x * screen high) for the folowing elements
   SIZE_CENTER_STORY  = 0.5
@@ -228,7 +228,6 @@ class KidsScene < SKScene
       story.position = CGPointMake(mid_x + i * distance_between_storyicons, @story_pos_y)
       name = s.document.document_id.to_s + ":" + s.document.dataset_id.to_s
       story.name = name
-      lp story.name
       story.physicsBody = SKPhysicsBody.bodyWithRectangleOfSize(story.size)
       story.physicsBody.dynamic = true
       story.physicsBody.angularDamping = 5.0

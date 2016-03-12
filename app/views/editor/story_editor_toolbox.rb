@@ -3,7 +3,6 @@ class StoryEditorToolbox < UIView
     super.tap do
       @hidden = false
       @edge   = :right
-      @editor = nil
 
       @target = nil
       @node   = nil
@@ -16,7 +15,6 @@ class StoryEditorToolbox < UIView
 
       append(UIView, :background_layer)
 
-
       append(UILabel, :label)
 
       table_background = append(UIView, :table_background)
@@ -25,34 +23,33 @@ class StoryEditorToolbox < UIView
       @object_table.dataSource = self
       @object_table.delegate = self
 
+      self.bringSubviewToFront(@object_table)
+
       @object_name_label = append!(UILabel, :object_name_label)
 
       append(UIButton, :move_object).on(:tap) do
-        @editor.move_object
+        rmq.screen.move_object
       end
 
       append(UIButton, :edit_object).on(:tap) do
-        @editor.edit_object
+        rmq.screen.edit_object
       end
 
       append(UIButton, :change_screen).on(:tap) do
-        @editor.change_screen
+        rmq.screen.change_screen
       end
 
       append(UIButton, :close_editor).on(:tap) do
-        @editor.close_editor
+        rmq.screen.close_editor
       end
 
     end
   end
 
+
   # need this method because the standard one is broken...?
   def hidden?
     return @hidden
-  end
-
-  def set_editor(editor)
-    @editor = editor
   end
 
   def set_target(target, node: n, actions: actions)
@@ -71,9 +68,13 @@ class StoryEditorToolbox < UIView
     return unless @hidden
     @hidden = false
 
-    if(@editor.editable)
+    rmq.screen.player.gestureRecognizers.each do |rec|
+      rec.enabled = false
+    end
+
+    if(rmq.screen.editable)
       @editable_objects = []
-      @editor.editable.map(&:first).each do |key, value|
+      rmq.screen.editable.map(&:first).each do |key, value|
         @editable_objects << key
       end
 
@@ -102,7 +103,11 @@ class StoryEditorToolbox < UIView
     end
 
     # catch taps on this view to prevent accidential hiding
-    on(:tap) { |_, _| }
+    # on(:tap) { |_, _| }
+    # %w(up down left right).each do |direction|
+    # on("swipe_#{direction}".to_sym) {|_, _|}
+   # end
+
   end
 
   def hide
@@ -119,6 +124,9 @@ class StoryEditorToolbox < UIView
       })
     end
 
+    rmq.screen.player.gestureRecognizers.each do |rec|
+      rec.enabled = true
+    end
     # disable touch capturing
     off
   end
@@ -194,8 +202,8 @@ class StoryEditorToolbox < UIView
       UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier: @reuseIdentifier)
     end
 
-    if(@editor.player.node_for_path(@editable_objects[indexPath.row]))
-      cell.textLabel.text = @editor.story_bundle.object_for_path(@editable_objects[indexPath.row]).name
+    if(rmq.screen.player.node_for_path(@editable_objects[indexPath.row]))
+      cell.textLabel.text = rmq.screen.story_bundle.object_for_path(@editable_objects[indexPath.row]).name
     else
       cell.textLabel.text = "Error: no source found"
     end
@@ -206,8 +214,8 @@ class StoryEditorToolbox < UIView
   def tableView(view, numberOfRowsInSection: section)
     count = 0
 
-    if(@editor)
-      count = @editor.editable.count
+    if(rmq.screen)
+      count = rmq.screen.editable.count
     end
 
     count
@@ -215,8 +223,7 @@ class StoryEditorToolbox < UIView
 
   def tableView(tableView, didSelectRowAtIndexPath: indexPath)
     #tableView.deselectRowAtIndexPath(indexPath, animated: true)
-
-    @editor.update_toolbox_selected_node(@editable_objects[indexPath.row])
+    rmq.screen.update_toolbox_selected_node(@editable_objects[indexPath.row])
   end
 end
 

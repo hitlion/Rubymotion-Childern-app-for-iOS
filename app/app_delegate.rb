@@ -11,6 +11,25 @@ class AppDelegate < PM::Delegate
     self.setupDevmode if self.respond_to? :setupDevmode
     self.setupCrashlytics if self.respond_to? :setupCrashlytics
 
+    root = Dir.system_path(:documents)
+    bundles_data =  NSBundle.mainBundle.pathForResource('data/Bundles', ofType: nil)
+    backend_data =  NSBundle.mainBundle.pathForResource('data/Backend', ofType: nil)
+
+    if(Dir.exist?(root))
+      # only work on device not in the sim.
+      unless Dir.exist?(File.join(root, "Bundles"))
+        lp "App: local bundles folder doesn't exist, copy app included folder to root directory"
+        dest = File.join(root, 'Bundles')
+        NSFileManager.defaultManager.copyItemAtPath(bundles_data, toPath: dest, error: nil)
+      end
+
+      unless Dir.exist?(File.join(root, "Backend"))
+        lp "App: local backend folder doesn't exist, copy app included folder to root directory"
+        dest = File.join(root, 'Backend')
+        NSFileManager.defaultManager.copyItemAtPath(backend_data, toPath: dest, error: nil)
+      end
+    end
+
     if defined? Devmode
       StartScreen.next_screen = self.devmode_start_screen || nil
     end

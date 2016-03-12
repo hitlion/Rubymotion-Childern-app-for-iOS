@@ -68,7 +68,13 @@ module Story
         return available unless /^:level\[\d+\]:screen\[\d+\]:object\[\d+\]$/.match(path)
 
         options.each do |key|
-          if action_for_path(bundle, "#{path}:object_attributes:#{key}") == :accept
+          if(key == :object_name || key == :object_content)
+            p = "#{path}:#{key}"
+          else
+            p = "#{path}:object_attributes:#{key}"
+          end
+
+          if action_for_path(bundle, p) == :accept
             available[key] = true
           end
         end

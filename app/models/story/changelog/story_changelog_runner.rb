@@ -42,6 +42,7 @@ module Story
             lp "[JavaScriptException]: #{value.toString}",
                force_color: :red, log_js: true
           end)
+
           script_context.evaluateScript(File.read(Dir.resource('js/changelog.js')))
           script_context.evaluateScript(changelog)
 

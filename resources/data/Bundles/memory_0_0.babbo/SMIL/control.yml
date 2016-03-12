@@ -1,0 +1,1929 @@
+---
+  head:
+    data_language: "tuluh_smil"
+    data_language_version: "1.0"
+    template_id: "99.1"
+  meta:
+    dokument_id: 99
+    dataset_id: 1
+    branch_creator_id: 99
+    creator_impressum: "Robert Schertling Erfurt Germany"
+    branch_name: "Memory"
+    editor_id: null
+    set_name: "Memory-Spiel"
+    thumbnail: "../thumbnail.png"
+    status: "V1"
+    modified_conveyable: true
+    timestamp: "2016-01-21t12:00:00+00:00"
+  body:
+    levels:
+      - level_id: 1
+
+        screens:
+          - screen_id: 1
+            name: "start screen"
+
+            objects:
+              ###############################################################
+              # Startscreen background
+              ###############################################################
+              - object_name: "background_start_screen"
+                object_id: 100
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/background_main.png"
+                object_attribute:
+                  position_x: 0
+                  position_y: 0
+                  size_x: 1
+                  size_y: 1
+                  layer: 2
+                  transparency: 0
+                object_event:
+                  on_click: "click"
+                object_slot:
+                  - name: "click"
+                    action: "$.log('Start Game'); $screen.exit_to(':level[1]:screen[2]');"
+                    variables:
+                      - name: "screen"
+                        content: ":level[1]:screen[1]"
+              ###############################################################
+              # Startscreen text
+              ###############################################################
+              - object_name: "start_message"
+                object_id: 101
+                object_type: "text"
+                processable: "local"
+                object_content: ""
+                object_attribute:
+                  position_x: 0.5
+                  position_y: 0.5
+                  size_x: 1
+                  size_y: 1
+                  layer: 3
+                  transparency: 0
+                object_event:
+                  on_click: "click"
+                object_slot:
+                  - name: "click"
+                    action: "$.log('Start Game'); $screen.exit_to(':level[1]:screen[2]');"
+                    variables:
+                      - name: "screen"
+                        content: ":level[1]:screen[1]"
+              ###############################################################
+              # Exit button screen 1
+              ###############################################################
+              - object_name: "exit_button"
+                object_id: 102
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/button_close.png"
+                object_attribute:
+                  position_x: 0.9
+                  position_y: 0.050
+                  size_x: 0.075
+                  size_y: 0.1
+                  layer: 3
+                  transparency: 0
+                object_event:
+                  on_click: "close"
+                object_slot:
+                  - name: "close"
+                    action: "$screen.exit_story();"
+                    variables:
+                      - name: "screen"
+                        content: ":level[1]:screen[1]"
+
+            screen_event:
+              at_load: "start"
+
+            screen_slot:
+              - name: "start"
+                action: >
+                  $.log('game ready to start');
+                  $text.text({text:'Klicken zum starten', size: 80});
+                  $text.color({red: 0.00 ,green: 0.00 , blue: 0.00 , alpha: 1});
+                variables: 
+                  - name: "text"
+                    content: ":level[1]:screen[1]:object[101]"
+
+          - screen_id: 2
+            name: "game screen"
+
+            objects:
+              ###############################################################
+              # label player 1 
+              ###############################################################
+              - object_name: "label_player_1"
+                object_id: 190
+                object_type: "text"
+                processable: "local"
+                object_content: ""
+                object_attribute:
+                  position_x: 0.9
+                  position_y: 0.3
+                  size_x: 1
+                  size_y: 1
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # label player 2 
+              ###############################################################
+              - object_name: "label_player_2"
+                object_id: 191
+                object_type: "text"
+                processable: "local"
+                object_content: ""
+                object_attribute:
+                  position_x: 0.9
+                  position_y: 0.6
+                  size_x: 1
+                  size_y: 1
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # label points player 1 
+              ###############################################################
+              - object_name: "label_points_player_1"
+                object_id: 192
+                object_type: "text"
+                processable: "local"
+                object_content: ""
+                object_attribute:
+                  position_x: 0.9
+                  position_y: 0.4
+                  size_x: 1
+                  size_y: 1
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # label points player 2 
+              ###############################################################
+              - object_name: "label_points_player_2"
+                object_id: 193
+                object_type: "text"
+                processable: "local"
+                object_content: ""
+                object_attribute:
+                  position_x: 0.9
+                  position_y: 0.7
+                  size_x: 1
+                  size_y: 1
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []      
+              ###############################################################
+              # Gamescreen background
+              ###############################################################
+              - object_name: "background_game_screen"
+                object_id: 200
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/background_main.png"
+                object_attribute:
+                  position_x: 0
+                  position_y: 0
+                  size_x: 1
+                  size_y: 1
+                  layer: 2
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # Exit button screen 2
+              ###############################################################
+              - object_name: "exit_button"
+                object_id: 201
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/button_close.png"
+                object_attribute:
+                  position_x: 0.9
+                  position_y: 0.05
+                  size_x: 0.075
+                  size_y: 0.1
+                  layer: 3
+                  transparency: 0
+                object_event:
+                  on_click: "close"
+                object_slot:
+                  - name: "close"
+                    action: "$screen.exit_story();"
+                    variables:
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # next button screen 2
+              ###############################################################
+              - object_name: "next_button"
+                object_id: 202
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/button_next.png"
+                object_attribute:
+                  position_x: 0.9
+                  position_y: 0.8
+                  size_x: 0.075
+                  size_y: 0.1
+                  layer: 1
+                  transparency: 0
+                object_event:
+                  on_click: "next"
+                object_slot:
+                  - name: "next"
+                    action: "$screen.emit('hide_open'); $screen.emit('check_win'); $self.concurrent({layer:{l:1, duration:0}});"
+                    variables:
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # restart button screen 2
+              ###############################################################
+              - object_name: "restart_button"
+                object_id: 203
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/button_restart.png"
+                object_attribute:
+                  position_x: 0.8
+                  position_y: 0.8
+                  size_x: 0.075
+                  size_y: 0.1
+                  layer: 3
+                  transparency: 0
+                object_event:
+                  on_click: "restart"
+                object_slot:
+                  - name: "restart"
+                    action: "$.log('Restart game'); $screen.exit_to(':level[1]:screen[2]');"
+                    variables:
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 11
+              ###############################################################
+              - object_name: "closed_memory_field_11"
+                object_id: 211
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.05
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card11.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 0;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(0)];
+                      }
+                      else {
+                        $$.clicked_2 = 0;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(0)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card11"
+                        content: ":level[1]:screen[2]:object[211]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 12
+              ###############################################################
+              - object_name: "closed_memory_field_12"
+                object_id: 212
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.195
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card12.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 1;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(1)];
+                      }
+                      else {
+                        $$.clicked_2 = 1;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(1)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card12"
+                        content: ":level[1]:screen[2]:object[212]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 13
+              ###############################################################
+              - object_name: "closed_memory_field_13"
+                object_id: 213
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.34
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card13.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 2;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(2)];
+                      }
+                      else {
+                        $$.clicked_2 = 2;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(2)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card13"
+                        content: ":level[1]:screen[2]:object[213]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 14
+              ###############################################################
+              - object_name: "closed_memory_field_14"
+                object_id: 214
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.485
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card14.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 3;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(3)];
+                      }
+                      else {
+                        $$.clicked_2 = 3;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(3)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card14"
+                        content: ":level[1]:screen[2]:object[214]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 15
+              ###############################################################
+              - object_name: "closed_memory_field_15"
+                object_id: 215
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.63
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card15.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 4;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(4)];
+                      }
+                      else {
+                        $$.clicked_2 = 4;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(4)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card15"
+                        content: ":level[1]:screen[2]:object[215]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 21
+              ###############################################################
+              - object_name: "closed_memory_field_21"
+                object_id: 221
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.05
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card21.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 5;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(5)];
+                      }
+                      else {
+                        $$.clicked_2 = 5;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(5)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card21"
+                        content: ":level[1]:screen[2]:object[221]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 22
+              ###############################################################
+              - object_name: "closed_memory_field_22"
+                object_id: 222
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.195
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card22.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 6;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(6)];
+                      }
+                      else {
+                        $$.clicked_2 = 6;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(6)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card22"
+                        content: ":level[1]:screen[2]:object[222]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 23
+              ###############################################################
+              - object_name: "closed_memory_field_23"
+                object_id: 223
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.34
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card23.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 7;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(7)];
+                      }
+                      else {
+                        $$.clicked_2 = 7;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(7)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card23"
+                        content: ":level[1]:screen[2]:object[223]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 24
+              ###############################################################
+              - object_name: "closed_memory_field_24"
+                object_id: 224
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.485
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card24.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 8;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(8)];
+                      }
+                      else {
+                        $$.clicked_2 = 8;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(8)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card24"
+                        content: ":level[1]:screen[2]:object[224]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 25
+              ###############################################################
+              - object_name: "closed_memory_field_25"
+                object_id: 225
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.63
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card25.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 9;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(9)];
+                      }
+                      else {
+                        $$.clicked_2 = 9;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(9)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card25"
+                        content: ":level[1]:screen[2]:object[225]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 31
+              ###############################################################
+              - object_name: "closed_memory_field_31"
+                object_id: 231
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.05
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card31.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 10;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(10)];
+                      }
+                      else {
+                        $$.clicked_2 = 10;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(10)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card31"
+                        content: ":level[1]:screen[2]:object[231]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 32
+              ###############################################################
+              - object_name: "closed_memory_field_32"
+                object_id: 232
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.195
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card32.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 11;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(11)];
+                      }
+                      else {
+                        $$.clicked_2 = 11;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(11)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card32"
+                        content: ":level[1]:screen[2]:object[232]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 33
+              ###############################################################
+              - object_name: "closed_memory_field_33"
+                object_id: 233
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.34
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card33.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 12;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(12)];
+                      }
+                      else {
+                        $$.clicked_2 = 12;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(12)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card33"
+                        content: ":level[1]:screen[2]:object[233]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 34
+              ###############################################################
+              - object_name: "closed_memory_field_34"
+                object_id: 234
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.485
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card34.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 13;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(13)];
+                      }
+                      else {
+                        $$.clicked_2 = 13;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(13)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card34"
+                        content: ":level[1]:screen[2]:object[234]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 35
+              ###############################################################
+              - object_name: "closed_memory_field_35"
+                object_id: 235
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.63
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card35.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 14;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(14)];
+                      }
+                      else {
+                        $$.clicked_2 = 14;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(14)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card35"
+                        content: ":level[1]:screen[2]:object[235]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 41
+              ###############################################################
+              - object_name: "closed_memory_field_41"
+                object_id: 241
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.05
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card41.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 15;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(15)];
+                      }
+                      else {
+                        $$.clicked_2 = 15;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(15)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card41"
+                        content: ":level[1]:screen[2]:object[241]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 42
+              ###############################################################
+              - object_name: "closed_memory_field_42"
+                object_id: 242
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.195
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card42.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 16;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(16)];
+                      }
+                      else {
+                        $$.clicked_2 = 16;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(16)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card42"
+                        content: ":level[1]:screen[2]:object[242]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 43
+              ###############################################################
+              - object_name: "closed_memory_field_43"
+                object_id: 243
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.34
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card43.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 17;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(17)];
+                      }
+                      else {
+                        $$.clicked_2 = 17;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(17)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card43"
+                        content: ":level[1]:screen[2]:object[243]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 44
+              ###############################################################
+              - object_name: "closed_memory_field_44"
+                object_id: 244
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.485
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card44.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 18;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(18)];
+                      }
+                      else {
+                        $$.clicked_2 = 18;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(18)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card44"
+                        content: ":level[1]:screen[2]:object[244]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # card_backside memory field 45
+              ###############################################################
+              - object_name: "closed_memory_field_45"
+                object_id: 245
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/card_backside.png"
+                object_attribute:
+                  position_x: 0.63
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 4
+                  transparency: 0
+                object_event:
+                  on_click: "show"
+                object_slot:
+                  - name: "show"
+                    action: "if($$.card_count < 2) {
+                      $closed_card45.concurrent({layer:{l:1, duration:0}});
+                      if($$.card_count == 0) {
+                        $$.clicked_1 = 19;
+                        $$.current_pair = $$.pairs[$$.order.indexOf(19)];
+                      }
+                      else {
+                        $$.clicked_2 = 19;
+                        if($$.current_pair == $$.pairs[$$.order.indexOf(19)]) {
+                          $.log('Found a pair!');
+                          $$.clicked_1 = -1;
+                          $$.clicked_2 = -1;
+                          if($$.current_player == 1) {$$.points_player_1++;}
+                          else {$$.points_player_2++;}
+                        }
+                        else {
+                          $.log('No matched pairs!');
+                          if($$.current_player == 1) {$$.current_player = 2;}
+                          else {$$.current_player = 1;}
+                        }
+                        $screen.emit('show_next_button');
+                      }
+                      $$.card_count++;
+                      $screen.emit('log');
+                     }"
+                    variables:
+                      - name: "closed_card45"
+                        content: ":level[1]:screen[2]:object[245]"
+                      - name: "screen"
+                        content: ":level[1]:screen[2]"
+              ###############################################################
+              # open memory field 11
+              ###############################################################
+              - object_name: "open_memory_field_11"
+                object_id: 311
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_1.png"
+                object_attribute:
+                  position_x: 0.05
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 12
+              ###############################################################
+              - object_name: "open_memory_field_12"
+                object_id: 312
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_1.png"
+                object_attribute:
+                  position_x: 0.195
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 13
+              ###############################################################
+              - object_name: "open_memory_field_13"
+                object_id: 313
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_2.png"
+                object_attribute:
+                  position_x: 0.34
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 14
+              ###############################################################
+              - object_name: "open_memory_field_14"
+                object_id: 314
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_2.png"
+                object_attribute:
+                  position_x: 0.485
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 15
+              ###############################################################
+              - object_name: "open_memory_field_15"
+                object_id: 315
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_3.png"
+                object_attribute:
+                  position_x: 0.63
+                  position_y: 0.075
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 21
+              ###############################################################
+              - object_name: "open_memory_field_21"
+                object_id: 321
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_3.png"
+                object_attribute:
+                  position_x: 0.05
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 22
+              ###############################################################
+              - object_name: "open_memory_field_22"
+                object_id: 322
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_4.png"
+                object_attribute:
+                  position_x: 0.195
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 23
+              ###############################################################
+              - object_name: "open_memory_field_23"
+                object_id: 323
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_4.png"
+                object_attribute:
+                  position_x: 0.34
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 24
+              ###############################################################
+              - object_name: "open_memory_field_24"
+                object_id: 324
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_5.png"
+                object_attribute:
+                  position_x: 0.485
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 25
+              ###############################################################
+              - object_name: "open_memory_field_25"
+                object_id: 325
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_5.png"
+                object_attribute:
+                  position_x: 0.63
+                  position_y: 0.30
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 31
+              ###############################################################
+              - object_name: "open_memory_field_31"
+                object_id: 331
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_6.png"
+                object_attribute:
+                  position_x: 0.05
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 32
+              ###############################################################
+              - object_name: "open_memory_field_32"
+                object_id: 332
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_6.png"
+                object_attribute:
+                  position_x: 0.195
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 33
+              ###############################################################
+              - object_name: "open_memory_field_33"
+                object_id: 333
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_7.png"
+                object_attribute:
+                  position_x: 0.34
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 34
+              ###############################################################
+              - object_name: "open_memory_field_34"
+                object_id: 334
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_7.png"
+                object_attribute:
+                  position_x: 0.485
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 35
+              ###############################################################
+              - object_name: "open_memory_field_35"
+                object_id: 335
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_8.png"
+                object_attribute:
+                  position_x: 0.63
+                  position_y: 0.525
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 41
+              ###############################################################
+              - object_name: "open_memory_field_41"
+                object_id: 341
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_8.png"
+                object_attribute:
+                  position_x: 0.05
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 42
+              ###############################################################
+              - object_name: "open_memory_field_42"
+                object_id: 342
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_9.png"
+                object_attribute:
+                  position_x: 0.195
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 43
+              ###############################################################
+              - object_name: "open_memory_field_43"
+                object_id: 343
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_9.png"
+                object_attribute:
+                  position_x: 0.34
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 44
+              ###############################################################
+              - object_name: "open_memory_field_44"
+                object_id: 344
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_10.png"
+                object_attribute:
+                  position_x: 0.485
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # open memory field 45
+              ###############################################################
+              - object_name: "open_memory_field_45"
+                object_id: 345
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/pair_10.png"
+                object_attribute:
+                  position_x: 0.63
+                  position_y: 0.75
+                  size_x: 0.12
+                  size_y: 0.16
+                  layer: 3
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+
+            screen_event:
+              at_load: "start"
+
+            screen_slot:
+              - name: "check_win"
+                action: "if($$.points_player_2 > 5 || $$.points_player_1 > 5 || $$.points_player_1 + $$.points_player_2 == 10) {
+                 $screen.exit_to(':level[1]:screen[3]');
+                }"
+                variables:
+                  - name: "screen"
+                    content: ":level[1]:screen[2]"
+              - name: "show_next_button"
+                action: >
+                  $next_button.concurrent({layer:{l:3, duration:0.25}});
+                  $label_points_player_1.text({text: $$.points_player_1 + ' Punkte', size: 35});  
+                  $label_points_player_2.text({text: $$.points_player_2 + ' Punkte', size: 35});
+                variables:
+                  - name: "next_button"
+                    content: ":level[1]:screen[2]:object[202]"
+                  - name: "label_points_player_1"
+                    content: ":level[1]:screen[2]:object[192]"
+                  - name: "label_points_player_2"
+                    content: ":level[1]:screen[2]:object[193]"   
+              - name: "log"
+                action:   "$.log('current player: ' + $$.current_player);
+                  $.log('choose card count: ' + $$.card_count);
+                  $.log('pair number: ' + $$.pairs);
+                  $.log('actual card order: ' + $$.order);
+                  $.log('current pair: ' + $$.current_pair);
+                  $.log('Points player 1: ' + $$.points_player_1);
+                  $.log('Points player 2: ' + $$.points_player_2);
+                  $.log('-------------------------------------------');"
+                variables: []
+              - name: "hide_open"
+                action: "$.log('hide clicked cards');
+                  $$.export('backside_cards')._ = [ $backside_card_1, $backside_card_2, $backside_card_3, $backside_card_4, $backside_card_5,
+                                                $backside_card_6, $backside_card_7, $backside_card_8, $backside_card_9, $backside_card_10,
+                                                $backside_card_11, $backside_card_12, $backside_card_13, $backside_card_14, $backside_card_15,
+                                                $backside_card_16, $backside_card_17, $backside_card_18, $backside_card_19, $backside_card_20 ];
+                 if($$.clicked_1 > -1) {$$.backside_cards[$$.clicked_1].concurrent({layer:{l:4, duration:0.25}})}
+                 if($$.clicked_2 > -1) {$$.backside_cards[$$.clicked_2].concurrent({layer:{l:4, duration:0.25}})}
+                 $$.card_count = 0;
+                 $$.current_pair = -1;"
+                variables:
+                  - name: "backside_card_1"
+                    content: ":level[1]:screen[2]:object[211]"
+                  - name: "backside_card_2"
+                    content: ":level[1]:screen[2]:object[212]"
+                  - name: "backside_card_3"
+                    content: ":level[1]:screen[2]:object[213]"
+                  - name: "backside_card_4"
+                    content: ":level[1]:screen[2]:object[214]"
+                  - name: "backside_card_5"
+                    content: ":level[1]:screen[2]:object[215]"
+                  - name: "backside_card_6"
+                    content: ":level[1]:screen[2]:object[221]"
+                  - name: "backside_card_7"
+                    content: ":level[1]:screen[2]:object[222]"
+                  - name: "backside_card_8"
+                    content: ":level[1]:screen[2]:object[223]"
+                  - name: "backside_card_9"
+                    content: ":level[1]:screen[2]:object[224]"
+                  - name: "backside_card_10"
+                    content: ":level[1]:screen[2]:object[225]"
+                  - name: "backside_card_11"
+                    content: ":level[1]:screen[2]:object[231]"
+                  - name: "backside_card_12"
+                    content: ":level[1]:screen[2]:object[232]"
+                  - name: "backside_card_13"
+                    content: ":level[1]:screen[2]:object[233]"
+                  - name: "backside_card_14"
+                    content: ":level[1]:screen[2]:object[234]"
+                  - name: "backside_card_15"
+                    content: ":level[1]:screen[2]:object[235]"
+                  - name: "backside_card_16"
+                    content: ":level[1]:screen[2]:object[241]"
+                  - name: "backside_card_17"
+                    content: ":level[1]:screen[2]:object[242]"
+                  - name: "backside_card_18"
+                    content: ":level[1]:screen[2]:object[243]"
+                  - name: "backside_card_19"
+                    content: ":level[1]:screen[2]:object[244]"
+                  - name: "backside_card_20"
+                    content: ":level[1]:screen[2]:object[245]"
+
+              - name: "start"
+                action: "$.log('game started, shuffle cards started');
+                  $label_player_1.text({text: 'Spieler 1:', size: 35});  
+                  $label_player_2.text({text: 'Spieler 2:', size: 35});   
+                  $label_points_player_1.text({text: '0 Punkte', size: 35});  
+                  $label_points_player_2.text({text: '0 Punkte', size: 35});  
+                  $$.card_count = 0;
+                  $$.current_player = 1;
+                  $$.points_player_1 = 0;
+                  $$.points_player_2 = 0;
+                  $$.current_pair = -1;
+                  $$.clicked_1 = -1;
+                  $$.clicked_2 = -1;
+                  var open_cards = [ $open_card_1, $open_card_2, $open_card_3, $open_card_4, $open_card_5,
+                                 $open_card_6, $open_card_7, $open_card_8, $open_card_9, $open_card_10,
+                                 $open_card_11, $open_card_12, $open_card_13, $open_card_14, $open_card_15,
+                                 $open_card_16, $open_card_17, $open_card_18, $open_card_19, $open_card_20 ];
+                  $$.export('order')._ =  $.shuffle([ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 ]);
+                  $$.export('pairs')._ =  [ 1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10 ];
+                  var positions = [ {x: 0.05, y: 0.075}, {x: 0.195, y: 0.075}, {x:0.34, y:0.075}, {x: 0.485, y: 0.075},{x: 0.63, y: 0.075},
+                   {x: 0.05, y: 0.3}, {x: 0.195, y: 0.3}, {x:0.34, y:0.3}, {x: 0.485, y: 0.3},{x: 0.63, y: 0.3},
+                   {x: 0.05, y: 0.525}, {x: 0.195, y: 0.525}, {x:0.34, y:0.525}, {x: 0.485, y: 0.525},{x: 0.63, y: 0.525},
+                   {x: 0.05, y: 0.75}, {x: 0.195, y: 0.75}, {x:0.34, y:0.75}, {x: 0.485, y: 0.75},{x: 0.63, y: 0.75} ];
+                  for (i = 0; i < open_cards.length; i++) {
+                    positions[i]['duration'] = 0;
+                  };
+                  open_cards[0].move(positions[$$.order[0]]);
+                  open_cards[1].move(positions[$$.order[1]]);
+                  open_cards[2].move(positions[$$.order[2]]);
+                  open_cards[3].move(positions[$$.order[3]]);
+                  open_cards[4].move(positions[$$.order[4]]);
+                  open_cards[5].move(positions[$$.order[5]]);
+                  open_cards[6].move(positions[$$.order[6]]);
+                  open_cards[7].move(positions[$$.order[7]]);
+                  open_cards[8].move(positions[$$.order[8]]);
+                  open_cards[9].move(positions[$$.order[9]]);
+                  open_cards[10].move(positions[$$.order[10]]);
+                  open_cards[11].move(positions[$$.order[11]]);
+                  open_cards[12].move(positions[$$.order[12]]);
+                  open_cards[13].move(positions[$$.order[13]]);
+                  open_cards[14].move(positions[$$.order[14]]);
+                  open_cards[15].move(positions[$$.order[15]]);
+                  open_cards[16].move(positions[$$.order[16]]);
+                  open_cards[17].move(positions[$$.order[17]]);
+                  open_cards[18].move(positions[$$.order[18]]);
+                  open_cards[19].move(positions[$$.order[19]]);
+
+                  $.log('game started, shuffle cards finished');"
+                variables:
+                  - name: "open_card_1"
+                    content: ":level[1]:screen[2]:object[311]"
+                  - name: "open_card_2"
+                    content: ":level[1]:screen[2]:object[312]"
+                  - name: "open_card_3"
+                    content: ":level[1]:screen[2]:object[313]"
+                  - name: "open_card_4"
+                    content: ":level[1]:screen[2]:object[314]"
+                  - name: "open_card_5"
+                    content: ":level[1]:screen[2]:object[315]"
+                  - name: "open_card_6"
+                    content: ":level[1]:screen[2]:object[321]"
+                  - name: "open_card_7"
+                    content: ":level[1]:screen[2]:object[322]"
+                  - name: "open_card_8"
+                    content: ":level[1]:screen[2]:object[323]"
+                  - name: "open_card_9"
+                    content: ":level[1]:screen[2]:object[324]"
+                  - name: "open_card_10"
+                    content: ":level[1]:screen[2]:object[325]"
+                  - name: "open_card_11"
+                    content: ":level[1]:screen[2]:object[331]"
+                  - name: "open_card_12"
+                    content: ":level[1]:screen[2]:object[332]"
+                  - name: "open_card_13"
+                    content: ":level[1]:screen[2]:object[333]"
+                  - name: "open_card_14"
+                    content: ":level[1]:screen[2]:object[334]"
+                  - name: "open_card_15"
+                    content: ":level[1]:screen[2]:object[335]"
+                  - name: "open_card_16"
+                    content: ":level[1]:screen[2]:object[341]"
+                  - name: "open_card_17"
+                    content: ":level[1]:screen[2]:object[342]"
+                  - name: "open_card_18"
+                    content: ":level[1]:screen[2]:object[343]"
+                  - name: "open_card_19"
+                    content: ":level[1]:screen[2]:object[344]"
+                  - name: "open_card_20"
+                    content: ":level[1]:screen[2]:object[345]"
+                  - name: "label_player_1"
+                    content: ":level[1]:screen[2]:object[190]" 
+                  - name: "label_player_2"
+                    content: ":level[1]:screen[2]:object[191]"
+                  - name: "label_points_player_1"
+                    content: ":level[1]:screen[2]:object[192]"
+                  - name: "label_points_player_2"
+                    content: ":level[1]:screen[2]:object[193]"  
+          - screen_id: 3
+            name: "end screen"
+
+            objects:
+              ###############################################################
+              # end screen background
+              ###############################################################
+              - object_name: "background_end_screen"
+                object_id: 400
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/background_main.png"
+                object_attribute:
+                  position_x: 0
+                  position_y: 0
+                  size_x: 1
+                  size_y: 1
+                  layer: 2
+                  transparency: 0
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # player 1 wins message
+              ###############################################################
+              - object_name: "end_message_1"
+                object_id: 401
+                object_type: "text"
+                processable: "local"
+                object_content: ""
+                object_attribute:
+                  position_x: 0.5
+                  position_y: 0.5
+                  size_x: 0.4
+                  size_y: 0.4
+                  layer: 3
+                  transparency: 1
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # player 2 wins message
+              ###############################################################
+              - object_name: "end_message_2"
+                object_id: 402
+                object_type: "text"
+                processable: "local"
+                object_content: ""
+                object_attribute:
+                  position_x: 0.5
+                  position_y: 0.5
+                  size_x: 0.4
+                  size_y: 0.4
+                  layer: 3
+                  transparency: 1
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # draw message
+              ###############################################################
+              - object_name: "end_message_3"
+                object_id: 403
+                object_type: "text"
+                processable: "local"
+                object_content: ""
+                object_attribute:
+                  position_x: 0.5
+                  position_y: 0.5
+                  size_x: 0.4
+                  size_y: 0.4
+                  layer: 3
+                  transparency: 1
+                object_event: {}
+                object_slot: []
+              ###############################################################
+              # Exit button screen 3
+              ###############################################################
+              - object_name: "exit_button"
+                object_id: 404
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/button_close.png"
+                object_attribute:
+                  position_x: 0.9
+                  position_y: 0.050
+                  size_x: 0.075
+                  size_y: 0.1
+                  layer: 3
+                  transparency: 0
+                object_event:
+                  on_click: "close"
+                object_slot:
+                  - name: "close"
+                    action: "$screen.exit_story();"
+                    variables:
+                      - name: "screen"
+                        content: ":level[1]:screen[3]"
+              ###############################################################
+              # restart button screen 3
+              ###############################################################
+              - object_name: "restart_button"
+                object_id: 404
+                object_type: "picture"
+                processable: "local"
+                object_content: "../content/button_restart.png"
+                object_attribute:
+                  position_x: 0.4625
+                  position_y: 0.7
+                  size_x: 0.075
+                  size_y: 0.1
+                  layer: 3
+                  transparency: 0
+                object_event:
+                  on_click: "restart"
+                object_slot:
+                  - name: "restart"
+                    action:  $screen.exit_to(':level[1]:screen[1]');
+                    variables:
+                      - name: "screen"
+                        content: ":level[1]:screen[3]"
+
+            screen_event:
+              at_load: "start"
+
+            screen_slot:
+              - name: "start"
+                action: "$.log('game finished');
+                $.log($$.points_player_1);
+                $.log($$.points_player_2);
+                $message_1.text({text:'Spieler 1 gewinnt', size: 80});
+                $message_1.color({red: 0.00 ,green: 0.00 , blue: 0.00 , alpha: 1});
+                $message_2.text({text:'Spieler 2 gewinnt', size: 80});
+                $message_2.color({red: 0.00 ,green: 0.00 , blue: 0.00 , alpha: 1});
+                $message_3.text({text:'Unentschieden', size: 80});
+                $message_3.color({red: 0.00 ,green: 0.00 , blue: 0.00 , alpha: 1});
+                if($$.points_player_1 > $$.points_player_2){$message_1.fade({alpha:0, duration:0});}
+                if($$.points_player_1 < $$.points_player_2){$message_2.fade({alpha:0, duration:0});}
+                if($$.points_player_1 == $$.points_player_2){$message_3.fade({alpha:0, duration:0});}
+                "
+                variables:
+                    - name: "message_1"
+                      content: ":level[1]:screen[3]:object[401]"
+                    - name: "message_2"
+                      content: ":level[1]:screen[3]:object[402]"
+                    - name: "message_3"
+                      content: ":level[1]:screen[3]:object[403]"
+
+    body_event:
+      at_load: "start"
+      at_end: null
+    body_slot:
+      - name: "start"
+        action: "$.log ('Init game variables');
+        $$.export('card_count')._ = 0;
+        $$.export('current_player')._ = 1;
+        $$.export('points_player_1')._ = 0;
+        $$.export('points_player_2')._ = 0;
+        $$.export('current_pair')._ = -1;
+        $$.export('clicked_1')._ = -1;
+        $$.export('clicked_2')._ = -1;"
+        variables: []

@@ -149,6 +149,31 @@ namespace :prep do
       File.symlink(args[:bundles_path], link_path)
     end
   end
+
+  desc "Create symbolic links to [backend_path] inside the CoreSimulator environment(s)"
+  task :link_backend, [:backend_path] do |t, args|
+
+    app = Motion::Project::App
+    app.fail('usage: rake prep:link_backend [/absolute/path/to/your/backend/folder]') if args[:backend_path].nil?
+    app.fail('usage: rake prep:link_backend [/absolute/path/to/your/backend/folder]') unless args[:backend_path].start_with? '/'
+    app.fail("'#{args[:backend_path]}' is not a valid directory!") unless File.directory? args[:backend_path]
+
+    Dir.glob("#{ENV['HOME']}/Library/Developer/CoreSimulator/**/Documents/Backend").each do |link_path|
+      log_path = link_path.gsub(ENV['HOME'], '~')
+
+      if File.symlink? link_path
+        app.info('Symlink', "removing old link '#{log_path}'")
+        File.unlink(link_path)
+      else
+        new_path = "#{link_path}.%03d" % Dir.glob("#{link_path}*").length
+        app.info('Symlink', "'#{log_path}' is not a symbolic link, renaming it to '#{File.basename(new_path)}'")
+        File.rename(link_path, new_path)
+      end
+      app.info('Symlink', "Add link to #{log_path}")
+      File.symlink(args[:backend_path], link_path)
+    end
+  end
+
 end
 
 namespace :beta do

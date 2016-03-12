@@ -148,12 +148,10 @@ class AdvancedCollectionView < UIView
   # Called if the user pressed one of the two scroll buttons
   # @param source [UIButton] the pressed scroll button
   def scroll_button_pressed (source)
+    @visible_tip_cell ||= 0
+
     direction = source.tag
-
-    visible_cells = @collection_view.visibleCells.sort!{|pos1, pos2| pos1.frame.origin.x <=> pos2.frame.origin.x}
-    path = @collection_view.indexPathForCell(visible_cells[0])
-
-    row = path.row + direction
+    row = @visible_tip_cell + direction
 
     if(row == @collection_view.numberOfItemsInSection(0))
       row = @collection_view.numberOfItemsInSection(0) - 1
@@ -163,6 +161,7 @@ class AdvancedCollectionView < UIView
       row = 0
     end
 
+    @visible_tip_cell = row
     destination = NSIndexPath.indexPathForRow(row, inSection:0)
     @collection_view.scrollToItemAtIndexPath(destination, atScrollPosition:UICollectionViewScrollPositionLeft,
                                              animated:true)

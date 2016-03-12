@@ -18,7 +18,8 @@ class SmartphoneParentScreen < PM::Screen
     setup_nav_bar
     setup_menu_view
     setup_shop_view
-    setup_tab_bar
+    #TODO: activate tab abr
+    #setup_tab_bar
     setup_options
     setup_menu_overlay
     setup_shop_premium_overlay

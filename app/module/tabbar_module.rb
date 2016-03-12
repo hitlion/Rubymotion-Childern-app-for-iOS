@@ -98,7 +98,7 @@ module TabbarModule
   end
 
   ##
-  # Called if the user pressed on of the navbars buttons
+  # Called if the user pressed one of the navbars buttons
   # than call the delegate method with the params self (this navbar) and the pressed button element
   # @param source [UIButton] the pressed cell's button the whole cell is the button
   def button_pressed (source)

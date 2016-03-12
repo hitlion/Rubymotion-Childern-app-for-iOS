@@ -3,7 +3,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
   end
 
   def root( st )
-    st.frame = {x: 0, y: 0, w: 250, h: device.screen_height}
+    st.frame = {x: 0, y: 0, w: 0.25 * device.screen_width, h: device.screen_height}
     st.alpha = 1.0
     st.tint_color = rmq.color.black
     st.background_color = rmq.color.babbo_orange

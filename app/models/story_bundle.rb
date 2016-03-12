@@ -30,19 +30,23 @@ class StoryBundle
             async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
 
             Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
-              bundle = StoryBundle.new(bundle_path)
-              bundle.load
-              weak_self.bundle_list << bundle if !bundle.has_changesets?
-              weak_self.bundle_list += bundle.changesets if bundle.has_changesets?
-              async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
+              autorelease_pool{
+                bundle = StoryBundle.new(bundle_path)
+                bundle.load
+                weak_self.bundle_list << bundle if !bundle.has_changesets?
+                weak_self.bundle_list += bundle.changesets if bundle.has_changesets?
+                async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
+              }
             end
           end
         else
           Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|
-            bundle = StoryBundle.new(bundle_path)
-            bundle.load
-            self.bundle_list << bundle if !bundle.has_changesets?
-            self.bundle_list += bundle.changesets if bundle.has_changesets?
+            autorelease_pool{
+              bundle = StoryBundle.new(bundle_path)
+              bundle.load
+              self.bundle_list << bundle if !bundle.has_changesets?
+              self.bundle_list += bundle.changesets if bundle.has_changesets?
+            }
           end
         end
       else
@@ -200,7 +204,6 @@ class StoryBundle
 
     if(i > 0)
       name = 'changes_branch_' + i.to_s + '.js'
-      lp name
       change_data = File.read(File.join(control_path, name))
 
       unless change_data.nil?
@@ -211,6 +214,7 @@ class StoryBundle
       end
     end
 
+    lp changesets
     changesets << bundle
     changesets
   end
@@ -293,6 +297,8 @@ class StoryBundle
     end
 
     @ruleset = Story::Changelog::Ruleset.new(rules_data)
+    lp "Rules"
+    lp @ruleset
   end
 
   # Collect all assets referenced in this story and

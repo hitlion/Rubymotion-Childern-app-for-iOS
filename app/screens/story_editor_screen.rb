@@ -40,7 +40,6 @@ class StoryEditorScreen < PM::Screen
     end
 
     @toolbox = rmq(self.view).append(StoryEditorToolbox).tag(:toolbox).get
-    @toolbox.set_editor(self)
     rmq(@toolbox).hide
     rmq(@player).append(@toolbox) unless @toolbox.nil?
 
@@ -49,7 +48,6 @@ class StoryEditorScreen < PM::Screen
 
     @change_screen_box = rmq(self.view).append(StoryEditorChangeScreenBox).tag(:change_screen_box).get
     @change_screen_box.hide
-    @change_screen_box.set_editor(self)
     rmq(@player).append(@change_screen_box) unless @change_screen_box.nil?
 
     @edit_object_box = rmq(self.view).append(StoryEditorEditBox).tag(:edit_object_box).get
@@ -57,7 +55,6 @@ class StoryEditorScreen < PM::Screen
     rmq(@player).append(@edit_object_box) unless @edit_object_box.nil?
 
     @move_view = rmq(self.view).append(MoveObjectView).tag(:move_view).get
-    @move_view.set_editor(self)
     @move_view.hide
     rmq(@player).append(@move_view) unless @move_view.nil?
   end
@@ -208,6 +205,19 @@ class StoryEditorScreen < PM::Screen
     JavaScript::Runtime.tear_down
   end
 
+  def touchesBegan(touches, withEvent: event)
+    touch = event.allTouches.anyObject
+    location = touch.locationInView(@player)
+    dest = @player.hitTest(location, withEvent: event)
+
+    if(dest == self.player)
+      rmq(:change_screen_box).get.hide
+      rmq(:edit_object_box).get.hide
+      rmq(:toolbox).get.hide
+    end
+    super
+  end
+
   def show_scene_with_level( level, screen: screen)
     target = ':level[' + level.to_s + ']:screen[' + screen.to_s + ']'
 
@@ -346,9 +356,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   def update_toolbox_selected_node(path)
-    lp @edit_info
     @edit_info = {:location => @player.node_for_path(path).position, :object => path}
-    lp @edit_info
     path = @edit_info[:object]
     node = @player.node_for_path(path)
     object = @story_bundle.object_for_path(path)
@@ -400,8 +408,6 @@ class StoryEditorScreen < PM::Screen
   def write_meta_changes(bundle)
     story = bundle.document
     res = "/* new meta informations */\n"
-    lp story.set_name
-    lp story.set_name.to_s
     res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{story.thumbnail.to_s}', '#{story.timestamp.to_s}');\n"
     res
   end
@@ -470,8 +476,6 @@ class StoryEditorScreen < PM::Screen
   def photo_canceled
     if(rmq(:edit_object_box).get.show?)
       rmq(:edit_object_box).map { |tb| tb.photo_canceled }
-    else
-      lp "test"
     end
 
   end

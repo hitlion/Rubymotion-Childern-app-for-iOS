@@ -91,8 +91,9 @@ module NavbarModule
     frame = CGRectMake(@pos_x_button_2 * self.frame.size.width, y_pos_elements,
                        @element_size, @element_size)
     button2 = add_button_element_with_image(UIImage.imageNamed("icons/shop.png"), displayName: "Shop",
-                                            frame: frame, action: "button_pressed:", id: 2)
+                                            frame: frame, action: nil, id: 2)
     self.addSubview(button2)
+    #TODO: Activate shop button here set nil to "button_pressed:"
 
     ####
     # Define third button
@@ -107,7 +108,8 @@ module NavbarModule
     frame = CGRectMake(@pos_x_searchbar * self.frame.size.width, y_pos_elements,
                        @searchbar_width * self.frame.size.width, @element_size)
     search_bar = add_seach_bar_with_frame(frame, placeholder: "Suchen")
-    self.addSubview(search_bar)
+    #self.addSubview(search_bar)
+    #TODO: Activate menu searchbar here
 
     ####
     # Define navbars underline

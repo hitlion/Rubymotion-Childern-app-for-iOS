@@ -97,7 +97,6 @@ module Story
     def content=( new_content )
       @changes[:object_content] ||= { :value => nil, :original => @content }
       @changes[:object_content][:value] = new_content
-      lp @changes[:object_content]
       modified(true)
       @content = new_content
     end

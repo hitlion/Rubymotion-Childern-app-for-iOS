@@ -3,7 +3,6 @@ class StoryEditorChangeScreenBox < UIView
     super.tap do
       @hidden = false
 
-      @editor = nil
       @new_level = 0
       @new_screen = 0
 
@@ -25,7 +24,7 @@ class StoryEditorChangeScreenBox < UIView
         update_display_values
       end
       append(UIButton, :ok_button).on(:tap) do
-        @editor.show_scene_with_level(rmq(:level_stepper).get.value.to_i, screen: rmq(:screen_stepper).get.value.to_i)
+        rmq.screen.show_scene_with_level(rmq(:level_stepper).get.value.to_i, screen: rmq(:screen_stepper).get.value.to_i)
         hide
       end
       append(UIButton, :cancel_button).on(:tap) do
@@ -33,13 +32,6 @@ class StoryEditorChangeScreenBox < UIView
       end
 
     end
-  end
-
-  def set_editor(editor)
-    @editor = editor
-    @new_level = editor.level.to_i
-    @new_screen = editor.screen.to_i
-    update_display_values
   end
 
   def hide
@@ -58,10 +50,13 @@ class StoryEditorChangeScreenBox < UIView
     return unless @hidden
     @hidden = false
 
+    @new_level = rmq.screen.level.to_i
+    @new_screen = rmq.screen.screen.to_i
+
     rmq(self).show
-    if(@editor)
-      @new_level = @editor.level.to_i
-      @new_screen = @editor.screen.to_i
+    if(rmq.screen)
+      @new_level = rmq.screen.level.to_i
+      @new_screen = rmq.screen.screen.to_i
     end
 
     rmq(self).animate(duration: 0.5, animations: ->(q){

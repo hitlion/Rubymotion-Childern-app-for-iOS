@@ -1,7 +1,6 @@
 class MoveObjectView < UIView
   def initWithFrame( frame )
     super.tap do
-      @editor = nil
 
       @target = nil
       @node   = nil
@@ -85,10 +84,6 @@ class MoveObjectView < UIView
 
     # disable touch capturing
     off
-  end
-
-  def set_editor(editor)
-    @editor = editor
   end
 
   def set_target(target, node: n, actions: actions)

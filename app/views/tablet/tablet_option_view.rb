@@ -136,7 +136,7 @@ class TabletOptionView < UIView
   end
 
   ##
-  # Called when the touch started
+  # Called when the touch ended
   def touchesEnded(touches, withEvent: event)
     super
     close_options if (!CGRectContainsPoint(@options_table.bounds, touches.anyObject.locationInView(@options_table)))

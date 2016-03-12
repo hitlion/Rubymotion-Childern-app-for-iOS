@@ -18,7 +18,8 @@ class TabletParentScreen < PM::Screen
     setup_nav_bar
     setup_menu_view
     setup_shop_view
-    setup_tab_bar
+    #TODO: Activate tab bar here
+    #setup_tab_bar
     setup_options
     setup_menu_overlay
     setup_shop_premium_overlay
@@ -115,13 +116,14 @@ class TabletParentScreen < PM::Screen
       StartScreen.last_screen = :parent_menu
       rmq.screen.open_root_screen(StartScreen)
     elsif (button_id == 2)
-      if(@shop_view.hidden?)
-        @navbar.set_title_text("Shop")
-        @shop_view.hidden = false
-        @menu_view.hidden = true
-        @navbar.show_back_button
-        @options_view.hidden = true
-      end
+      #TODO: Activate Shop here
+      #if(@shop_view.hidden?)
+      #  @navbar.set_title_text("Shop")
+      #  @shop_view.hidden = false
+      #  @menu_view.hidden = true
+      #  @navbar.show_back_button
+      #  @options_view.hidden = true
+      #end
     elsif (button_id == 3)
       @options_view.hidden = !@options_view.hidden?
       @shop_view.hidden = true

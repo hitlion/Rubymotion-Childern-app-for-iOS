@@ -10,19 +10,70 @@ class ServerBackend
 
   def initialize
     @story_data = {}
+    @tips_data = {}
+
     @backend_dir = File.join(Dir.system_path(:documents), 'Backend')
 
-    Dir.mkdirs(@backend_dir) unless File.exists?(@backend_dir)
-    Dir.glob(File.join(@backend_dir, 'story_*.yml')).each do |story_def|
+    @stories_path = File.join(@backend_dir, 'stories')
+    @story_data_path = File.join(@stories_path, 'story_data')
+    @screenshots_path = File.join(@stories_path, 'screenshots')
+
+    @tips_path = File.join(@backend_dir, 'tips_and_tricks')
+    @tips_image_path = File.join(@tips_path, 'images')
+    @tips_data_path = File.join(@tips_path, 'data')
+
+    config_path = File.join(@story_data_path, 'story_*.yml')
+    lp "Backend: reading config files from #{config_path}... "
+    Dir.glob(config_path).each do |story_def|
       data = YAML.load(File.read(story_def))
 
       data = Hash.symbolicate(data) unless data.nil?
-      next unless validate_definition(data)
+      next unless validate_story_definition(data)
 
       @story_data["#{data[:document_id]}_#{data[:dataset_id]}"] = data
     end
 
+    tips_path = File.join(@tips_data_path, 'tip_*.yml')
+    lp "Backend: reading tips data from #{tips_path}... "
+    Dir.glob(tips_path).each_with_index do |tips_def, index|
+      data = YAML.load(File.read(tips_def))
+
+      data = Hash.symbolicate(data) unless data.nil?
+      next unless validate_tips_definition(data)
+
+      @tips_data[index] = data
+    end
   end
+
+  # Return the description for a given tip.
+  # @param [Int] tip The number for a tip
+  def description_for_tip(tip)
+    return @tips_data[tip][:description]
+  end
+
+  # Return the number of available tips
+  def number_of_tips
+    return @tips_data.count
+  end
+
+  # Return the image for a given tip.
+  # @param [Int] tip The number for a tip
+  def image_for_tip(tip)
+    res = nil
+    image_path = File.join(@tips_image_path, @tips_data[tip][:image])
+
+    if File.exists? image_path
+      res = UIImage.imageWithContentsOfFile(image_path)
+    end
+    res
+  end
+
+  # Return the header for a given tip.
+  # @param [Int] tip The number for a tip
+  def header_for_tip(tip)
+    return @tips_data[tip][:header]
+  end
+
   # Return the description for a given story.
   #
   # @param [StoryBundle] story The story bundle for which a
@@ -53,7 +104,7 @@ class ServerBackend
 
     res = []
     @story_data[story_uuid(story)][:screenshots].each do |path|
-      image_path = File.join(@backend_dir, path)
+      image_path = File.join(@screenshots_path, path)
       next unless File.exists? image_path
 
       res << UIImage.imageWithContentsOfFile(image_path)
@@ -113,17 +164,17 @@ class ServerBackend
     if @story_data.has_key? story_uuid(story)
       # remove old files first
       @story_data[story_uuid(story)][:screenshots].each do |path|
-        File.unlink(File.join(@backend_dir, path))
+        File.unlink(File.join(@screenshots_path, path))
       end
     else
       add_story(story)
     end
 
     # store each image as PNG called 'screenshot_X.X_Y.png'
-    # where X.X is the dataset it and Y is the screenshot index.
+    # where X.X is the document.dataset ID and Y is the screenshot index.
     image_names = []
     images.each_with_index do |img, n|
-      image_path = File.join(@backend_dir, "screenshot_#{story_uuid(story)}_#{n}.png")
+      image_path = File.join(@screenshots_path, "screenshot_#{story_uuid(story)}_#{n}.png")
       open(image_path, 'w') do |io|
         io.write(UIImagePNGRepresentation(img))
         image_names << File.basename(image_path)
@@ -162,10 +213,22 @@ class ServerBackend
   # Check if the loaded story data contains all required keys.
   # @param [Hash] data A +Hash+ containing the story data definition
   # @return [Boolean] true or false depending if the data is valid.
-  def validate_definition( data )
+  def validate_story_definition( data )
     return false if data.nil?
 
     [:document_id, :description, :rating, :screenshots].each do |key|
+      return false unless data.has_key? key
+    end
+    true
+  end
+
+  # Check if the loaded tips data contains all required keys.
+  # @param [Hash] data A +Hash+ containing the story data definition
+  # @return [Boolean] true or false depending if the data is valid.
+  def validate_tips_definition( data )
+    return false if data.nil?
+
+    [:header, :description, :image].each do |key|
       return false unless data.has_key? key
     end
     true
@@ -183,7 +246,7 @@ class ServerBackend
         :dataset_id => story.document.dataset_id,
         :rating => 1.0,
         :screenshots => [],
-        :description => "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        :description => "Es wurde leider keine Beschreibung für die Story gefunden."
       }
     end
   end
@@ -194,7 +257,7 @@ class ServerBackend
   # @return [Boolean] true an success, false if any error occured.
   def update_backend_files
     @story_data.each do |key, data|
-      storage_path = File.join(@backend_dir, "story_#{key}.yml")
+      storage_path = File.join(@story_data_path, "story_#{key}.yml")
       open(storage_path, 'w') do |io|
         io.write(YAML.dump(data))
       end
