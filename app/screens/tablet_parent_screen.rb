@@ -26,6 +26,14 @@ class TabletParentScreen < PM::Screen
     setup_shop_basic_overlay
   end
 
+  def should_rotate(orientation)
+    if orientation == UIInterfaceOrientationLandscape
+      true
+    else
+      false
+    end
+  end
+
   ##
   # add a own navigation bar
   def setup_nav_bar

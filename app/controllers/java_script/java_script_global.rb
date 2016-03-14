@@ -6,7 +6,6 @@ module JavaScript
       attr_accessor :timer, :timer_slot, :timer_path
     end
 
-    attr_reader :timer
     include JavaScript::BridgeMixin
 
     javascript_export :b_b_v_j_s_bridged_global

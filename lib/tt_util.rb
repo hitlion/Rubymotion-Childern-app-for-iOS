@@ -5,11 +5,13 @@ class TTUtil
   # :small, :medium, :large, :xl
   def self.get_font_size(size)
     if(device.ipad?)
+      return FONT_SIZE_IPAD_XS        if size == :xs
       return FONT_SIZE_IPAD_SMALL     if size == :small
       return FONT_SIZE_IPAD_MEDIUM    if size == :medium
       return FONT_SIZE_IPAD_LARGE     if size == :large
       return FONT_SIZE_IPAD_XL        if size == :xl
     else
+      return FONT_SIZE_IPHONE_XS      if size == :xs
       return FONT_SIZE_IPHONE_SMALL   if size == :small
       return FONT_SIZE_IPHONE_MEDIUM  if size == :medium
       return FONT_SIZE_IPHONE_LARGE   if size == :large

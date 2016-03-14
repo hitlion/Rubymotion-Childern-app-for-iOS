@@ -5,7 +5,7 @@ class MoveObjectView < UIView
       @target = nil
       @node   = nil
 
-      rmq(self).stylesheet = MoveObjectViewStylesheet
+      rmq(self).stylesheet = StoryEditorMoveObjectViewStylesheet
       rmq(self).apply_style(:root)
 
       append(UIView, :background_layer)

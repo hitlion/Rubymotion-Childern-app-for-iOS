@@ -13,4 +13,12 @@ class KidsScreen < PM::Screen
     @player = nil
   end
 
+  def should_rotate(orientation)
+    if orientation == UIInterfaceOrientationLandscape
+      true
+    else
+      false
+    end
+  end
+
 end

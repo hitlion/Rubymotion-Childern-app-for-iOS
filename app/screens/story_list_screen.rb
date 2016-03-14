@@ -19,6 +19,14 @@ class StoryListScreen < PM::TableScreen
     update_table_data
   end
 
+  def should_rotate(orientation)
+    if orientation == UIInterfaceOrientationLandscape
+      true
+    else
+      false
+    end
+  end
+
   # Return the structured table data for ProMotion
   # @todo: Handle branch data
   def table_data

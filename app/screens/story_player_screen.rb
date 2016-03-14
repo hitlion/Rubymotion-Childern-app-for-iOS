@@ -77,6 +77,14 @@ class StoryPlayerScreen < PM::Screen
     end
   end
 
+  def should_rotate(orientation)
+    if orientation == UIInterfaceOrientationLandscape
+      true
+    else
+      false
+    end
+  end
+
   def show_scene( target )
     # transition_image = create_transition_image
 

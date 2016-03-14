@@ -102,7 +102,7 @@ Motion::Project::App.setup do |app|
   app.short_version = app.version = '1.0.149'
 
   app.device_family = [:iphone, :ipad]
-  app.interface_orientations = [:landscape_left, :landscape_right]
+  app.interface_orientations = [:landscape_left, :portrait, :landscape_right]
 
   app.sdk_version = '9.2'
   app.deployment_target = '8.0'

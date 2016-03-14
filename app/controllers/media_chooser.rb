@@ -26,6 +26,9 @@
 #
 
 module MediaChooser
+
+  attr_reader :image_picker_for_iphone, :video_picker_for_iphone
+
   # Present a photo chooser
   def present_photo_chooser
     if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceTypeCamera )
@@ -90,7 +93,11 @@ module MediaChooser
     image_picker.sourceType = source
 
     if device.iphone?
-      self.presentModalViewController(image_picker, animated: true)
+      #self.presentModalViewController(image_picker, animated: true) #old solution by rene
+      self.addChildViewController(image_picker)
+      image_picker.didMoveToParentViewController(self)
+      self.view.addSubview(image_picker.view)
+      @image_picker_for_iphone = image_picker
     elsif device.ipad?
       pop_over = UIPopoverController.alloc.initWithContentViewController(image_picker)
       if self.respond_to? :media_chooser_popup_anchor
@@ -130,7 +137,11 @@ module MediaChooser
     video_picker.sourceType = source
 
     if device.iphone?
-      self.presentModalViewController(image_picker, animated: true)
+      # self.presentModalViewController(video_picker, animated: true) # old solution by rene
+      self.addChildViewController(image_picker)
+      image_picker.didMoveToParentViewController(self)
+      self.view.addSubview(image_picker.view)
+      @video_picker_for_iphone = image_picker
     elsif device.ipad?
       pop_over = UIPopoverController.alloc.initWithContentViewController(video_picker)
       if self.respond_to? :media_chooser_popup_anchor

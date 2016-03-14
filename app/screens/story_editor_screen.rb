@@ -27,6 +27,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   def on_load
+
     rmq(self.view).apply_style(:root)
 
     @player = rmq.unshift!(SceneEditor, :scene_editor)
@@ -122,87 +123,16 @@ class StoryEditorScreen < PM::Screen
     @logger.clear! unless @logger.nil?
     @player.presentScene(nil)
 
-    # check for changes
-    changes =  @story_bundle.document.has_changes?
-    lp "Editor: Changes exists: #{changes}"
-
-    # edit or new story --> set paths and file
-    @path = @story_bundle.path
-
-    if(@edit_mode == :edit)
-      lp "Editor: save edited story as new version"
-    else
-      lp "Editor: save edited story as new story"
-
-      dir = File.split(@story_bundle.path).first
-      source = File.split(@story_bundle.path).last
-      name = source.split('.').first
-      source_id = name.split('_')[1]
-      name = name.split('_').first
-
-      count = 0
-
-      # count how many version exists
-      Dir.glob(File.join(dir,name + '_*_*.babbo')).each_with_index do
-        count += 1
-      end
-
-      @story_bundle.document.dataset_id = count+1
-
-      dest_name = name + '_' + count.to_s + '_' + source_id.to_s + '.babbo'
-      lp "Editor: new directory name: #{dest_name}"
-      new_path = File.join(dir, dest_name)
-      NSFileManager.defaultManager.copyItemAtPath(@path, toPath: new_path, error: nil)
-      @path = new_path
-    end
-
-    # only write if changes exists
-    if(changes)
-
-      #load and save new thumbnail
-
-      if(@new_thumbnail)
-        path = File.absolute_path(File.join(@path, 'SMIL', @story_bundle.document.thumbnail))
-        UIImagePNGRepresentation(@new_thumbnail).writeToFile(path, atomically: true)
-      end
-
-      if(@story_bundle.document.dataset_id > 0)
-        @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
-      end
-
-      @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
-
-      base_path = File.join(@path, 'SMIL')
-      count = 1
-      Dir.glob(File.join(base_path, 'changes_branch_*.js')).each_with_index do
-        count = count + 1
-      end
-
-      name = "changes_branch_#{count.to_s}.js"
-      base_path = File.join(base_path, name)
-      file = File.new(base_path, "w")
-      lp "Editor: create branch file #{name}"
-
-      puts write_meta_changes(@story_bundle)
-      file.write(write_meta_changes(@story_bundle))
-
-      @story_bundle.document.body.levels.each do |l|
-
-        puts write_level_changes(l)
-        file.write(write_level_changes(l))
-        l.screens.each do |s|
-          file.write(write_screen_changes(s))
-          puts write_screen_changes(s)
-          s.objects.each do |o|
-            file.write(write_object_changes(o))
-            puts write_object_changes(o)
-          end
-        end
-      end
-    end
-
     @story_bundle = nil
     JavaScript::Runtime.tear_down
+  end
+
+  def should_rotate(orientation)
+    if orientation == UIInterfaceOrientationLandscape
+      true
+    else
+      false
+    end
   end
 
   def touchesBegan(touches, withEvent: event)
@@ -287,6 +217,85 @@ class StoryEditorScreen < PM::Screen
     rmq(:toolbox).get.hide
 
     lp "Editor: is closing"
+
+    # check for changes
+    changes =  @story_bundle.document.has_changes?
+    lp "Editor: Changes exists: #{changes}"
+
+    # edit or new story --> set paths and file
+    @path = @story_bundle.path
+
+    if(@edit_mode == :edit)
+      lp "Editor: save edited story as new version"
+    else
+      lp "Editor: save edited story as new story"
+
+      dir = File.split(@story_bundle.path).first
+      source = File.split(@story_bundle.path).last
+      name = source.split('.').first
+      source_id = name.split('_')[1]
+      name = name.split('_').first
+
+      count = 0
+
+      # count how many version exists
+      Dir.glob(File.join(dir,name + '_*_*.babbo')).each_with_index do
+        count += 1
+      end
+
+      @story_bundle.document.dataset_id = count+1
+
+      dest_name = name + '_' + count.to_s + '_' + source_id.to_s + '.babbo'
+      lp "Editor: new directory name: #{dest_name}"
+      new_path = File.join(dir, dest_name)
+      NSFileManager.defaultManager.copyItemAtPath(@path, toPath: new_path, error: nil)
+      @path = new_path
+    end
+
+    # only write if changes exists
+    if(changes)
+
+      #load and save new thumbnail
+
+      if(@new_thumbnail)
+        path = File.absolute_path(File.join(@path, 'SMIL', @story_bundle.document.thumbnail))
+        UIImagePNGRepresentation(@new_thumbnail).writeToFile(path, atomically: true)
+      end
+
+      if(@story_bundle.document.dataset_id > 0)
+        @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
+      end
+
+      @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
+
+      base_path = File.join(@path, 'SMIL')
+      count = 1
+      Dir.glob(File.join(base_path, 'changes_branch_*.js')).each_with_index do
+        count = count + 1
+      end
+
+      name = "changes_branch_#{count.to_s}.js"
+      base_path = File.join(base_path, name)
+      file = File.new(base_path, "w")
+      lp "Editor: create branch file #{name}"
+
+      puts write_meta_changes(@story_bundle)
+      file.write(write_meta_changes(@story_bundle))
+
+      @story_bundle.document.body.levels.each do |l|
+
+        puts write_level_changes(l)
+        file.write(write_level_changes(l))
+        l.screens.each do |s|
+          file.write(write_screen_changes(s))
+          puts write_screen_changes(s)
+          s.objects.each do |o|
+            file.write(write_object_changes(o))
+            puts write_object_changes(o)
+          end
+        end
+      end
+    end
 
     close
   end
@@ -463,6 +472,15 @@ class StoryEditorScreen < PM::Screen
 
   # @private
   def photo_available( image )
+
+    if(device.iphone?)
+      unless (@image_picker_for_iphone.nil?)
+        @image_picker_for_iphone.view.removeFromSuperview
+        @image_picker_for_iphone.removeFromParentViewController
+        @image_picker_for_iphone = nil
+      end
+    end
+
     if(rmq(:edit_object_box).get.show?)
       rmq(:edit_object_box).map { |tb| tb.photo_available(image) }
     else
@@ -474,6 +492,15 @@ class StoryEditorScreen < PM::Screen
 
   # @private
   def photo_canceled
+
+    if(device.iphone?)
+      unless (@image_picker_for_iphone.nil?)
+        @image_picker_for_iphone.view.removeFromSuperview
+        @image_picker_for_iphone.removeFromParentViewController
+        @image_picker_for_iphone = nil
+      end
+    end
+
     if(rmq(:edit_object_box).get.show?)
       rmq(:edit_object_box).map { |tb| tb.photo_canceled }
     end
@@ -481,6 +508,15 @@ class StoryEditorScreen < PM::Screen
   end
   # @private
   def video_available( media_url )
+
+    if(device.iphone?)
+      unless (@video_picker_for_iphone.nil?)
+        @video_picker_for_iphone.view.removeFromSuperview
+        @video_picker_for_iphone.removeFromParentViewController
+        @video_picker_for_iphone = nil
+      end
+    end
+
     if(rmq(:edit_object_box).get.show?)
       rmq(:edit_object_box).map { |tb| tb.video_available(media_url) }
     end
@@ -488,6 +524,15 @@ class StoryEditorScreen < PM::Screen
 
   # @private
   def video_canceled
+
+    if(device.iphone?)
+      unless (@video_picker_for_iphone.nil?)
+        @video_picker_for_iphone.view.removeFromSuperview
+        @video_picker_for_iphone.removeFromParentViewController
+        @video_picker_for_iphone = nil
+      end
+    end
+
     if(rmq(:edit_object_box).get.show?)
       rmq(:edit_object_box).map { |tb| tb.video_canceled }
     end
