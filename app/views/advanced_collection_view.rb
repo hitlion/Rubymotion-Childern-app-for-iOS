@@ -209,7 +209,7 @@ class AdvancedCollectionView < UIView
   def collectionView(view, cellForItemAtIndexPath:path)
     cell = view.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: path)
     cell.make_cell(@elements[path.row])
-    cell.delegate = self
+    cell.delegate = WeakRef.new(self)
     cell
   end
 

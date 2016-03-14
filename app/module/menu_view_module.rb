@@ -79,7 +79,7 @@ module MenuViewModule
     frame = CGRectMake(0, @top_view_height * self.frame.size.height,
                        self.frame.size.width, @bottom_view_height * self.frame.size.height)
     @tips_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuTipsCell,
-                                                              numOfVisibleElements: 1, delegate: self,
+                                                              numOfVisibleElements: 1, delegate: WeakRef.new(self),
                                                               headerText: "Tipps und Tricks")
     @tips_view.reload_data(tips_list.get)
     self.addSubview(@tips_view)
@@ -91,7 +91,7 @@ module MenuViewModule
     frame = CGRectMake(0, @top_view_height * self.frame.size.height,
                        self.frame.size.width, @bottom_view_height * self.frame.size.height)
     @level_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuLevelCell,
-                                                               numOfVisibleElements: 4, delegate: self,
+                                                               numOfVisibleElements: 4, delegate: WeakRef.new(self),
                                                                headerText: "Erstellte Stories")
     @level_view.reload_data(@grouped_stories[0])
     @level_view.hidden = true
@@ -184,7 +184,6 @@ module MenuViewModule
 
     @choosen_story_index = index
 
-
     if(@pressed_more_button)
       if(@pressed_more_button == source)
         @pressed_more_button = nil
@@ -252,7 +251,7 @@ module MenuViewModule
 
     if(view == @story_collection_view)
       list = @grouped_stories[path.row]
-      cell.delegate = self
+      cell.delegate = WeakRef.new(self)
       cell.make_cell(list[0])
     end
 

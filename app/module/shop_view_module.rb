@@ -31,7 +31,7 @@ module ShopViewModule
 
   def build_view
 
-    init_view_with_delegate(self) if @init.nil? || !@init
+    init_view_with_delegate(WeakRef.new(self)) if @init.nil? || !@init
 
     add_premium_scroll_view
     add_basic_scroll_view
@@ -52,8 +52,8 @@ module ShopViewModule
     frame = CGRectMake(0, 0, self.frame.size.width, @top_view_height * self.frame.size.height)
 
     @premium_collection_view = UICollectionView.alloc.initWithFrame(frame, collectionViewLayout: layout)
-    @premium_collection_view.dataSource = self
-    @premium_collection_view.delegate = self
+    @premium_collection_view.dataSource = WeakRef.new(self)
+    @premium_collection_view.delegate = WeakRef.new(self)
 
     height = @premium_collection_view.frame.size.height
     width  = (4 * height) / 3
@@ -76,7 +76,7 @@ module ShopViewModule
     frame = CGRectMake(0, @top_view_height * self.frame.size.height,
                        self.frame.size.width, @bottom_view_height * self.frame.size.height)
     @basic_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: ShopBasicCell,
-                                                               numOfVisibleElements: 4, delegate: self,
+                                                               numOfVisibleElements: 4, delegate: WeakRef.new(self),
                                                                headerText: "Basic Stories")
     @basic_view.reload_data(@basic_stories)
     self.addSubview(@basic_view)
@@ -168,7 +168,7 @@ module ShopViewModule
 
     if(view == @premium_collection_view)
       story = @premium_stories[path.row]
-      cell.delegate = self
+      cell.delegate = WeakRef.new(self)
       cell.make_cell(story)
     end
 

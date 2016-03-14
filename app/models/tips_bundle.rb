@@ -2,6 +2,7 @@ class TipsBundle
   attr_accessor :bundle
 
   def init
+    super
     @bundle = []
 
     ServerBackend.get.number_of_tips.times do |index|
