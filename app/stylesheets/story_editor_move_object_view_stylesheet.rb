@@ -1,4 +1,4 @@
-class MoveObjectViewStylesheet < ApplicationStylesheet
+class StoryEditorMoveObjectViewStylesheet < ApplicationStylesheet
   def setup
   end
 
@@ -35,7 +35,7 @@ class MoveObjectViewStylesheet < ApplicationStylesheet
   end
 
   def choose_root (st)
-    st.frame = {x: 0, y: device.screen_height - 150, w: 250, h: 150}
+    st.frame = {x: 0, y: device.screen_height - 0.2 * device.screen_height, w: 0.2 * device.screen_width, h: 0.2 * device.screen_height}
     st.alpha = 1.0
     st.tint_color = rmq.color.black
     st.background_color = rmq.color.babbo_orange
@@ -49,8 +49,8 @@ class MoveObjectViewStylesheet < ApplicationStylesheet
   end
 
   def accept_button (st)
-    st.frame = {t: 15, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(FONT_STANDARD_REGULAR, 18)
+    st.frame = {t:  0.02 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
     st.text  = 'Bestätigen'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -58,8 +58,8 @@ class MoveObjectViewStylesheet < ApplicationStylesheet
   end
 
   def deny_button (st)
-    st.frame = {bp: 5, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(FONT_STANDARD_REGULAR, 18)
+    st.frame = {bp: 0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
     st.text  = 'Abbrechen'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray

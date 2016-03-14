@@ -22,5 +22,9 @@ class LoadErrorsScreen < PM::TableScreen
       app.alert(title: 'Fehler:',
                 message: error)
   end
+
+  def should_autorotate
+    false
+  end
 end
 

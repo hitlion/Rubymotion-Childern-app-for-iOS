@@ -49,6 +49,14 @@ class AgeVerificationScreen < PM::Screen
 
   end
 
+  def should_rotate(orientation)
+    if orientation == UIInterfaceOrientationLandscape
+      true
+    else
+      false
+    end
+  end
+
   def left_pressed
     StartScreen.next_screen= :kids_menu
     rmq.screen.open_root_screen(StartScreen)

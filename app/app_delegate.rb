@@ -6,6 +6,9 @@ class AppDelegate < PM::Delegate
   include Devmode if defined? Devmode
 
   def on_load( app, options )
+
+    UIApplication.sharedApplication.setStatusBarOrientation(UIInterfaceOrientationLandscapeLeft , animated: false)
+
     return if RUBYMOTION_ENV == 'test'
 
     self.setupDevmode if self.respond_to? :setupDevmode
@@ -43,5 +46,6 @@ class AppDelegate < PM::Delegate
   def application(application, willChangeStatusBarOrientation: new_orientation, duration: d)
     device.orientation = new_orientation
   end
+
 end
 

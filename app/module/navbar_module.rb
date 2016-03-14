@@ -100,8 +100,9 @@ module NavbarModule
     frame = CGRectMake(@pos_x_button_3 * self.frame.size.width, y_pos_elements,
                        @element_size, @element_size)
     image = UIImage.imageNamed("icons/option.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
-    button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: "button_pressed:", id: 3)
+    button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: nil, id: 3)
     self.addSubview(button3)
+    #TODO: Activate option button here set nil to "button_pressed:"
 
     ####
     # Define searchbar

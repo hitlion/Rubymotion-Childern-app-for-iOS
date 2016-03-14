@@ -20,6 +20,9 @@ class StartScreen < PM::Screen
 
 
   def on_load
+
+    UIApplication.sharedApplication.setStatusBarOrientation(UIInterfaceOrientationLandscapeLeft , animated: false)
+
     StartScreen.warmup_done ||= false
     StartScreen.editor_mode ||= :new
 
@@ -34,6 +37,14 @@ class StartScreen < PM::Screen
     load_images
 
     build_animation
+  end
+
+  def should_rotate(orientation)
+    if orientation == UIInterfaceOrientationLandscape
+      true
+    else
+      false
+    end
   end
 
   def load_images

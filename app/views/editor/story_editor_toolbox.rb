@@ -23,7 +23,7 @@ class StoryEditorToolbox < UIView
       @object_table.dataSource = self
       @object_table.delegate = self
 
-      self.bringSubviewToFront(@object_table)
+      #self.bringSubviewToFront(@object_table)
 
       @object_name_label = append!(UILabel, :object_name_label)
 
@@ -196,12 +196,15 @@ class StoryEditorToolbox < UIView
   end
 
   def tableView(view, cellForRowAtIndexPath: indexPath)
+
     @reuseIdentifier ||= "CELL_IDENTIFIER"
 
     cell = view.dequeueReusableCellWithIdentifier(@reuseIdentifier) || begin
       UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier: @reuseIdentifier)
     end
 
+    cell.textLabel.font = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    cell.textLabel.adjustsFontSizeToFitWidth = true
     if(rmq.screen.player.node_for_path(@editable_objects[indexPath.row]))
       cell.textLabel.text = rmq.screen.story_bundle.object_for_path(@editable_objects[indexPath.row]).name
     else
@@ -209,6 +212,10 @@ class StoryEditorToolbox < UIView
     end
 
     cell
+  end
+
+  def tableView(view, heightForRowAtIndexPath: path)
+    height = TTUtil.get_font_size(:medium) + 10
   end
 
   def tableView(view, numberOfRowsInSection: section)

@@ -18,14 +18,14 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
 
   def label (st)
     st.frame = {t:0.025 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(FONT_STANDARD_BOLD, 20)
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
     st.text  = 'Editierbare Objekte'
     st.color = rmq.color.black
     st.text_alignment = :center
   end
 
   def table_background (st)
-    st.frame = {bp:5, l: 10, fr: 10, h: 0.45 * device.screen_height}
+    st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.45 * device.screen_height}
     st.background_color = rmq.color.babbo_orange
     st.corner_radius = 12.5
   end
@@ -37,16 +37,16 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
   end
 
   def object_name_label (st)
-    st.frame = {bp:10, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(FONT_STANDARD_BOLD, 20)
+    st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
     st.text  = 'Object Name'
     st.color = rmq.color.babbo_orange
     st.text_alignment = :center
   end
 
   def move_object (st)
-    st.frame = {bp: 10, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(FONT_STANDARD_REGULAR, 18)
+    st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
     st.text  = 'Objekt bewegen'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -54,8 +54,8 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
   end
 
   def edit_object (st)
-    st.frame = {bp: 15, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(FONT_STANDARD_REGULAR, 18)
+    st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
     st.text  = 'Objekt bearbeiten'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -63,8 +63,8 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
   end
 
   def change_screen (st)
-    st.frame = {bp: 15, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(FONT_STANDARD_REGULAR, 18)
+    st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
     st.text  = 'Level wechseln'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -72,14 +72,12 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
   end
 
   def close_editor (st)
-    st.frame = {bp: 15, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(FONT_STANDARD_REGULAR, 18)
+    st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
     st.text  = 'Editor beenden'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
     st.corner_radius =  12.5
   end
-
-
 end
 
