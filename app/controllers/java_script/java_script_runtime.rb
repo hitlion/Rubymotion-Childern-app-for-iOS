@@ -55,13 +55,11 @@ module JavaScript
       @story_bundle = nil
       @scene_root   = nil
 
-      @script_vm    = JSVirtualMachine.alloc.init
       @script_cache = JavaScript::Cache.new
     end
 
     def tear_down
       @script_cache = nil
-      @script_vm    = nil
     end
 
 
@@ -179,6 +177,7 @@ module JavaScript
     def dispatch_script_block( receiver, variables, action, async = true )
       block = proc do
         autorelease_pool do
+          script_vm = nil
           unless async == true || JSContext.currentContext.nil?
             # reuse the existing VM for synchronous calls
             script_vm = JSContext.currentContext.virtualMachine
