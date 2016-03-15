@@ -2,6 +2,7 @@ class LoadErrorsScreen < PM::TableScreen
   stylesheet LoadErrorsStylesheet
 
   attr_accessor :load_errors
+  include OrientationModule
 
   # Return the structured table data for ProMotion
   def table_data
@@ -21,10 +22,6 @@ class LoadErrorsScreen < PM::TableScreen
   def show_single_error( error )
       app.alert(title: 'Fehler:',
                 message: error)
-  end
-
-  def should_autorotate
-    false
   end
 end
 

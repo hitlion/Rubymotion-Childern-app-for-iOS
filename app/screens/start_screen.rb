@@ -39,12 +39,8 @@ class StartScreen < PM::Screen
     build_animation
   end
 
-  def should_rotate(orientation)
-    if orientation == UIInterfaceOrientationLandscape
-      true
-    else
-      false
-    end
+  def supportedInterfaceOrientations
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight
   end
 
   def load_images

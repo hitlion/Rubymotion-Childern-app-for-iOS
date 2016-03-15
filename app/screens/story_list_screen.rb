@@ -2,6 +2,8 @@ class StoryListScreen < PM::TableScreen
   title 'Babbo Voco'
   stylesheet StoryListStylesheet
 
+  include OrientationModule
+
   refreshable
   longpressable
 
@@ -17,14 +19,6 @@ class StoryListScreen < PM::TableScreen
     reload_bundles(true)
     stop_refreshing
     update_table_data
-  end
-
-  def should_rotate(orientation)
-    if orientation == UIInterfaceOrientationLandscape
-      true
-    else
-      false
-    end
   end
 
   # Return the structured table data for ProMotion

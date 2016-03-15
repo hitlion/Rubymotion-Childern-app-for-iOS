@@ -4,6 +4,7 @@ class StoryEditorScreen < PM::Screen
 
   include MediaChooser
   include AudioRecorder
+  include OrientationModule
 
   attr_accessor :story_bundle, :edit_mode
   attr_reader :level, :screen, :editable, :player
@@ -125,14 +126,6 @@ class StoryEditorScreen < PM::Screen
 
     @story_bundle = nil
     JavaScript::Runtime.tear_down
-  end
-
-  def should_rotate(orientation)
-    if orientation == UIInterfaceOrientationLandscape
-      true
-    else
-      false
-    end
   end
 
   def touchesBegan(touches, withEvent: event)

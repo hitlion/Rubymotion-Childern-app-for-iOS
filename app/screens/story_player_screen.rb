@@ -4,6 +4,8 @@ class StoryPlayerScreen < PM::Screen
 
   attr_accessor :story_bundle
 
+  include OrientationModule
+
   class << self
     attr_accessor :instance
 
@@ -74,14 +76,6 @@ class StoryPlayerScreen < PM::Screen
       else
         close
       end
-    end
-  end
-
-  def should_rotate(orientation)
-    if orientation == UIInterfaceOrientationLandscape
-      true
-    else
-      false
     end
   end
 
