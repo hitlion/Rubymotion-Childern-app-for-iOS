@@ -1,5 +1,7 @@
 class KidsScreen < PM::Screen
 
+  include OrientationModule
+
   def will_appear
     @player = SKView.alloc.initWithFrame(view.bounds)
     rmq(view).append(@player)
@@ -11,14 +13,6 @@ class KidsScreen < PM::Screen
     @player.presentScene(nil)
     rmq(@player).remove
     @player = nil
-  end
-
-  def should_rotate(orientation)
-    if orientation == UIInterfaceOrientationLandscape
-      true
-    else
-      false
-    end
   end
 
 end

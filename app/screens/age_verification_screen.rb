@@ -3,6 +3,8 @@ class AgeVerificationScreen < PM::Screen
   title "Alterskontrolle"
   stylesheet AgeVerificationStylesheet
 
+  include OrientationModule
+
   # Initial view setup
   def on_load
 
@@ -47,14 +49,6 @@ class AgeVerificationScreen < PM::Screen
 
   def will_appear
 
-  end
-
-  def should_rotate(orientation)
-    if orientation == UIInterfaceOrientationLandscape
-      true
-    else
-      false
-    end
   end
 
   def left_pressed

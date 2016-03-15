@@ -6,6 +6,8 @@ class TabletParentScreen < PM::Screen
 
   CellIdentifier = 'Cell'
 
+  include OrientationModule
+
   def will_appear
 
     @parentmenu = UIView.alloc.initWithFrame(CGRectMake(0 ,0, device.screen_width, device.screen_height))
@@ -26,12 +28,8 @@ class TabletParentScreen < PM::Screen
     setup_shop_basic_overlay
   end
 
-  def should_rotate(orientation)
-    if orientation == UIInterfaceOrientationLandscape
-      true
-    else
-      false
-    end
+  def supportedInterfaceOrientations
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight
   end
 
   ##
