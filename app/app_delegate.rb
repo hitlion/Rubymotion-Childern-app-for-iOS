@@ -7,7 +7,7 @@ class AppDelegate < PM::Delegate
 
   def on_load( app, options )
 
-    UIApplication.sharedApplication.setStatusBarOrientation(UIInterfaceOrientationLandscapeLeft , animated: false)
+    #UIApplication.sharedApplication.setStatusBarOrientation(UIInterfaceOrientationLandscapeLeft , animated: false)
 
     return if RUBYMOTION_ENV == 'test'
 

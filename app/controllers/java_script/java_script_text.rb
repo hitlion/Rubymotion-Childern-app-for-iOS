@@ -28,9 +28,10 @@ module JavaScript
 
     def text(args)
       args = Hash.symbolicate(args)
-      node.text = args[:text] if args[:text]
-      node.fontSize = TTUtil.get_font_size(args[:size].intern) if args[:size]
-      node.hidden = false
+      if args[:text] && args[:size]
+        node.fontSize = TTUtil.get_font_size(args[:size].intern)
+        node.text = args[:text]
+      end
     end
 
   end

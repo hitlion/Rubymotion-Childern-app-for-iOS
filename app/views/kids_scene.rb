@@ -13,8 +13,8 @@ class KidsScene < SKScene
 
   # x position (in x * screen width)
   CHILD_BUTTON_X  = 1.33
-  PARENT_BUTTON_X = 0.33
-  LOGO_BUTTON_X   = 0.66
+  PARENT_BUTTON_X = 0.25
+  LOGO_BUTTON_X   = 0.75
 
   # Sizes (in x * screen high) for the folowing elements
   SIZE_CENTER_STORY  = 0.5
