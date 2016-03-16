@@ -2,13 +2,13 @@ module Scene
   class AudioNode < SKSpriteNode
     include Scene::NodeHelpersMixin
 
-    attr_reader :av_player
+    attr_reader :av_player, :image
 
     # Create a new AudioNode bound to +story_object+
     #
     # @param [StoryBundle] bundle The {StoryBundle} containing +story_object+.
     # @param [Scene::Object] story_object The object definition.
-    def self.create( bundle, story_object )
+    def self.create( bundle, story_object, mode )
       AudioNode.alloc.initWithColor(rmq.color.clear, size: [0, 0]).tap do |node|
         node.instance_eval do
           image = rmq.image.resource('placeholder/file_music')
@@ -30,6 +30,8 @@ module Scene
             end
           end
 
+          @image = image
+
           self.name      = story_object.path
           self.texture   = SKTexture.textureWithImage(image)
           self.size      = image.size
@@ -37,7 +39,9 @@ module Scene
                                                   self.size)
           self.zPosition = story_object.layer
           self.alpha     = 1.00001 - story_object.transparency
-          self.hidden    = true
+
+
+          self.hidden    = mode == :player
 
           unless @av_player.nil?
             @av_player.delegate = self

@@ -23,8 +23,6 @@ class StoryEditorToolbox < UIView
       @object_table.dataSource = self
       @object_table.delegate = self
 
-      #self.bringSubviewToFront(@object_table)
-
       @object_name_label = append!(UILabel, :object_name_label)
 
       append(UIButton, :move_object).on(:tap) do
@@ -101,12 +99,6 @@ class StoryEditorToolbox < UIView
         q.move from_right: 0
       })
     end
-
-    # catch taps on this view to prevent accidential hiding
-    # on(:tap) { |_, _| }
-    # %w(up down left right).each do |direction|
-    # on("swipe_#{direction}".to_sym) {|_, _|}
-   # end
 
   end
 

@@ -65,7 +65,7 @@ class StoryEditorScreen < PM::Screen
     @story_bundle.document.reset_changes
     @editable_views = @story_bundle.editable
 
-    scene  = SceneFactory.create_scene(@story_bundle, @editable_views.first)
+    scene  = SceneFactory.create_scene(@story_bundle, @editable_views.first, :editor)
     @editable = @story_bundle.ruleset.editable_objects_for_screen( @story_bundle, @editable_views.first)
     @current_view = @editable_views.first
 
@@ -145,7 +145,7 @@ class StoryEditorScreen < PM::Screen
 
   def show_scene(target)
 
-    new_scene = SceneFactory.create_scene(@story_bundle, target)
+    new_scene = SceneFactory.create_scene(@story_bundle, target, :editor)
 
     if new_scene.nil?
       lp "#{target} doesnt exists, stay at the current level and screen"
@@ -238,10 +238,10 @@ class StoryEditorScreen < PM::Screen
   def canBecomeFirstResponder
     true
   end
-
-  def canPerformAction(action, withSender: sender)
-    [:edit_object, :move_object, :close_editor, :change_view].include? action.to_sym
-  end
+ # obsolete
+ # def canPerformAction(action, withSender: sender)
+ #   [:edit_object, :move_object, :close_editor, :change_view].include? action.to_sym
+ # end
 
   #
   #
@@ -290,17 +290,20 @@ class StoryEditorScreen < PM::Screen
     object = @story_bundle.object_for_path(path)
     actions = @editable[path]
 
-    scene = JavaScript::Runtime.get.scene_root
+    if(node)
+      scene = JavaScript::Runtime.get.scene_root
 
-    scene.enumerateChildNodesWithName('//*', usingBlock: ->(n, _){
+      scene.enumerateChildNodesWithName('//*', usingBlock: ->(n, _){
+        lp n
+        lp node
+        if n.name == node.name
 
-      if n.name == node.name
-
-      else
-        n.alpha = 0.25
-        n.zPosition -= 999_800 if n.zPosition > 999_800
-      end
-    })
+        else
+          n.alpha = 0.25
+          n.zPosition -= 999_800 if n.zPosition > 999_800
+        end
+      })
+    end
 
     rmq(:toolbox).map do |tb|
       tb.set_target(object, node: node, actions: actions)
@@ -344,7 +347,6 @@ class StoryEditorScreen < PM::Screen
   end
 
   def setup_editor_mode(scene)
-    lp "test"
     scene.backgroundColor = rmq.color.white
     scene.enumerateChildNodesWithName('//*', usingBlock: ->(node, _){
       if @editable.has_key? node.name

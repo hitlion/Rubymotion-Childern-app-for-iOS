@@ -294,7 +294,7 @@ class SmartphoneOverlayView < UIView
       case button_tag
         when 'JA'
           NSFileManager.defaultManager.removeItemAtPath(@story.path, error:nil)
-          StoryBundle.bundles(reload: true)
+          StoryBundle.delete_story(@story)
           StartScreen.next_screen = :parent_menu
           StartScreen.last_screen = :parent_menu
           rmq.screen.open_root_screen(StartScreen)

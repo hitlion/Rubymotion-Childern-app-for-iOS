@@ -60,6 +60,10 @@ class StoryEditorMoveObjectView < UIView
 
   def show(avoid_location)
 
+    rmq.screen.player.gestureRecognizers.each do |rec|
+      rec.enabled = false
+    end
+
     if avoid_location.x > device.screen_width - @choose_root.frame.size.width
       # target to the right, slide in from left
       snap_to_left_edge(@choose_root, true)
@@ -82,6 +86,9 @@ class StoryEditorMoveObjectView < UIView
       @node.hidden = false
     end
 
+    rmq.screen.player.gestureRecognizers.each do |rec|
+      rec.enabled = true
+    end
     # disable touch capturing
     off
   end
@@ -109,11 +116,11 @@ class StoryEditorMoveObjectView < UIView
 
     case @target.type
       when :picture
-        @movable_object.image = rmq.image.resource('placeholder/file_image')
+        @movable_object.image = rmq.image.resource('placeholder/file_information')
       when :video
         @movable_object.image = rmq.image.resource('placeholder/file_information')
       when :audio
-        @movable_object.image = rmq.image.resource('placeholder/file_music')
+        @movable_object.image = @node.image
     end
 
   end

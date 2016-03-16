@@ -29,6 +29,7 @@ module Scene
              force_color: :yellow
         end
 
+
       texture  = SKTexture.textureWithImage(image)
       PictureNode.alloc.initWithTexture(texture).tap do |node|
         node.size     = node.calculate_node_size(story_object.size,
