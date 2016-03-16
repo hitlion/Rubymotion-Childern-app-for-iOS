@@ -7,7 +7,7 @@ class StoryEditorScreen < PM::Screen
   include OrientationModule
 
   attr_accessor :story_bundle, :edit_mode
-  attr_reader :level, :screen, :editable, :player
+  attr_reader :current_view, :editable, :editable_views, :player
 
   class << self
     attr_accessor :instance
@@ -33,6 +33,7 @@ class StoryEditorScreen < PM::Screen
 
     @player = rmq.unshift!(SceneEditor, :scene_editor)
 
+    @editable_views = []
     @editable  = {}
     @edit_info = {}
 
@@ -45,18 +46,15 @@ class StoryEditorScreen < PM::Screen
     rmq(@toolbox).hide
     rmq(@player).append(@toolbox) unless @toolbox.nil?
 
-    @level = 1
-    @screen = 1
-
-    @change_screen_box = rmq(self.view).append(StoryEditorChangeScreenBox).tag(:change_screen_box).get
-    @change_screen_box.hide
-    rmq(@player).append(@change_screen_box) unless @change_screen_box.nil?
+    @change_view_box = rmq(self.view).append(StoryEditorChangeViewBox).tag(:change_view_box).get
+    @change_view_box.hide
+    rmq(@player).append(@change_view_box) unless @change_view_box.nil?
 
     @edit_object_box = rmq(self.view).append(StoryEditorEditBox).tag(:edit_object_box).get
     @edit_object_box.hide
     rmq(@player).append(@edit_object_box) unless @edit_object_box.nil?
 
-    @move_view = rmq(self.view).append(MoveObjectView).tag(:move_view).get
+    @move_view = rmq(self.view).append(StoryEditorMoveObjectView).tag(:move_view).get
     @move_view.hide
     rmq(@player).append(@move_view) unless @move_view.nil?
   end
@@ -65,9 +63,12 @@ class StoryEditorScreen < PM::Screen
 
     # set all has_changes flags to false
     @story_bundle.document.reset_changes
+    @editable_views = @story_bundle.editable
 
-    scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]')
-    @editable = @story_bundle.ruleset.editable_objects_for_screen( @story_bundle, ':level[1]:screen[1]')
+    scene  = SceneFactory.create_scene(@story_bundle, @editable_views.first)
+    @editable = @story_bundle.ruleset.editable_objects_for_screen( @story_bundle, @editable_views.first)
+    @current_view = @editable_views.first
+
     setup_editor_mode(scene)
 
     @logger.clear! unless @logger.nil?
@@ -134,15 +135,14 @@ class StoryEditorScreen < PM::Screen
     dest = @player.hitTest(location, withEvent: event)
 
     if(dest == self.player)
-      rmq(:change_screen_box).get.hide
+      rmq(:change_view_box).get.hide
       rmq(:edit_object_box).get.hide
       rmq(:toolbox).get.hide
     end
     super
   end
 
-  def show_scene_with_level( level, screen: screen)
-    target = ':level[' + level.to_s + ']:screen[' + screen.to_s + ']'
+  def show_scene(target)
 
     new_scene = SceneFactory.create_scene(@story_bundle, target)
 
@@ -167,8 +167,9 @@ class StoryEditorScreen < PM::Screen
     # scene.addChild(transition_image)
 
     @player.presentScene(scene)
-    @level = level
-    @screen = screen
+
+    @current_view = target
+
     JavaScript::Runtime.get.scene_root = scene
   end
 
@@ -178,7 +179,7 @@ class StoryEditorScreen < PM::Screen
     @edit_info = {}
     @edit_info = notification.userInfo
 
-    rmq(:change_screen_box).get.hide
+    rmq(:change_view_box).get.hide
     rmq(:edit_object_box).get.hide
 
     # toogle toolbox
@@ -196,12 +197,12 @@ class StoryEditorScreen < PM::Screen
     #lp ["on_editor_swipe:", notification.userInfo]
   end
 
-  def change_screen
+  def change_view
     rmq(:toolbox).get.hide
 
     lp "Editor: change level and screen"
 
-    rmq(:change_screen_box).map do |csb|
+    rmq(:change_view_box).map do |csb|
       csb.show
     end
   end
@@ -301,7 +302,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   def canPerformAction(action, withSender: sender)
-    [:edit_object, :move_object, :close_editor, :change_screen].include? action.to_sym
+    [:edit_object, :move_object, :close_editor, :change_view].include? action.to_sym
   end
 
   #

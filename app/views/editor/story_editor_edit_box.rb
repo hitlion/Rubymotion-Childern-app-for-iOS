@@ -12,7 +12,6 @@ class StoryEditorEditBox < UIView
 
       snap_to_right_edge(frame, true)
 
-
       append(UIView, :background_layer)
 
       @object_name_label = append!(UILabel, :object_name_label)

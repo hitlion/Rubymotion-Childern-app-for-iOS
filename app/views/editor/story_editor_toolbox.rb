@@ -35,8 +35,8 @@ class StoryEditorToolbox < UIView
         rmq.screen.edit_object
       end
 
-      append(UIButton, :change_screen).on(:tap) do
-        rmq.screen.change_screen
+      append(UIButton, :change_view).on(:tap) do
+        rmq.screen.change_view
       end
 
       append(UIButton, :close_editor).on(:tap) do
@@ -171,10 +171,17 @@ class StoryEditorToolbox < UIView
 
   def update_display_values
 
+    if(rmq.screen.editable_views.count < 2)
+      rmq(:change_view).hide
+    else
+      rmq(:change_view).show
+    end
+
     if(@target.nil?)
       @object_name_label.text = "Kein Objekt ausgewählt"
       rmq(:edit_object).hide
       rmq(:move_object).hide
+
     else
       @object_name_label.text = @target.name
 

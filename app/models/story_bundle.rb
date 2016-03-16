@@ -59,7 +59,7 @@ class StoryBundle
     end
   end
 
-  attr_reader :document, :load_errors, :path, :ruleset, :changelog
+  attr_reader :document, :editable, :load_errors, :path, :ruleset, :changelog
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -98,6 +98,9 @@ class StoryBundle
     @valid = true if @load_errors.empty?
 
     load_ruleset
+
+    load_editable_list
+
     valid?
   end
 
@@ -299,6 +302,22 @@ class StoryBundle
     @ruleset = Story::Changelog::Ruleset.new(rules_data)
   end
 
+  # Collect all levels and screens with editable object in an array
+  def load_editable_list
+    editable = []
+
+    @document.body.levels.each do |level|
+      level.screens.each do |screen|
+        editable_objects = @ruleset.editable_objects_for_screen(self, screen.path)
+        unless(editable_objects.empty?)
+          lp "#{screen.path} has editable object, add to editable list"
+          editable << screen.path
+        end
+      end
+    end
+
+    @editable = editable
+  end
   # Collect all assets referenced in this story and
   # if everything is available add them to the +AssetStore+
   def collect_and_cache_assets
