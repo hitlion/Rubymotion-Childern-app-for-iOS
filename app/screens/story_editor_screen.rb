@@ -64,7 +64,6 @@ class StoryEditorScreen < PM::Screen
     # set all has_changes flags to false
     @story_bundle.document.reset_changes
     @editable_views = @story_bundle.load_editable_views
-    lp @editable_views
 
     scene  = SceneFactory.create_scene(@story_bundle, @editable_views.first, :editor)
     @editable = @story_bundle.ruleset.editable_objects_for_screen( @story_bundle, @editable_views.first)

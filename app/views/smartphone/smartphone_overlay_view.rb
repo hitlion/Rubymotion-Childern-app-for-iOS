@@ -109,7 +109,6 @@ class SmartphoneOverlayView < UIView
     ###
     # Define cancel button
     cancel_button = UIButton.alloc.initWithFrame(CGRectMake(0.9 * top_view.frame.size.width,0.1 * top_view.frame.size.height,
-                                                          0.075 * top_view.frame.size.width, 0.075 * top_view.frame.size.width))
     cancel_button.setBackgroundImage(UIImage.imageNamed("icon_close_black.png"), forState:UIControlStateNormal)
     cancel_button.addTarget(self, action: "cancel_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
     top_view.addSubview(cancel_button)
