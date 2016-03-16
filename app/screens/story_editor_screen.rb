@@ -135,6 +135,7 @@ class StoryEditorScreen < PM::Screen
     dest = @player.hitTest(location, withEvent: event)
 
     if(dest == self.player)
+      setup_editor_mode(JavaScript::Runtime.get.scene_root)
       rmq(:change_view_box).get.hide
       rmq(:edit_object_box).get.hide
       rmq(:toolbox).get.hide
@@ -186,6 +187,7 @@ class StoryEditorScreen < PM::Screen
     if(rmq(:toolbox).get.hidden?)
       open_toolbox
     else
+      # this lines arent reached because of line 132
       rmq(:toolbox).map do |tb|
         tb.set_target(nil, node: nil, actions: nil)
         tb.hide
@@ -195,6 +197,10 @@ class StoryEditorScreen < PM::Screen
 
   def on_editor_swipe(notification)
     #lp ["on_editor_swipe:", notification.userInfo]
+  end
+
+  def update_selected_object_marker
+
   end
 
   def change_view
@@ -352,6 +358,18 @@ class StoryEditorScreen < PM::Screen
     object = @story_bundle.object_for_path(path)
     actions = @editable[path]
 
+    scene = JavaScript::Runtime.get.scene_root
+
+    scene.enumerateChildNodesWithName('//*', usingBlock: ->(n, _){
+
+      if n.name == node.name
+
+      else
+        n.alpha = 0.25
+        n.zPosition -= 999_800 if n.zPosition > 999_800
+      end
+    })
+
     rmq(:toolbox).map do |tb|
       tb.set_target(object, node: node, actions: actions)
       tb.show(@edit_info[:location])
@@ -394,6 +412,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   def setup_editor_mode(scene)
+    lp "test"
     scene.backgroundColor = rmq.color.white
     scene.enumerateChildNodesWithName('//*', usingBlock: ->(node, _){
       if @editable.has_key? node.name
