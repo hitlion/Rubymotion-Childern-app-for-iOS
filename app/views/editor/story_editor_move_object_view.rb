@@ -1,4 +1,4 @@
-class MoveObjectView < UIView
+class StoryEditorMoveObjectView < UIView
   def initWithFrame( frame )
     super.tap do
 
@@ -104,9 +104,6 @@ class MoveObjectView < UIView
       @movable_object.frame = CGRectMake(@node.position.x - 25, device.screen_height - @node.position.y - 25,
                                          50, 50)
     end
-
-
-
 
     @node.hidden = true
 

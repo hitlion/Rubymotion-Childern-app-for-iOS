@@ -62,7 +62,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
     st.corner_radius =  12.5
   end
 
-  def change_screen (st)
+  def change_view (st)
     st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
     st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
     st.text  = 'Level wechseln'
