@@ -34,7 +34,7 @@ class StoryEditorChangeViewBoxStylesheet < ApplicationStylesheet
   end
 
   def close_button (st)
-    st.frame = {l: 0.915 * device.screen_width, t:0.01 * device.screen_height, w: 0.075 * device.screen_width, h: 0.075 * device.screen_height}
+    st.frame = {l: 0.9 * device.screen_width, t:0.015 * device.screen_height, w: 0.075 * device.screen_width, h: 0.075 * device.screen_height}
     st.background_image = rmq.image.resource('babbo_icons/close.png')
   end
 
