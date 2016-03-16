@@ -199,10 +199,6 @@ class StoryEditorScreen < PM::Screen
     #lp ["on_editor_swipe:", notification.userInfo]
   end
 
-  def update_selected_object_marker
-
-  end
-
   def change_view
     rmq(:toolbox).get.hide
 
@@ -222,82 +218,18 @@ class StoryEditorScreen < PM::Screen
     changes =  @story_bundle.document.has_changes?
     lp "Editor: Changes exists: #{changes}"
 
-    # edit or new story --> set paths and file
-    @path = @story_bundle.path
-
-    if(@edit_mode == :edit)
-      lp "Editor: save edited story as new version"
-    else
-      lp "Editor: save edited story as new story"
-
-      dir = File.split(@story_bundle.path).first
-      source = File.split(@story_bundle.path).last
-      name = source.split('.').first
-      source_id = name.split('_')[1]
-      name = name.split('_').first
-
-      count = 0
-
-      # count how many version exists
-      Dir.glob(File.join(dir,name + '_*_*.babbo')).each_with_index do
-        count += 1
-      end
-
-      @story_bundle.document.dataset_id = count+1
-
-      dest_name = name + '_' + count.to_s + '_' + source_id.to_s + '.babbo'
-      lp "Editor: new directory name: #{dest_name}"
-      new_path = File.join(dir, dest_name)
-      NSFileManager.defaultManager.copyItemAtPath(@path, toPath: new_path, error: nil)
-      @path = new_path
-    end
-
-    # only write if changes exists
     if(changes)
-
-      #load and save new thumbnail
-
-      if(@new_thumbnail)
-        path = File.absolute_path(File.join(@path, 'SMIL', @story_bundle.document.thumbnail))
-        UIImagePNGRepresentation(@new_thumbnail).writeToFile(path, atomically: true)
-      end
-
-      if(@story_bundle.document.dataset_id > 0)
-        @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
-      end
-
-      @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
-
-      base_path = File.join(@path, 'SMIL')
-      count = 1
-      Dir.glob(File.join(base_path, 'changes_branch_*.js')).each_with_index do
-        count = count + 1
-      end
-
-      name = "changes_branch_#{count.to_s}.js"
-      base_path = File.join(base_path, name)
-      file = File.new(base_path, "w")
-      lp "Editor: create branch file #{name}"
-
-      puts write_meta_changes(@story_bundle)
-      file.write(write_meta_changes(@story_bundle))
-
-      @story_bundle.document.body.levels.each do |l|
-
-        puts write_level_changes(l)
-        file.write(write_level_changes(l))
-        l.screens.each do |s|
-          file.write(write_screen_changes(s))
-          puts write_screen_changes(s)
-          s.objects.each do |o|
-            file.write(write_object_changes(o))
-            puts write_object_changes(o)
-          end
+      app.alert(title: "Achtung!", message: "Wollen sie speichern!", actions: ['JA', 'NEIN'] ) do |button_tag|
+        case button_tag
+          when 'JA'
+            save_changes
+          when 'NEIN'
+            close
         end
       end
+    else
+      close
     end
-
-    close
   end
 
   #
@@ -561,6 +493,80 @@ class StoryEditorScreen < PM::Screen
     if(rmq(:edit_object_box).get.show?)
       rmq(:edit_object_box).map { |tb| tb.audio_canceled }
     end
+  end
+
+  def save_changes
+    # edit or new story --> set paths and file
+    @path = @story_bundle.path
+
+    if(@edit_mode == :edit)
+      lp "Editor: save edited story as new version"
+    else
+      lp "Editor: save edited story as new story"
+
+      dir = File.split(@story_bundle.path).first
+      source = File.split(@story_bundle.path).last
+      name = source.split('.').first
+      source_id = name.split('_')[1]
+      name = name.split('_').first
+
+      count = 0
+
+      # count how many version exists
+      Dir.glob(File.join(dir,name + '_*_*.babbo')).each_with_index do
+        count += 1
+      end
+
+      @story_bundle.document.dataset_id = count+1
+
+      dest_name = name + '_' + count.to_s + '_' + source_id.to_s + '.babbo'
+      lp "Editor: new directory name: #{dest_name}"
+      new_path = File.join(dir, dest_name)
+      NSFileManager.defaultManager.copyItemAtPath(@path, toPath: new_path, error: nil)
+      @path = new_path
+    end
+
+    #load and save new thumbnail
+
+    if(@new_thumbnail)
+      path = File.absolute_path(File.join(@path, 'SMIL', @story_bundle.document.thumbnail))
+      UIImagePNGRepresentation(@new_thumbnail).writeToFile(path, atomically: true)
+    end
+
+    if(@story_bundle.document.dataset_id > 0)
+      @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
+    end
+
+    @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
+
+    base_path = File.join(@path, 'SMIL')
+    count = 1
+    Dir.glob(File.join(base_path, 'changes_branch_*.js')).each_with_index do
+      count = count + 1
+    end
+
+    name = "changes_branch_#{count.to_s}.js"
+    base_path = File.join(base_path, name)
+    file = File.new(base_path, "w")
+    lp "Editor: create branch file #{name}"
+
+    puts write_meta_changes(@story_bundle)
+    file.write(write_meta_changes(@story_bundle))
+
+    @story_bundle.document.body.levels.each do |l|
+      puts write_level_changes(l)
+      file.write(write_level_changes(l))
+      l.screens.each do |s|
+        file.write(write_screen_changes(s))
+        puts write_screen_changes(s)
+        s.objects.each do |o|
+          file.write(write_object_changes(o))
+          puts write_object_changes(o)
+        end
+      end
+    end
+
+    close
   end
 end
 
