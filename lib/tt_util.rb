@@ -10,12 +10,14 @@ class TTUtil
       return FONT_SIZE_IPAD_MEDIUM    if size == :medium
       return FONT_SIZE_IPAD_LARGE     if size == :large
       return FONT_SIZE_IPAD_XL        if size == :xl
+      return FONT_SIZE_IPAD_XXL       if size == :xxl
     else
       return FONT_SIZE_IPHONE_XS      if size == :xs
       return FONT_SIZE_IPHONE_SMALL   if size == :small
       return FONT_SIZE_IPHONE_MEDIUM  if size == :medium
       return FONT_SIZE_IPHONE_LARGE   if size == :large
       return FONT_SIZE_IPHONE_XL      if size == :xl
+      return FONT_SIZE_IPHONE_XXL     if size == :xxl
     end
 
     return 0

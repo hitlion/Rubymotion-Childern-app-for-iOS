@@ -3,7 +3,7 @@ class StoryEditorChangeViewBoxStylesheet < ApplicationStylesheet
   end
 
   def root (st)
-    st.frame = {x: 0, w: device.screen_width, h: 0.2 * device.screen_height, t: 0.8 * device.screen_height}
+    st.frame = {x: 0, w: device.screen_width, h: 0.25 * device.screen_height, t: 0.8 * device.screen_height}
     st.alpha = 1.0
     st.tint_color = rmq.color.black
     st.background_color = rmq.color.babbo_orange
@@ -17,24 +17,24 @@ class StoryEditorChangeViewBoxStylesheet < ApplicationStylesheet
   end
 
   def text_label (st)
-    st.frame = {l: 0.35 * device.screen_width, t:0.025 * device.screen_height, w: 0.3 * device.screen_width, h: 0.15 * device.screen_height}
+    st.frame = {l: 0.35 * device.screen_width, t:0.025 * device.screen_height, w: 0.3 * device.screen_width, h: 0.2 * device.screen_height}
     st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:large))
     st.text  = 'Level wechseln'
     st.text_alignment = :center
   end
 
   def back_button (st)
-    st.frame = {l: 0.15 * device.screen_width, t:0.025 * device.screen_height, w: 0.15 * device.screen_width, h: 0.15 * device.screen_height}
+    st.frame = {l: 0.15 * device.screen_width, t:0.025 * device.screen_height, w: 0.15 * device.screen_width, h: 0.2 * device.screen_height}
     st.background_image = rmq.image.resource('babbo_icons/left.png')
   end
 
   def next_button (st)
-    st.frame = {l: 0.7 * device.screen_width, t:0.025 * device.screen_height, w: 0.15 * device.screen_width, h: 0.15 * device.screen_height}
+    st.frame = {l: 0.7 * device.screen_width, t:0.025 * device.screen_height, w: 0.15 * device.screen_width, h: 0.2 * device.screen_height}
     st.background_image = rmq.image.resource('babbo_icons/right.png')
   end
 
   def close_button (st)
-    st.frame = {l: 0.9 * device.screen_width, t:0.015 * device.screen_height, w: 0.075 * device.screen_width, h: 0.075 * device.screen_height}
+    st.frame = {l: 0.9 * device.screen_width, t:0.015 * device.screen_height, w: 0.075 * device.screen_width, h: 0.1 * device.screen_height}
     st.background_image = rmq.image.resource('babbo_icons/close.png')
   end
 
