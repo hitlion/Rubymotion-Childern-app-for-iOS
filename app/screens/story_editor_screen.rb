@@ -317,7 +317,18 @@ class StoryEditorScreen < PM::Screen
     object = @story_bundle.object_for_path(path)
     actions = @editable[path]
 
-    rmq(:toolbox).map do |tb|
+    scene = JavaScript::Runtime.get.scene_root
+
+    scene.enumerateChildNodesWithName('//*', usingBlock: ->(n, _){
+      if n.name == node.name
+        n.alpha = 1
+        n.zPosition += 999_800
+      else
+        n.alpha = 0.25
+        n.zPosition -= 999_800 if n.zPosition > 999_800
+      end
+    })
+        rmq(:toolbox).map do |tb|
       tb.hide
       tb.set_target(object, node: node, actions: actions)
       tb.show(node.position)

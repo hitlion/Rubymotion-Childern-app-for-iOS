@@ -113,6 +113,7 @@ module MenuViewModule
   # document_id
   def build_story_list
     @all_stories = StoryBundle.bundles.select { |b| b.valid? }
+
     stories = {}
 
     @all_stories.each do |s|
@@ -121,6 +122,22 @@ module MenuViewModule
     end
 
     @grouped_stories = stories.keys.map { |k| stories[k] }
+
+    @grouped_stories.each_with_index do |s,k|
+      s.sort_by! { |k| k.document.timestamp}
+      s.reverse!
+    end
+
+    @grouped_stories.sort_by! { |s| s[0].document.timestamp}
+    @grouped_stories.reverse!
+
+    @grouped_stories.each do |i|
+      lp '---------------'
+      i.each do |k|
+        lp k.document.timestamp
+    end
+  end
+
   end
 
   ##
