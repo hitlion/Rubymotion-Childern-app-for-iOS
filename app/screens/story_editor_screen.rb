@@ -6,7 +6,7 @@ class StoryEditorScreen < PM::Screen
   include AudioRecorder
   include OrientationModule
 
-  attr_accessor :story_bundle, :edit_mode
+  attr_accessor :story_bundle, :edit_mode, :original_bundle
   attr_reader :current_view, :editable, :editable_views, :player
 
   class << self
@@ -17,7 +17,8 @@ class StoryEditorScreen < PM::Screen
       StoryEditorScreen.instance ||= StoryEditorScreen.new(nav_bar: false)
       StoryEditorScreen.instance.edit_mode = mode
       unless bundle.nil?
-        StoryEditorScreen.instance.story_bundle = bundle
+        StoryEditorScreen.instance.original_bundle = bundle
+        StoryEditorScreen.instance.story_bundle = bundle.copy
       end
       StoryEditorScreen.instance
     end
@@ -564,6 +565,12 @@ class StoryEditorScreen < PM::Screen
           puts write_object_changes(o)
         end
       end
+    end
+
+    if(edit_mode == :edit)
+      StoryBundle.reload_bundle(@original_bundle, @path)
+    else
+      StoryBundle.add_new_bundle(@path)
     end
 
     close

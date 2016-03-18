@@ -87,11 +87,6 @@ class StartScreen < PM::Screen
   end
 
   def goto_parent
-
-    if(StartScreen.last_screen == :story_editor)
-      StoryBundle.bundles(reload: true)
-    end
-
     if(device.ipad?)
       open TabletParentScreen.new
     else

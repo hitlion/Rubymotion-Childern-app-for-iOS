@@ -169,14 +169,12 @@ class StoryEditorToolbox < UIView
       rmq(:change_view).show
     end
 
+    rmq(:edit_object).hide
+    rmq(:move_object).hide
+
     if(@target.nil?)
       @object_name_label.text = "Kein Objekt ausgewählt"
-      rmq(:edit_object).hide
-      rmq(:move_object).hide
-
     else
-      @object_name_label.text = @target.name
-
       if(@actions)
         if  @actions[:object_name]  || @actions[:object_content] ||
             @actions[:size_x]       || @actions[:size_y]         ||
@@ -187,9 +185,6 @@ class StoryEditorToolbox < UIView
         if @actions[:position_x] || @actions[:position_y]
           rmq(:move_object).show
         end
-      else
-        rmq(:edit_object).hide
-        rmq(:move_object).hide
       end
     end
   end
