@@ -294,8 +294,6 @@ class StoryEditorScreen < PM::Screen
       scene = JavaScript::Runtime.get.scene_root
 
       scene.enumerateChildNodesWithName('//*', usingBlock: ->(n, _){
-        lp n
-        lp node
         if n.name == node.name
 
         else
@@ -418,7 +416,7 @@ class StoryEditorScreen < PM::Screen
   end
 
   # @private
-  def photo_available( image )
+  def photo_available( image, new )
 
     if(device.iphone?)
       unless (@image_picker_for_iphone.nil?)
@@ -429,7 +427,7 @@ class StoryEditorScreen < PM::Screen
     end
 
     if(rmq(:edit_object_box).get.show?)
-      rmq(:edit_object_box).map { |tb| tb.photo_available(image) }
+      rmq(:edit_object_box).map { |tb| tb.photo_available(image, new) }
     else
       path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:picture)
       @story_bundle.document.thumbnail = path
@@ -454,7 +452,7 @@ class StoryEditorScreen < PM::Screen
 
   end
   # @private
-  def video_available( media_url )
+  def video_available( media_url, new )
 
     if(device.iphone?)
       unless (@video_picker_for_iphone.nil?)
@@ -465,7 +463,7 @@ class StoryEditorScreen < PM::Screen
     end
 
     if(rmq(:edit_object_box).get.show?)
-      rmq(:edit_object_box).map { |tb| tb.video_available(media_url) }
+      rmq(:edit_object_box).map { |tb| tb.video_available(media_url, new) }
     end
   end
 
