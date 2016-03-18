@@ -61,6 +61,18 @@ class StoryBundle
     def delete_story(story)
       self.bundle_list.delete(story)
     end
+
+    def reload_bundle(story, path)
+      StoryBundle.delete_story(story)
+      StoryBundle.add_new_bundle(path)
+    end
+
+    def add_new_bundle(path)
+      bundle = StoryBundle.new(path)
+      bundle.load
+      self.bundle_list << bundle if !bundle.has_changesets?
+      self.bundle_list += bundle.changesets if bundle.has_changesets?
+    end
   end
 
   attr_reader :document, :load_errors, :path, :ruleset, :changelog
@@ -77,6 +89,12 @@ class StoryBundle
     @ruleset = nil
     @load_errors = []
     @changelog = nil
+  end
+
+  def copy
+    new = StoryBundle.new(self.path)
+    new.load()
+    return new
   end
 
   # Check if this level is valid.
