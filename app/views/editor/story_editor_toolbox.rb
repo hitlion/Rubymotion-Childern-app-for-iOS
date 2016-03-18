@@ -163,6 +163,8 @@ class StoryEditorToolbox < UIView
 
   def update_display_values
 
+    lp @target
+
     if(rmq.screen.editable_views.count < 2)
       rmq(:change_view).hide
     else
@@ -175,6 +177,9 @@ class StoryEditorToolbox < UIView
     if(@target.nil?)
       @object_name_label.text = "Kein Objekt ausgewählt"
     else
+
+      @object_name_label.text = @target.name
+
       if(@actions)
         if  @actions[:object_name]  || @actions[:object_content] ||
             @actions[:size_x]       || @actions[:size_y]         ||
@@ -210,6 +215,7 @@ class StoryEditorToolbox < UIView
 
   def tableView(view, heightForRowAtIndexPath: path)
     height = TTUtil.get_font_size(:medium) + 10
+    height
   end
 
   def tableView(view, numberOfRowsInSection: section)

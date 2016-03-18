@@ -28,10 +28,6 @@ class TabletParentScreen < PM::Screen
     setup_shop_basic_overlay
   end
 
-  def supportedInterfaceOrientations
-    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight
-  end
-
   ##
   # add a own navigation bar
   def setup_nav_bar
