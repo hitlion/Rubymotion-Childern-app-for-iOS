@@ -72,8 +72,10 @@ module MediaChooser
       case button_tag
         when 'Kamera'
         run_photo_chooser(UIImagePickerControllerSourceTypeCamera)
+        @new = true
       when 'Album'
         run_photo_chooser(UIImagePickerControllerSourceTypePhotoLibrary)
+        @new = false
       when :cancel
       end
     end
@@ -86,8 +88,10 @@ module MediaChooser
       case button_tag
       when 'Kamera'
         run_video_chooser(UIImagePickerControllerSourceTypeCamera)
+        @new = true
       when 'Album'
         run_video_chooser(UIImagePickerControllerSourceTypePhotoLibrary)
+        @new = false
       when :cancel
       end
     end
@@ -143,6 +147,7 @@ module MediaChooser
   #  UIImagePickerControllerSourceTypePhotoLibrary
   #  UIImagePickerControllerSourceTypeCamera
   def run_video_chooser( source )
+
     all_media_types = UIImagePickerController.availableMediaTypesForSourceType(UIImagePickerControllerSourceTypeCamera)
     video_media_types = all_media_types.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('(SELF contains %@)', 'movie'))
 
@@ -155,10 +160,10 @@ module MediaChooser
 
     if device.iphone?
       # self.presentModalViewController(video_picker, animated: true) # old solution by rene
-      self.addChildViewController(image_picker)
-      image_picker.didMoveToParentViewController(self)
-      self.view.addSubview(image_picker.view)
-      @video_picker_for_iphone = image_picker
+      self.addChildViewController(video_picker)
+      video_picker.didMoveToParentViewController(self)
+      self.view.addSubview(video_picker.view)
+      @video_picker_for_iphone = video_picker
     elsif device.ipad?
       pop_over = UIPopoverController.alloc.initWithContentViewController(video_picker)
       if self.respond_to? :media_chooser_popup_anchor
@@ -192,13 +197,13 @@ module MediaChooser
       image = meta[UIImagePickerControllerEditedImage]
       if self.respond_to? :'photo_available:'
         lp 'callback available'
-        self.photo_available(image)
+        self.photo_available(image, @new)
       end
     else
       # video callback
       if self.respond_to? :'video_available:'
         video_url = meta[UIImagePickerControllerMediaURL]
-        self.video_available(video_url)
+        self.video_available(video_url, @new)
       end
     end
 

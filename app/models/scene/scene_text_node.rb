@@ -9,6 +9,7 @@ module Scene
     def self.create( bundle, story_object )
 
       font  = TTUtil.get_font_standard(:regular)
+
       TextNode.alloc.initWithFontNamed(font).tap do |node|
 
         x = device.screen_width * story_object.position.x
@@ -17,8 +18,9 @@ module Scene
         node.zPosition = story_object.layer
         node.alpha     = 1.0001 - story_object.transparency
         node.name      = story_object.path
-        node.text      = ""
+        node.text      = story_object.content
         node.fontSize  = 40
+        node.hidden    = true
       end
     end
 

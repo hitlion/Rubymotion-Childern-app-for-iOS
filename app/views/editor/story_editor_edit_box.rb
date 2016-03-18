@@ -176,11 +176,21 @@ class StoryEditorEditBox < UIView
     rmq(:edit_content).get
   end
 
-  def photo_available( image )
+  def photo_available( image, new )
     path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:picture)
     texture = SKTexture.textureWithImage(image)
     @node.texture = texture
+
+    if(@target.changes[:object_content])
+      unless(@target.content == @target.changes[:object_content][:original])
+        old_content_path = File.join(rmq.screen.story_bundle.path, @target.content.split('..').last)
+        NSFileManager.defaultManager.removeItemAtPath(old_content_path, error: nil)
+      end
+    end
+
     @target.content = path
+
+    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil) if new
 
     path = rmq.screen.story_bundle.asset_path(path)
     UIImagePNGRepresentation(image).writeToFile(path, atomically: true)
@@ -189,22 +199,39 @@ class StoryEditorEditBox < UIView
   def photo_canceled
   end
 
-  def video_available( media_url )
+  def video_available( media_url, new )
     NSLog(media_url.fileSystemRepresentation)
     path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:video)
-    # TODO: update @node?
+
+    if(@target.changes[:object_content])
+      unless(@target.content == @target.changes[:object_content][:original])
+        old_content_path = File.join(rmq.screen.story_bundle.path, @target.content.split('..').last)
+        NSFileManager.defaultManager.removeItemAtPath(old_content_path, error: nil)
+      end
+    end
+
     @target.content = path
     path = rmq.screen.story_bundle.asset_path(path)
+
+    UISaveVideoAtPathToSavedPhotosAlbum(media_url.fileSystemRepresentation,nil,nil,nil) if new
+
     File.rename(media_url.fileSystemRepresentation, path)
 
     # reload scene for updating the video node image
-    rmq.screen.show_scene_with_level(rmq.screen.level, screen: rmq.screen.screen)
+    rmq.screen.show_scene(rmq.screen.current_view)
   end
 
   def video_canceled
   end
 
   def audio_available( media_url )
+
+    if(@target.changes[:object_content])
+      unless(@target.content == @target.changes[:object_content][:original])
+        old_content_path = File.join(rmq.screen.story_bundle.path, @target.content.split('..').last)
+        NSFileManager.defaultManager.removeItemAtPath(old_content_path, error: nil)
+      end
+    end
     # FIXME: this should be done by StoryBundle..
     @target.content = @new_audio_path
   end
