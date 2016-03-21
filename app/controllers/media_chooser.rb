@@ -29,23 +29,6 @@ module MediaChooser
 
   attr_reader :image_picker_for_iphone, :video_picker_for_iphone
 
- # def shouldAutorotate
-  #  false
-  #end
-
-  #def shouldRotate(orientation)
-  #  true
- # end
-
-  def supportedInterfaceOrientations
-    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight
-  end
-
-  #def shouldAutorotateToInterfaceOrientation(toInterfaceOrientation)
-  #  return UIInterfaceOrientationIsLandscape(toInterfaceOrientation)
-  #end
-
-
   # Present a photo chooser
   def present_photo_chooser
     if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceTypeCamera )
