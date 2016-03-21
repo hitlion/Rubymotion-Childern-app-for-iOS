@@ -69,13 +69,13 @@ module MenuViewModule
   ##
   # adds tips and tricks collection view
   def add_tips_and_tricks_view
-    @tips_list = TipsBundle.alloc.init
+    tips_list = TipsBundle.alloc.init
     frame = CGRectMake(0, @top_view_height * self.frame.size.height,
                        self.frame.size.width, @bottom_view_height * self.frame.size.height)
     @tips_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuTipsCell,
                                                               numOfVisibleElements: 1, delegate: self,
                                                               headerText: "Tipps und Tricks")
-    @tips_view.reload_data(@tips_list)
+    @tips_view.reload_data(tips_list.get)
     self.addSubview(@tips_view)
   end
 
@@ -130,14 +130,6 @@ module MenuViewModule
 
     @grouped_stories.sort_by! { |s| s[0].document.timestamp}
     @grouped_stories.reverse!
-
-    @grouped_stories.each do |i|
-      lp '---------------'
-      i.each do |k|
-        lp k.document.timestamp
-    end
-  end
-
   end
 
   ##

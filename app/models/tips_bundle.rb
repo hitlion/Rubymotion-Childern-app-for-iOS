@@ -11,6 +11,10 @@ class TipsBundle
       @bundle << tip
     end
 
-    @bundle.shuffle
+    self
+  end
+
+  def get
+    return @bundle.shuffle!
   end
 end
