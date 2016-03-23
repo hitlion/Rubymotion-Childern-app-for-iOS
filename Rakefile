@@ -6,7 +6,7 @@ require 'rake/task_arguments'
 require 'motion/project/template/ios'
 require 'motion-yaml'
 
-require 'redcarpet'
+#require 'redcarpet'
 
 ## # # in case we get un-catchable exceptions and warnings about compact unwind again
 ## # # uncomment the following (see: http://stackoverflow.com/a/30733047/128661)

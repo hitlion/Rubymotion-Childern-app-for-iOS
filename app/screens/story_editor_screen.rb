@@ -34,7 +34,6 @@ class StoryEditorScreen < PM::Screen
     @player = rmq.unshift!(SceneEditor, :scene_editor)
 
     @editable_views = []
-    @editable  = {}
     @edit_info = {}
 
     if app.development? || app.ad_hoc_release?
@@ -63,7 +62,8 @@ class StoryEditorScreen < PM::Screen
 
     # set all has_changes flags to false
     @story_bundle.document.reset_changes
-    @editable_views = @story_bundle.editable
+    @editable_views = @story_bundle.load_editable_views
+    lp @editable_views
 
     scene  = SceneFactory.create_scene(@story_bundle, @editable_views.first)
     @editable = @story_bundle.ruleset.editable_objects_for_screen( @story_bundle, @editable_views.first)

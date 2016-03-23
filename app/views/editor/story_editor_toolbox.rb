@@ -72,14 +72,13 @@ class StoryEditorToolbox < UIView
       rec.enabled = false
     end
 
-    if(rmq.screen.editable)
-      @editable_objects = []
-      rmq.screen.editable.map(&:first).each do |key, value|
-        @editable_objects << key
-      end
+    @editable_objects = []
 
-      @object_table.reloadData
+    rmq.screen.editable.map(&:first).each do |key, value|
+      @editable_objects << key
     end
+
+    @object_table.reloadData
 
     update_display_values
 
@@ -90,6 +89,7 @@ class StoryEditorToolbox < UIView
       # no risk of obscuring the target, prefer right
       snap_to_right_edge(self.frame, true)
     end
+
 
     rmq(self).show
     if @edge == :left
