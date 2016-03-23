@@ -1,4 +1,4 @@
-class TabletOverlayView < UIView
+class SmartphoneOverlayView < UIView
 
   attr_accessor :story
   attr_accessor :overlay_type
@@ -41,8 +41,8 @@ class TabletOverlayView < UIView
                                                            self.frame.size.width+1, self.frame.size.height))
     background_view.image = UIImage.imageNamed("background_grey_trans.png")
 
-    overlay_view = UIView.alloc.initWithFrame(CGRectMake(0.225 * self.frame.size.width, 0.13 * self.frame.size.height,
-                                                        0.55 * self.frame.size.width, 0.75 * self.frame.size.height))
+    overlay_view = UIView.alloc.initWithFrame(CGRectMake(0.166 * self.frame.size.width, 0 * self.frame.size.height,
+                                                        0.66 * self.frame.size.width, 1 * self.frame.size.height))
     overlay_view.backgroundColor = UIColor.whiteColor
 
     button_size = CGSizeMake((1.0 / 5.0) * overlay_view.frame.size.width, (1.75 / 30.0) * overlay_view.frame.size.height)

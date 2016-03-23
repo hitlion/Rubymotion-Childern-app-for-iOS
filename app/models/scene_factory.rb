@@ -13,7 +13,7 @@ module SceneFactory
   # @param [String] path The path to the screen to be converted.
   # @return [SKScene] A +SKScene+ containing the screens SpriteKit version
   #   or +nil+ if +path+ is invalid or not a +Story::Screen+.
-  def create_scene( bundle, path )
+  def create_scene( bundle, path, mode)
     story_screen = bundle.object_for_path(path)
 
     if story_screen.nil?
@@ -25,7 +25,7 @@ module SceneFactory
       lp "'#{path}' is not a Story::Screen!"
       return nil
     end
-    convert_screen(bundle, story_screen)
+    convert_screen(bundle, story_screen, mode)
   end
 
   # @private
@@ -38,12 +38,12 @@ module SceneFactory
   #   +SKScene+ should be created.
   # @return [SKScene] A populated SpriteKit scene or +nil+ if an
   #   error occurs during conversion.
-  def convert_screen( bundle, story_screen )
+  def convert_screen( bundle, story_screen, mode )
     scene = Scene::RootNode.create(bundle, story_screen)
     scene.name = story_screen.path
 
     story_screen.objects.each do |story_object|
-      object = convert_object(bundle, story_object)
+      object = convert_object(bundle, story_object, mode)
       if object.nil?
         lp "Scene conversion failed for '#{story_screen.path}'.",
            force_color: :red
@@ -65,13 +65,13 @@ module SceneFactory
   # @param [Story::Object] story_object The object to convert.
   # @return [SKNode] A specialized +SKNode+ subclass matching +story_object+
   #   or +nil+ if no conversion is available for this object type.
-  def convert_object( bundle, story_object )
+  def convert_object( bundle, story_object, mode )
     lp "Converting #{story_object.type} at #{story_object.path}"
     case story_object.type
     when :picture
       Scene::PictureNode.create(bundle, story_object)
     when :audio
-      Scene::AudioNode.create(bundle, story_object)
+      Scene::AudioNode.create(bundle, story_object, mode)
     when :text
       Scene::TextNode.create(bundle, story_object)
     when :video

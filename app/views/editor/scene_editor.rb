@@ -44,7 +44,6 @@ class SceneEditor < SKView
     return if(path.nil?)
     path = path.gsub(/([\[\]])/, '\\\\\\1')
     res = scene.childNodeWithName("//#{path}")
-    lp [path, res]
     res
   end
 

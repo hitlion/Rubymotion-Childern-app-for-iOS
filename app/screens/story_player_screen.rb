@@ -32,7 +32,7 @@ class StoryPlayerScreen < PM::Screen
   end
 
   def will_appear
-    scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]')
+    scene  = SceneFactory.create_scene(@story_bundle, ':level[1]:screen[1]', :player)
 
     @logger.clear! unless @logger.nil?
     @player.presentScene(nil)
@@ -89,7 +89,7 @@ class StoryPlayerScreen < PM::Screen
     end
     @player.presentScene(nil)
 
-    scene  = SceneFactory.create_scene(@story_bundle, target)
+    scene  = SceneFactory.create_scene(@story_bundle, target, :player)
 
     if scene.nil?
       # FIXME

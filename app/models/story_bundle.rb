@@ -57,6 +57,10 @@ class StoryBundle
       end
       self.bundle_list
     end
+
+    def delete_story(story)
+      self.bundle_list.delete(story)
+    end
   end
 
   attr_reader :document, :load_errors, :path, :ruleset, :changelog

@@ -68,7 +68,7 @@ class StoryEditorMoveObjectViewStylesheet < ApplicationStylesheet
 
   def movable_object_dummy (st)
     st.frame = {l:0, t:0, w:1, h:1}
-    st.background_color = rmq.color.red
+    st.background_color = rmq.color.white
   end
 end
 
