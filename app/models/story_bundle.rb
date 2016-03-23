@@ -68,10 +68,12 @@ class StoryBundle
     end
 
     def add_new_bundle(path)
-      bundle = StoryBundle.new(path)
-      bundle.load
-      self.bundle_list << bundle if !bundle.has_changesets?
-      self.bundle_list += bundle.changesets if bundle.has_changesets?
+      autorelease_pool{
+        bundle = StoryBundle.new(path)
+        bundle.load
+        self.bundle_list << bundle if !bundle.has_changesets?
+        self.bundle_list += bundle.changesets if bundle.has_changesets?
+      }
     end
   end
 

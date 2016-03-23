@@ -65,6 +65,7 @@ class StoryPlayerScreen < PM::Screen
     @player.presentScene(nil)
 
     @story_bundle = nil
+
     JavaScript::Runtime.tear_down
   end
 
@@ -97,6 +98,8 @@ class StoryPlayerScreen < PM::Screen
       return
     end
     # scene.addChild(transition_image)
+
+    @logger.clear!
 
     @player.presentScene(scene)
 

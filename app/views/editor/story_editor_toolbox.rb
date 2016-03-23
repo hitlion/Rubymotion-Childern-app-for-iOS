@@ -163,8 +163,6 @@ class StoryEditorToolbox < UIView
 
   def update_display_values
 
-    lp @target
-
     if(rmq.screen.editable_views.count < 2)
       rmq(:change_view).hide
     else
