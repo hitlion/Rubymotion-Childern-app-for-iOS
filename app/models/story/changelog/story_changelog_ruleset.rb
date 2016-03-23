@@ -99,7 +99,24 @@ module Story
           options = options_for_object(bundle, obj.path)
           res[obj.path] = options unless options.empty?
         end
+
         res
+      end
+
+      def editable_screens
+        screens = []
+
+        @rules.each do |rule|
+          if(rule.splice == :accept)
+            parts = rule.path.split(":")
+            path = ':' + parts[1] + ':' + parts[2]
+
+            screens << path  unless(screens.include?(path))
+          end
+
+        end
+
+        screens
       end
     end
   end

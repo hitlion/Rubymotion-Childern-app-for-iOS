@@ -2,7 +2,7 @@
   head:
     data_language: "tuluh_smil"
     data_language_version: "1.0"
-    template_id: "99.1"
+    template_id: "9.1"
   meta:
     dokument_id: 9
     dataset_id: 1
@@ -101,7 +101,7 @@
               - name: "start"
                 action: >
                   $.log('game ready to start');
-                  $text.text({text:'Klicken zum starten', size: 80});
+                  $text.text({text:'Klicken zum starten', size: 'xxl'});
                   $text.color({red: 0.00 ,green: 0.00 , blue: 0.00 , alpha: 1});
                 variables: 
                   - name: "text"
@@ -120,7 +120,7 @@
                 processable: "local"
                 object_content: ""
                 object_attribute:
-                  position_x: 0.9
+                  position_x: 0.875
                   position_y: 0.3
                   size_x: 1
                   size_y: 1
@@ -137,7 +137,7 @@
                 processable: "local"
                 object_content: ""
                 object_attribute:
-                  position_x: 0.9
+                  position_x: 0.875
                   position_y: 0.6
                   size_x: 1
                   size_y: 1
@@ -154,7 +154,7 @@
                 processable: "local"
                 object_content: ""
                 object_attribute:
-                  position_x: 0.9
+                  position_x: 0.875
                   position_y: 0.4
                   size_x: 1
                   size_y: 1
@@ -171,7 +171,7 @@
                 processable: "local"
                 object_content: ""
                 object_attribute:
-                  position_x: 0.9
+                  position_x: 0.875
                   position_y: 0.7
                   size_x: 1
                   size_y: 1
@@ -1600,8 +1600,8 @@
               - name: "show_next_button"
                 action: >
                   $next_button.concurrent({layer:{l:3, duration:0.25}});
-                  $label_points_player_1.text({text: $$.points_player_1 + ' Punkte', size: 35});  
-                  $label_points_player_2.text({text: $$.points_player_2 + ' Punkte', size: 35});
+                  $label_points_player_1.text({text: $$.points_player_1 + ' Punkte', size: 'xl'});  
+                  $label_points_player_2.text({text: $$.points_player_2 + ' Punkte', size: 'xl'});
                 variables:
                   - name: "next_button"
                     content: ":level[1]:screen[2]:object[202]"
@@ -1673,10 +1673,10 @@
 
               - name: "start"
                 action: "$.log('game started, shuffle cards started');
-                  $label_player_1.text({text: 'Spieler 1:', size: 35});  
-                  $label_player_2.text({text: 'Spieler 2:', size: 35});   
-                  $label_points_player_1.text({text: '0 Punkte', size: 35});  
-                  $label_points_player_2.text({text: '0 Punkte', size: 35});  
+                  $label_player_1.text({text: 'Spieler 1:', size: 'xl'});  
+                  $label_player_2.text({text: 'Spieler 2:', size: 'xl'});   
+                  $label_points_player_1.text({text: '0 Punkte', size: 'xl'});  
+                  $label_points_player_2.text({text: '0 Punkte', size: 'xl'});  
                   $$.card_count = 0;
                   $$.current_player = 1;
                   $$.points_player_1 = 0;
@@ -1867,7 +1867,7 @@
               # restart button screen 3
               ###############################################################
               - object_name: "restart_button"
-                object_id: 404
+                object_id: 405
                 object_type: "picture"
                 processable: "local"
                 object_content: "../content/button_restart.png"
@@ -1882,7 +1882,7 @@
                   on_click: "restart"
                 object_slot:
                   - name: "restart"
-                    action:  $screen.exit_to(':level[1]:screen[1]');
+                    action:  "$screen.exit_to(':level[1]:screen[1]');"
                     variables:
                       - name: "screen"
                         content: ":level[1]:screen[3]"
@@ -1895,11 +1895,11 @@
                 action: "$.log('game finished');
                 $.log($$.points_player_1);
                 $.log($$.points_player_2);
-                $message_1.text({text:'Spieler 1 gewinnt', size: 80});
+                $message_1.text({text:'Spieler 1 gewinnt', size: 'xxl'});
                 $message_1.color({red: 0.00 ,green: 0.00 , blue: 0.00 , alpha: 1});
-                $message_2.text({text:'Spieler 2 gewinnt', size: 80});
+                $message_2.text({text:'Spieler 2 gewinnt', size: 'xxl'});
                 $message_2.color({red: 0.00 ,green: 0.00 , blue: 0.00 , alpha: 1});
-                $message_3.text({text:'Unentschieden', size: 80});
+                $message_3.text({text:'Unentschieden', size: 'xxl'});
                 $message_3.color({red: 0.00 ,green: 0.00 , blue: 0.00 , alpha: 1});
                 if($$.points_player_1 > $$.points_player_2){$message_1.fade({alpha:0, duration:0});}
                 if($$.points_player_1 < $$.points_player_2){$message_2.fade({alpha:0, duration:0});}

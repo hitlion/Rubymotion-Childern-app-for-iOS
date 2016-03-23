@@ -68,14 +68,16 @@ class StoryBundle
     end
 
     def add_new_bundle(path)
-      bundle = StoryBundle.new(path)
-      bundle.load
-      self.bundle_list << bundle if !bundle.has_changesets?
-      self.bundle_list += bundle.changesets if bundle.has_changesets?
+      autorelease_pool{
+        bundle = StoryBundle.new(path)
+        bundle.load
+        self.bundle_list << bundle if !bundle.has_changesets?
+        self.bundle_list += bundle.changesets if bundle.has_changesets?
+      }
     end
   end
 
-  attr_reader :document, :editable, :load_errors, :path, :ruleset, :changelog
+  attr_reader :document, :load_errors, :path, :ruleset, :changelog
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -121,7 +123,7 @@ class StoryBundle
 
     load_ruleset
 
-    load_editable_list
+    #load_editable_list # call this function here is to memory consuming for weak devices, better call when open the editor.
 
     valid?
   end
@@ -254,6 +256,21 @@ class StoryBundle
     ! Dir.glob(File.join(control_path, 'changes_branch_*.js')).empty?
   end
 
+  def load_editable_views
+     @ruleset.editable_screens
+  end
+
+  # Collect all levels and screens with editable object in an array
+  def load_editable_list_for_screen(path)
+    editable = []
+
+    autorelease_pool{
+      editable = @ruleset.editable_objects_for_screen(self, path)
+    }
+
+    editable
+  end
+
   private
 
   # Load the story definition from `SMIL/control.[yml/json]`.
@@ -324,22 +341,6 @@ class StoryBundle
     @ruleset = Story::Changelog::Ruleset.new(rules_data)
   end
 
-  # Collect all levels and screens with editable object in an array
-  def load_editable_list
-    editable = []
-
-    @document.body.levels.each do |level|
-      level.screens.each do |screen|
-        editable_objects = @ruleset.editable_objects_for_screen(self, screen.path)
-        unless(editable_objects.empty?)
-          lp "#{screen.path} has editable object, add to editable list"
-          editable << screen.path
-        end
-      end
-    end
-
-    @editable = editable
-  end
   # Collect all assets referenced in this story and
   # if everything is available add them to the +AssetStore+
   def collect_and_cache_assets
