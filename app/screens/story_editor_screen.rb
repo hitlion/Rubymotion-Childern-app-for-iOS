@@ -494,12 +494,30 @@ class StoryEditorScreen < PM::Screen
   end
 
   def audio_available( media_url )
+
+    if(device.iphone?)
+      unless (@audio_recorder_for_iphone.nil?)
+        @audio_recorder_for_iphone.view.removeFromSuperview
+        @audio_recorder_for_iphone.removeFromParentViewController
+        @audio_recorder_for_iphone = nil
+      end
+    end
+
     if(rmq(:edit_object_box).get.show?)
       rmq(:edit_object_box).map { |tb| tb.audio_available(media_url) }
     end
   end
 
   def audio_canceled
+
+    if(device.iphone?)
+      unless (@audio_recorder_for_iphone.nil?)
+        @audio_recorder_for_iphone.view.removeFromSuperview
+        @audio_recorder_for_iphone.removeFromParentViewController
+        @audio_recorder_for_iphone = nil
+      end
+    end
+
     if(rmq(:edit_object_box).get.show?)
       rmq(:edit_object_box).map { |tb| tb.audio_canceled }
     end

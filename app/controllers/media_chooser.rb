@@ -29,6 +29,8 @@ module MediaChooser
 
   attr_reader :image_picker_for_iphone, :video_picker_for_iphone
 
+  include OrientationModule
+
   # Present a photo chooser
   def present_photo_chooser
     if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceTypeCamera )

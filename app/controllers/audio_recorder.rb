@@ -15,6 +15,9 @@
 #  - called when the user dismisses the picker without recording
 #
 module AudioRecorder
+
+  attr_reader :audio_recorder_for_iphone
+
   # Present an audio recorder for recording at a given path
   #
   # @param [String] path The path to save the resulting audio to
@@ -26,7 +29,11 @@ module AudioRecorder
     recorder.delegate = self
 
     if device.iphone?
-      self.presentViewController( recorder, animated: true , completion: nil )
+      #self.presentViewController( recorder, animated: true , completion: nil )
+      self.addChildViewController(recorder)
+      recorder.didMoveToParentViewController(self)
+      self.view.addSubview(recorder.view)
+      @audio_recorder_for_iphone = recorder
     elsif device.ipad?
       pop_over = UIPopoverController.alloc.initWithContentViewController( recorder )
       if self.respond_to? :media_chooser_popup_anchor
