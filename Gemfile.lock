@@ -4,6 +4,7 @@ GEM
     ProMotion (2.5.0)
       methadone (~> 1.7)
       motion_print (~> 1.0)
+    ProMotion-iap (0.2.1)
     RedAlert (1.5)
       ruby_motion_query (>= 1.3.4)
     activesupport (4.2.5.1)
@@ -53,6 +54,7 @@ GEM
     fuzzy_match (2.0.4)
     gherkin (2.12.2)
       multi_json (~> 1.3)
+    helu (0.6)
     i18n (0.7.0)
     json (1.8.3)
     methadone (1.9.2)
@@ -97,7 +99,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ProMotion-iap
   cocoapods (~> 0.38.2)
+  helu
   json
   motion-cocoapods (~> 1.7.3)
   motion-fileutils (~> 0.1.1)

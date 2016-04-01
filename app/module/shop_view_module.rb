@@ -27,8 +27,6 @@ module ShopViewModule
 
     init_view_with_delegate(self) if @init.nil? || !@init
 
-    build_story_list
-
     add_premium_scroll_view
     add_basic_scroll_view
 
@@ -36,6 +34,8 @@ module ShopViewModule
       self.contentSize = CGSizeMake(self.frame.size.width,
                                     (@top_view_height + @bottom_view_height) * self.frame.size.height)
     end
+
+    BabboShop.get.register_for_updates(WeakRef.new(self))
   end
 
   ##
@@ -82,6 +82,8 @@ module ShopViewModule
   # Reload the date for all views
   # and rebuild them
   def reload_data
+    #todo remove
+    NSLog('reload_shop...')
     build_story_list
     build_view
   end
@@ -89,9 +91,14 @@ module ShopViewModule
   ##
   #
   def build_story_list
-    @all_stories = StoryBundle.bundle_list
-    @premium_stories = StoryBundle.bundle_list
-    @basic_stories = StoryBundle.bundle_list
+    @all_stories = BabboShop.get.get_all_products
+    @premium_stories = BabboShop.get.get_premium_products
+    @basic_stories = BabboShop.get.get_basic_products
+
+    @all_stories.each do |a|
+      NSLog(a.to_s)
+    end
+    NSLog('loaded finish')
   end
 
   def shopPremiumCell(cell, buttonPressed: button)
@@ -117,6 +124,14 @@ module ShopViewModule
 
       @delegate.tabletShopView(self, cell: cell, storyObject: story) if @delegate.respond_to? 'tabletShopView:cell:storyObject:'
     end
+  end
+
+  def advancedCollectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath: path)
+
+  end
+
+  def advancedCollectionView(view, willDisplayCell:cell, forItemAtIndexPath: path)
+
   end
 
   # UICollectionView Instance Methods

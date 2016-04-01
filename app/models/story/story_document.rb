@@ -14,9 +14,9 @@ module Story
     # attributes parsed from :head
     attr_reader :data_language, :data_language_version, :template_id
     # attributes parsed from :meta
-    attr_accessor :document_id, :dataset_id, :branch_creator_id,
-                :creator_impressum, :branch_name, :editor_id,
-                :set_name, :thumbnail, :screenshot, :description,
+    attr_accessor :document_id, :dataset_id, :branch_creator_id, :identifier,
+                :creator_impressum, :branch_name, :editor_id, :description,
+                :set_name, :thumbnail, :screenshots, :description, :category,
                 :status, :modified_conveyable, :timestamp, :body, :new_changes
 
     # Initialize a new Document instance
@@ -25,6 +25,8 @@ module Story
       @set_name    = 'undefined'
       @branch_name = 'undefined'
       @valid       = false
+      @identifier  = nil
+      @screenshots = nil
     end
 
     # Check if this document is valid.
@@ -68,6 +70,7 @@ module Story
 
         validate_attributes(desc[:meta], :meta) do |meta|
 
+          @identifier          = meta[:identifier]
           @document_id         = meta[:dokument_id]
           @dataset_id          = meta[:dataset_id]
           @branch_name         = meta[:branch_name]
@@ -76,11 +79,12 @@ module Story
           @editor_id           = meta[:editor_id]
           @set_name            = meta[:set_name]
           @thumbnail           = meta[:thumbnail]
-          @screenshot          = meta[:screenshot]
           @description         = meta[:description]
           @status              = meta[:status]
           @modified_conveyable = meta[:modified_conveyable]
           @timestamp           = meta[:timestamp]
+          @description         = meta[:description]
+          @category            = meta[:category]
 
           unless [:template, :V1, :V2].include? @status
             @validation_errors << "Unsupported status: '#{@status}'"
@@ -125,6 +129,24 @@ module Story
 
     def modified(value)
       @new_changes = value
+    end
+
+    def screenshots
+      if(@screenshots.nil?)
+        @screenshots = []
+
+        paths = ServerBackend.get.get_screenshots_for_identifier(@identifier)
+
+        paths.each do |path|
+          @screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
+        end
+      end
+
+      return @screenshots
+    end
+
+    def clear_chache
+      @screenshots = nil
     end
 
     # iterates over this document and all its parts and

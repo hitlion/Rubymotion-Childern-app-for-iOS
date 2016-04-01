@@ -4,6 +4,16 @@ module JavaScript
 
     class << self
       attr_accessor :timer, :timer_slot, :timer_path
+
+      def shutdown_timer
+        if Global.timer
+          NSLog('Player: Timer is running cancel it now...')
+          Global.timer.invalidate
+          Global.timer = nil
+          Global.timer_path = nil
+          Global.timer_slot = nil
+        end
+      end
     end
 
     include JavaScript::BridgeMixin

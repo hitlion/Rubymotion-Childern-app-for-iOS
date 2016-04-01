@@ -14,7 +14,6 @@ class ShopPremiumCell < UICollectionViewCell
   def make_cell(element)
 
     return if element.nil?
-    return if element.document.nil?
 
     @element = element
 
@@ -24,13 +23,13 @@ class ShopPremiumCell < UICollectionViewCell
     view.tag = element.object_id
 
     image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, view.frame.size.width, view.frame.size.height))
-    image.image = UIImage.imageWithData(element.asset_data(element.document.thumbnail))
+    image.image = element.thumbnail
 
     layer = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, 0.75 * view.frame.size.width, 0.33 * view.frame.size.height ))
     layer.image = UIImage.imageNamed("cell_layer")
 
     label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
-    label.text = element.document.branch_name
+    label.text = element.set_name
     label.textColor = UIColor.blackColor
     label.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:large))
     label.textAlignment = UITextAlignmentLeft

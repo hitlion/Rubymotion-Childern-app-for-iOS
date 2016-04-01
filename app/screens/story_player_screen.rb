@@ -75,6 +75,8 @@ class StoryPlayerScreen < PM::Screen
       if info.has_key? :exit_to
         show_scene(info[:exit_to])
       else
+        # cancel the global timer object
+        JavaScript::Global.shutdown_timer
         close
       end
     end

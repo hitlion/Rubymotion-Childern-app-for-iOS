@@ -208,4 +208,16 @@ class AdvancedCollectionView < UIView
     cell
   end
 
+  def collectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath:path)
+    if (@delegate.respond_to? 'advancedCollectionView:didEndDisplayingCell:forItemAtIndexPath:')
+      @delegate.advancedCollectionView(self, didEndDisplayingCell:cell, forItemAtIndexPath: path)
+    end
+  end
+
+  def collectionView(view, willDisplayCell:cell, forItemAtIndexPath:path)
+    if (@delegate.respond_to? 'advancedCollectionView:willDisplayCell:forItemAtIndexPath:')
+      @delegate.advancedCollectionView(self, willDisplayCell:cell, forItemAtIndexPath: path)
+    end
+  end
+
 end

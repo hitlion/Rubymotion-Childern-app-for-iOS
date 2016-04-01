@@ -208,6 +208,23 @@ class ServerBackend
     rating.to_f
   end
 
+  def get_thumbnail_for_identifier(identifier)
+    return 'http://bit.ly/18iMhwc'
+  end
+
+  def get_screenshots_for_identifier(identifier)
+    return ['http://bit.ly/18iMhwc', 'http://bit.ly/18iMhwc']
+  end
+
+  def get_rating_for_identifier(identifier)
+    return 5.0
+  end
+
+  def get_identifiers
+    identifier = ['de.tuluh_tec.babbo_voco.erbse','de.tuluh_tec.babbo_voco.memory','de.tuluh_tec.babbo_voco.zahlenspiel']
+    return identifier
+  end
+
   private
 
   # Check if the loaded story data contains all required keys.
@@ -275,5 +292,6 @@ class ServerBackend
 
     return "#{story.document.document_id}_#{story.document.dataset_id}"
   end
+
 end
 

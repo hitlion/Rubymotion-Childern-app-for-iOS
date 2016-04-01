@@ -58,6 +58,14 @@ Motion::Project::App.setup do |app|
 
   app.info_plist['UIAppFonts'] = ['Enriqueta-Bold.otf', 'Enriqueta-Regular.otf']
 
+  #TODO changes this to http://stackoverflow.com/questions/30731785/how-do-i-load-an-http-url-with-app-transport-security-enabled-in-ios-9
+  # and https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW1
+  # so it reject all http request except the listed ones
+  app.info_plist['NSAppTransportSecurity'] = {
+    'NSAllowsArbitraryLoads' => true
+  }
+
+
   # pods used in all configurations
   app.pods do
     pod 'IQAudioRecorderController'
@@ -116,6 +124,7 @@ Motion::Project::App.setup do |app|
 
   app.frameworks << 'JavaScriptCore'
   app.frameworks << 'SpriteKit'
+  app.frameworks << 'StoreKit'
   app.frameworks << 'CoreImage'
   app.frameworks << 'AVFoundation'
 
