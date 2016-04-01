@@ -127,11 +127,19 @@ module ShopViewModule
   end
 
   def advancedCollectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath: path)
-
+    if view == @basic_view
+      Dispatch::Queue.concurrent.async do
+        clear_story_chache(cell.element)
+      end
+    end
   end
 
   def advancedCollectionView(view, willDisplayCell:cell, forItemAtIndexPath: path)
-
+    if view == @basic_view
+      Dispatch::Queue.concurrent.async do
+        cell.element.screenshots
+      end
+    end
   end
 
   # UICollectionView Instance Methods
@@ -153,5 +161,25 @@ module ShopViewModule
     end
 
     cell
+  end
+
+  def collectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath: path)
+    if view == @premium_collection_view
+      Dispatch::Queue.concurrent.async do
+        clear_story_chache(cell.element)
+      end
+    end
+  end
+
+  def collectionView(view, willDisplayCell:cell, forItemAtIndexPath: path)
+    if view == @premium_collection_view
+      Dispatch::Queue.concurrent.async do
+        cell.element.screenshots
+      end
+    end
+  end
+
+  def clear_chache(bundle)
+    bundle.clear_chache
   end
 end

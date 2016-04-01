@@ -141,23 +141,6 @@ module MenuViewModule
   def more(list, path: path)
     @level_view.reload_data(list)
 
-    if(@last_viewed_bundles)
-      Dispatch::Queue.new('clear_last_chached_screenshots').async do
-        @last_viewed_bundles.each do |bundle|
-          bundle.document.clear_chache
-        end
-      end
-    end
-
-    @last_viewed_bundles = list
-
-    # loading all screenshot from their url's in separate tasks
-    list.each do |bundle|
-      Dispatch::Queue.new('load_screenshots').async do
-        bundle.document.screenshots
-      end
-    end
-
     @level_view.hidden = false
     @tips_view.hidden = true
 
@@ -240,12 +223,19 @@ module MenuViewModule
   end
 
   def advancedCollectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath: path)
-    #clear_story_chache(cell.element)
-    lp "Es geht #{path.row }"
+    if view == @level_view
+      Dispatch::Queue.concurrent.async do
+        clear_chache(cell.element)
+      end
+    end
   end
 
   def advancedCollectionView(view, willDisplayCell:cell, forItemAtIndexPath: path)
-    lp "Es kommt #{path.row }"
+    if view == @level_view
+      Dispatch::Queue.concurrent.async do
+        cell.element.document.screenshots
+      end
+    end
   end
 
   # UICollectionView Instance Methods
@@ -269,8 +259,24 @@ module MenuViewModule
     cell
   end
 
-  def clear_story_chache(bundle)
-      bundle.document.clear_chache
+  def collectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath: path)
+    if view == @story_collection_view
+      Dispatch::Queue.concurrent.async do
+        clear_story_chache(cell.element)
+      end
+    end
+  end
+
+  def collectionView(view, willDisplayCell:cell, forItemAtIndexPath: path)
+    if view == @story_collection_view
+      Dispatch::Queue.concurrent.async do
+        cell.element.document.screenshots
+      end
+    end
+  end
+
+  def clear_chache(bundle)
+    bundle.document.clear_chache
   end
 
 end

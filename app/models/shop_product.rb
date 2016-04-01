@@ -44,7 +44,7 @@ class ShopProduct
    return @screenshots
   end
 
-  def clean_chache
+  def clear_chache
     @thumbnail = nil
     @screenshots = nil
   end
