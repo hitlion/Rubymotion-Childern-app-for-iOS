@@ -72,21 +72,21 @@ class TabletParentScreen < PM::Screen
 
   def setup_menu_overlay
     frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
-    @parent_menu_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayMenuStandard.alloc.init, frame: frame)
-    @parent_menu_overlay.hidden = true
+    @parent_menu_overlay ||= TabletOverlayView.alloc.initWithFrame(frame, type: OverlayMenuStandard.alloc.init)
+    @parent_menu_overlay.hide
     @parentmenu.addSubview(@parent_menu_overlay)
   end
 
   def setup_shop_premium_overlay
     frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
-    @parent_shop_premium_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayShopPremium.alloc.init, frame: frame)
+    @parent_shop_premium_overlay ||= TabletOverlayView.alloc.initWithFrame(frame, type: OverlayShopPremium.alloc.init)
     @parent_shop_premium_overlay.hidden = true
     @parentmenu.addSubview(@parent_shop_premium_overlay)
   end
 
   def setup_shop_basic_overlay
     frame = CGRectMake(0, 0, device.screen_width, device.screen_height)
-    @parent_shop_basic_overlay ||= TabletOverlayView.alloc.init_with_type(OverlayShopBasic.alloc.init, frame: frame)
+    @parent_shop_basic_overlay ||= TabletOverlayView.alloc.initWithFrame(frame, type: OverlayShopBasic.alloc.init)
     @parent_shop_basic_overlay.hidden = true
     @parentmenu.addSubview(@parent_shop_basic_overlay)
   end
@@ -106,9 +106,8 @@ class TabletParentScreen < PM::Screen
   def tabletNavbarView(view, buttonPressed: button)
     button_id = button.tag
 
-    lp button_id
     if (button_id == 0)
-      @shop_view.hidden = true
+      @shop_view.hide
       @menu_view.hidden = false
       @navbar.hide_back_button
       @navbar.set_title_text("Alle Stories")
@@ -120,14 +119,14 @@ class TabletParentScreen < PM::Screen
     elsif (button_id == 2)
       if(@shop_view.hidden?)
         @navbar.set_title_text("Shop")
-        @shop_view.hidden = false
+        @shop_view.show
         @menu_view.hidden = true
         @navbar.show_back_button
         @options_view.hidden = true
       end
     elsif (button_id == 3)
       @options_view.hidden = !@options_view.hidden?
-      @shop_view.hidden = true
+      @shop_view.hide
       @menu_view.hidden = false
       @navbar.hide_back_button
       @navbar.set_title_text("Alle Stories")
@@ -156,8 +155,8 @@ class TabletParentScreen < PM::Screen
   # @param source [UIButton] The pressed button object
   def tabletMenuView(view, storyObject: story)
     if(view == @menu_view)
-      @parent_menu_overlay.reload_view_with_story(story)
-      @parent_menu_overlay.hidden = !@parent_menu_overlay.hidden?
+      #@parent_menu_overlay.reload_view_with_story(story)
+      @parent_menu_overlay.show
     end
   end
 

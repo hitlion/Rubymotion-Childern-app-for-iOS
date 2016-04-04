@@ -1,4 +1,4 @@
 class TabletOverlayView < UIView
 
-  include OverlayViewModuleNew
+  include LoadingViewModule
 end

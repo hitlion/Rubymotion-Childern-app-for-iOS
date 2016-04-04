@@ -167,6 +167,9 @@ class AdvancedCollectionView < UIView
                                              animated:true)
   end
 
+  def numberOfItems
+    return @collection_view.numberOfItemsInSection(0)
+  end
   ##
   # reload the collection view cells
   # @param elements [var] An Array with the data for the collection view cells

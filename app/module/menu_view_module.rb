@@ -97,7 +97,6 @@ module MenuViewModule
   # and rebuild them
   def reload_data
     build_story_list
-    build_view
   end
 
   # Reload the cached +StoryBundle+'s based on the contents
@@ -169,6 +168,7 @@ module MenuViewModule
   def menuStoryCell(cell, rightButtonPressed: source)
     id  = source.tag
     story = @all_stories.find {|e| e.object_id == id}
+    #todo ändern!!!! Name schlecht und alt
     @delegate.tabletMenuView(self, storyObject: story) if @delegate.respond_to? 'tabletMenuView:storyObject:'
   end
 
@@ -262,7 +262,7 @@ module MenuViewModule
   def collectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath: path)
     if view == @story_collection_view
       Dispatch::Queue.concurrent.async do
-        clear_story_chache(cell.element)
+        clear_chache(cell.element)
       end
     end
   end

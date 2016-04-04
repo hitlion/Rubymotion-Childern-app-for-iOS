@@ -2,7 +2,7 @@
 # http://www.raywenderlich.com/21081/introduction-to-in-app-purchases-in-ios-6-tutorial
 class IAPHelper
   attr_accessor :products_request, :completion_handler, :product_identifiers, :purchased_product_identifiers
-  attr_accessor :cancelled, :success
+  attr_accessor :cancelled, :success, :failed
 
   def initialize(product_identifiers)
     # Store product identifiers
@@ -52,7 +52,7 @@ class IAPHelper
 
     sk_products = response.products
     sk_products.each do |sk_product|
-      NSLog("Found product: %@ %@ %0.2", sk_product.productIdentifier, sk_product.localizedTitle, sk_product.price.floatValue)
+      NSLog("Found product: %@ %@ %0.2", sk_product.productIdentifier, sk_product.localizedTitle, sk_product.price)
     end
 
     @completion_handler.call(true, sk_products)
@@ -83,10 +83,36 @@ class IAPHelper
     end
   end
 
+  def paymentQueue(queue, updatedDownloads: downloads)
+    downloads.each do |download|
+      case download.downloadState
+        when SKDownloadStateActive
+          NSLog("Download progress = %f and Download time: %f", download.progress, download.timeRemaining)
+          activeDownload(download)
+        when SKDownloadStateFinished
+          NSLog("Downloaded %@",download.contentURL)
+          finishedDownload(download)
+        when SKDownloadStateWaiting
+          waitingDownload(download)
+        when SKDownloadStateFailed
+          failedDownload(download)
+        when SKDownlaodStateCanceled
+          cancelledDownload(download)
+        when SKDonwloadStatePause
+          pauseDownload(download)
+      end
+    end
+  end
+
   def completeTransaction(transaction)
     NSLog("completeTransaction...")
 
     self.provide_content(transaction.payment.productIdentifier)
+
+    if(transaction.downloads)
+      SKPaymentQueue.defaultQueue.startDownloads(transaction.downloads)
+    end
+
     SKPaymentQueue.defaultQueue.finishTransaction(transaction)
   end
 
@@ -101,8 +127,9 @@ class IAPHelper
     NSLog("failedTransaction...")
     if transaction.error.code != SKErrorPaymentCancelled
       NSLog("Transaction error: %@", transaction.error.localizedDescription)
-      @completion_handler.call(false, nil) unless @completion_handler.nil?
-      @completion_handler = nil
+      @failed.call unless @failed.nil?
+      #@completion_handler.call(false, nil) unless @completion_handler.nil?
+      #@completion_handler = nil
     else
       @cancelled.call unless @cancelled.nil?
     end
@@ -113,11 +140,41 @@ class IAPHelper
     @purchased_product_identifiers.addObject(product_identifier)
     NSUserDefaults.standardUserDefaults.setBool(true, forKey:product_identifier)
     NSUserDefaults.standardUserDefaults.synchronize
+
     @success.call unless @success.nil?
   end
 
   def restoreCompletedTransactions
     SKPaymentQueue.defaultQueue.restoreCompletedTransactions
+  end
+
+  private
+
+
+  def activeDownload(download)
+    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadActive', object:download)
+  end
+
+  def finishedDownload(download)
+    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadFinished', object:download)
+
+    SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
+  end
+
+  def waitingDownload(download)
+    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadWaiting', object:download)
+  end
+
+  def failedDownload(download)
+    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadFailed', object:download)
+  end
+
+  def cancelledDownload(download)
+    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadCancelled', object:download)
+  end
+
+  def pauseDownload(download)
+    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadPause', object:download)
   end
 
 end

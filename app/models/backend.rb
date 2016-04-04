@@ -221,7 +221,7 @@ class ServerBackend
   end
 
   def get_identifiers
-    identifier = ['de.tuluh_tec.babbo_voco.erbse','de.tuluh_tec.babbo_voco.memory','de.tuluh_tec.babbo_voco.zahlenspiel']
+    identifier = ['de.tuluh_tec.babbo_voco.erbse','de.tuluh_tec.babbo_voco.memory','de.tuluh_tec.babbo_voco.zahlenspiel', 'de.tuluh_tec.babbo_voco.test_story']
     return identifier
   end
 

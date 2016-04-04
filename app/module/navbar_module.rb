@@ -30,9 +30,9 @@ module NavbarModule
   def init_view_with_delegate(delegate, titleText: titleText)
     @pos_x_back_button  = 0.00
     @pos_x_label        = 0.10
-    @pos_x_button_1     = 0.55
-    @pos_x_button_2     = 0.65
-    @pos_x_button_3     = 0.75
+    @pos_x_button_1     = 0.7
+    @pos_x_button_2     = 0.8
+    @pos_x_button_3     = 0.9
     @pos_x_searchbar    = 0.85
 
     @element_size       = 64
@@ -187,7 +187,6 @@ module NavbarModule
     end
 
     @last_selected_button = source
-
   end
 
   def hide_back_button

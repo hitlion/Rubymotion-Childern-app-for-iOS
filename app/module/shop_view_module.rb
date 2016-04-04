@@ -79,13 +79,20 @@ module ShopViewModule
   end
 
   ##
-  # Reload the date for all views
-  # and rebuild them
+  # Reload the data for all views
   def reload_data
-    #todo remove
-    NSLog('reload_shop...')
     build_story_list
-    build_view
+    @premium_collection_view.reloadData if @premium_collection_view.numberOfItemsInSection(0) == 0
+    @basic_view.reload_data(@basic_stories) if @basic_view.numberOfItems == 0
+  end
+
+  def hide
+    self.hidden = true
+  end
+
+  def show
+    self.reload_data
+    self.hidden = false
   end
 
   ##
@@ -94,11 +101,6 @@ module ShopViewModule
     @all_stories = BabboShop.get.get_all_products
     @premium_stories = BabboShop.get.get_premium_products
     @basic_stories = BabboShop.get.get_basic_products
-
-    @all_stories.each do |a|
-      NSLog(a.to_s)
-    end
-    NSLog('loaded finish')
   end
 
   def shopPremiumCell(cell, buttonPressed: button)
@@ -129,7 +131,7 @@ module ShopViewModule
   def advancedCollectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath: path)
     if view == @basic_view
       Dispatch::Queue.concurrent.async do
-        clear_story_chache(cell.element)
+        clear_chache(cell.element)
       end
     end
   end
@@ -166,7 +168,7 @@ module ShopViewModule
   def collectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath: path)
     if view == @premium_collection_view
       Dispatch::Queue.concurrent.async do
-        clear_story_chache(cell.element)
+        clear_chache(cell.element)
       end
     end
   end

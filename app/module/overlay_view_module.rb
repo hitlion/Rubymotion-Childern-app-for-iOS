@@ -25,16 +25,6 @@ module OverlayViewModule
     self
   end
 
-  def reload_view_with_story(story)
-    if(story.class == StoryBundle)
-      @story  = story.document
-      @bundle = story
-    else
-      @story = story
-    end
-    build_view
-  end
-
   def build_view
 
     self.subviews.each do |v|
@@ -269,7 +259,7 @@ module OverlayViewModule
     @text_view = UITextView.alloc.initWithFrame(frame)
     @text_view.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
     @text_view.textAlignment = UITextAlignmentLeft
-
+    @text_view.editable = false
 
     @text_view.text = story.description
     bottom_view.addSubview(@text_view)
@@ -283,19 +273,35 @@ module OverlayViewModule
     self.addSubview(overlay_view)
   end
 
-  def left_button_pressed(button)
+  def reload_view_with_story(story)
+    if(story.class == StoryBundle)
+      @story  = story.document
+      @bundle = story
+    else
+      @story = story
+    end
+    update_overlay_values
+  end
 
+  def update_overlay_values
+    build_view
+  end
+
+  def left_button_pressed(button)
+    #todo delegates
     if(@overlay_type.class == OverlayMenuStandard)
       StartScreen.next_story = @bundle
       StartScreen.next_screen = :story_player
       StartScreen.last_screen = :parent_menu
       rmq.screen.open_root_screen(StartScreen)
+    else (@overlay_type.class == OverlayShopBasic || @overlay_type.class == OverlayShopPremium)
+      BabboShop.get.buy_product(@story.productIdentifier)
     end
 
   end
 
   def right_button_pressed(button)
-
+    #todo delegates
   end
 
   def cancel_button_pressed(button)

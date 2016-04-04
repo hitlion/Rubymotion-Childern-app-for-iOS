@@ -14,7 +14,7 @@ module Story
     # attributes parsed from :head
     attr_reader :data_language, :data_language_version, :template_id
     # attributes parsed from :meta
-    attr_accessor :document_id, :dataset_id, :branch_creator_id, :identifier,
+    attr_accessor :document_id, :dataset_id, :branch_creator_id, :productIdentifier,
                 :creator_impressum, :branch_name, :editor_id, :description,
                 :set_name, :thumbnail, :screenshots, :description, :category,
                 :status, :modified_conveyable, :timestamp, :body, :new_changes
@@ -25,7 +25,7 @@ module Story
       @set_name    = 'undefined'
       @branch_name = 'undefined'
       @valid       = false
-      @identifier  = nil
+      @productIdentifier  = nil
       @screenshots = nil
     end
 
@@ -70,7 +70,7 @@ module Story
 
         validate_attributes(desc[:meta], :meta) do |meta|
 
-          @identifier          = meta[:identifier]
+          @productIdentifier   = meta[:productIdentifier]
           @document_id         = meta[:dokument_id]
           @dataset_id          = meta[:dataset_id]
           @branch_name         = meta[:branch_name]
@@ -133,13 +133,14 @@ module Story
 
     def screenshots
       if(@screenshots.nil?)
-        @screenshots = []
+        screenshots = []
 
-        paths = ServerBackend.get.get_screenshots_for_identifier(@identifier)
-
+        paths = ServerBackend.get.get_screenshots_for_identifier(@productIdentifier)
         paths.each do |path|
-          @screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
+          screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
         end
+
+        @screenshots = screenshots
       end
 
       return @screenshots
