@@ -81,7 +81,7 @@ module OverlayViewModule
     if(@overlay_type.class == OverlayMenuStandard)
       date = UILabel.alloc.initWithFrame(CGRectMake(0.4 * top_view.frame.size.width, 0.25 * top_view.frame.size.height,
                                                     0.3 * top_view.frame.size.width, 0.15 * top_view.frame.size.height))
-      time = Time.at(NSDate.dateWithNaturalLanguageString(story.timestamp))
+      time = Time.at(NSDate.dateWithNaturalLanguageString(story.timestamp)).strftime("%d. %B %Y").to_s
       date.text = time.strftime("%d. %B %Y").to_s
       date.textColor = UIColor.blackColor
       date.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:medium))

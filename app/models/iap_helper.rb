@@ -85,6 +85,10 @@ class IAPHelper
 
   def paymentQueue(queue, updatedDownloads: downloads)
     downloads.each do |download|
+
+      NSLog('Download angefordert')
+      download_started(download)
+
       case download.downloadState
         when SKDownloadStateActive
           NSLog("Download progress = %f and Download time: %f", download.progress, download.timeRemaining)
@@ -150,31 +154,62 @@ class IAPHelper
 
   private
 
+  def download_started(download)
+    NSLog('Download startet...')
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadStarted',
+                                                            object:nil,
+                                                            userInfo: {:object => download})
+  end
 
   def activeDownload(download)
-    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadActive', object:download)
+    NSLog('Download active...')
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadActive',
+                                                            object:nil,
+                                                            userInfo: {:object => download})
   end
 
   def finishedDownload(download)
-    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadFinished', object:download)
+    NSLog('Download finished...')
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadFinished',
+                                                            object:nil,
+                                                            userInfo: {:object => download})
 
     SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
   end
 
   def waitingDownload(download)
-    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadWaiting', object:download)
+
+    NSLog('Download waiting...')
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadWaiting',
+                                                            object:nil,
+                                                            userInfo: {:object => download})
   end
 
   def failedDownload(download)
-    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadFailed', object:download)
+    NSLog('Download failed...')
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadFailed',
+                                                            object:nil,
+                                                            userInfo: {:object => download})
+
+    SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
   end
 
   def cancelledDownload(download)
-    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadCancelled', object:download)
+
+    NSLog('Download canceled...')
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadCancelled',
+                                                            object:nil,
+                                                            userInfo: {:object => download})
+
+    SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
   end
 
   def pauseDownload(download)
-    NSNotificationCenter.defaultCenter().postNotificationName('IAPWDownloadPause', object:download)
+
+    NSLog('Download pause...')
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadPause',
+                                                            object:nil,
+                                                            userInfo: {:object => download})
   end
 
 end
