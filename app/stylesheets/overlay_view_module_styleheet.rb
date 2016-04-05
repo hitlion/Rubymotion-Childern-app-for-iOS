@@ -1,4 +1,4 @@
-class OverlayViewTabletModuleStylesheet < ApplicationStylesheet
+class OverlayViewModuleStylesheet < ApplicationStylesheet
   def setup
   end
 
@@ -122,7 +122,7 @@ class OverlayViewTabletModuleStylesheet < ApplicationStylesheet
     st.frame = {l: 0.02 * device.screen_width, fb: 0.005 * device.screen_height, fr: 0.2 * device.screen_width, h: 0.04 * device.screen_height}
     st.background_color = rmq.color.red
     st.progress_view_style = UIProgressViewStyleDefault
-    st.progress_tint_color = rmq.color.blue
+    st.progress_tint_color = rmq.color.babbo_orange
     st.track_tint_color = rmq.color.gray
   end
 

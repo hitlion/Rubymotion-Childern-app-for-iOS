@@ -86,15 +86,10 @@ class IAPHelper
   def paymentQueue(queue, updatedDownloads: downloads)
     downloads.each do |download|
 
-      NSLog('Download angefordert')
-      download_started(download)
-
       case download.downloadState
         when SKDownloadStateActive
-          NSLog("Download progress = %f and Download time: %f", download.progress, download.timeRemaining)
           activeDownload(download)
         when SKDownloadStateFinished
-          NSLog("Downloaded %@",download.contentURL)
           finishedDownload(download)
         when SKDownloadStateWaiting
           waitingDownload(download)
@@ -117,7 +112,7 @@ class IAPHelper
       SKPaymentQueue.defaultQueue.startDownloads(transaction.downloads)
     end
 
-    SKPaymentQueue.defaultQueue.finishTransaction(transaction)
+    #SKPaymentQueue.defaultQueue.finishTransaction(transaction)
   end
 
   def restoreTransaction(transaction)
@@ -154,25 +149,32 @@ class IAPHelper
 
   private
 
-  def download_started(download)
-    NSLog('Download startet...')
-    NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadStarted',
-                                                            object:nil,
-                                                            userInfo: {:object => download})
-  end
-
   def activeDownload(download)
     NSLog('Download active...')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadActive',
                                                             object:nil,
-                                                            userInfo: {:object => download})
+                                                            userInfo: {
+                                                                :download => download,
+                                                            })
   end
 
   def finishedDownload(download)
-    NSLog('Download finished...')
+    NSLog("Downloaded %@",download.contentURL)
+    NSLog('1')
+    @fileManager = NSFileManager.defaultManager()
+    path = download.contentURL.fileSystemRepresentation
+    bundle_root = File.join(Dir.system_path(:documents), 'Bundles', 'tempZip')
+
+    @fileManager.copyItemAtPath(path, toPath: bundle_root, error: nil)
+
+    @fileManager.removeItemAtPath(path, error: nil)
+
+    NSLog('4')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadFinished',
                                                             object:nil,
-                                                            userInfo: {:object => download})
+                                                            userInfo: {
+                                                                :download => download,
+                                                            })
 
     SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
   end
@@ -182,14 +184,18 @@ class IAPHelper
     NSLog('Download waiting...')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadWaiting',
                                                             object:nil,
-                                                            userInfo: {:object => download})
+                                                            userInfo: {
+                                                                :download => download,
+                                                            })
   end
 
   def failedDownload(download)
     NSLog('Download failed...')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadFailed',
                                                             object:nil,
-                                                            userInfo: {:object => download})
+                                                            userInfo: {
+                                                                :download => download,
+                                                            })
 
     SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
   end

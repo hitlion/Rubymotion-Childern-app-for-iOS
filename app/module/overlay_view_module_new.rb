@@ -7,8 +7,10 @@ module OverlayViewModuleNew
   def initWithFrame( frame)
    super(frame).tap do
 
+      register_for_shop
+
       if(device.ipad?)
-        rmq(self).stylesheet = OverlayViewTabletModuleStylesheet
+        rmq(self).stylesheet = OverlayViewModuleStylesheet
       end
 
       rmq(self).apply_style(:root)
@@ -94,7 +96,7 @@ module OverlayViewModuleNew
 
       bottom.addSubview(@screenshot_collection_view)
 
-    end
+   end
   end
 
   def show_overlay_type(type, data: story)
@@ -119,41 +121,31 @@ module OverlayViewModuleNew
   private
 
   def register_for_shop
-    NSNotificationCenter.defaultCenter.removeObserver(self)
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                     selector: 'receivedDownloadWaitingNotification:',
-                                                     name: 'IAPDownloadWaiting',
-                                                     object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                     selector: 'receivedDownloadActiveNotification:',
-                                                     name: 'IAPDownloadActive',
-                                                     object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                     selector: 'receivedDownloadFinishedNotification:',
-                                                     name: 'IAPDownloadFinished',
-                                                     object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                     selector: 'receivedDownloadFailedNotification:',
-                                                     name: 'IAPDownloadFailed',
-                                                     object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                     selector: 'receivedDownloadCancelledNotification:',
-                                                     name: 'IAPDownloadCancelled',
-                                                     object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                     selector: 'receivedDownloadPauseNotification:',
-                                                     name: 'IAPDownloadPause',
-                                                     object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                     selector: 'receivedDownloadStartedNotification:',
-                                                     name: 'IAPDownloadStarted',
-                                                     object: nil)
-  end
 
-  def receivedDownloadStartedNotification(notification)
-    NSLog('Download started erhalten...')
-    @status_label.hidden = false
-    @progress_view.hidden = false
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedDownloadWaitingNotification:',
+                                                   name: 'IAPDownloadWaiting',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedDownloadActiveNotification:',
+                                                   name: 'IAPDownloadActive',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedDownloadFinishedNotification:',
+                                                   name: 'IAPDownloadFinished',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedDownloadFailedNotification:',
+                                                   name: 'IAPDownloadFailed',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedDownloadCancelledNotification:',
+                                                   name: 'IAPDownloadCancelled',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedDownloadPauseNotification:',
+                                                   name: 'IAPDownloadPause',
+                                                   object: nil)
   end
 
   def receivedDownloadWaitingNotification(notification)
@@ -163,9 +155,13 @@ module OverlayViewModuleNew
   end
 
   def receivedDownloadActiveNotification(notification)
+    @status_label.hidden = false if(@status_label.hidden?)
+    @progress_view.hidden = false if(@progress_view.hidden?)
+
     NSLog('Download active erhalten...')
     @status_label.text = 'Download läuft'
-    @progress_view.progress = notification.object.progress
+    NSLog(notification.userInfo[:download].progress.to_s)
+    @progress_view.progress = notification.userInfo[:download].progress
   end
 
   def receivedDownloadFinishedNotification(notification)
