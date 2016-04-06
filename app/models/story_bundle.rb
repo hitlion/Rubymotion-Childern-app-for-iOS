@@ -60,20 +60,31 @@ class StoryBundle
 
     def delete_story(story)
       self.bundle_list.delete(story)
+
+      NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
+                                                              object:nil)
     end
 
     def reload_bundle(story, path)
       StoryBundle.delete_story(story)
       StoryBundle.add_new_bundle(path)
+
+      NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
+                                                              object:nil)
     end
 
     def add_new_bundle(path)
-      autorelease_pool{
-        bundle = StoryBundle.new(path)
-        bundle.load
-        self.bundle_list << bundle if !bundle.has_changesets?
-        self.bundle_list += bundle.changesets if bundle.has_changesets?
-      }
+      Dispatch::Queue.concurrent.async do
+        autorelease_pool{
+          bundle = StoryBundle.new(path)
+          bundle.load
+          self.bundle_list << bundle if !bundle.has_changesets?
+          self.bundle_list += bundle.changesets if bundle.has_changesets?
+        }
+
+        NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
+                                                                object:nil)
+      end
     end
   end
 

@@ -15,7 +15,7 @@ module Story
     attr_reader :data_language, :data_language_version, :template_id
     # attributes parsed from :meta
     attr_accessor :document_id, :dataset_id, :branch_creator_id, :productIdentifier,
-                :creator_impressum, :branch_name, :editor_id, :description,
+                :creator_impressum, :branch_name, :editor_id, :description_path,
                 :set_name, :thumbnail, :screenshots, :description, :category,
                 :status, :modified_conveyable, :timestamp, :body, :new_changes
 
@@ -70,7 +70,7 @@ module Story
 
         validate_attributes(desc[:meta], :meta) do |meta|
 
-          @productIdentifier   = meta[:productIdentifier]
+          @productIdentifier   = meta[:product_identifier]
           @document_id         = meta[:dokument_id]
           @dataset_id          = meta[:dataset_id]
           @branch_name         = meta[:branch_name]
@@ -79,11 +79,10 @@ module Story
           @editor_id           = meta[:editor_id]
           @set_name            = meta[:set_name]
           @thumbnail           = meta[:thumbnail]
-          @description         = meta[:description]
+          @description_path    = meta[:description]
           @status              = meta[:status]
           @modified_conveyable = meta[:modified_conveyable]
           @timestamp           = meta[:timestamp]
-          @description         = meta[:description]
           @category            = meta[:category]
 
           unless [:template, :V1, :V2].include? @status

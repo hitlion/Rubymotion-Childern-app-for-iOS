@@ -82,8 +82,8 @@ module ShopViewModule
   # Reload the data for all views
   def reload_data
     build_story_list
-    @premium_collection_view.reloadData if @premium_collection_view.numberOfItemsInSection(0) == 0
-    @basic_view.reload_data(@basic_stories) if @basic_view.numberOfItems == 0
+    @premium_collection_view.reloadData
+    @basic_view.reload_data(@basic_stories)
   end
 
   def hide
@@ -98,6 +98,7 @@ module ShopViewModule
   ##
   #
   def build_story_list
+    NSLog('Build Shop List')
     @all_stories = BabboShop.get.get_all_products
     @premium_stories = BabboShop.get.get_premium_products
     @basic_stories = BabboShop.get.get_basic_products

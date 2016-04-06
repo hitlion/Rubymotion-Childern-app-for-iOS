@@ -316,11 +316,10 @@ module OverlayViewModuleNew
         when 'JA'
           NSFileManager.defaultManager.removeItemAtPath(@bundle.path, error:nil)
           StoryBundle.delete_story(@bundle)
-          StartScreen.next_screen = :parent_menu
-          StartScreen.last_screen = :parent_menu
-          rmq.screen.open_root_screen(StartScreen)
         when 'NEIN'
       end
+
+      self.hidden = true
     end
   end
 
@@ -358,7 +357,4 @@ module OverlayViewModuleNew
 
     cell
   end
-
-
-
 end

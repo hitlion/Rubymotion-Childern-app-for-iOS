@@ -160,14 +160,41 @@ class IAPHelper
 
   def finishedDownload(download)
     NSLog("Downloaded %@",download.contentURL)
-    NSLog('1')
     @fileManager = NSFileManager.defaultManager()
     path = download.contentURL.fileSystemRepresentation
-    bundle_root = File.join(Dir.system_path(:documents), 'Bundles', 'tempZip')
-
-    @fileManager.copyItemAtPath(path, toPath: bundle_root, error: nil)
-
+    temp_folder = File.join(Dir.system_path(:documents), 'Bundles', 'tempFolder')
+    #copy and unpack to temp folder
+    @fileManager.copyItemAtPath(path, toPath: temp_folder, error: nil)
+    # delete downloaded file
     @fileManager.removeItemAtPath(path, error: nil)
+
+    path = File.join(temp_folder, 'Contents')
+
+    new_bundles = []
+
+    Dir.glob("#{path}/*.zip").each do |zip_archive|
+      NSLog(zip_archive)
+      bundle_name = File.split(zip_archive).last
+      NSLog(bundle_name)
+      bundle_name = bundle_name.split('.zip').first
+      NSLog(bundle_name)
+
+      TTUtil.unzip_file(NSURL.fileURLWithPath(zip_archive), toDestination:temp_folder, withName:bundle_name)
+
+      src = File.join(temp_folder, bundle_name, bundle_name)
+      NSLog("Quelle: %@", src)
+      des = File.join(Dir.system_path(:documents), 'Bundles', bundle_name)
+      NSLog("Ziel %@", des)
+      @fileManager.copyItemAtPath(src, toPath: des, error: nil)
+      new_bundles << des
+    end
+
+    new_bundles.each do |path|
+      StoryBundle.add_new_bundle(path)
+    end
+
+    NSLog("loesche: %@", temp_folder)
+    @fileManager.removeItemAtPath(temp_folder, error: nil)
 
     NSLog('4')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadFinished',

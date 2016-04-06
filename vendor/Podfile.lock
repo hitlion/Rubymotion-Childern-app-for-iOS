@@ -5,12 +5,14 @@ PODS:
   - IQAudioRecorderController (1.0.1):
     - SCSiriWaveformView
   - SCSiriWaveformView (1.0.3)
+  - SSZipArchive (1.1)
   - zipzap (8.1.1)
 
 DEPENDENCIES:
   - Crashlytics
   - Fabric
   - IQAudioRecorderController
+  - SSZipArchive
   - zipzap
 
 SPEC CHECKSUMS:
@@ -18,6 +20,7 @@ SPEC CHECKSUMS:
   Fabric: bf0ceb04e7c924090efc5f8c55e4fbcca189e0a0
   IQAudioRecorderController: 8b63465b6f8b5c81c9faa4475c946536d9fb43d7
   SCSiriWaveformView: b8b2756af42addcd31900c3945f24edafefb5395
+  SSZipArchive: de3d215ab73f87db627f81f2ce24f1731e3886c3
   zipzap: 940162d9c9c60472c2eab341385e4214da0fdf1c
 
 COCOAPODS: 0.38.2

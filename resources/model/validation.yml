@@ -10,8 +10,10 @@ head:
   template_id:           { required: true, as: to_s }
 
 meta:
+  product_identifer:     { required: false, as: to_s }
   dokument_id:           { required: true, as: to_i }
   dataset_id:            { required: true, as: to_i }
+  category:              { required: false, as: to_i }
   branch_name:           { required: true, as: to_s }
   branch_creator_id:     { required: true, as: to_i }
   creator_impressum:     { default:     ~, as: to_s }

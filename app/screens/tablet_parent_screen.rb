@@ -128,9 +128,7 @@ class TabletParentScreen < PM::Screen
     end
 
     if (id == 2)
-
     end
-
   end
 
 

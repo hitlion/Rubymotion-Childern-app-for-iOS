@@ -14,6 +14,12 @@ module MenuViewModule
   # @delegate           = delegate
   # @init = true
   def init_view_with_delegate(delegate)
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'bundlesChanges:',
+                                                   name: 'BabboBundleChanged',
+                                                   object: nil)
+
     @top_view_height    = 0.5
     @bottom_view_height = 0.5
 
@@ -99,14 +105,6 @@ module MenuViewModule
     build_story_list
   end
 
-  # Reload the cached +StoryBundle+'s based on the contents
-  # of the 'Bundles' directory on disk.
-  #
-  def reload_bundles(force_reload=false)
-    @story_bundles = StoryBundle.bundles(reload: force_reload)
-    #@story_bundles.sort{|s| s.document.timestamp}
-  end
-
   ##
   # Get the whole story list a build a second one, grouped by the
   # document_id
@@ -161,6 +159,7 @@ module MenuViewModule
     @level_view.hidden = true
     @tips_view.hidden = false
   end
+
   ##
   # MenuStoryCell instance method
   # @param cell [UICollectionViewCell]
@@ -184,6 +183,7 @@ module MenuViewModule
     path = NSIndexPath.indexPathForRow(index, inSection:0)
 
     @choosen_story_index = index
+
 
     if(@pressed_more_button)
       if(@pressed_more_button == source)
@@ -277,6 +277,12 @@ module MenuViewModule
 
   def clear_chache(bundle)
     bundle.document.clear_chache
+  end
+
+  def bundlesChanges(notification)
+    less(nil)
+    reload_data
+    @story_collection_view.reloadData
   end
 
 end

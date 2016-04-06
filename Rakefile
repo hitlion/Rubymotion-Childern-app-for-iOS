@@ -70,6 +70,7 @@ Motion::Project::App.setup do |app|
   app.pods do
     pod 'IQAudioRecorderController'
     pod 'zipzap'
+    pod 'SSZipArchive'
   end
 
   # pods used in staging and ad-hoc releases
