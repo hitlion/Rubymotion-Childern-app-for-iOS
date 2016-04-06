@@ -26,7 +26,6 @@ class ServerBackend
     lp "Backend: reading config files from #{config_path}... "
     Dir.glob(config_path).each do |story_def|
       data = YAML.load(File.read(story_def))
-
       data = Hash.symbolicate(data) unless data.nil?
       next unless validate_story_definition(data)
 
@@ -37,7 +36,6 @@ class ServerBackend
     lp "Backend: reading tips data from #{tips_path}... "
     Dir.glob(tips_path).each_with_index do |tips_def, index|
       data = YAML.load(File.read(tips_def))
-
       data = Hash.symbolicate(data) unless data.nil?
       next unless validate_tips_definition(data)
 

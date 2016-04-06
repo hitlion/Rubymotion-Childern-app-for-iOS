@@ -51,15 +51,18 @@ class BabboShop
   end
 
   def get_premium_products
-    return @premium_products
+    products = @premium_products.select{|product| product.not_installed?}
+    return products
   end
 
   def get_basic_products
-    return @basic_products
+    products = @basic_products.select{|product| product.not_installed?}
+    return products
   end
 
   def get_all_products
-    return @products
+    products = @products.select{|product| product.not_installed?}
+    return products
   end
 
   def register_for_updates (cl)

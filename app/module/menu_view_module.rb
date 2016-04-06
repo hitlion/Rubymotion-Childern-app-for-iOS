@@ -156,8 +156,8 @@ module MenuViewModule
   # open the tipss and tricks collection view
   # hide the level list section
   def less(story)
-    @level_view.hidden = true
-    @tips_view.hidden = false
+    @level_view.hidden = true if @level_view
+    @tips_view.hidden  = false if @tips_view
   end
 
   ##

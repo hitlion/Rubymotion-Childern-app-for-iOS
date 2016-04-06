@@ -10,7 +10,7 @@ head:
   template_id:           { required: true, as: to_s }
 
 meta:
-  product_identifer:     { required: false, as: to_s }
+  product_identifier:     { required: false, as: to_s }
   dokument_id:           { required: true, as: to_i }
   dataset_id:            { required: true, as: to_i }
   category:              { required: false, as: to_i }

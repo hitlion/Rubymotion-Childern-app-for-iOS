@@ -1,7 +1,7 @@
 class ShopProduct
 
   attr_reader :set_name, :price, :rating, :thumbnail_path, :thumbnail, :description, :screenshots,
-              :screenshot_paths, :productIdentifier, :valid
+              :screenshot_paths, :productIdentifier, :valid, :installed
 
   def initialize( product )
     @valid = false
@@ -16,10 +16,26 @@ class ShopProduct
 
     @screenshots = nil
     @thumbnail = nil
+    @installed = false
 
     unless(@productIdentifier.nil? && @set_name.nil? && @price.nil? && @description.nil? &&@rating.nil? && @thumbnail_path.nil? && @screenshot_paths.nil?)
       @valid = true
     end
+    @installed = false
+
+    StoryBundle.bundles.each do |story|
+      if(story.valid?)
+        if(story.document.productIdentifier == @productIdentifier)
+          @installed = true
+        end
+      end
+    end
+    #@installed = !StoryBundle.bundles.select{|story| story.document.productIdentifier == @productIdentifier}.nil?
+    lp "#{@set_name} : #{@installed}"
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'bundlesChanges:',
+                                                   name: 'BabboBundleChanged',
+                                                   object: nil)
   end
 
   # @return [boolean] if the products values are all valid
@@ -56,6 +72,27 @@ class ShopProduct
   def clear_chache
     @thumbnail = nil
     @screenshots = nil
+  end
+
+  def not_installed?
+    return !@installed
+  end
+
+
+  def bundlesChanges(notification)
+    lp notification.userInfo[:status]
+    lp notification.userInfo[:changed_bundle].document.productIdentifier
+    lp @productIdentifier
+    lp notification.userInfo[:changed_bundle].document.productIdentifier == @productIdentifier
+
+    if notification.userInfo[:changed_bundle].document.productIdentifier == @productIdentifier
+      @installed = notification.userInfo[:status] == :added
+
+      lp "#{@set_name} : #{@installed}"
+
+      NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleChanged',
+                                                              object:nil)
+    end
   end
 
 end

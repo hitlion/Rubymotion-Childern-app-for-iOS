@@ -10,6 +10,7 @@ module Devmode
     # check if devmode options are present and readable
     return unless File.exists? devmode_config
     options = YAML.load(File.read(devmode_config))
+
     return if options.nil? || options == {}
 
     lp 'Checking devmode options..'

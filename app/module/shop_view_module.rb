@@ -15,6 +15,12 @@ module ShopViewModule
   # @delegate           = delegate
   # @init = true
   def init_view_with_delegate(delegate)
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'bundlesChanges:',
+                                                   name: 'ShopBundleChanged',
+                                                   object: nil)
+
     @top_view_height    = 0.5
     @bottom_view_height = 0.5
 
@@ -184,5 +190,10 @@ module ShopViewModule
 
   def clear_chache(bundle)
     bundle.clear_chache
+  end
+
+  def bundlesChanges(notification)
+    lp 'update shop view'
+    reload_data
   end
 end

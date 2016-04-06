@@ -62,15 +62,16 @@ class StoryBundle
       self.bundle_list.delete(story)
 
       NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
-                                                              object:nil)
+                                                              object:nil,
+                                                              userInfo: {
+                                                                  :changed_bundle => story,
+                                                                  :status => :deleted
+                                                              })
     end
 
     def reload_bundle(story, path)
       StoryBundle.delete_story(story)
       StoryBundle.add_new_bundle(path)
-
-      NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
-                                                              object:nil)
     end
 
     def add_new_bundle(path)
@@ -78,12 +79,24 @@ class StoryBundle
         autorelease_pool{
           bundle = StoryBundle.new(path)
           bundle.load
-          self.bundle_list << bundle if !bundle.has_changesets?
-          self.bundle_list += bundle.changesets if bundle.has_changesets?
-        }
+          story = nil
+          if !bundle.has_changesets?
+            self.bundle_list << bundle
+            story = bundle
+          end
 
-        NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
-                                                                object:nil)
+          if bundle.has_changesets?
+            self.bundle_list += bundle.changesets
+            story = bundle.changesets
+          end
+
+          NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
+                                                                  object:nil,
+                                                                  userInfo: {
+                                                                      :changed_bundle => story,
+                                                                      :status => :deleted
+                                                                  })
+        }
       end
     end
   end
