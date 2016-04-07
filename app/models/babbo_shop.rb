@@ -33,7 +33,8 @@ class BabboShop
         end
       end
 
-      @receiver.reload_data if @receiver
+      NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleChanged',
+                                                              object:nil)
     end
   end
 
@@ -60,10 +61,5 @@ class BabboShop
     products = @products.select{|product| product.not_installed?}
     return products
   end
-
-  def register_for_updates (cl)
-    @receiver = cl
-  end
-
 
 end

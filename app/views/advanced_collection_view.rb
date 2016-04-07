@@ -148,6 +148,8 @@ class AdvancedCollectionView < UIView
   # Called if the user pressed one of the two scroll buttons
   # @param source [UIButton] the pressed scroll button
   def scroll_button_pressed (source)
+    return if numberOfItems <= 0
+
     @visible_tip_cell ||= 0
 
     direction = source.tag

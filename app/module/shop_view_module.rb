@@ -40,8 +40,6 @@ module ShopViewModule
       self.contentSize = CGSizeMake(self.frame.size.width,
                                     (@top_view_height + @bottom_view_height) * self.frame.size.height)
     end
-
-    BabboShop.get.register_for_updates(WeakRef.new(self))
   end
 
   ##
@@ -87,7 +85,12 @@ module ShopViewModule
   ##
   # Reload the data for all views
   def reload_data
-    build_story_list
+    lp @all_stories.nil?
+
+    if(@all_stories.nil?)
+      build_story_list
+    end
+
     @premium_collection_view.reloadData
     @basic_view.reload_data(@basic_stories)
   end
@@ -193,6 +196,7 @@ module ShopViewModule
   end
 
   def bundlesChanges(notification)
+    build_story_list
     reload_data
   end
 end
