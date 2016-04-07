@@ -80,12 +80,12 @@ class ShopProduct
 
 
   def bundlesChanges(notification)
-    lp notification.userInfo[:status]
-    lp notification.userInfo[:changed_bundle].document.productIdentifier
-    lp @productIdentifier
-    lp notification.userInfo[:changed_bundle].document.productIdentifier == @productIdentifier
+    NSLog("Shopbundle updated: %@", self.set_name)
 
     if notification.userInfo[:changed_bundle].document.productIdentifier == @productIdentifier
+      NSLog("New Bundle is: %@", notification.userInfo[:changed_bundle].document.productIdentifier)
+      NSLog("Status: %@", notification.userInfo[:status])
+      NSLog("New Value: %@",  notification.userInfo[:status] == :added)
       @installed = notification.userInfo[:status] == :added
 
       lp "#{@set_name} : #{@installed}"

@@ -372,7 +372,7 @@ class StoryEditorScreen < PM::Screen
   def write_meta_changes(bundle)
     story = bundle.document
     res = "/* new meta informations */\n"
-    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{story.thumbnail.to_s}', '#{story.timestamp.to_s}');\n"
+    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{story.thumbnail.to_s}', '#{story.timestamp.to_s}', '#{story.productIdentifier.to_s}');\n"
     res
   end
 
@@ -546,6 +546,7 @@ class StoryEditorScreen < PM::Screen
       end
 
       @story_bundle.document.dataset_id = count+1
+      @story_bundle.document.productIdentifier = @story_bundle.document.productIdentifier + "_#{@story_bundle.document.dataset_id}"
 
       dest_name = name + '_' + count.to_s + '_' + source_id.to_s + '.babbo'
       lp "Editor: new directory name: #{dest_name}"
@@ -564,6 +565,8 @@ class StoryEditorScreen < PM::Screen
     if(@story_bundle.document.dataset_id > 0)
       @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
     end
+
+
 
     @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
 

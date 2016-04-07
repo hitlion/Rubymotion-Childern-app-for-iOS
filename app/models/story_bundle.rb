@@ -34,7 +34,7 @@ class StoryBundle
                 bundle = StoryBundle.new(bundle_path)
                 bundle.load
                 weak_self.bundle_list << bundle if !bundle.has_changesets?
-                weak_self.bundle_list += bundle.changesets if bundle.has_changesets?
+                weak_self.bundle_list << bundle.changesets if bundle.has_changesets?
                 async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
               }
             end
@@ -45,7 +45,7 @@ class StoryBundle
               bundle = StoryBundle.new(bundle_path)
               bundle.load
               self.bundle_list << bundle if !bundle.has_changesets?
-              self.bundle_list += bundle.changesets if bundle.has_changesets?
+              self.bundle_list << bundle.changesets if bundle.has_changesets?
             }
           end
         end
@@ -75,29 +75,29 @@ class StoryBundle
     end
 
     def add_new_bundle(path)
-      Dispatch::Queue.concurrent.async do
-        autorelease_pool{
-          bundle = StoryBundle.new(path)
-          bundle.load
-          story = nil
-          if !bundle.has_changesets?
-            self.bundle_list << bundle
-            story = bundle
-          end
+      autorelease_pool{
+        bundle = StoryBundle.new(path)
+        bundle.load
+        story = nil
+        if !bundle.has_changesets?
+          self.bundle_list << bundle
+          story = bundle
+        end
 
-          if bundle.has_changesets?
-            self.bundle_list += bundle.changesets
-            story = bundle.changesets
-          end
+        if bundle.has_changesets?
+          self.bundle_list << bundle.changesets
+          story = bundle.changesets
+        end
 
-          NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
-                                                                  object:nil,
-                                                                  userInfo: {
-                                                                      :changed_bundle => story,
-                                                                      :status => :deleted
-                                                                  })
-        }
-      end
+        NSLog('installed new story')
+
+        NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
+                                                                object:nil,
+                                                                userInfo: {
+                                                                    :changed_bundle => story,
+                                                                    :status => :added
+                                                                })
+      }
     end
   end
 
@@ -241,7 +241,7 @@ class StoryBundle
   # @return [Array<StoryBundle>] A list of modified version of this bundle
   #   matching the changesets located inside of the bundle.
   def changesets
-    changesets   = []
+    changesets = nil
     return changesets unless valid?
 
     control_path = File.absolute_path(File.join(@path, 'SMIL'))
@@ -266,7 +266,7 @@ class StoryBundle
       end
     end
 
-    changesets << bundle
+    changesets = bundle
     changesets
   end
 

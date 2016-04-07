@@ -193,7 +193,6 @@ module ShopViewModule
   end
 
   def bundlesChanges(notification)
-    lp 'update shop view'
     reload_data
   end
 end

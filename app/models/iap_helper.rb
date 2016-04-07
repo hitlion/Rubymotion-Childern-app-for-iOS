@@ -2,7 +2,6 @@
 # http://www.raywenderlich.com/21081/introduction-to-in-app-purchases-in-ios-6-tutorial
 class IAPHelper
   attr_accessor :products_request, :completion_handler, :product_identifiers, :purchased_product_identifiers
-  attr_accessor :cancelled, :success, :failed
 
   def initialize(product_identifiers)
     # Store product identifiers
@@ -104,33 +103,45 @@ class IAPHelper
   end
 
   def completeTransaction(transaction)
-    NSLog("completeTransaction...")
-
     self.provide_content(transaction.payment.productIdentifier)
 
     if(transaction.downloads)
       SKPaymentQueue.defaultQueue.startDownloads(transaction.downloads)
+    else
+      SKPaymentQueue.defaultQueue.finishTransaction(transaction)
     end
 
-    #SKPaymentQueue.defaultQueue.finishTransaction(transaction)
+    NSLog('Thank you for your purchase. Downloading startet now.')
+
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPTransactionSuccess',
+                                                            object:nil,
+                                                            userInfo: {
+                                                                :transaction => transaction })
   end
 
   def restoreTransaction(transaction)
-    NSLog("restoreTransaction...")
-
     self.provide_content(transaction.originalTransaction.payment.productIdentifier)
     SKPaymentQueue.defaultQueue.finishTransaction(transaction)
   end
 
   def failedTransaction(transaction)
-    NSLog("failedTransaction...")
     if transaction.error.code != SKErrorPaymentCancelled
-      NSLog("Transaction error: %@", transaction.error.localizedDescription)
-      @failed.call unless @failed.nil?
-      #@completion_handler.call(false, nil) unless @completion_handler.nil?
-      #@completion_handler = nil
+      NSLog("Transaction failed with error: %@", transaction.error.localizedDescription)
+
+      NSNotificationCenter.defaultCenter.postNotificationName('IAPTransactionFailed',
+                                                              object:nil,
+                                                              userInfo: {
+                                                                  :transaction => transaction })
+
     else
-      @cancelled.call unless @cancelled.nil?
+      NSLog('Transaction Cancelled.')
+
+      NSNotificationCenter.defaultCenter.postNotificationName('IAPTransactionCancelled',
+                                                              object:nil,
+                                                              userInfo: {
+                                                                  :transaction => transaction })
+
+
     end
     SKPaymentQueue.defaultQueue.finishTransaction(transaction)
   end
@@ -154,13 +165,14 @@ class IAPHelper
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadActive',
                                                             object:nil,
                                                             userInfo: {
-                                                                :download => download,
+                                                                :download => download
                                                             })
   end
 
   def finishedDownload(download)
     NSLog("Downloaded %@",download.contentURL)
     @fileManager = NSFileManager.defaultManager()
+
     path = download.contentURL.fileSystemRepresentation
     temp_folder = File.join(Dir.system_path(:documents), 'Bundles', 'tempFolder')
     #copy and unpack to temp folder
@@ -182,9 +194,7 @@ class IAPHelper
       TTUtil.unzip_file(NSURL.fileURLWithPath(zip_archive), toDestination:temp_folder, withName:bundle_name)
 
       src = File.join(temp_folder, bundle_name, bundle_name)
-      NSLog("Quelle: %@", src)
       des = File.join(Dir.system_path(:documents), 'Bundles', bundle_name)
-      NSLog("Ziel %@", des)
       @fileManager.copyItemAtPath(src, toPath: des, error: nil)
       new_bundles << des
     end
@@ -193,56 +203,43 @@ class IAPHelper
       StoryBundle.add_new_bundle(path)
     end
 
-    NSLog("loesche: %@", temp_folder)
     @fileManager.removeItemAtPath(temp_folder, error: nil)
 
-    NSLog('4')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadFinished',
                                                             object:nil,
                                                             userInfo: {
-                                                                :download => download,
-                                                            })
+                                                                :download => download })
 
     SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
   end
 
   def waitingDownload(download)
-
-    NSLog('Download waiting...')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadWaiting',
                                                             object:nil,
                                                             userInfo: {
-                                                                :download => download,
-                                                            })
+                                                                :download => download })
   end
 
   def failedDownload(download)
-    NSLog('Download failed...')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadFailed',
                                                             object:nil,
                                                             userInfo: {
-                                                                :download => download,
-                                                            })
+                                                                :download => download })
 
     SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
   end
 
   def cancelledDownload(download)
-
-    NSLog('Download canceled...')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadCancelled',
                                                             object:nil,
-                                                            userInfo: {:object => download})
+                                                            userInfo: {:object => download })
 
     SKPaymentQueue.defaultQueue.finishTransaction(download.transaction)
   end
 
   def pauseDownload(download)
-
-    NSLog('Download pause...')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadPause',
                                                             object:nil,
-                                                            userInfo: {:object => download})
+                                                            userInfo: {:object => download })
   end
-
 end

@@ -36,6 +36,9 @@ module OverlayViewModuleNew
       end
 
       @right_button = top.append(UIButton, :right_button).get
+      @right_button.on(:tap) do
+        right_button_pressed
+      end
 
       @progress_view = top.append(UIProgressView, :progress_view).get
       @status_label = top.append(UILabel, :status_label).get
@@ -95,7 +98,6 @@ module OverlayViewModuleNew
       @screenshot_collection_view.hidden = true
 
       bottom.addSubview(@screenshot_collection_view)
-
    end
   end
 
@@ -146,44 +148,94 @@ module OverlayViewModuleNew
                                                    selector: 'receivedDownloadPauseNotification:',
                                                    name: 'IAPDownloadPause',
                                                    object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedIAPTransactionCancelled:',
+                                                   name: 'IAPTransactionCancelled',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedIAPTransactionSucces:',
+                                                   name: 'IAPTransactionSucces',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'receivedIAPTransactionFailed:',
+                                                   name: 'IAPTransactionFailed',
+                                                   object: nil)
+  end
+
+  def receivedIAPTransactionCancelled(notification)
+
+  end
+
+  def receivedIAPTransactionSuccess(notification)
+    NSLog('receive sucess')
+    if notification[:transaction].downloads
+
+    end
+    @left_button.hidden = true
+  end
+
+  def receivedIAPTransactionFailed(notification)
+
   end
 
   def receivedDownloadWaitingNotification(notification)
-    NSLog('Download waiting erhalten...')
     @status_label.text = 'Warte auf Download'
     @progress_view.progress = 0.0
   end
 
   def receivedDownloadActiveNotification(notification)
+    #@right_button.hidden = false
+    @left_button.hidden = true
+
     @status_label.hidden = false if(@status_label.hidden?)
     @progress_view.hidden = false if(@progress_view.hidden?)
-
-    NSLog('Download active erhalten...')
     @status_label.text = 'Download läuft'
-    NSLog(notification.userInfo[:download].progress.to_s)
+    #NSLog(notification.userInfo[:download].progress.to_s)
     @progress_view.progress = notification.userInfo[:download].progress
   end
 
   def receivedDownloadFinishedNotification(notification)
-    NSLog('Download finished erhalten...')
+
     @status_label.text = 'Download Beendet'
     @progress_view.progress = 1.0
+
+    app.alert(title: "Download beendet!", message: "Sie haben erfolgreich eine neue Story heruntergeladen.", actions: ['OK']) do |button_tag|
+      case button_tag
+        when 'OK'
+          hide
+          #@right_button.hidden = true
+          @left_button.hidden = false
+      end
+    end
   end
 
   def receivedDownloadFailedNotification(notification)
-    NSLog('Download failed erhalten...')
     @status_label.text = 'Download fehlgeschlagen'
-    @progress_view.progress = 1.00
+    @progress_view.progress = 0.00
+
+    app.alert(title: "Download fehlgeschlagen!", message: "Probieren sie es erneut.", actions: ['OK']) do |button_tag|
+      case button_tag
+        when 'OK'
+          @right_button.hidden = true
+          @left_button.hidden = false
+      end
+    end
   end
 
   def receivedDownloadCancelledNotification(notification)
-    NSLog('Download canceled erhalten...')
     @status_label.text = 'Download abgebrochen'
     @progress_view.progress = 0.0
+
+    app.alert(title: "Download abbgebrochen!", message: "Sie haben den Download abgebrochen.", actions: ['OK']) do |button_tag|
+      case button_tag
+        when 'OK'
+          @right_button.hidden = true
+          @left_button.hidden = false
+      end
+    end
   end
 
   def receivedDownloadPauseNotification(notification)
-    NSLog('Download pause erhalten...')
     @status_label.text = 'Download pausiert'
     @progress_view.progress = notification.object.progress
   end
@@ -208,8 +260,10 @@ module OverlayViewModuleNew
       @date_label.hidden = true
       @progress_view.hidden = true
       @status_label.hidden = true
-      @left_button.setTitle('Kaufen', forState: UIControlStateNormal)
+      label_text = "Kaufen, #{story.price} €"
+      @left_button.setTitle(label_text, forState: UIControlStateNormal)
       @right_button.hidden = true
+      @right_button.setTitle('Abbrechen', forState: UIControlStateNormal)
       @top_button_line.hidden = true
     elsif (@type == :shop_basic)
       @image_box.image = @story.thumbnail
@@ -219,6 +273,7 @@ module OverlayViewModuleNew
       @status_label.hidden = true
       @left_button.setTitle('Download', forState: UIControlStateNormal)
       @right_button.hidden = true
+      @right_button.setTitle('Abbrechen', forState: UIControlStateNormal)
       @top_button_line.hidden = true
     end
 
@@ -262,6 +317,16 @@ module OverlayViewModuleNew
       rmq.screen.open_root_screen(StartScreen)
     elsif(@type == :shop_premium || @type == :shop_basic)
       BabboShop.get.buy_product(@story.productIdentifier)
+    end
+  end
+
+  def right_button_pressed
+    if (@type == :shop_premium || @type == :shop_basic)
+      NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadCanceledForced',
+                                                              object:nil,
+                                                              userInfo: {
+                                                                  :download => download,
+                                                              })
     end
   end
 
@@ -319,7 +384,7 @@ module OverlayViewModuleNew
         when 'NEIN'
       end
 
-      self.hidden = true
+      hide
     end
   end
 

@@ -280,6 +280,7 @@ module MenuViewModule
   end
 
   def bundlesChanges(notification)
+    NSLog('Menu bundles changed')
     less(nil)
     reload_data
     @story_collection_view.reloadData
