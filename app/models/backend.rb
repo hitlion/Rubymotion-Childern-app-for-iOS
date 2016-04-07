@@ -207,7 +207,9 @@ class ServerBackend
   end
 
   def get_thumbnail_for_identifier(identifier)
-    return 'http://bit.ly/18iMhwc'
+    thumbnail = 'thumbnail' + '/' + identifier + '.png'
+
+    return thumbnail
   end
 
   def get_screenshots_for_identifier(identifier)

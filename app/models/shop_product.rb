@@ -47,7 +47,9 @@ class ShopProduct
   # @return [UIImage] An UIImage with the
   def thumbnail
     return nil unless @valid
-    @thumbnail ||=  UIImage.imageWithData(NSData.dataWithContentsOfURL(@thumbnail_path.to_url))
+    #TODO : aktivieren wenn wieder vom Server geladen wird
+    #@thumbnail ||=  UIImage.imageWithData(NSData.dataWithContentsOfURL(@thumbnail_path.to_url))
+    @thumbnail ||= rmq.image.resource(@thumbnail_path)
     return @thumbnail
   end
 
@@ -59,7 +61,9 @@ class ShopProduct
       screenshots = []
 
       @screenshot_paths.each do |path|
+        #TODO : aktivieren wenn wieder vom Server geladen wird
         screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
+        #screenshots << rmq.image.resource(path)
       end
 
       @screenshots = screenshots
