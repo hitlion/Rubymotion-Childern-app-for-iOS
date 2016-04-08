@@ -1,6 +1,6 @@
 class BabboShop
 
-  attr_reader :products, :premium_products, :basic_products, :receiver
+  attr_reader :products, :premium_products, :basic_products
 
   class << self
     attr_accessor :instance
@@ -58,8 +58,8 @@ class BabboShop
   end
 
   def get_all_products
-    products = @products.select{|product| product.not_installed?}
-    return products
+    #load_product_informations if @product.nil?
+    return @products
   end
 
 end

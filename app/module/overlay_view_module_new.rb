@@ -102,17 +102,34 @@ module OverlayViewModuleNew
   end
 
   def show_overlay_type(type, data: story)
+    new_story  = nil
+    new_bundle = nil
 
     if(story.class == StoryBundle)
-      @story  = story.document
-      @bundle = story
+      new_story  = story.document
+      new_bundle = story
     else
-      @story = story
+      new_story = story
     end
 
-    @type = type
+    NSLog(new_story.productIdentifier)
+    NSLog(@story.productIdentifier) unless @story.nil?
 
-    relayout_with_type
+    if(@story.nil?)
+      @story = new_story unless new_story.nil?
+      @bundle = new_bundle unless new_bundle.nil?
+      @type = type
+      NSLog(@story.productIdentifier)
+      relayout_with_type
+    end
+
+    if(new_story.productIdentifier != @story.productIdentifier || type != @type )
+      @story = new_story unless new_story.nil?
+      @bundle = new_bundle unless new_bundle.nil?
+      @type = type
+      relayout_with_type
+    end
+
     self.hidden = false
   end
 
@@ -167,7 +184,6 @@ module OverlayViewModuleNew
   end
 
   def receivedIAPTransactionSuccess(notification)
-    NSLog('receive sucess')
     if notification[:transaction].downloads
 
     end
@@ -184,28 +200,28 @@ module OverlayViewModuleNew
   end
 
   def receivedDownloadActiveNotification(notification)
+    return if @story.nil?
     #@right_button.hidden = false
-    @left_button.hidden = true
-
-    @status_label.hidden = false if(@status_label.hidden?)
-    @progress_view.hidden = false if(@progress_view.hidden?)
-    @status_label.text = 'Download läuft'
     #NSLog(notification.userInfo[:download].progress.to_s)
-    @progress_view.progress = notification.userInfo[:download].progress
+    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
+      @progress_view.progress = notification.userInfo[:download].progress
+      @status_label.hidden = false
+      @progress_view.hidden = false
+      @left_button.hidden = true
+      @status_label.text = 'Download läuft'
+      @story.downloading = true
+    end
+
   end
 
   def receivedDownloadFinishedNotification(notification)
-
-    @status_label.text = 'Download Beendet'
-    @progress_view.progress = 1.0
-
-    app.alert(title: "Download beendet!", message: "Sie haben erfolgreich eine neue Story heruntergeladen.", actions: ['OK']) do |button_tag|
-      case button_tag
-        when 'OK'
-          hide
-          #@right_button.hidden = true
-          @left_button.hidden = false
-      end
+    return if @story.nil?
+    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
+      @status_label.text = 'Download Beendet'
+      @progress_view.progress = 1.0
+      @left_button.hidden = false
+      @story.downloading = false
+      hide
     end
   end
 
@@ -220,6 +236,11 @@ module OverlayViewModuleNew
           @left_button.hidden = false
       end
     end
+
+    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
+      @story.downloading = false
+    end
+
   end
 
   def receivedDownloadCancelledNotification(notification)
@@ -232,6 +253,10 @@ module OverlayViewModuleNew
           @right_button.hidden = true
           @left_button.hidden = false
       end
+    end
+
+    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
+      @story.downloading = false
     end
   end
 
@@ -247,6 +272,7 @@ module OverlayViewModuleNew
       @date_label.hidden = false
       @date_label.text = Time.at(NSDate.dateWithNaturalLanguageString(@story.timestamp)).strftime("%d. %B %Y").to_s
       @left_button.setTitle('Starten', forState: UIControlStateNormal)
+      @left_button.hidden = false
       @right_button.hidden = true
       @top_button_line.hidden = false
       @progress_view.hidden = true
@@ -262,6 +288,7 @@ module OverlayViewModuleNew
       @status_label.hidden = true
       label_text = "Kaufen, #{story.price} €"
       @left_button.setTitle(label_text, forState: UIControlStateNormal)
+      @left_button.hidden = @story.downloading
       @right_button.hidden = true
       @right_button.setTitle('Abbrechen', forState: UIControlStateNormal)
       @top_button_line.hidden = true
@@ -272,6 +299,7 @@ module OverlayViewModuleNew
       @progress_view.hidden = true
       @status_label.hidden = true
       @left_button.setTitle('Download', forState: UIControlStateNormal)
+      @left_button.hidden = @story.downloading
       @right_button.hidden = true
       @right_button.setTitle('Abbrechen', forState: UIControlStateNormal)
       @top_button_line.hidden = true
@@ -316,6 +344,7 @@ module OverlayViewModuleNew
       StartScreen.last_screen = :parent_menu
       rmq.screen.open_root_screen(StartScreen)
     elsif(@type == :shop_premium || @type == :shop_basic)
+      @left_button.hidden = true
       BabboShop.get.buy_product(@story.productIdentifier)
     end
   end

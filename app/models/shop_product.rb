@@ -2,6 +2,7 @@ class ShopProduct
 
   attr_reader :set_name, :price, :rating, :thumbnail_path, :thumbnail, :description, :screenshots,
               :screenshot_paths, :productIdentifier, :valid, :installed
+  attr_accessor :downloading
 
   def initialize( product )
     @valid = false
@@ -17,6 +18,7 @@ class ShopProduct
     @screenshots = nil
     @thumbnail = nil
     @installed = false
+    @downloading = false
 
     unless(@productIdentifier.nil? && @set_name.nil? && @price.nil? && @description.nil? &&@rating.nil? && @thumbnail_path.nil? && @screenshot_paths.nil?)
       @valid = true
@@ -82,17 +84,11 @@ class ShopProduct
     return !@installed
   end
 
-
   def bundlesChanges(notification)
     NSLog("Shopbundle updated: %@", self.set_name)
 
     if notification.userInfo[:changed_bundle].document.productIdentifier == @productIdentifier
-      NSLog("New Bundle is: %@", notification.userInfo[:changed_bundle].document.productIdentifier)
-      NSLog("Status: %@", notification.userInfo[:status])
-      NSLog("New Value: %@",  notification.userInfo[:status] == :added)
       @installed = notification.userInfo[:status] == :added
-
-      lp "#{@set_name} : #{@installed}"
 
       NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleChanged',
                                                               object:nil)

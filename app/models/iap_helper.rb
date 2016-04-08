@@ -107,11 +107,11 @@ class IAPHelper
 
     if(transaction.downloads)
       SKPaymentQueue.defaultQueue.startDownloads(transaction.downloads)
+      NSLog('Thank you for your purchase. Downloading startet now.')
     else
       SKPaymentQueue.defaultQueue.finishTransaction(transaction)
+      NSLog('Thank you for your purchase. Transaction finished.')
     end
-
-    NSLog('Thank you for your purchase. Downloading startet now.')
 
     NSNotificationCenter.defaultCenter.postNotificationName('IAPTransactionSuccess',
                                                             object:nil,
@@ -161,7 +161,6 @@ class IAPHelper
   private
 
   def activeDownload(download)
-    NSLog('Download active...')
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadActive',
                                                             object:nil,
                                                             userInfo: {
@@ -170,7 +169,16 @@ class IAPHelper
   end
 
   def finishedDownload(download)
-    NSLog("Downloaded %@",download.contentURL)
+
+    products = BabboShop.get.get_all_products
+    unless (products.nil?)
+      product = products.select{|product| product.productIdentifier == download.contentIdentifier}.first
+    end
+    name = "Kein Name gefunden"
+    name = product.set_name unless product.nil?
+
+    app.alert(title: "Download beendet!", message: "Der Download von #{name} wurde erfoglreich beendet. Die Story wird nun installiert", actions: ['OK'])
+
     @fileManager = NSFileManager.defaultManager()
 
     path = download.contentURL.fileSystemRepresentation
@@ -217,7 +225,9 @@ class IAPHelper
     NSNotificationCenter.defaultCenter.postNotificationName('IAPDownloadWaiting',
                                                             object:nil,
                                                             userInfo: {
-                                                                :download => download })
+                                                                :download => download,
+                                                                :product_name => download.transaction,
+                                                                :identifier => download.contentIdentifier})
   end
 
   def failedDownload(download)

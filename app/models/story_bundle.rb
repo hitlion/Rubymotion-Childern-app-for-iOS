@@ -67,6 +67,7 @@ class StoryBundle
                                                                   :changed_bundle => story,
                                                                   :status => :deleted
                                                               })
+      app.alert(title: "Story gelöscht!", message: "Die Story #{story.document.set_name} wurde erfolgreich gelöscht.", actions: ['OK'])
     end
 
     def reload_bundle(story, path)
@@ -89,14 +90,13 @@ class StoryBundle
           story = bundle.changesets
         end
 
-        NSLog('installed new story')
-
         NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
                                                                 object:nil,
                                                                 userInfo: {
                                                                     :changed_bundle => story,
                                                                     :status => :added
                                                                 })
+        app.alert(title: "Neue Story!", message: "Die Story #{story.document.set_name} wurde erfolgreich hinzugefügt.", actions: ['OK'])
       }
     end
   end
