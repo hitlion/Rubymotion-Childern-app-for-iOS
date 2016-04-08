@@ -65,15 +65,16 @@ class KidsScene < SKScene
 
     add_story_list
 
-    add_rope
+    #add_rope
 
-    add_joints
+    #add_joints
 
     add_version_number
   end
 
   def willMoveFromView(view)
     @background_audio.stop
+    @background_audio = nil
   end
 
   ##
@@ -107,6 +108,8 @@ class KidsScene < SKScene
     touch = touches.anyObject
     node = nodeAtPoint(touch.locationInNode(self))
 
+    return if (node.nil?)
+
     if node.name == BUTTON_CHILD_NAME
       child_button_clicked
     elsif node.name == BUTTON_PARENT_NAME
@@ -114,6 +117,8 @@ class KidsScene < SKScene
     elsif node.name == BUTTON_LOGO_NAME
       printf("Logo button clicked \n")
     end
+
+    return if(@center_node.nil?)
     story = @story_list.select{|s| s.document.document_id.to_s + ":" + s.document.dataset_id.to_s == @center_node.name}.first
 
     if @center_node.equal?(node)
@@ -233,7 +238,7 @@ class KidsScene < SKScene
       story.physicsBody.dynamic = true
       story.physicsBody.angularDamping = 5.0
 
-      addChild story 
+      addChild story
       
       story_frame = SKSpriteNode.spriteNodeWithTexture(texture)
       story_frame.zPosition = -2
@@ -266,8 +271,7 @@ class KidsScene < SKScene
       user_picture.position = CGPointMake(0.5 * texture.size.width, - 1 * texture.size.height)
       user_picture.scale = (0.35 * texture.size.height) / user_picture.size.height
       user_picture.name = ELEMENT_USER_PICTURE
-
-      # story.addChild user_picture
+      story.addChild user_picture
 
       label = SKLabelNode.labelNodeWithText(s.document.set_name)
       label.position = CGPointMake(0, - 0.35 * texture.size.height )
@@ -283,7 +287,6 @@ class KidsScene < SKScene
       name = @story_list.first.document.document_id.to_s + ":" + @story_list.first.document.dataset_id.to_s
       @center_node = childNodeWithName(name)
     end
-
 
     scale_all_small
     scale_mid_big
@@ -485,10 +488,13 @@ class KidsScene < SKScene
   # Set the scale property from all elements of the @stories array to @small_scale
   #
   def scale_all_small
+    return if @small_scale.nil?
+
     if(!@story_list.empty?)
       @story_list.each do |s|
         name = s.document.document_id.to_s + ":" + s.document.dataset_id.to_s
-        childNodeWithName(name).runAction(SKAction.scaleTo(@small_scale, duration: 0.2))
+        node = childNodeWithName(name)
+        node.runAction(SKAction.scaleTo(@small_scale, duration: 0.2)) if node
       end
     end
   end

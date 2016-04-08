@@ -60,7 +60,7 @@ class StartScreen < PM::Screen
 
   def build_animation
 
-    @animation_frame = UIImageView.alloc.initWithFrame(CGRectMake(0.25 * self.frame.size.width, 0.25 * self.frame.size.height,
+    @animation_frame ||= UIImageView.alloc.initWithFrame(CGRectMake(0.25 * self.frame.size.width, 0.25 * self.frame.size.height,
                                                                   0.3 * self.frame.size.width, 0.4 * self.frame.size.height))
     add @animation_frame
 

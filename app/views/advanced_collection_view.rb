@@ -90,7 +90,7 @@ class AdvancedCollectionView < UIView
     scroll_button_left.frame = frame
     scroll_button_left.tintColor = rmq.color.babbo_button_grey
     scroll_button_left.setImage(UIImage.imageNamed("icons/arrow_left.png"), forState:UIControlStateNormal)
-    scroll_button_left.addTarget(self, action: "scroll_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
+    scroll_button_left.addTarget(WeakRef.new(self), action: "scroll_button_pressed:", forControlEvents: UIControlEventTouchUpInside)
     scroll_button_left.tag = -1
     bottom_view.addSubview(scroll_button_left)
 
@@ -186,7 +186,7 @@ class AdvancedCollectionView < UIView
   # @param source [UIButton] the pressed button object
   def menuLevelCell(cell, buttonPressed: source)
     if (@delegate.respond_to? 'advancedCollectionView:cellPressed:buttonObj:')
-      @delegate.advancedCollectionView(self, cellPressed: cell, buttonObj: source)
+      @delegate.advancedCollectionView(WeakRef.new(self), cellPressed: cell, buttonObj: source)
     end
   end
 
@@ -196,7 +196,7 @@ class AdvancedCollectionView < UIView
   # @param source [UIButton] the pressed button object
   def shopBasicCell(cell, buttonPressed: source)
     if (@delegate.respond_to? 'advancedCollectionView:cellPressed:buttonObj:')
-      @delegate.advancedCollectionView(self, cellPressed: cell, buttonObj: source)
+      @delegate.advancedCollectionView(WeakRef.new(self), cellPressed: cell, buttonObj: source)
     end
   end
 
@@ -215,13 +215,13 @@ class AdvancedCollectionView < UIView
 
   def collectionView(view, didEndDisplayingCell:cell, forItemAtIndexPath:path)
     if (@delegate.respond_to? 'advancedCollectionView:didEndDisplayingCell:forItemAtIndexPath:')
-      @delegate.advancedCollectionView(self, didEndDisplayingCell:cell, forItemAtIndexPath: path)
+      @delegate.advancedCollectionView(WeakRef.new(self), didEndDisplayingCell:cell, forItemAtIndexPath: path)
     end
   end
 
   def collectionView(view, willDisplayCell:cell, forItemAtIndexPath:path)
     if (@delegate.respond_to? 'advancedCollectionView:willDisplayCell:forItemAtIndexPath:')
-      @delegate.advancedCollectionView(self, willDisplayCell:cell, forItemAtIndexPath: path)
+      @delegate.advancedCollectionView(WeakRef.new(self), willDisplayCell:cell, forItemAtIndexPath: path)
     end
   end
 

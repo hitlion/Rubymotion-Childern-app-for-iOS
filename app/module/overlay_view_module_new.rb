@@ -141,39 +141,39 @@ module OverlayViewModuleNew
 
   def register_for_shop
 
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedDownloadWaitingNotification:',
                                                    name: 'IAPDownloadWaiting',
                                                    object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedDownloadActiveNotification:',
                                                    name: 'IAPDownloadActive',
                                                    object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedDownloadFinishedNotification:',
                                                    name: 'IAPDownloadFinished',
                                                    object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedDownloadFailedNotification:',
                                                    name: 'IAPDownloadFailed',
                                                    object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedDownloadCancelledNotification:',
                                                    name: 'IAPDownloadCancelled',
                                                    object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedDownloadPauseNotification:',
                                                    name: 'IAPDownloadPause',
                                                    object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedIAPTransactionCancelled:',
                                                    name: 'IAPTransactionCancelled',
                                                    object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedIAPTransactionSucces:',
                                                    name: 'IAPTransactionSucces',
                                                    object: nil)
-    NSNotificationCenter.defaultCenter.addObserver(self,
+    NSNotificationCenter.defaultCenter.addObserver(WeakRef.new(self),
                                                    selector: 'receivedIAPTransactionFailed:',
                                                    name: 'IAPTransactionFailed',
                                                    object: nil)
@@ -314,11 +314,12 @@ module OverlayViewModuleNew
   end
 
   def bottom_button_line_pressed(element, tag: tag)
+    return if @bottom_button_line_selected == element
 
     if(tag == 0)
       image1 = rmq.image.resource('button_bg_left_grey.png')
       image2 = rmq.image.resource('button_bg_right_white.png')
-    else
+    elsif (tag == 1)
       image1 = rmq.image.resource('button_bg_right_grey.png')
       image2 = rmq.image.resource('button_bg_left_white.png')
     end
@@ -410,10 +411,9 @@ module OverlayViewModuleNew
         when 'JA'
           NSFileManager.defaultManager.removeItemAtPath(@bundle.path, error:nil)
           StoryBundle.delete_story(@bundle)
+          hide
         when 'NEIN'
       end
-
-      hide
     end
   end
 
@@ -445,7 +445,7 @@ module OverlayViewModuleNew
 
     if(view == @screenshot_collection_view)
       screenshot = @screenshots[path.row] unless @screenshots.nil?
-      cell.delegate = self
+      cell.delegate = WeakRef.new(self)
       cell.make_cell(screenshot)
     end
 

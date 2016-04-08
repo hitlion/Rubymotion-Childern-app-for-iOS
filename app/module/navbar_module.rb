@@ -173,7 +173,7 @@ module NavbarModule
   # than call the delegate method with the params self (this navbar) and the pressed button element
   # @param source [UIButton] the pressed cell's button the whole cell is the button
   def button_pressed (source)
-    @delegate.tabletNavbarView(self, buttonPressed: source) if @delegate.respond_to? 'tabletNavbarView:buttonPressed:'
+    @delegate.tabletNavbarView(WeakRef.new(self), buttonPressed: source) if @delegate.respond_to? 'tabletNavbarView:buttonPressed:'
 
     if(source.tintColor != rmq.color.babbo_button_orange)
       source.tintColor = rmq.color.babbo_button_orange

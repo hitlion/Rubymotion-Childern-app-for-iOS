@@ -52,8 +52,8 @@ module ShopViewModule
     frame = CGRectMake(0, 0, self.frame.size.width, @top_view_height * self.frame.size.height)
 
     @premium_collection_view = UICollectionView.alloc.initWithFrame(frame, collectionViewLayout: layout)
-    @premium_collection_view.dataSource = WeakRef.new(self)
-    @premium_collection_view.delegate = WeakRef.new(self)
+    @premium_collection_view.dataSource = self
+    @premium_collection_view.delegate = self
 
     height = @premium_collection_view.frame.size.height
     width  = (4 * height) / 3
@@ -121,7 +121,7 @@ module ShopViewModule
     id  = button.tag
     story = @all_stories.find {|e| e.object_id == id}
 
-    @delegate.tabletShopView(self, cell: cell, storyObject: story) if @delegate.respond_to? 'tabletShopView:cell:storyObject:'
+    @delegate.tabletShopView(WeakRef.new(self), cell: cell, storyObject: story) if @delegate.respond_to? 'tabletShopView:cell:storyObject:'
   end
 
   ##
@@ -134,7 +134,7 @@ module ShopViewModule
       id  = button.tag
       story = @all_stories.find {|e| e.object_id == id}
 
-      @delegate.tabletShopView(self, cell: cell, storyObject: story) if @delegate.respond_to? 'tabletShopView:cell:storyObject:'
+      @delegate.tabletShopView(WeakRef.new(self), cell: cell, storyObject: story) if @delegate.respond_to? 'tabletShopView:cell:storyObject:'
     end
   end
 

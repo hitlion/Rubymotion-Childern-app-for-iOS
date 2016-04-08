@@ -80,7 +80,7 @@ module TabbarModule
     button.frame = CGRectMake(0.25 * element.frame.size.width, 0.10 * element.frame.size.height,
                               @icon_size, @icon_size)
     button.setImage(image, forState:UIControlStateNormal)
-    button.addTarget(self, action: action, forControlEvents: UIControlEventTouchDown)
+    button.addTarget(WeakRef.new(self), action: action, forControlEvents: UIControlEventTouchDown)
     button.tag = id
     button.backgroundColor = UIColor.clearColor
     button.tintColor = rmq.color.babbo_button_grey
@@ -102,6 +102,6 @@ module TabbarModule
   # than call the delegate method with the params self (this navbar) and the pressed button element
   # @param source [UIButton] the pressed cell's button the whole cell is the button
   def button_pressed (source)
-    @delegate.tabbarView(self, buttonPressed: source) if @delegate.respond_to? 'tabbarView:buttonPressed:'
+    @delegate.tabbarView(WeakRef.new(self), buttonPressed: source) if @delegate.respond_to? 'tabbarView:buttonPressed:'
   end
 end

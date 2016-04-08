@@ -30,7 +30,7 @@ module MenuViewModule
 
   def build_view
 
-    init_view_with_delegate(self) if @init.nil? || !@init
+    init_view_with_delegate(WeakRef.new(self)) if @init.nil? || !@init
 
     build_story_list
 
@@ -168,7 +168,7 @@ module MenuViewModule
     id  = source.tag
     story = @all_stories.find {|e| e.object_id == id}
     #todo ändern!!!! Name schlecht und alt
-    @delegate.tabletMenuView(self, storyObject: story) if @delegate.respond_to? 'tabletMenuView:storyObject:'
+    @delegate.tabletMenuView(WeakRef.new(self), storyObject: story) if @delegate.respond_to? 'tabletMenuView:storyObject:'
   end
 
   ##
@@ -217,7 +217,7 @@ module MenuViewModule
     if(view == @level_view)
       id  = button.tag
       story = @all_stories.find {|e| e.object_id == id}
-      @delegate.tabletMenuView(self, storyObject: story) if @delegate.respond_to? 'tabletMenuView:storyObject:'
+      @delegate.tabletMenuView(WeakRef.new(self), storyObject: story) if @delegate.respond_to? 'tabletMenuView:storyObject:'
     end
   end
 

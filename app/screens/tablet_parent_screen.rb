@@ -24,29 +24,27 @@ class TabletParentScreen < PM::Screen
     setup_tab_bar
     setup_options
     setup_overlay
-    #setup_shop_premium_overlay
-    #setup_shop_basic_overlay
   end
 
   ##
   # add a own navigation bar
   def setup_nav_bar
     frame = CGRectMake(0, 0, @parentmenu.frame.size.width, NavbarHeight * @parentmenu.frame.size.height)
-    @navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Stories", delegate: self)
+    @navbar = TabletNavbarView.alloc.init_with_frame(frame, titleText: "Alle Stories", delegate:  WeakRef.new(self))
     @parentmenu.addSubview(@navbar)
   end
 
   def setup_menu_view
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, MiddleViewHeight * @parentmenu.frame.size.height)
-    @menu_view = TabletMenuView.alloc.init_with_frame(frame, delegate: self)
+    @menu_view = TabletMenuView.alloc.init_with_frame(frame, delegate:  WeakRef.new(self))
     @parentmenu.addSubview(@menu_view)
   end
 
   def setup_shop_view
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, MiddleViewHeight * @parentmenu.frame.size.height)
-    @shop_view = TabletShopView.alloc.init_with_frame(frame, delegate: self)
+    @shop_view = TabletShopView.alloc.init_with_frame(frame, delegate:  WeakRef.new(self))
     @shop_view.hidden = true
     @parentmenu.addSubview(@shop_view)
   end
@@ -56,7 +54,7 @@ class TabletParentScreen < PM::Screen
   def setup_tab_bar
     frame = CGRectMake(0, (NavbarHeight + MiddleViewHeight) *  @parentmenu.frame.size.height,
                        @parentmenu.frame.size.width, TabbarHeight * @parentmenu.frame.size.height)
-    @tab_bar = TabletTabbarView.alloc.init_with_frame(frame, delegate: self)
+    @tab_bar = TabletTabbarView.alloc.init_with_frame(frame, delegate:  WeakRef.new(self))
     @parentmenu.addSubview(@tab_bar)
   end
 
@@ -66,7 +64,7 @@ class TabletParentScreen < PM::Screen
     frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height - 1,
                        @parentmenu.frame.size.width,
                        @parentmenu.frame.size.height - NavbarHeight * @parentmenu.frame.size.height + 1)
-    @options_view = TabletOptionView.alloc.init_with_frame(frame, delegate: self)
+    @options_view = TabletOptionView.alloc.init_with_frame(frame, delegate: WeakRef.new(self))
     @parentmenu.addSubview(@options_view)
   end
 
