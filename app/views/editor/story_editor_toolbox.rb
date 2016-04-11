@@ -175,9 +175,13 @@ class StoryEditorToolbox < UIView
     if(@target.nil?)
       @object_name_label.text = "Kein Objekt ausgewählt"
     else
-      @object_name_label.text = @target.name
+
+      @object_name_label.text = "Objekt nicht bearbeitbar"
 
       if(@actions)
+
+        @object_name_label.text = @target.name
+
         if  @actions[:object_name]  || @actions[:object_content] ||
             @actions[:size_x]       || @actions[:size_y]         ||
             @actions[:transparency] || @actions[:layer]
