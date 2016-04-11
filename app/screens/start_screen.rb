@@ -12,6 +12,8 @@ class StartScreen < PM::Screen
   title "Start Screen"
   stylesheet StartScreenStyleSheet
 
+  include OrientationModule
+
   NamesAnimationA = ["animations/load_screen_babbo_animation_A0.png", "animations/load_screen_babbo_animation_A1.png",
                     "animations/load_screen_babbo_animation_A2.png", "animations/load_screen_babbo_animation_A3.png",
                     "animations/load_screen_babbo_animation_A4.png", "animations/load_screen_babbo_animation_A5.png",
@@ -21,7 +23,7 @@ class StartScreen < PM::Screen
 
   def on_load
 
-    UIApplication.sharedApplication.setStatusBarOrientation(UIInterfaceOrientationLandscapeLeft , animated: false)
+    #UIApplication.sharedApplication.setStatusBarOrientation(UIInterfaceOrientationLandscapeRight , animated: false)
 
     StartScreen.warmup_done ||= false
     StartScreen.editor_mode ||= :new
@@ -37,10 +39,6 @@ class StartScreen < PM::Screen
     load_images
 
     build_animation
-  end
-
-  def supportedInterfaceOrientations
-    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight
   end
 
   def load_images
