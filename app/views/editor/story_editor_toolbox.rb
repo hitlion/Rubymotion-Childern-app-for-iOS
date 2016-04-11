@@ -231,6 +231,9 @@ class StoryEditorToolbox < UIView
 
   def tableView(tableView, didSelectRowAtIndexPath: indexPath)
     #tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    c = tableView.cellForRowAtIndexPath(indexPath)
+    #c.selected = true
+    c.setSelected(true, animated: true)
     rmq.screen.update_toolbox_selected_node(@editable_objects[indexPath.row])
   end
 end

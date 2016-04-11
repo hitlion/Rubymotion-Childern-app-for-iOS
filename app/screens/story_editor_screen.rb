@@ -329,8 +329,7 @@ class StoryEditorScreen < PM::Screen
         n.zPosition -= 999_800 if n.zPosition > 999_800
       end
     })
-        rmq(:toolbox).map do |tb|
-      tb.hide
+    rmq(:toolbox).map do |tb|
       tb.set_target(object, node: node, actions: actions)
       tb.show(node.position)
     end
