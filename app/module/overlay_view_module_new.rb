@@ -11,6 +11,8 @@ module OverlayViewModuleNew
 
       if(device.ipad?)
         rmq(self).stylesheet = OverlayViewModuleStylesheet
+      else
+        rmq(self).stylesheet = OverlayViewModuleStylesheet
       end
 
       rmq(self).apply_style(:root)

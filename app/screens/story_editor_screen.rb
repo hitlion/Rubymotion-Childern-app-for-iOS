@@ -93,7 +93,6 @@ class StoryEditorScreen < PM::Screen
   end
 
   def on_appear
-    @has_changes = false
     # ask for new name
     if(@edit_mode == :new)
       name = @story_bundle.document.set_name
