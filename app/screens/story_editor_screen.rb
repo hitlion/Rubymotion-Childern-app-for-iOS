@@ -217,17 +217,20 @@ class StoryEditorScreen < PM::Screen
     changes =  @story_bundle.document.has_changes?
     lp "Editor: Changes exists: #{changes}"
 
-    if(changes)
-      app.alert(title: "Achtung!", message: "Wollen sie speichern!", actions: ['JA', 'NEIN'] ) do |button_tag|
-        case button_tag
-          when 'JA'
+    app.alert(title: "Achtung!", message: "Wollen sie speichern?", actions: ['Speichern', 'Ohne speichen beenden', 'Zurück zum Editor'] ) do |button_tag|
+      case button_tag
+        when 'Speichern'
+          if(changes)
             save_changes
-          when 'NEIN'
+          else
             close
-        end
+          end
+
+        when 'Ohne speichen beenden'
+          close
+        when 'Zurück zum Editor'
+
       end
-    else
-      close
     end
   end
 
