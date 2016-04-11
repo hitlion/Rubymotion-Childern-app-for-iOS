@@ -92,7 +92,7 @@ module MenuViewModule
                        self.frame.size.width, @bottom_view_height * self.frame.size.height)
     @level_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuLevelCell,
                                                                numOfVisibleElements: 4, delegate: WeakRef.new(self),
-                                                               headerText: "Erstellte Stories")
+                                                               headerText: "vorhandene Stories")
     @level_view.reload_data(@grouped_stories[0])
     @level_view.hidden = true
     self.addSubview(@level_view)
