@@ -65,9 +65,9 @@ class KidsScene < SKScene
 
     add_story_list
 
-    #add_rope
+    add_rope
 
-    #add_joints
+    add_joints
 
     add_version_number
   end
@@ -271,7 +271,7 @@ class KidsScene < SKScene
       user_picture.position = CGPointMake(0.5 * texture.size.width, - 1 * texture.size.height)
       user_picture.scale = (0.35 * texture.size.height) / user_picture.size.height
       user_picture.name = ELEMENT_USER_PICTURE
-      story.addChild user_picture
+      #story.addChild user_picture
 
       label = SKLabelNode.labelNodeWithText(s.document.set_name)
       label.position = CGPointMake(0, - 0.35 * texture.size.height )
