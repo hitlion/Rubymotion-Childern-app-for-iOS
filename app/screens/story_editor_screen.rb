@@ -98,7 +98,7 @@ class StoryEditorScreen < PM::Screen
     if(@edit_mode == :new)
       name = @story_bundle.document.set_name
 
-      app.alert(title: "Welchen Namen und welches Bild soll deine neue Story haben?", message: "Bitte Namen eingeben und dann ein Foto auswählen", style: :custom, fields: {input: {placeholder: "Neuer Name"}}) do |_, fields|
+      app.alert(title: "Welchen Namen und welches Titelbild soll deine neue Story haben?", message: "Bitte Namen eingeben und dann ein Foto auswählen!", style: :custom, fields: {input: {placeholder: "Neuer Name"}}) do |_, fields|
         unless fields[:input].text.empty?
           name = fields[:input].text
         end
