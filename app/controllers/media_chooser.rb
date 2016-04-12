@@ -27,12 +27,13 @@
 
 module MediaChooser
 
-  attr_reader :image_picker_for_iphone, :video_picker_for_iphone
+  attr_reader :image_picker_for_iphone, :video_picker_for_iphone, :delegate
 
   include OrientationModule
 
   # Present a photo chooser
-  def present_photo_chooser
+  def present_photo_chooser(delegate)
+    @delegate = delegate
     if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceTypeCamera )
       ask_for_photo_source
     else
@@ -41,7 +42,8 @@ module MediaChooser
   end
 
   # Present a video chooser
-  def present_video_chooser
+  def present_video_chooser(delegate)
+    @delegate = delegate
     if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceTypeCamera )
       ask_for_video_source
     else
@@ -99,11 +101,11 @@ module MediaChooser
     image_picker.sourceType = source
 
     if device.iphone?
-      #self.presentModalViewController(image_picker, animated: true) #old solution by rene
-      self.addChildViewController(image_picker)
-      image_picker.didMoveToParentViewController(self)
-      self.view.addSubview(image_picker.view)
-      @image_picker_for_iphone = image_picker
+      self.presentModalViewController(image_picker, animated: true) #old solution by rene
+      #self.addChildViewController(image_picker)
+      #image_picker.didMoveToParentViewController(self)
+      #self.view.addSubview(image_picker.view)
+      #@image_picker_for_iphone = image_picker
     elsif device.ipad?
       pop_over = UIPopoverController.alloc.initWithContentViewController(image_picker)
       if self.respond_to? :media_chooser_popup_anchor
@@ -144,11 +146,11 @@ module MediaChooser
     video_picker.sourceType = source
 
     if device.iphone?
-      # self.presentModalViewController(video_picker, animated: true) # old solution by rene
-      self.addChildViewController(video_picker)
-      video_picker.didMoveToParentViewController(self)
-      self.view.addSubview(video_picker.view)
-      @video_picker_for_iphone = video_picker
+      self.presentModalViewController(video_picker, animated: true) # old solution by rene
+      # self.addChildViewController(video_picker)
+      # video_picker.didMoveToParentViewController(self)
+      # self.view.addSubview(video_picker.view)
+      # @video_picker_for_iphone = video_picker
     elsif device.ipad?
       pop_over = UIPopoverController.alloc.initWithContentViewController(video_picker)
       if self.respond_to? :media_chooser_popup_anchor
@@ -180,15 +182,15 @@ module MediaChooser
     if image_picker.mediaTypes == [KUTTypeImage]
       lp 'picker was for images'
       image = meta[UIImagePickerControllerEditedImage]
-      if self.respond_to? :'photo_available:'
+      if @delegate.respond_to? :'photo_available:'
         lp 'callback available'
-        self.photo_available(image, @new)
+        @delegate.photo_available(image, @new)
       end
     else
       # video callback
-      if self.respond_to? :'video_available:'
+      if @delegate.respond_to? :'video_available:'
         video_url = meta[UIImagePickerControllerMediaURL]
-        self.video_available(video_url, @new)
+        @delegate.video_available(video_url, @new)
       end
     end
 
@@ -202,12 +204,12 @@ module MediaChooser
   # @private
   def imagePickerControllerDidCancel(image_picker)
     if image_picker.mediaTypes == [KUTTypeImage]
-      if self.respond_to? :'photo_canceled'
-        self.photo_canceled
+      if @delegate.respond_to? :'photo_canceled'
+        @delegate.photo_canceled
       end
     else
-      if self.respond_to? :'video_canceled'
-        self.video_canceled
+      if @delegate.respond_to? :'video_canceled'
+        @delegate.video_canceled
       end
     end
     if ! @photo_popup_helper.nil?

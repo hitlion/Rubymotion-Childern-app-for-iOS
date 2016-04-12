@@ -119,7 +119,12 @@ class StoryBundle
 
   def copy
     new = StoryBundle.new(self.path)
-    new.load()
+    new.load
+
+    if(new.has_changesets?)
+      new = new.changesets
+    end
+
     return new
   end
 
@@ -148,7 +153,6 @@ class StoryBundle
     load_ruleset
 
     #load_editable_list # call this function here is to memory consuming for weak devices, better call when open the editor.
-
     valid?
   end
 

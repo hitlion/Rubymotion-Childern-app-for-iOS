@@ -59,9 +59,6 @@ class StoryEditorScreen < PM::Screen
   end
 
   def will_appear
-
-    # set all has_changes flags to false
-    @story_bundle.document.reset_changes
     @editable_views = @story_bundle.load_editable_views
 
     scene  = SceneFactory.create_scene(@story_bundle, @editable_views.first, :editor)
@@ -95,19 +92,18 @@ class StoryEditorScreen < PM::Screen
   def on_appear
     # ask for new name
     if(@edit_mode == :new)
-      name = @story_bundle.document.set_name
+      if(@original_bundle.document.set_name  == @story_bundle.document.set_name)
+        app.alert(title: "Welchen Namen und welches Titelbild soll deine neue Story haben?", message: "Bitte Namen eingeben und dann ein Foto auswählen!", style: :custom, fields: {input: {placeholder: "Neuer Name"}}) do |_, fields|
+          unless fields[:input].text.empty?
+            name = fields[:input].text
+          else
+            name = 'Kopie von ' + @story_bundle.document.set_name
+          end
+          @story_bundle.document.set_name = name
 
-      app.alert(title: "Welchen Namen und welches Titelbild soll deine neue Story haben?", message: "Bitte Namen eingeben und dann ein Foto auswählen!", style: :custom, fields: {input: {placeholder: "Neuer Name"}}) do |_, fields|
-        unless fields[:input].text.empty?
-          name = fields[:input].text
-        else
-          name = 'Kopie von ' + @story_bundle.document.set_name
+          rmq.screen.present_photo_chooser(WeakRef.new(self))
         end
-        @story_bundle.document.set_name = name
-
-        rmq.screen.present_photo_chooser
       end
-
     end
 
     #JavaScript::Runtime.send_event(@player.scene.name, :at_load)
@@ -125,7 +121,6 @@ class StoryEditorScreen < PM::Screen
     @logger.clear! unless @logger.nil?
     @player.presentScene(nil)
 
-    @story_bundle = nil
     JavaScript::Runtime.tear_down
   end
 
@@ -413,6 +408,12 @@ class StoryEditorScreen < PM::Screen
     end
   end
 
+  def close
+    @story_bundle.document.reset_changes
+    @story_bundle = nil
+    super
+  end
+
   # Mark: media chooser helpers
 
   public
@@ -430,70 +431,24 @@ class StoryEditorScreen < PM::Screen
 
   # @private
   def photo_available( image, new )
-
-    if(device.iphone?)
-      unless (@image_picker_for_iphone.nil?)
-        @image_picker_for_iphone.view.removeFromSuperview
-        @image_picker_for_iphone.removeFromParentViewController
-        @image_picker_for_iphone = nil
-      end
-    end
-
-    if(rmq(:edit_object_box).get.show?)
-      rmq(:edit_object_box).map { |tb| tb.photo_available(image, new) }
-    else
-      path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:picture)
-      @story_bundle.document.thumbnail = path
-      @new_thumbnail = image
-    end
+    path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:picture)
+    @story_bundle.document.thumbnail = path
+    @new_thumbnail = image
   end
 
   # @private
   def photo_canceled
 
-    if(device.iphone?)
-      unless (@image_picker_for_iphone.nil?)
-        @image_picker_for_iphone.view.removeFromSuperview
-        @image_picker_for_iphone.removeFromParentViewController
-        @image_picker_for_iphone = nil
-      end
-    end
-
-    if(rmq(:edit_object_box).get.show?)
-      rmq(:edit_object_box).map { |tb| tb.photo_canceled }
-    end
-
   end
+
   # @private
   def video_available( media_url, new )
 
-    if(device.iphone?)
-      unless (@video_picker_for_iphone.nil?)
-        @video_picker_for_iphone.view.removeFromSuperview
-        @video_picker_for_iphone.removeFromParentViewController
-        @video_picker_for_iphone = nil
-      end
-    end
-
-    if(rmq(:edit_object_box).get.show?)
-      rmq(:edit_object_box).map { |tb| tb.video_available(media_url, new) }
-    end
   end
 
   # @private
   def video_canceled
 
-    if(device.iphone?)
-      unless (@video_picker_for_iphone.nil?)
-        @video_picker_for_iphone.view.removeFromSuperview
-        @video_picker_for_iphone.removeFromParentViewController
-        @video_picker_for_iphone = nil
-      end
-    end
-
-    if(rmq(:edit_object_box).get.show?)
-      rmq(:edit_object_box).map { |tb| tb.video_canceled }
-    end
   end
 
   def audio_available( media_url )

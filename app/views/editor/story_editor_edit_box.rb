@@ -27,9 +27,9 @@ class StoryEditorEditBox < UIView
       append(UIButton, :edit_content).on(:tap) do |_|
         case @target.type
           when :picture
-            rmq.screen.present_photo_chooser
+            rmq.screen.present_photo_chooser(WeakRef.new(self))
           when :video
-            rmq.screen.present_video_chooser
+            rmq.screen.present_video_chooser(WeakRef.new(self))
           when :audio
             @new_audio_path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:audio)
             path = rmq.screen.story_bundle.asset_path(@new_audio_path)
