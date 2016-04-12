@@ -25,9 +25,9 @@
 #    a video
 #
 
-module MediaChooser
+module MediaChooseModule
 
-  attr_reader :image_picker_for_iphone, :video_picker_for_iphone, :delegate
+  attr_reader :delegate
 
   include OrientationModule
 

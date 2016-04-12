@@ -2,8 +2,8 @@ class StoryEditorScreen < PM::Screen
   title 'Babbo Voco'
   stylesheet StoryEditorStylesheet
 
-  include MediaChooser
-  include AudioRecorder
+  include MediaChooseModule
+  #include AudioRecorderModule
   include OrientationModule
 
   attr_accessor :story_bundle, :edit_mode, :original_bundle
@@ -56,6 +56,11 @@ class StoryEditorScreen < PM::Screen
     @move_view = rmq(self.view).append(StoryEditorMoveObjectView).tag(:move_view).get
     @move_view.hide
     rmq(@player).append(@move_view) unless @move_view.nil?
+
+    @audio_record_view = rmq(self.view).append(AudioRecordView).tag(:audio_record_view).get
+    @audio_record_view.hide
+    @audio_record_view.delegate = WeakRef.new(self)
+    rmq(@player).append(@audio_record_view) unless @audio_record_view.nil?
   end
 
   def will_appear
@@ -172,6 +177,8 @@ class StoryEditorScreen < PM::Screen
   def on_editor_tap(notification)
     # lp ["on_editor_tap:", notification.userInfo]
 
+    return unless(@audio_record_view.hidden?)
+
     @edit_info = {}
     @edit_info = notification.userInfo
 
@@ -180,6 +187,7 @@ class StoryEditorScreen < PM::Screen
 
     # toogle toolbox
     if(rmq(:toolbox).get.hidden?)
+      lp "test"
       open_toolbox
     else
       # this lines arent reached because of line 132
@@ -277,6 +285,15 @@ class StoryEditorScreen < PM::Screen
       mv.set_target(object, node:node, actions: actions)
       mv.show(@edit_info[:location])
     end
+  end
+
+  def record_audio(path)
+    rmq(:edit_object_box).get.hide
+    rmq(:audio_record_view).map do |arv|
+      arv.show
+    end
+
+
   end
 
   #
@@ -452,33 +469,9 @@ class StoryEditorScreen < PM::Screen
   end
 
   def audio_available( media_url )
-
-    if(device.iphone?)
-      unless (@audio_recorder_for_iphone.nil?)
-        @audio_recorder_for_iphone.view.removeFromSuperview
-        @audio_recorder_for_iphone.removeFromParentViewController
-        @audio_recorder_for_iphone = nil
-      end
-    end
-
-    if(rmq(:edit_object_box).get.show?)
-      rmq(:edit_object_box).map { |tb| tb.audio_available(media_url) }
-    end
   end
 
   def audio_canceled
-
-    if(device.iphone?)
-      unless (@audio_recorder_for_iphone.nil?)
-        @audio_recorder_for_iphone.view.removeFromSuperview
-        @audio_recorder_for_iphone.removeFromParentViewController
-        @audio_recorder_for_iphone = nil
-      end
-    end
-
-    if(rmq(:edit_object_box).get.show?)
-      rmq(:edit_object_box).map { |tb| tb.audio_canceled }
-    end
   end
 
   def save_changes

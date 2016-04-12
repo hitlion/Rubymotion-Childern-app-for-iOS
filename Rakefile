@@ -128,6 +128,7 @@ Motion::Project::App.setup do |app|
   app.frameworks << 'StoreKit'
   app.frameworks << 'CoreImage'
   app.frameworks << 'AVFoundation'
+  app.frameworks << 'CoreAudio'
 
   # See: http://hipbyte.myjetbrains.com/youtrack/issue/RM-1004
   app.opt_level = 2

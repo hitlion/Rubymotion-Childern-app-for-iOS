@@ -33,7 +33,7 @@ class StoryEditorEditBox < UIView
           when :audio
             @new_audio_path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:audio)
             path = rmq.screen.story_bundle.asset_path(@new_audio_path)
-            rmq.screen.present_audio_recorder(path)
+            rmq.screen.record_audio(path)
         end
       end
 

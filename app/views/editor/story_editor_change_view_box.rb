@@ -77,6 +77,8 @@ class StoryEditorChangeViewBox < UIView
   def show
     return unless @hidden
     @hidden = false
+
+    lp "Show: Teststststs", force_color: :red
     @current_view = rmq.screen.current_view
     @available_views = rmq.screen.editable_views
     @index = @available_views.index(@current_view)
