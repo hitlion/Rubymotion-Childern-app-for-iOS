@@ -312,12 +312,13 @@ module JavaScript
     def export_variables(variables, context)
       return false if variables.nil?
 
-      exported_something = false
+      complete = true
       variables.each_pair do |export_name, scene_object|
         proxy = proxy_for_object(scene_object)
         if proxy.nil?
           lp "send_event: Skipping proxy creation for '#{scene_object}'",
              force_color: :cyan
+          complete = false
           next
         end
 
@@ -325,10 +326,9 @@ module JavaScript
         lp "Exporting #{scene_object} as $#{export_var}",
            force_color: :green
         context["$#{export_var}"] = proxy
-        exported_something = true
       end
 
-      exported_something
+      complete
     end
 
     def purge_variables(variables, context)
@@ -336,8 +336,10 @@ module JavaScript
 
       variables.each_pair do |export_name, scene_object|
         export_var = export_name.gsub(/[^a-zA-Z0-9_]+/, '_')
-        lp "Purging $#{export_var}..", force_color: :cyan
-        context["$#{export_var}"] = nil
+        unless context["$#{export_var}"].nil?
+          lp "Purging $#{export_var}..", force_color: :cyan
+          context["$#{export_var}"] = nil
+        end
       end
     end
   end
