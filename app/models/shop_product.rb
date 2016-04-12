@@ -33,7 +33,6 @@ class ShopProduct
       end
     end
     #@installed = !StoryBundle.bundles.select{|story| story.document.productIdentifier == @productIdentifier}.nil?
-    lp "#{@set_name} : #{@installed}"
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'bundlesChanges:',
                                                    name: 'BabboBundleChanged',

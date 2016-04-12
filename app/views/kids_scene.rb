@@ -506,7 +506,7 @@ class KidsScene < SKScene
     return if @center_node.nil? || !@init
 
     if @init && @center_node.position != @center_point
-      move_rope_by_x(@center_point.x - @center_node.position.x,0.85)
+      move_rope_by_x(@center_point.x - @center_node.position.x, 0.85)
     end
   end
 
