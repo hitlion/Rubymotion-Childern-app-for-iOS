@@ -5,7 +5,6 @@ require 'rake/task_arguments'
 
 require 'motion/project/template/ios'
 require 'motion-yaml'
-
 require 'redcarpet'
 
 ## # # in case we get un-catchable exceptions and warnings about compact unwind again
@@ -38,6 +37,7 @@ Motion::Project::App.setup do |app|
 
     # for Spec tests
     app.info_plist['SPEC_HOST_PATH'] = File.absolute_path(Dir.pwd)
+    app.entitlements['beta-reports-active'] = true
   end
 
   app.release do
@@ -45,7 +45,7 @@ Motion::Project::App.setup do |app|
     app.codesign_certificate = ENV['RM_PUB_CERTIFICATE']
 
     app.entitlements['get-task-allow'] = false
-    #app.entitlements['beta-reports-active'] = true
+    app.entitlements['beta-reports-active'] = true
 
     # Filter out development helpers
     app.files.select! { |x| true unless DEVELOPMENT_ONLY.include? x }
