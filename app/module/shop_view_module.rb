@@ -85,9 +85,6 @@ module ShopViewModule
   ##
   # Reload the data for all views
   def reload_data
-    lp "hier wird geladen", forceColor: :red
-    lp @all_stories.nil?
-
     if(@all_stories.nil?)
       build_story_list
     end
@@ -197,7 +194,6 @@ module ShopViewModule
   end
 
   def bundlesChanges(notification)
-    lp notification
     build_story_list
     reload_data
   end
