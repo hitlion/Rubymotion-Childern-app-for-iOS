@@ -57,6 +57,7 @@ Motion::Project::App.setup do |app|
   end
 
   app.info_plist['UIAppFonts'] = ['Enriqueta-Bold.otf', 'Enriqueta-Regular.otf']
+  app.info_plist["UIRequiresFullScreen"] = true
 
   #TODO changes this to http://stackoverflow.com/questions/30731785/how-do-i-load-an-http-url-with-app-transport-security-enabled-in-ios-9
   # and https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW1
