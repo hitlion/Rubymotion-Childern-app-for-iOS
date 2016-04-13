@@ -235,7 +235,7 @@ class StoryEditorEditBox < UIView
       end
     end
     # FIXME: this should be done by StoryBundle..
-    rmq.screen.new_files << @new_audio_path
+    rmq.screen.new_files << File.join(rmq.screen.story_bundle.path, @new_audio_path.split('..').last)
     @target.content = @new_audio_path
   end
 

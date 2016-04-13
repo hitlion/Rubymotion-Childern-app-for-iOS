@@ -9,8 +9,8 @@ module OverlayViewModuleNew
 
       register_for_shop
 
-      if(device.ipad?)
-        rmq(self).stylesheet = OverlayViewModuleStylesheet
+      if(device.iphone?)
+        rmq(self).stylesheet = OverlayViewModuleIPhoneStylesheet
       else
         rmq(self).stylesheet = OverlayViewModuleStylesheet
       end

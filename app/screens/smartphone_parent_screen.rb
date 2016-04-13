@@ -91,7 +91,7 @@ class SmartphoneParentScreen < PM::Screen
     button_id = button.tag
 
     if (button_id == 0)
-      @shop_view.hidden = true
+      @shop_view.hide
       @menu_view.hidden = false
       @navbar.hide_back_button
       @navbar.set_title_text("Alle Stories")
@@ -103,14 +103,14 @@ class SmartphoneParentScreen < PM::Screen
     elsif (button_id == 2)
       if(@shop_view.hidden?)
         @navbar.set_title_text("Shop")
-        @shop_view.hidden = false
+        @shop_view.show
         @menu_view.hidden = true
         @navbar.show_back_button
         @options_view.hidden = true
       end
     elsif (button_id == 3)
       @options_view.hidden = !@options_view.hidden?
-      @shop_view.hidden = true
+      @shop_view.hide
       @menu_view.hidden = false
       @navbar.hide_back_button
       @navbar.set_title_text("Alle Stories")

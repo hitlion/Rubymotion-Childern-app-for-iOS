@@ -77,7 +77,7 @@ module ShopViewModule
                        self.frame.size.width, @bottom_view_height * self.frame.size.height)
     @basic_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: ShopBasicCell,
                                                                numOfVisibleElements: 4, delegate: WeakRef.new(self),
-                                                               headerText: "Basic Stories")
+                                                               headerText: "Kostenlose Stories")
     @basic_view.reload_data(@basic_stories)
     self.addSubview(@basic_view)
   end
@@ -85,6 +85,7 @@ module ShopViewModule
   ##
   # Reload the data for all views
   def reload_data
+    lp "hier wird geladen", forceColor: :red
     lp @all_stories.nil?
 
     if(@all_stories.nil?)
@@ -196,6 +197,7 @@ module ShopViewModule
   end
 
   def bundlesChanges(notification)
+    lp notification
     build_story_list
     reload_data
   end
