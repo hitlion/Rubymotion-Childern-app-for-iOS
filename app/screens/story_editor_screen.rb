@@ -6,8 +6,8 @@ class StoryEditorScreen < PM::Screen
   #include AudioRecorderModule
   include OrientationModule
 
-  attr_accessor :story_bundle, :edit_mode, :original_bundle
-  attr_reader :current_view, :editable, :editable_views, :player, :new_files, :delete_list
+  attr_accessor :story_bundle, :edit_mode, :original_bundle, :new_files, :obsolete_files
+  attr_reader :current_view, :editable, :editable_views, :player
 
   class << self
     attr_accessor :instance
@@ -20,7 +20,7 @@ class StoryEditorScreen < PM::Screen
         StoryEditorScreen.instance.original_bundle = bundle
         StoryEditorScreen.instance.story_bundle = bundle.copy
         StoryEditorScreen.instance.new_files = []
-        StoryEditorScreen.instance.delete_list = []
+        StoryEditorScreen.instance.obsolete_files = []
       end
       StoryEditorScreen.instance
     end
@@ -225,10 +225,12 @@ class StoryEditorScreen < PM::Screen
           if(changes)
             save_changes
           else
+            @obsolete_files = []
             close
           end
 
         when 'Ohne speichen beenden'
+          @obsolete_files = []
           close
         when 'Zurück zum Editor'
 
@@ -381,7 +383,7 @@ class StoryEditorScreen < PM::Screen
   def write_meta_changes(bundle)
     story = bundle.document
     res = "/* new meta informations */\n"
-    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{story.thumbnail.to_s}', '#{story.timestamp.to_s}', '#{story.productIdentifier.to_s}');\n"
+    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{story.thumbnail.to_s}', '#{story.timestamp.to_s}', '#{story.productIdentifier.to_s}', '#{story.status.to_s}');\n"
     res
   end
 
@@ -420,8 +422,24 @@ class StoryEditorScreen < PM::Screen
   end
 
   def close
+    lp "New Files:"
+    @new_files.each do |path|
+      lp path
+      NSFileManager.defaultManager.removeItemAtPath(path, error: nil)
+    end
+
+    lp "Obsolete Files"
+    @obsolete_files.each do |path|
+      lp path
+      NSFileManager.defaultManager.removeItemAtPath(path, error: nil)
+    end
+
+    @new_files = nil
+    @obsolete_files = nil
+
     @story_bundle.document.reset_changes
     @story_bundle = nil
+    @original_bundle = nil
     super
   end
 
@@ -472,6 +490,8 @@ class StoryEditorScreen < PM::Screen
     # edit or new story --> set paths and file
     @path = @story_bundle.path
 
+    @story_bundle.document.status = :V2
+
     if(@edit_mode == :edit)
       lp "Editor: save edited story as new version"
     else
@@ -511,8 +531,6 @@ class StoryEditorScreen < PM::Screen
       @story_bundle.document.dataset_id = -1 * @story_bundle.document.dataset_id
     end
 
-
-
     @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
 
     base_path = File.join(@path, 'SMIL')
@@ -541,6 +559,8 @@ class StoryEditorScreen < PM::Screen
         end
       end
     end
+
+    @new_files = []
 
     if(edit_mode == :edit)
       StoryBundle.reload_bundle(@original_bundle, @path)

@@ -184,7 +184,7 @@ class StoryEditorEditBox < UIView
     if(@target.changes[:object_content])
       unless(@target.content == @target.changes[:object_content][:original])
         old_content_path = File.join(rmq.screen.story_bundle.path, @target.content.split('..').last)
-        NSFileManager.defaultManager.removeItemAtPath(old_content_path, error: nil)
+        rmq.screen.obsolete_files << old_content_path
       end
     end
 
@@ -193,6 +193,7 @@ class StoryEditorEditBox < UIView
     UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil) if new
 
     path = rmq.screen.story_bundle.asset_path(path)
+    rmq.screen.new_files << path
     UIImagePNGRepresentation(image).writeToFile(path, atomically: true)
   end
 
@@ -200,13 +201,12 @@ class StoryEditorEditBox < UIView
   end
 
   def video_available( media_url, new )
-    NSLog(media_url.fileSystemRepresentation)
     path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:video)
 
     if(@target.changes[:object_content])
       unless(@target.content == @target.changes[:object_content][:original])
         old_content_path = File.join(rmq.screen.story_bundle.path, @target.content.split('..').last)
-        NSFileManager.defaultManager.removeItemAtPath(old_content_path, error: nil)
+        rmq.screen.obsolete_files << old_content_path
       end
     end
 
@@ -216,7 +216,7 @@ class StoryEditorEditBox < UIView
     UISaveVideoAtPathToSavedPhotosAlbum(media_url.fileSystemRepresentation,nil,nil,nil) if new
 
     File.rename(media_url.fileSystemRepresentation, path)
-
+    rmq.screen.new_files << path
     # reload scene for updating the video node image
     rmq.screen.show_scene(rmq.screen.current_view)
   end
@@ -231,10 +231,11 @@ class StoryEditorEditBox < UIView
     if(@target.changes[:object_content])
       unless(@target.content == @target.changes[:object_content][:original])
         old_content_path = File.join(rmq.screen.story_bundle.path, @target.content.split('..').last)
-        NSFileManager.defaultManager.removeItemAtPath(old_content_path, error: nil)
+        rmq.screen.obsolete_files << old_content_path
       end
     end
     # FIXME: this should be done by StoryBundle..
+    rmq.screen.new_files << @new_audio_path
     @target.content = @new_audio_path
   end
 

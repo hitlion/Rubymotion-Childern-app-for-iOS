@@ -399,11 +399,18 @@ module OverlayViewModuleNew
       app.alert(title: 'Entschuldigung',
                 message: 'Diese Story kann nicht bearbeitet werden.')
     else
-      StartScreen.next_story = @bundle
-      StartScreen.next_screen = :story_editor
-      StartScreen.last_screen = :parent_menu
-      StartScreen.editor_mode = :edit
-      rmq.screen.open_root_screen(StartScreen)
+      lp @bundle.document.status
+
+      if(@bundle.document.status == :V1)
+        app.alert(title: 'Entschuldigung, das Original darf nicht beabeitet werden!',
+                  message: 'Ihr müsst zunächst eine neue Story aus diesem Original erstellen.')
+      else
+        StartScreen.next_story = @bundle
+        StartScreen.next_screen = :story_editor
+        StartScreen.last_screen = :parent_menu
+        StartScreen.editor_mode = :edit
+        rmq.screen.open_root_screen(StartScreen)
+      end
     end
   end
 
