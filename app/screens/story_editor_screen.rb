@@ -7,7 +7,7 @@ class StoryEditorScreen < PM::Screen
   include OrientationModule
 
   attr_accessor :story_bundle, :edit_mode, :original_bundle
-  attr_reader :current_view, :editable, :editable_views, :player
+  attr_reader :current_view, :editable, :editable_views, :player, :new_files, :delete_list
 
   class << self
     attr_accessor :instance
@@ -19,6 +19,8 @@ class StoryEditorScreen < PM::Screen
       unless bundle.nil?
         StoryEditorScreen.instance.original_bundle = bundle
         StoryEditorScreen.instance.story_bundle = bundle.copy
+        StoryEditorScreen.instance.new_files = []
+        StoryEditorScreen.instance.delete_list = []
       end
       StoryEditorScreen.instance
     end
@@ -59,7 +61,6 @@ class StoryEditorScreen < PM::Screen
 
     @audio_record_view = rmq(self.view).append(AudioRecordView).tag(:audio_record_view).get
     @audio_record_view.hide
-    @audio_record_view.delegate = WeakRef.new(self)
     rmq(@player).append(@audio_record_view) unless @audio_record_view.nil?
   end
 
@@ -177,8 +178,6 @@ class StoryEditorScreen < PM::Screen
   def on_editor_tap(notification)
     # lp ["on_editor_tap:", notification.userInfo]
 
-    return unless(@audio_record_view.hidden?)
-
     @edit_info = {}
     @edit_info = notification.userInfo
 
@@ -187,7 +186,6 @@ class StoryEditorScreen < PM::Screen
 
     # toogle toolbox
     if(rmq(:toolbox).get.hidden?)
-      lp "test"
       open_toolbox
     else
       # this lines arent reached because of line 132
@@ -287,13 +285,9 @@ class StoryEditorScreen < PM::Screen
     end
   end
 
-  def record_audio(path)
+  def record_audio(path, delegate)
     rmq(:edit_object_box).get.hide
-    rmq(:audio_record_view).map do |arv|
-      arv.show
-    end
-
-
+    @audio_record_view.show(path, delegate)
   end
 
   #

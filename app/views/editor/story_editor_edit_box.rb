@@ -33,7 +33,7 @@ class StoryEditorEditBox < UIView
           when :audio
             @new_audio_path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:audio)
             path = rmq.screen.story_bundle.asset_path(@new_audio_path)
-            rmq.screen.record_audio(path)
+            rmq.screen.record_audio(path, WeakRef.new(self))
         end
       end
 
@@ -225,6 +225,8 @@ class StoryEditorEditBox < UIView
   end
 
   def audio_available( media_url )
+
+    lp "Target: #{@target}"
 
     if(@target.changes[:object_content])
       unless(@target.content == @target.changes[:object_content][:original])
