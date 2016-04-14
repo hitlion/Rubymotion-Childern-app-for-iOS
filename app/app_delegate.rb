@@ -23,13 +23,17 @@ class AppDelegate < PM::Delegate
       unless Dir.exist?(File.join(root, "Bundles"))
         lp "App: local bundles folder doesn't exist, copy app included folder to root directory"
         dest = File.join(root, 'Bundles')
-        NSFileManager.defaultManager.copyItemAtPath(bundles_data, toPath: dest, error: nil)
+        unless bundles_data.nil?
+          NSFileManager.defaultManager.copyItemAtPath(bundles_data, toPath: dest, error: nil)
+        end
       end
 
       unless Dir.exist?(File.join(root, "Backend"))
         lp "App: local backend folder doesn't exist, copy app included folder to root directory"
         dest = File.join(root, 'Backend')
-        NSFileManager.defaultManager.copyItemAtPath(backend_data, toPath: dest, error: nil)
+        unless backend_data.nil?
+          NSFileManager.defaultManager.copyItemAtPath(backend_data, toPath: dest, error: nil)
+        end
       end
     end
 

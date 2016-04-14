@@ -37,7 +37,6 @@ Motion::Project::App.setup do |app|
 
     # for Spec tests
     app.info_plist['SPEC_HOST_PATH'] = File.absolute_path(Dir.pwd)
-    app.entitlements['beta-reports-active'] = true
   end
 
   app.release do
@@ -46,6 +45,7 @@ Motion::Project::App.setup do |app|
 
     app.entitlements['get-task-allow'] = false
     app.entitlements['beta-reports-active'] = true
+    app.info_plist["UIRequiresFullScreen"] = true
 
     # Filter out development helpers
     app.files.select! { |x| true unless DEVELOPMENT_ONLY.include? x }
@@ -57,7 +57,7 @@ Motion::Project::App.setup do |app|
   end
 
   app.info_plist['UIAppFonts'] = ['Enriqueta-Bold.otf', 'Enriqueta-Regular.otf']
-  app.info_plist["UIRequiresFullScreen"] = true
+
 
   #TODO changes this to http://stackoverflow.com/questions/30731785/how-do-i-load-an-http-url-with-app-transport-security-enabled-in-ios-9
   # and https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW1
