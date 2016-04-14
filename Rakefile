@@ -109,7 +109,7 @@ Motion::Project::App.setup do |app|
   #app.codesign_certificate = 'iPhone Distribution: Tuluh Tec UG'
   #app.provisioning_profile = '/Users/administrator/Library/MobileDevice/Provisioning Profiles/01ca42c8-c169-4008-9b5e-596ca161e950.mobileprovision'
   #app.identifier = 'com.rsc.babbo'
-  app.short_version = app.version = '1.0.153'
+  app.short_version = app.version = '1.0.154'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :portrait, :landscape_right]

@@ -177,7 +177,7 @@ class IAPHelper
     name = "Kein Name gefunden"
     name = product.set_name unless product.nil?
 
-    app.alert(title: "Download beendet!", message: "Der Download von #{name} wurde erfoglreich beendet. Die Story wird nun installiert", actions: ['OK'])
+    #app.alert(title: "Download beendet!", message: "Der Download von #{name} wurde erfoglreich beendet. Die Story wird nun installiert", actions: ['OK'])
 
     @fileManager = NSFileManager.defaultManager()
 
