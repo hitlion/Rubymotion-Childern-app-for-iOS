@@ -18,6 +18,7 @@ module JavaScript
 
     # @private
     def status
+      return unless node.weakref_alive?
       return 'pause' if node.av_player.rate == 0.0 && node.av_player.currentTime != KCMTimeZero
       return 'play'  if node.av_player.rate >  0.0 && node.av_player.currentTime != KCMTimeZero
       'stop'
@@ -25,6 +26,7 @@ module JavaScript
 
     # @private
     def start
+      return unless node.weakref_alive?
       node.av_player.seekToTime(KCMTimeZero)
       node.play
 
@@ -33,6 +35,7 @@ module JavaScript
 
     # @private
     def stop
+      return unless node.weakref_alive?
       node.av_player.seekToTime(KCMTimeZero)
       node.av_player.pause
 
@@ -41,11 +44,13 @@ module JavaScript
 
     # @private
     def pause
+      return unless node.weakref_alive?
       node.pause
     end
 
     # @private
     def restart
+      return unless node.weakref_alive?
       node.play
     end
   end

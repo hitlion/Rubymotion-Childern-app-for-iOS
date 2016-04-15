@@ -16,6 +16,7 @@ module JavaScript
 
     # @return [Fixnum] The wrapped nodes +screen_id+.
     def screen_id
+      return unless node.weakref_alive?
       node.screen_id
     end
 

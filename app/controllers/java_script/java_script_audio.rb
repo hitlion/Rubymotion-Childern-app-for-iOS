@@ -18,27 +18,32 @@ module JavaScript
 
     # @private
     def status
+      return unless node.weakref_alive?
       node.status
     end
 
     # @private
     def start
+      return unless node.weakref_alive?
       node.play
       JavaScript::Runtime.send_event(node.name, :at_start)
     end
 
     # @private
     def stop
+      return unless node.weakref_alive?
       node.stop
     end
 
     # @private
     def pause
+      return unless node.weakref_alive?
       node.pause
     end
 
     # @private
     def restart
+      return unless node.weakref_alive?
       node.restart
     end
   end

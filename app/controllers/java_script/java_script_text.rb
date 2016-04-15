@@ -15,6 +15,7 @@ module JavaScript
     end
 
     def color(args)
+      return unless node.weakref_alive?
       args = Hash.symbolicate(args)
       if args[:red] && args[:blue] && args[:green] && args[:alpha]
         red = args[:red].to_f
@@ -27,6 +28,7 @@ module JavaScript
     end
 
     def text(args)
+      return unless node.weakref_alive?
       args = Hash.symbolicate(args)
       node.text = args[:text] if args[:text]
       node.fontSize = TTUtil.get_font_size(args[:size].intern) if args[:size]

@@ -8,35 +8,42 @@ module JavaScript
 
     # @return [Double] The targets relative X position.
     def position_x
+      return unless node.weakref_alive?
       calculate_relative_position(node.position, node.size).x
     end
 
     # @return [Double] The targets relative Y position.
     def position_y
+      return unless node.weakref_alive?
       calculate_relative_position(node.position, node.size).y
     end
 
     # @return [Double] The targets relative width.
     def size_x
+      return unless node.weakref_alive?
       calculate_relative_size(node.size).width
     end
 
     # @return [Double] The targets relative height.
     def size_y
+      return unless node.weakref_alive?
       calculate_relative_size(node.size).height
     end
 
     # @return [Double] The targets layer.
     def layer
+      return unless node.weakref_alive?
       format('%.2f', node.zPosition).to_f
     end
 
     # @return [Double] The targets transparency
     def transparency
+      return unless node.weakref_alive?
       format('%.2f', 1.0001 - node.alpha).to_f
     end
 
     def name
+      return unless node.weakref_alive?
       node.name || 'undef'
     end
 
@@ -47,6 +54,7 @@ module JavaScript
     # @option args [Double] y The desired Y position (range: 0.0...1.0)
     # @option args [Double] duration The animation duration in seconds.
     def move( args )
+      return unless node.weakref_alive?
       args = Hash.symbolicate(args)
       if args[:x] && args[:y] && args[:duration]
         action = do_move(CGPoint.new(args[:x], args[:y]), args[:duration])
@@ -61,6 +69,7 @@ module JavaScript
     # @option args [Double] hight The desired height (range: 0.0...1.0)
     # @option args [Double] duration The animation duration in seconds.
     def resize( args )
+      return unless node.weakref_alive?
       args = Hash.symbolicate(args)
       if args[:width] && args[:height] && args[:duration]
         action = do_resize(CGSize.new(args[:width], args[:height]), args[:duration])
@@ -74,6 +83,7 @@ module JavaScript
     # @option args [Double] alpha The desired transparency (range: 0.0...1.0)
     # @option args [Double] duration The animation duration in seconds.
     def fade( args )
+      return unless node.weakref_alive?
       args = Hash.symbolicate(args)
       if args[:alpha] && args[:duration]
         action = do_fade(args[:alpha], args[:duration])
@@ -87,6 +97,7 @@ module JavaScript
     # @option args [Double] layer The desired layer (range: 0.0...1.0)
     # @option args [Double] duration The animation duration in seconds.
     def layer( args )
+      return unless node.weakref_alive?
       args = Hash.symbolicate(args)
       if args[:layer] && args[:duration]
         action = do_layer(args[:layer], args[:duration])
@@ -104,6 +115,7 @@ module JavaScript
     #
     # @param [Hash<Hash,Hash<String, Double>>] args The JavaScript arguments.
     def concurrent( args )
+      return unless node.weakref_alive?
       actions = []
       args = Hash.symbolicate(args)
       duration = args.fetch(:duration, 1.0)
@@ -161,6 +173,7 @@ module JavaScript
         end
       end
 
+
       node.runAction(SKAction.group(actions))
       NSThread.sleepForTimeInterval(duration) unless wait == false
     end
@@ -169,6 +182,7 @@ module JavaScript
     #
     # @param [String] slot The slot name to call.
     def emit( slot )
+      return unless node.weakref_alive?
       JavaScript::Runtime.call_slot(node.name, slot)
     end
 
@@ -179,6 +193,8 @@ module JavaScript
     # @param [CGPoint] target_pos The desired position (range: x/y: 0.0...1.0).
     # @param [Double] duration The animation duration in seconds.
     def do_move( target_pos, duration )
+      return unless node.weakref_alive?
+
       pos = calculate_node_position(target_pos, node.size)
       SKAction.moveTo(pos, duration: duration || 1.0)
     end
@@ -189,6 +205,8 @@ module JavaScript
     # @param [Double] duration The animation duration in seconds.
     # @return [SKAction] A matching +SKAction+.
     def do_resize( target_size, duration )
+      return unless node.weakref_alive?
+
       size = calculate_node_size(target_size,
                                  node.size.width / node.size.height)
       SKAction.resizeToWidth(size.width,
@@ -212,6 +230,7 @@ module JavaScript
     # @param [Double] duration The animation duration in seconds.
     # @return [SKAction] A matching +SKAction+.
     def do_layer( target_layer, duration )
+      return unless node.weakref_alive?
       SKAction.sequence([
         SKAction.waitForDuration(duration || 1.0),
         SKAction.runBlock(->(){ node.zPosition = target_layer })
@@ -229,11 +248,11 @@ module JavaScript
     def do_move_resize( target_pos, target_size, duration )
       # movement with simultaneous resizing requires to
       # calculate the movement position using the final size.
+      return unless node.weakref_alive?
       final_size = calculate_node_size(target_size,
                                        node.size.width / node.size.height)
 
       final_pos = calculate_node_position(target_pos, final_size)
-
       SKAction.group([
         SKAction.moveTo(final_pos, duration: duration || 1.0),
         do_resize(target_size, duration)
