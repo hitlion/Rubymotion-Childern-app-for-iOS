@@ -81,7 +81,7 @@ module MenuViewModule
     @tips_view = AdvancedCollectionView.alloc.init_with_frame(frame, cellType: MenuTipsCell,
                                                               numOfVisibleElements: 1, delegate: WeakRef.new(self),
                                                               headerText: "Tipps und Tricks")
-    @tips_view.reload_data(tips_list.get)
+    @tips_view.reload_data(tips_list.get(false))
     self.addSubview(@tips_view)
   end
 

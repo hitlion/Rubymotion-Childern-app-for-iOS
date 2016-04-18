@@ -15,7 +15,8 @@ class TipsBundle
     self
   end
 
-  def get
-    return @bundle.shuffle!
+  def get(value)
+    return @bundle.shuffle! if value
+    return @bundle
   end
 end
