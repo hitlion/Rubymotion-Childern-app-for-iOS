@@ -26,8 +26,8 @@ class MenuStoryCell < UICollectionViewCell
       @label.textAlignment = UITextAlignmentCenter
       append(@label)
 
-      @left_button = UIButton.alloc.initWithFrame(CGRectMake(0.075 * layer.frame.size.width,0.6 * layer.frame.size.height,
-                                                            0.4 * layer.frame.size.width, 0.35 * layer.frame.size.height))
+      @left_button = UIButton.alloc.initWithFrame(CGRectMake(0.025 * layer.frame.size.width,0.6 * layer.frame.size.height,
+                                                            0.425 * layer.frame.size.width, 0.35 * layer.frame.size.height))
       @left_button.setBackgroundImage(rmq.image.resource("button_grey.png"), forState:UIControlStateNormal)
       @left_button.setTitle("Mehr", forState: UIControlStateNormal)
       @left_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:medium))
