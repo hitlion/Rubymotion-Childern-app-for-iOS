@@ -105,6 +105,11 @@ class IAPHelper
   def completeTransaction(transaction)
     self.provide_content(transaction.payment.productIdentifier)
 
+    NSNotificationCenter.defaultCenter.postNotificationName('IAPTransactionSuccess',
+                                                            object:nil,
+                                                            userInfo: {
+                                                                :transaction => transaction })
+
     if(transaction.downloads)
       SKPaymentQueue.defaultQueue.startDownloads(transaction.downloads)
       NSLog('Thank you for your purchase. Downloading startet now.')
@@ -113,10 +118,7 @@ class IAPHelper
       NSLog('Thank you for your purchase. Transaction finished.')
     end
 
-    NSNotificationCenter.defaultCenter.postNotificationName('IAPTransactionSuccess',
-                                                            object:nil,
-                                                            userInfo: {
-                                                                :transaction => transaction })
+
   end
 
   def restoreTransaction(transaction)
@@ -125,7 +127,8 @@ class IAPHelper
   end
 
   def failedTransaction(transaction)
-    if transaction.error.code != SKErrorPaymentCancelled
+
+    if transaction.error.code != SKErrorPaymentCancelled && transaction.error.code != 0
       NSLog("Transaction failed with error: %@", transaction.error.localizedDescription)
 
       NSNotificationCenter.defaultCenter.postNotificationName('IAPTransactionFailed',
@@ -176,8 +179,6 @@ class IAPHelper
     end
     name = "Kein Name gefunden"
     name = product.set_name unless product.nil?
-
-    #app.alert(title: "Download beendet!", message: "Der Download von #{name} wurde erfoglreich beendet. Die Story wird nun installiert", actions: ['OK'])
 
     @fileManager = NSFileManager.defaultManager()
 

@@ -172,8 +172,8 @@ module OverlayViewModuleNew
                                                    name: 'IAPTransactionCancelled',
                                                    object: nil)
     NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'receivedIAPTransactionSucces:',
-                                                   name: 'IAPTransactionSucces',
+                                                   selector: 'receivedIAPTransactionSuccess:',
+                                                   name: 'IAPTransactionSuccess',
                                                    object: nil)
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'receivedIAPTransactionFailed:',
@@ -182,26 +182,49 @@ module OverlayViewModuleNew
   end
 
   def receivedIAPTransactionCancelled(notification)
+    return if @type == :menu_standard
+    return if @story.nil?
 
+    transaction_id = notification.userInfo[:transaction].payment.productIdentifier
+    if(transaction_id == @story.productIdentifier)
+      @left_button.hidden = false
+    end
+
+    app.alert(title: "Kauf abgebrochen!", message: "Der Kauf wurde von Ihnen abgebrochen.", actions: ['OK'])
   end
 
   def receivedIAPTransactionSuccess(notification)
-    if notification[:transaction].downloads
+    return if @type == :menu_standard
+    return if @story.nil?
 
+    transaction_id = notification.userInfo[:transaction].payment.productIdentifier
+    if(transaction_id == @story.productIdentifier)
+      @left_button.hidden = true
     end
-    @left_button.hidden = true
+
+    app.alert(title: "Kauf war erfolgreich!", message: "Download startet in wenigen Sekunden.", actions: ['OK'])
   end
 
   def receivedIAPTransactionFailed(notification)
+    return if @type == :menu_standard
+    return if @story.nil?
 
+    transaction_id = notification.userInfo[:transaction].payment.productIdentifier
+    if(transaction_id == @story.productIdentifier)
+      @left_button.hidden = false
+    end
+
+    app.alert(title: "Leider nicht möglich!", message: notification.userInfo[:transaction].error.localizedDescription, actions: ['OK'])
   end
 
   def receivedDownloadWaitingNotification(notification)
+    return if @type == :menu_standard
     @status_label.text = 'Warte auf Download'
     @progress_view.progress = 0.0
   end
 
   def receivedDownloadActiveNotification(notification)
+    return if @type == :menu_standard
     return if @story.nil?
     #@right_button.hidden = false
     #NSLog(notification.userInfo[:download].progress.to_s)
@@ -217,7 +240,11 @@ module OverlayViewModuleNew
   end
 
   def receivedDownloadFinishedNotification(notification)
+    return if @type == :menu_standard
     return if @story.nil?
+
+    #app.alert(title: "Download beendet!", message: "Der Download von #{name} wurde erfoglreich beendet. Die Story wird nun installiert", actions: ['OK'])
+
     if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
       @status_label.text = 'Download Beendet'
       @progress_view.progress = 1.0
@@ -228,8 +255,14 @@ module OverlayViewModuleNew
   end
 
   def receivedDownloadFailedNotification(notification)
-    @status_label.text = 'Download fehlgeschlagen'
-    @progress_view.progress = 0.00
+    return if @type == :menu_standard
+    return if @story.nil?
+
+    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
+      @status_label.text = 'Download fehlgeschlagen'
+      @progress_view.progress = 0.00
+      @story.downloading = false
+    end
 
     app.alert(title: "Download fehlgeschlagen!", message: "Probieren sie es erneut.", actions: ['OK']) do |button_tag|
       case button_tag
@@ -238,16 +271,17 @@ module OverlayViewModuleNew
           @left_button.hidden = false
       end
     end
-
-    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
-      @story.downloading = false
-    end
-
   end
 
   def receivedDownloadCancelledNotification(notification)
-    @status_label.text = 'Download abgebrochen'
-    @progress_view.progress = 0.0
+    return if @type == :menu_standard
+    return if @story.nil?
+
+    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
+      @story.downloading = false
+      @status_label.text = 'Download abgebrochen'
+      @progress_view.progress = 0.0
+    end
 
     app.alert(title: "Download abbgebrochen!", message: "Sie haben den Download abgebrochen.", actions: ['OK']) do |button_tag|
       case button_tag
@@ -256,15 +290,16 @@ module OverlayViewModuleNew
           @left_button.hidden = false
       end
     end
-
-    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
-      @story.downloading = false
-    end
   end
 
   def receivedDownloadPauseNotification(notification)
-    @status_label.text = 'Download pausiert'
-    @progress_view.progress = notification.object.progress
+    return if @type == :menu_standard
+    return if @story.nil?
+
+    if(notification.userInfo[:download].contentIdentifier == @story.productIdentifier)
+      @status_label.text = 'Download pausiert'
+      @progress_view.progress = notification.object.progress
+    end
   end
 
   def relayout_with_type
