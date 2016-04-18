@@ -2,7 +2,7 @@ class ShopProduct
 
   attr_reader :set_name, :price, :rating, :thumbnail_path, :thumbnail, :description, :screenshots,
               :screenshot_paths, :productIdentifier, :valid, :installed
-  attr_accessor :downloading
+  attr_accessor :downloading, :buying
 
   def initialize( product )
     @valid = false
@@ -19,6 +19,7 @@ class ShopProduct
     @thumbnail = nil
     @installed = false
     @downloading = false
+    @buying = false
 
     unless(@productIdentifier.nil? && @set_name.nil? && @price.nil? && @description.nil? &&@rating.nil? && @thumbnail_path.nil? && @screenshot_paths.nil?)
       @valid = true

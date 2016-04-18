@@ -37,6 +37,9 @@ module OverlayViewModuleNew
         left_button_pressed
       end
 
+      @buying_label = top.append(UILabel, :buying_label).get
+      @buying_label.hidden = true
+
       @right_button = top.append(UIButton, :right_button).get
       @right_button.on(:tap) do
         right_button_pressed
@@ -188,6 +191,8 @@ module OverlayViewModuleNew
     transaction_id = notification.userInfo[:transaction].payment.productIdentifier
     if(transaction_id == @story.productIdentifier)
       @left_button.hidden = false
+      @buying_label.hidden = true
+      @story.buying = false
     end
 
     app.alert(title: "Kauf abgebrochen!", message: "Der Kauf wurde von Ihnen abgebrochen.", actions: ['OK'])
@@ -200,6 +205,8 @@ module OverlayViewModuleNew
     transaction_id = notification.userInfo[:transaction].payment.productIdentifier
     if(transaction_id == @story.productIdentifier)
       @left_button.hidden = true
+      @buying_label.hidden = true
+      @story.buying = false
     end
 
     app.alert(title: "Kauf war erfolgreich!", message: "Download startet in wenigen Sekunden.", actions: ['OK'])
@@ -212,6 +219,8 @@ module OverlayViewModuleNew
     transaction_id = notification.userInfo[:transaction].payment.productIdentifier
     if(transaction_id == @story.productIdentifier)
       @left_button.hidden = false
+      @buying_label.hidden = true
+      @story.buying = false
     end
 
     app.alert(title: "Leider nicht möglich!", message: notification.userInfo[:transaction].error.localizedDescription, actions: ['OK'])
@@ -310,6 +319,7 @@ module OverlayViewModuleNew
       @date_label.text = Time.at(NSDate.dateWithNaturalLanguageString(@story.timestamp)).strftime("%d. %B %Y").to_s
       @left_button.setTitle('Starten', forState: UIControlStateNormal)
       @left_button.hidden = false
+      @buying_label.hidden = true
       @right_button.hidden = true
       @top_button_line.hidden = false
       @progress_view.hidden = true
@@ -326,6 +336,7 @@ module OverlayViewModuleNew
       label_text = "Kaufen, #{story.price} €"
       @left_button.setTitle(label_text, forState: UIControlStateNormal)
       @left_button.hidden = @story.downloading
+      @buying_label.hidden = !@story.buying
       @right_button.hidden = true
       @right_button.setTitle('Abbrechen', forState: UIControlStateNormal)
       @top_button_line.hidden = true
@@ -337,6 +348,7 @@ module OverlayViewModuleNew
       @status_label.hidden = true
       @left_button.setTitle('Download', forState: UIControlStateNormal)
       @left_button.hidden = @story.downloading
+      @buying_label.hidden = !@story.buying
       @right_button.hidden = true
       @right_button.setTitle('Abbrechen', forState: UIControlStateNormal)
       @top_button_line.hidden = true
@@ -383,6 +395,8 @@ module OverlayViewModuleNew
       rmq.screen.open_root_screen(StartScreen)
     elsif(@type == :shop_premium || @type == :shop_basic)
       @left_button.hidden = true
+      @buying_label.hidden = false
+      @story.buying = true
       BabboShop.get.buy_product(@story.productIdentifier)
     end
   end
