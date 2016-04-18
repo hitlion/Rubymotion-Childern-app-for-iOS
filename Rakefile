@@ -137,6 +137,38 @@ end
 
 YARD::Rake::YardocTask.new # include YARD rake task
 
+# Different simulator tasks
+desc "Run simulator on iPhone"
+task :iphone_4 do
+  exec 'bundle exec rake device_name="iPhone 4s"'
+end
+
+desc "Run simulator on iPhone"
+task :iphone_5 do
+  exec 'bundle exec rake device_name="iPhone 5"'
+end
+
+desc "Run simulator on iPhone"
+task :iphone_6 do
+  exec 'bundle exec rake device_name="iPhone 6"'
+end
+
+desc "Run simulator in iPad Retina"
+task :retina do
+  exec 'bundle exec rake device_name="iPad Retina"'
+end
+
+desc "Run simulator on iPad Air"
+task :ipad_air do
+  exec 'bundle exec rake device_name="iPad Air"'
+end
+
+desc "Run simulator on iPad 2"
+task :ipad_2 do
+  exec 'bundle exec rake device_name="iPad 2"'
+end
+
+
 namespace :prep do
   desc "Create symbolic links to [bundle_path] inside the CoreSimulator environment(s)"
   task :link_bundles, [:bundles_path] do |t, args|

@@ -15,11 +15,6 @@ module MenuViewModule
   # @init = true
   def init_view_with_delegate(delegate)
 
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'bundlesChanges:',
-                                                   name: 'BabboBundleChanged',
-                                                   object: nil)
-
     @top_view_height    = 0.5
     @bottom_view_height = 0.5
 
@@ -29,6 +24,11 @@ module MenuViewModule
   end
 
   def build_view
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'bundles_changes:',
+                                                   name: 'BabboBundleChanged',
+                                                   object: nil)
 
     init_view_with_delegate(WeakRef.new(self)) if @init.nil? || !@init
 
@@ -278,7 +278,7 @@ module MenuViewModule
     bundle.document.clear_chache
   end
 
-  def bundlesChanges(notification)
+  def bundles_changes(notification)
     less(nil)
     reload_data
     @story_collection_view.reloadData

@@ -13,11 +13,6 @@ class SmartphoneMenuView < UIScrollView
   end
 
   def init_view_with_delegate(delegate)
-
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'bundlesChanges:',
-                                                   name: 'BabboBundleChanged',
-                                                   object: nil)
     @top_view_height    = 0.75
     @bottom_view_height = 0.75
 

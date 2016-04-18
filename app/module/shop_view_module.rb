@@ -16,10 +16,7 @@ module ShopViewModule
   # @init = true
   def init_view_with_delegate(delegate)
 
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'bundlesChanges:',
-                                                   name: 'ShopBundleChanged',
-                                                   object: nil)
+
 
     @top_view_height    = 0.5
     @bottom_view_height = 0.5
@@ -30,6 +27,15 @@ module ShopViewModule
   end
 
   def build_view
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'bundles_changes:',
+                                                   name: 'ShopBundleChanged',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'shop_request_failed:',
+                                                   name: 'ShopRequestFailed',
+                                                   object: nil)
 
     init_view_with_delegate(WeakRef.new(self)) if @init.nil? || !@init
 
@@ -193,8 +199,12 @@ module ShopViewModule
     bundle.clear_chache
   end
 
-  def bundlesChanges(notification)
+  def bundles_changes(notification)
     build_story_list
     reload_data
+  end
+
+  def shop_request_failed(notification)
+    app.alert(title: "Verbindung zum Shop leider nicht möglich!", message: notification.userInfo[:description], actions: ['OK'])
   end
 end

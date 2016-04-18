@@ -23,18 +23,27 @@ class BabboShop
     @basic_products = []
 
     @iap_helper.request_product_info do |success, products|
-      products.each do |product|
-        story = ShopProduct.new(product)
-        @products << story
-        if product.price != 0.00
-          @premium_products << story
-        else
-          @basic_products << story
+      if(success)
+        products.each do |product|
+          story = ShopProduct.new(product)
+          @products << story
+          if product.price != 0.00
+            @premium_products << story
+          else
+            @basic_products << story
+          end
         end
+
+        NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleChanged',
+                                                              object:nil)
+      else
+        NSNotificationCenter.defaultCenter.postNotificationName('ShopRequestFailed',
+                                                                object:nil,
+                                                                userInfo: {
+                                                                    :description => "Shop ist derzeit nicht erreichbar. Bitte prüfen Sie ihre Internetverbindung oder ihr Wlan!"
+                                                                })
       end
 
-      NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleChanged',
-                                                              object:nil)
     end
   end
 
