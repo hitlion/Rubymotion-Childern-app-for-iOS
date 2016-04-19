@@ -60,7 +60,7 @@ class KidsScene < SKScene
     add_background
 
     add_element_in_buttonline("avatar_kid.png", BUTTON_CHILD_NAME, CHILD_BUTTON_X, 10)
-    add_element_in_buttonline("avatar_parent.png", BUTTON_PARENT_NAME, PARENT_BUTTON_X, 10)
+    add_element_in_buttonline("babbo_icons/parent_button.png", BUTTON_PARENT_NAME, PARENT_BUTTON_X, 10)
     add_element_in_buttonline("Logo.png", BUTTON_LOGO_NAME, LOGO_BUTTON_X, 10)
 
     add_story_list
