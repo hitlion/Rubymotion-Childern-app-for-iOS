@@ -101,7 +101,7 @@ class StoryBundle
     end
   end
 
-  attr_reader :document, :load_errors, :path, :ruleset, :changelog
+  attr_reader :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :thumbnail, :description
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -115,6 +115,9 @@ class StoryBundle
     @ruleset = nil
     @load_errors = []
     @changelog = nil
+    @screenshots = nil
+    @thumbnail = nil
+    @description = nil
   end
 
   def copy
@@ -297,6 +300,63 @@ class StoryBundle
     }
 
     editable
+  end
+
+  def screenshots
+    if(@screenshots.nil?)
+      screenshots = []
+
+      paths = ServerBackend.get.get_screenshots_for_identifier(self.productIdentifier)
+      paths.each do |path|
+        screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
+      end
+
+      @screenshots = screenshots
+    end
+
+    return @screenshots
+  end
+
+  def set_name
+    return self.document.set_name
+  end
+
+  def thumbnail
+    if(@thumbnail.nil?)
+      @thumbnail = UIImage.imageWithData(self.asset_data(self.document.thumbnail))
+    end
+    return @thumbnail
+  end
+
+  def timestamp
+    return self.document.timestamp
+  end
+
+  def description
+    return nil unless valid?
+
+    if(@description.nil?)
+
+      description = 'no text found'
+      if self.document.description.start_with? '../'
+        path = File.join(@path, File.absolute_path(self.document.description))
+      end
+
+      return nil unless File.exists? path
+      file = YAML.load(File.read(path))
+
+      if(file[:description])
+        description = file[:description]
+      end
+
+      @description = description
+    end
+
+    return @description
+  end
+
+  def productIdentifier
+    return self.document.productIdentifier
   end
 
   private

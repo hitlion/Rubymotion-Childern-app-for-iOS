@@ -232,7 +232,7 @@ module MenuViewModule
   def advancedCollectionView(view, willDisplayCell:cell, forItemAtIndexPath: path)
     if view == @level_view
       Dispatch::Queue.concurrent.async do
-        cell.element.document.screenshots
+        cell.element.screenshots
       end
     end
   end
@@ -269,7 +269,7 @@ module MenuViewModule
   def collectionView(view, willDisplayCell:cell, forItemAtIndexPath: path)
     if view == @story_collection_view
       Dispatch::Queue.concurrent.async do
-        cell.element.document.screenshots
+        cell.element.screenshots
       end
     end
   end

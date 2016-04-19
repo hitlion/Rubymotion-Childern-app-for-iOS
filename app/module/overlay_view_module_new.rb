@@ -1,6 +1,6 @@
 module OverlayViewModuleNew
 
-  attr_reader :story, :bundle, :type
+  attr_reader :story, :type
 
   CellIdentifier = 'Cell'
 
@@ -107,30 +107,11 @@ module OverlayViewModuleNew
   end
 
   def show_overlay_type(type, data: story)
-    new_story  = nil
-    new_bundle = nil
 
-    if(story.class == StoryBundle)
-      new_story  = story.document
-      new_bundle = story
-    else
-      new_story = story
-    end
+    return if story.nil?
 
-    NSLog(new_story.productIdentifier)
-    NSLog(@story.productIdentifier) unless @story.nil?
-
-    if(@story.nil?)
-      @story = new_story unless new_story.nil?
-      @bundle = new_bundle unless new_bundle.nil?
-      @type = type
-      NSLog(@story.productIdentifier)
-      relayout_with_type
-    end
-
-    if(new_story.productIdentifier != @story.productIdentifier || type != @type )
-      @story = new_story unless new_story.nil?
-      @bundle = new_bundle unless new_bundle.nil?
+    if(@story.nil? || story.productIdentifier != @story.productIdentifier || type != @type )
+      @story = story
       @type = type
       relayout_with_type
     end
@@ -313,7 +294,7 @@ module OverlayViewModuleNew
 
   def relayout_with_type
     if(@type == :menu_standard)
-      @image_box.image = UIImage.imageWithData(@bundle.asset_data(@story.thumbnail))
+      @image_box.image = @story.thumbnail
       @title_label.text = @story.set_name
       @date_label.hidden = false
       @date_label.text = Time.at(NSDate.dateWithNaturalLanguageString(@story.timestamp)).strftime("%d. %B %Y").to_s
@@ -389,7 +370,7 @@ module OverlayViewModuleNew
 
   def left_button_pressed
     if (@type == :menu_standard)
-      StartScreen.next_story = @bundle
+      StartScreen.next_story = @story
       StartScreen.next_screen = :story_player
       StartScreen.last_screen = :parent_menu
       rmq.screen.open_root_screen(StartScreen)
@@ -444,17 +425,17 @@ module OverlayViewModuleNew
   end
 
   def edit_story
-    if @bundle.ruleset.rules.empty?
+    if @story.ruleset.rules.empty?
       app.alert(title: 'Entschuldigung',
                 message: 'Diese Story kann nicht bearbeitet werden.')
     else
-      lp @bundle.document.status
+      lp @story.document.status
 
-      if(@bundle.document.status == :V1)
+      if(@story.document.status == :V1)
         app.alert(title: 'Entschuldigung, das Original darf nicht beabeitet werden!',
                   message: 'Ihr müsst zunächst eine neue Story aus diesem Original erstellen.')
       else
-        StartScreen.next_story = @bundle
+        StartScreen.next_story = @story
         StartScreen.next_screen = :story_editor
         StartScreen.last_screen = :parent_menu
         StartScreen.editor_mode = :edit
@@ -467,8 +448,8 @@ module OverlayViewModuleNew
     app.alert(title: "Achtung!", message: "Wollen sie diese Story wirklich löschen", actions: ['JA', 'NEIN']) do |button_tag|
       case button_tag
         when 'JA'
-          NSFileManager.defaultManager.removeItemAtPath(@bundle.path, error:nil)
-          StoryBundle.delete_story(@bundle)
+          NSFileManager.defaultManager.removeItemAtPath(@story.path, error:nil)
+          StoryBundle.delete_story(@story)
           hide
         when 'NEIN'
       end
@@ -476,11 +457,11 @@ module OverlayViewModuleNew
   end
 
   def new_story
-    if @bundle.ruleset.rules.empty?
+    if @story.ruleset.rules.empty?
       app.alert(title: 'Entschuldigung',
                 message: 'Diese Story kann nicht bearbeitet werden.')
     else
-      StartScreen.next_story = @bundle
+      StartScreen.next_story = @story
       StartScreen.next_screen = :story_editor
       StartScreen.last_screen = :parent_menu
       StartScreen.editor_mode = :new

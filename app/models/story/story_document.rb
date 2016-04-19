@@ -15,8 +15,8 @@ module Story
     attr_reader :data_language, :data_language_version, :template_id
     # attributes parsed from :meta
     attr_accessor :document_id, :dataset_id, :branch_creator_id, :productIdentifier,
-                :creator_impressum, :branch_name, :editor_id, :description_path,
-                :set_name, :thumbnail, :screenshots, :description, :category,
+                :creator_impressum, :branch_name, :editor_id, :description,
+                :set_name, :thumbnail, :category,
                 :status, :modified_conveyable, :timestamp, :body, :new_changes
 
     # Initialize a new Document instance
@@ -26,7 +26,6 @@ module Story
       @branch_name = 'undefined'
       @valid       = false
       @productIdentifier  = nil
-      @screenshots = nil
     end
 
     # Check if this document is valid.
@@ -79,7 +78,7 @@ module Story
           @editor_id           = meta[:editor_id]
           @set_name            = meta[:set_name]
           @thumbnail           = meta[:thumbnail]
-          @description_path    = meta[:description]
+          @description         = meta[:description]
           @status              = meta[:status]
           @modified_conveyable = meta[:modified_conveyable]
           @timestamp           = meta[:timestamp]
@@ -128,21 +127,6 @@ module Story
 
     def modified(value)
       @new_changes = value
-    end
-
-    def screenshots
-      if(@screenshots.nil?)
-        screenshots = []
-
-        paths = ServerBackend.get.get_screenshots_for_identifier(@productIdentifier)
-        paths.each do |path|
-          screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
-        end
-
-        @screenshots = screenshots
-      end
-
-      return @screenshots
     end
 
     def clear_chache

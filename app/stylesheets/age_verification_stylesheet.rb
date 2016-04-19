@@ -37,7 +37,7 @@ class AgeVerificationStylesheet < ApplicationStylesheet
 
   def label1(st)
     st.frame = {below_prev: 0.025 * device.screen_height, l: 30, fr: 30, h: 0.05 * device.screen_height,  centered: :horizontal}
-    st.text = "Elternbereich"
+    st.text = "Expertenbereich"
     st.font = UIFont.fontWithName("Enriqueta-Bold", size: 20 * @font_fac)
     st.text_alignment = :center
     st.color = rmq.color.babbo_orange
