@@ -39,6 +39,7 @@ module ShopViewModule
 
     init_view_with_delegate(WeakRef.new(self)) if @init.nil? || !@init
 
+    add_loading_label
     add_premium_scroll_view
     add_basic_scroll_view
 
@@ -72,8 +73,24 @@ module ShopViewModule
 
     @premium_collection_view.registerClass(ShopPremiumCell, forCellWithReuseIdentifier: CELL_IDENTIFIER)
     @premium_collection_view.backgroundColor = UIColor.clearColor
+    @premium_collection_view.hidden = true
 
     self.addSubview(@premium_collection_view)
+  end
+
+
+  ##
+  # adds the premium story scoll view
+  def add_loading_label
+    frame = CGRectMake(0, 0, self.frame.size.width, @top_view_height * self.frame.size.height)
+
+    @loading_label = UILabel.alloc.initWithFrame(frame)
+    @loading_label.text = 'Bitte warten, unser Shop wird gerade geladen...'
+    @loading_label.textColor = UIColor.blackColor
+    @loading_label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
+    @loading_label.textAlignment = UITextAlignmentCenter
+
+    self.addSubview(@loading_label)
   end
 
   ##
@@ -97,6 +114,8 @@ module ShopViewModule
 
     @premium_collection_view.reloadData
     @basic_view.reload_data(@basic_stories)
+
+    @loading_label.hidden = @all_stories.length > 0
   end
 
   def hide
