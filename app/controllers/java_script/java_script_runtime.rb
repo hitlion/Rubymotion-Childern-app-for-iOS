@@ -247,14 +247,10 @@ module JavaScript
     def proxy_for_object( scene_object )
       return nil if scene_object.nil?
 
-      if scene_object.is_a? Scene::PictureNode
-        JavaScript::PictureProxy.new(scene_object)
-      elsif scene_object.is_a? Scene::AudioNode
+      if scene_object.is_a? Scene::AudioNode
         JavaScript::AudioProxy.new(scene_object)
       elsif scene_object.is_a? Scene::TextNode
         JavaScript::TextProxy.new(scene_object)
-      elsif scene_object.is_a? Scene::VideoNode
-        JavaScript::VideoProxy.new(scene_object)
       elsif scene_object.is_a? Scene::GIFVideoNode
         JavaScript::VideoProxy.new(scene_object)
       elsif scene_object.is_a? Scene::RootNode
@@ -263,6 +259,15 @@ module JavaScript
         JavaScript::FutureProxy.new(scene_object.path)
       elsif scene_object.is_a? JavaScript::FutureProxy
         scene_object
+      elsif scene_object.is_a? Scene::CropNode
+        lp scene_object, force_color: :red
+        lp scene_object.story_node, force_color: :blue
+        if(scene_object.story_node.is_a? Scene::VideoNode)
+          JavaScript::VideoProxy.new(scene_object)
+        elsif scene_object.story_node.is_a? Scene::PictureNode
+          JavaScript::PictureProxy.new(scene_object)
+          lp "12134"
+        end
       else
         nil
       end

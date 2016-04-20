@@ -69,7 +69,7 @@ module SceneFactory
     lp "Converting #{story_object.type} at #{story_object.path}"
     case story_object.type
     when :picture
-      Scene::PictureNode.create(bundle, story_object)
+      Scene::CropNode.create(bundle, story_object)
     when :audio
       Scene::AudioNode.create(bundle, story_object, mode)
     when :text
