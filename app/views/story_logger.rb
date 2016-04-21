@@ -34,7 +34,9 @@ class StoryLoggerView < UIView
 
       append(UILabel, :tranparent_touch_switch_label)
       append(UIButton, :quit_story_button).on(:touch_up) do |_, _|
-        rmq.screen.close
+        if(rmq.screen)
+          rmq.screen.close
+        end
       end
 
       @all_messages = append(UITextView, :log_messages_view).get

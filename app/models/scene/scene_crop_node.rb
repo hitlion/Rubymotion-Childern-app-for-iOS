@@ -101,7 +101,7 @@ module Scene
       return nil
     end
 
-    # must use this because set the alpha of the cropnode doesnt effect the children if there is mask...
+    # must use this because set the alpha of the cropnode doesnt effect the children if there is a mask!=nil...
     def alpha=(value)
       if @node_object
         @node_object.alpha = value
