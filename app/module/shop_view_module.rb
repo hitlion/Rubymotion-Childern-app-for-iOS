@@ -116,6 +116,7 @@ module ShopViewModule
     @basic_view.reload_data(@basic_stories)
 
     @loading_label.hidden = @all_stories.length > 0
+    @premium_collection_view.hidden = !@loading_label.hidden?
   end
 
   def hide
