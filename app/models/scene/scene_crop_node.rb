@@ -70,6 +70,12 @@ module Scene
       end
     end
 
+    def av_player
+      if @node_object.is_a? Scene::VideoNode
+        return @node_object.av_player
+      end
+    end
+
     def stop
       if @node_object.is_a? Scene::VideoNode
         @node_object.stop

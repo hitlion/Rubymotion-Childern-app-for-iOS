@@ -78,7 +78,7 @@ module SceneFactory
       if story_object.content.downcase.end_with? '.gif'
         Scene::GIFVideoNode.create(bundle, story_object)
       else
-        Scene::VideoNode.create(bundle, story_object)
+        Scene::CropNode.create(bundle, story_object)
       end
     else
       lp "Object conversion failed for '#{story_object.path}'",

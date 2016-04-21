@@ -260,7 +260,6 @@ module JavaScript
       elsif scene_object.is_a? JavaScript::FutureProxy
         scene_object
       elsif scene_object.is_a? Scene::CropNode
-        lp scene_object.node_object, force_color: :blue
         if(scene_object.node_object.is_a? Scene::VideoNode)
           JavaScript::VideoProxy.new(scene_object)
         elsif scene_object.node_object.is_a? Scene::PictureNode
