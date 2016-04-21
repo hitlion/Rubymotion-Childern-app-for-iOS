@@ -20,17 +20,18 @@ class StoryEditorMoveObjectView < UIView
       @choose_root.append(UIView, :choose_background)
 
       @choose_root.append(UIButton, :accept_button).on(:tap) do
-        @node.position = [@movable_object.center.x, self.size.height - @movable_object.center.y]
-        point = CGPointMake(@movable_object.frame.origin.x / device.screen_width, @movable_object.frame.origin.y / device.screen_height)
-        @target.position = point
+        target_x = (@node.position.x - @node.size.width / 2) / device.screen_width
+        target_y = (device.screen_height - (@node.position.y + @node.size.height / 2 )) / device.screen_height
+        @target.position = CGPointMake(target_x, target_y)
+        lp @target.position
+        lp @node.position
         self.hide
       end
 
       @choose_root.append(UIButton, :deny_button).on(:tap) do
+        @node.position = @old_pos
         self.hide
       end
-
-      @movable_object = append!(UIImageView, :movable_object_dummy)
 
       snap_to_right_edge(@choose_root, true)
 
@@ -50,7 +51,10 @@ class StoryEditorMoveObjectView < UIView
     move_x = location.x - prev_location.x
     move_y = location.y - prev_location.y
 
-    @movable_object.center = [@movable_object.center.x + move_x, @movable_object.center.y + move_y]
+    x = @node.position.x
+    y = @node.position.y
+
+    @node.position = CGPointMake(x+move_x, y-move_y)
   end
 
   def touchesEnded(touches, withEvent: event)
@@ -102,27 +106,9 @@ class StoryEditorMoveObjectView < UIView
     @node   = n
     @actions = actions
 
-    return if(@target.nil? || @node.nil? || @actions.nil? || @movable_object.nil?)
-
-    if(defined? @node.size)
-      @movable_object.frame = CGRectMake(@node.position.x - @node.size.width / 2, device.screen_height - @node.position.y - @node.size.height / 2,
-                                         @node.size.width, @node.size.height)
-    else
-      @movable_object.frame = CGRectMake(@node.position.x - 25, device.screen_height - @node.position.y - 25,
-                                         50, 50)
-    end
-
-    @node.hidden = true
-
-    case @target.type
-      when :picture
-        @movable_object.image = rmq.image.resource('placeholder/file_information')
-      when :video
-        @movable_object.image = rmq.image.resource('placeholder/file_information')
-      when :audio
-        @movable_object.image = @node.image
-    end
-
+    lp @target.position
+    lp @node.position
+    @old_pos = @node.position
   end
 
   def snap_to_right_edge(view, off_screen)

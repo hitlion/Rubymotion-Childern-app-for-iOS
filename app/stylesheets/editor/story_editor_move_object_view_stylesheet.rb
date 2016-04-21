@@ -30,14 +30,14 @@ class StoryEditorMoveObjectViewStylesheet < ApplicationStylesheet
 
   def background_layer( st )
     st.frame = {t: 5, l: 5, fr: 5, fb: 5}
-    st.background_color = rmq.color.black
+    st.background_color = rmq.color.clear
     st.alpha = 0.5
   end
 
   def choose_root (st)
     st.frame = {x: 0, y: device.screen_height - 0.2 * device.screen_height, w: 0.2 * device.screen_width, h: 0.2 * device.screen_height}
     st.alpha = 1.0
-    st.tint_color = rmq.color.black
+    st.tint_color = rmq.color.clear
     st.background_color = rmq.color.babbo_orange
     st.corner_radius = 12.5
   end
