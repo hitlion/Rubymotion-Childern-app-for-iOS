@@ -304,11 +304,12 @@ class StoryEditorScreen < PM::Screen
     if(node)
       scene = JavaScript::Runtime.get.scene_root
 
-      scene.enumerateChildNodesWithName('//*', usingBlock: ->(n, _){
+      scene.enumerateChildNodesWithName('//:*', usingBlock: ->(n, _){
+
         if n.name == node.name
 
         else
-          n.alpha = 0.25
+          n.alpha = 0.10
           n.zPosition -= 999_800 if n.zPosition > 999_800
         end
       })
@@ -329,12 +330,12 @@ class StoryEditorScreen < PM::Screen
 
     scene = JavaScript::Runtime.get.scene_root
 
-    scene.enumerateChildNodesWithName('//*', usingBlock: ->(n, _){
+    scene.enumerateChildNodesWithName('//:*', usingBlock: ->(n, _){
       if n.name == node.name
         n.alpha = 1
         n.zPosition += 999_800
       else
-        n.alpha = 0.25
+        n.alpha = 0.05
         n.zPosition -= 999_800 if n.zPosition > 999_800
       end
     })
@@ -367,7 +368,7 @@ class StoryEditorScreen < PM::Screen
 
   def setup_editor_mode(scene)
     scene.backgroundColor = rmq.color.white
-    scene.enumerateChildNodesWithName('//*', usingBlock: ->(node, _){
+    scene.enumerateChildNodesWithName('//:*', usingBlock: ->(node, _){
       if @editable.has_key? node.name
         node.alpha = 1.0
         node.zPosition += 999_800 if node.zPosition < 999_800 # ensure editable nodes are always on top
@@ -375,7 +376,7 @@ class StoryEditorScreen < PM::Screen
           node.size = CGSize.new(25, 25) if node.size.width < 25
         end
       else
-        node.alpha = 0.25
+        node.alpha = 0.10
       end
     })
   end

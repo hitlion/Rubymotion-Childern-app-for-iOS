@@ -260,13 +260,11 @@ module JavaScript
       elsif scene_object.is_a? JavaScript::FutureProxy
         scene_object
       elsif scene_object.is_a? Scene::CropNode
-        lp scene_object, force_color: :red
-        lp scene_object.story_node, force_color: :blue
-        if(scene_object.story_node.is_a? Scene::VideoNode)
+        lp scene_object.node_object, force_color: :blue
+        if(scene_object.node_object.is_a? Scene::VideoNode)
           JavaScript::VideoProxy.new(scene_object)
-        elsif scene_object.story_node.is_a? Scene::PictureNode
+        elsif scene_object.node_object.is_a? Scene::PictureNode
           JavaScript::PictureProxy.new(scene_object)
-          lp "12134"
         end
       else
         nil

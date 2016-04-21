@@ -41,6 +41,7 @@ class StoryEditorEditBox < UIView
       append(UISlider, :resize_width_slider).on(:change) do |sender, _|
         unless @target.nil? or @node.nil? or !defined? @node.size
           size = CGSize.new(sender.value, @target.size.height)
+          lp @node
           @node.size = @node.calculate_node_size(size, size.width / size.height, @target.resize)
           @node.position = @node.calculate_node_position(@target.position, @node.size)
 
@@ -76,7 +77,12 @@ class StoryEditorEditBox < UIView
       append(UILabel, :transparency_label)
       append(UIStepper, :transparency_stepper).on(:change) do |sender, _|
         unless @target.nil? or @node.nil?
+
           @node.alpha = 1.0001 - sender.value
+
+          lp @node.alpha, force_color: :red
+          lp @node.node_object.alpha, force_color: :green
+
           @target.transparency = sender.value
 
           update_display_values
