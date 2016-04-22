@@ -101,7 +101,7 @@ class StoryPlayerScreen < PM::Screen
     end
     # scene.addChild(transition_image)
 
-    @logger.clear!
+    @logger.clear! unless @logger.nil?
 
     @player.presentScene(scene)
 
