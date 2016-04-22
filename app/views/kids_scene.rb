@@ -249,7 +249,7 @@ class KidsScene < SKScene
       if(s.asset_data(s.document.thumbnail))
         image = SKTexture.textureWithImage (UIImage.imageWithData(s.asset_data(s.document.thumbnail)))
       else
-        image = SKTexture.textureWithImage (UIImage.imageNamed("Testbild.png"))
+        image = SKTexture.textureWithImage (UIImage.imageNamed("test_image.png"))
       end
 
       story_picture = SKSpriteNode.spriteNodeWithTexture(image)
@@ -337,7 +337,7 @@ class KidsScene < SKScene
 
     addChild rope
 
-    texture = SKTexture.textureWithImageNamed("Seil.png")
+    texture = SKTexture.textureWithImageNamed("rope.png")
 
     width = device.screen_width
     y = (rope_width / width).round

@@ -30,7 +30,7 @@ class OverlayViewModuleStylesheet < ApplicationStylesheet
   def image_box (st)
     st.frame = {l: 0.02 * device.screen_width, t: 0.02 * device.screen_height, w: 0.2 * device.screen_width, h: 0.2 * device.screen_height}
     st.background_color = rmq.color.clear
-    st.image = rmq.image.resource('Testbild.png')
+    st.image = rmq.image.resource('test_image.png')
   end
 
   def title_label (st)
