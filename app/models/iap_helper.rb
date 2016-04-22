@@ -60,7 +60,6 @@ class IAPHelper
 
   def request(request, didFailWithError:error)
     NSLog("Failed to load list of products.")
-    lp error.description
     @products_request = nil
     @completion_handler.call(false, nil)
     @completion_handler = nil

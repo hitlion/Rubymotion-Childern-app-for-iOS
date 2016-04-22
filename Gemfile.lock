@@ -13,6 +13,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    bubble-wrap-http (1.7.1)
     builder (3.2.2)
     claide (0.9.1)
     cocoapods (0.38.2)
@@ -103,6 +104,7 @@ PLATFORMS
 
 DEPENDENCIES
   ProMotion-iap
+  bubble-wrap-http
   cocoapods (~> 0.38.2)
   json
   motion-cocoapods (~> 1.7.3)

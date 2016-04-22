@@ -38,6 +38,14 @@ class ShopProduct
                                                    selector: 'bundlesChanges:',
                                                    name: 'BabboBundleChanged',
                                                    object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'screenshot_paths_received:',
+                                                   name: 'BackendScreenshotURLReceived',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'thumbnail_path_received:',
+                                                   name: 'BackendThumbnailURLReceived',
+                                                   object: nil)
   end
 
   # @return [boolean] if the products values are all valid
@@ -50,8 +58,16 @@ class ShopProduct
   def thumbnail
     return nil unless @valid
     #TODO : aktivieren wenn wieder vom Server geladen wird
-    #@thumbnail ||=  UIImage.imageWithData(NSData.dataWithContentsOfURL(@thumbnail_path.to_url))
-    @thumbnail ||= rmq.image.resource(@thumbnail_path)
+    if(@thumbnail_path.nil?)
+      BabboBackend.get.request_thumbnail_url_for_identifier(@productIdentifier, sender:self)
+      return nil
+    else
+      unless @thumbnail
+        @thumbnail ||=  UIImage.imageWithData(NSData.dataWithContentsOfURL(@thumbnail_path.to_url))
+        #@thumbnail ||= rmq.image.resource(@thumbnail_path)
+      end
+    end
+
     return @thumbnail
   end
 
@@ -62,13 +78,16 @@ class ShopProduct
     if(@screenshots.nil?)
       screenshots = []
 
-      @screenshot_paths.each do |path|
-        #TODO : aktivieren wenn wieder vom Server geladen wird
-        screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
-        #screenshots << rmq.image.resource(path)
-      end
+      if(@screenshot_paths.nil?)
+        BabboBackend.get.request_screenshots_urls_for_identifier(@productIdentifier, sender:self)
+      else
+        @screenshot_paths.each do |path|
+          screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
+          #screenshots << rmq.image.resource(path)
+        end
 
-      @screenshots = screenshots
+        @screenshots = screenshots
+      end
     end
 
     return @screenshots
@@ -93,6 +112,18 @@ class ShopProduct
       NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleChanged',
                                                               object:nil)
     end
+  end
+
+  def thumbnail_path_received(notification)
+    return unless notification.userInfo[:sender] == self
+    @thumbnail_path = notification.userInfo[:url]
+    thumbnail
+  end
+
+  def screenshot_paths_received(notification)
+    return unless notification.userInfo[:sender] == self
+    @screenshot_paths = notification.userInfo[:url]
+    screenshots
   end
 
 end

@@ -12,9 +12,24 @@ class BabboShop
   end
 
   def initialize
-    @iap_helper = IAPHelper.new(NSSet.setWithArray(ServerBackend.get.get_identifiers))
 
-    load_product_informations
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'screenshot_changed:',
+                                                   name: 'BackendScreenshotURLReceived',
+                                                   object: nil)
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'identifier_changed:',
+                                                   name: 'BackendUpdateIdentifier',
+                                                   object: nil)
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'thumbnail_url_received:',
+                                                   name: 'BackendThumbnailURLReceived',
+                                                   object: nil)
+
+    BabboBackend.get.request_story_identifier(self)
   end
 
   def load_product_informations
@@ -70,5 +85,18 @@ class BabboShop
     #load_product_informations if @product.nil?
     return @products
   end
+
+  def identifier_received(notification)
+    return unless (notification.userInfo[:sender] == self)
+
+    update_identifier(identifier)
+  end
+
+  def update_identifier(identifier)
+    @iap_helper = nil
+    @iap_helper = IAPHelper.new(NSSet.setWithArray(identifier))
+    load_product_informations
+  end
+
 
 end

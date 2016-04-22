@@ -126,6 +126,9 @@ class TabletParentScreen < PM::Screen
     end
 
     if (id == 2)
+      BabboBackend.get.request_story_identifier("Quelle")
+
+
     end
   end
 

@@ -19,7 +19,7 @@ class SceneEditor < SKView
             NSNotificationCenter.defaultCenter.postNotificationName('on_editor_tap',
                                                                object: nil,
                                                                userInfo: {
-                                                                 :location => event.location,
+                                                                 :location => event.location
                                                                })
           end
         end
