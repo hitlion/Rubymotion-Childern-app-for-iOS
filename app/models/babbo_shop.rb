@@ -12,21 +12,9 @@ class BabboShop
   end
 
   def initialize
-
-
     NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'screenshot_changed:',
-                                                   name: 'BackendScreenshotURLReceived',
-                                                   object: nil)
-
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'identifier_changed:',
+                                                   selector: 'identifier_received:',
                                                    name: 'BackendUpdateIdentifier',
-                                                   object: nil)
-
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'thumbnail_url_received:',
-                                                   name: 'BackendThumbnailURLReceived',
                                                    object: nil)
 
     BabboBackend.get.request_story_identifier(self)
@@ -49,7 +37,7 @@ class BabboShop
           end
         end
 
-        NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleChanged',
+        NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleUpdated',
                                                               object:nil)
       else
         NSNotificationCenter.defaultCenter.postNotificationName('ShopRequestFailed',
@@ -58,7 +46,6 @@ class BabboShop
                                                                     :description => "Shop ist derzeit nicht erreichbar. Bitte prüfen Sie ihre Internetverbindung oder ihr Wlan!"
                                                                 })
       end
-
     end
   end
 
@@ -72,24 +59,28 @@ class BabboShop
   end
 
   def get_premium_products
+    return nil unless @premium_products
     products = @premium_products.select{|product| product.not_installed?}
     return products
   end
 
   def get_basic_products
+    return nil unless @basic_products
     products = @basic_products.select{|product| product.not_installed?}
     return products
   end
 
   def get_all_products
+    return nil unless @products
     #load_product_informations if @product.nil?
-    return @products
+    products =  @products
+    return products
   end
 
   def identifier_received(notification)
     return unless (notification.userInfo[:sender] == self)
 
-    update_identifier(identifier)
+    update_identifier(notification.userInfo[:identifier])
   end
 
   def update_identifier(identifier)

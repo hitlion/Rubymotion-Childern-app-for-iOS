@@ -41,6 +41,9 @@ class AppDelegate < PM::Delegate
       StartScreen.next_screen = self.devmode_start_screen || nil
     end
 
+    #pre-load shop
+    BabboShop.get
+
     open StartScreen.new
 
     # NOTE: this is not in the RMQ samples but it's required for appearance.rb.

@@ -19,7 +19,7 @@ class ShopPremiumCell < UICollectionViewCell
 
     view = UIButton.alloc.initWithFrame(self.bounds)
     view.addTarget(self, action: "cell_pressed:", forControlEvents: UIControlEventTouchUpInside)
-    view.backgroundColor = rmq.color.babbo_orange
+    view.backgroundColor = rmq.color.light_gray
     view.tag = element.object_id
 
     image = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, view.frame.size.width, view.frame.size.height))

@@ -74,8 +74,7 @@ class BabboBackend
 
       if(response.body != [] && response.status_description)
         data = JSON.load(response.body.to_s)
-        lp data
-        url = data.first['field_game_gallery']
+        url = data.first['field_game_gallery'].split(',')
       else
         url = nil
       end
@@ -117,7 +116,6 @@ class BabboBackend
     BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/') do |response|
       if(response.body != [] && response.status_description)
         data = JSON.load(response.body.to_s)
-        lp data
         @identifier_data = data
         @identifier = []
         @identifier_data.each do |data|

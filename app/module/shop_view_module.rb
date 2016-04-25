@@ -22,6 +22,7 @@ module ShopViewModule
     @bottom_view_height = 0.5
 
     @delegate           = delegate
+    @cells  = {}
 
     @init = true
   end
@@ -29,8 +30,12 @@ module ShopViewModule
   def build_view
 
     NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'bundles_changes:',
-                                                   name: 'ShopBundleChanged',
+                                                   selector: 'bundles_updated:',
+                                                   name: 'ShopBundleInformationUpdated',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'reload_shop_objects:',
+                                                   name: 'ShopBundleUpdated',
                                                    object: nil)
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'shop_request_failed:',
@@ -112,6 +117,8 @@ module ShopViewModule
       build_story_list
     end
 
+    return unless @all_stories
+
     @premium_collection_view.reloadData
     @basic_view.reload_data(@basic_stories)
 
@@ -131,7 +138,6 @@ module ShopViewModule
   ##
   #
   def build_story_list
-    NSLog('Build Shop List')
     @all_stories = BabboShop.get.get_all_products
     @premium_stories = BabboShop.get.get_premium_products
     @basic_stories = BabboShop.get.get_basic_products
@@ -196,6 +202,8 @@ module ShopViewModule
       cell.make_cell(story)
     end
 
+    @cells[story.productIdentifier] = path
+
     cell
   end
 
@@ -219,7 +227,19 @@ module ShopViewModule
     bundle.clear_chache
   end
 
-  def bundles_changes(notification)
+  def bundles_updated(notification)
+    path = []
+    path << @cells[notification.userInfo[:identifier]]
+
+    lp path
+    if path.first
+      @premium_collection_view.reloadItemsAtIndexPaths(path)
+    else
+      @basic_view.reloadItemsWithIdentifier(notification.userInfo[:identifier])
+    end
+  end
+
+  def reload_shop_objects(notification)
     build_story_list
     reload_data
   end

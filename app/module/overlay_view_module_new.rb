@@ -126,7 +126,6 @@ module OverlayViewModuleNew
   private
 
   def register_for_shop
-
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'receivedDownloadWaitingNotification:',
                                                    name: 'IAPDownloadWaiting',
@@ -163,6 +162,11 @@ module OverlayViewModuleNew
                                                    selector: 'receivedIAPTransactionFailed:',
                                                    name: 'IAPTransactionFailed',
                                                    object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'bundle_updated:',
+                                                   name: 'ShopBundleInformationUpdated',
+                                                   object: nil)
+
   end
 
   def receivedIAPTransactionCancelled(notification)
@@ -467,6 +471,12 @@ module OverlayViewModuleNew
       StartScreen.editor_mode = :new
       rmq.screen.open_root_screen(StartScreen)
     end
+  end
+
+  def bundle_updated (notification)
+    return unless @story
+    @screenshots = @story.screenshots
+    @screenshot_collection_view.reloadData
   end
 
   # UICollectionView Instance Methods

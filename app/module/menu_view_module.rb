@@ -99,13 +99,6 @@ module MenuViewModule
   end
 
   ##
-  # Reload the date for all views
-  # and rebuild them
-  def reload_data
-    build_story_list
-  end
-
-  ##
   # Get the whole story list a build a second one, grouped by the
   # document_id
   def build_story_list
@@ -280,7 +273,7 @@ module MenuViewModule
 
   def bundles_changes(notification)
     less(nil)
-    reload_data
+    build_story_list
     @story_collection_view.reloadData
   end
 

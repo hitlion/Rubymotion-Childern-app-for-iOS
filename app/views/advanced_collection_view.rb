@@ -34,6 +34,7 @@ class AdvancedCollectionView < UIView
     @visible_elements = visibleElements
     @delegate         = delegate
     @header_text      = headerText
+    @cells            = {}
 
     if(device.ipad?)
       @font_fac = 2
@@ -210,6 +211,12 @@ class AdvancedCollectionView < UIView
     cell = view.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: path)
     cell.make_cell(@elements[path.row])
     cell.delegate = WeakRef.new(self)
+    item = @elements[path.row]
+    if item.is_a?(ShopProduct) || item.is_a?(StoryBundle)
+      identifier = item.productIdentifier
+      @cells[identifier] = path if identifier
+    end
+
     cell
   end
 
@@ -223,6 +230,14 @@ class AdvancedCollectionView < UIView
     if (@delegate.respond_to? 'advancedCollectionView:willDisplayCell:forItemAtIndexPath:')
       @delegate.advancedCollectionView(WeakRef.new(self), willDisplayCell:cell, forItemAtIndexPath: path)
     end
+  end
+
+  def reloadItemsWithIdentifier(identifier)
+    return if identifier.nil?
+
+    path = []
+    path << @cells[identifier]
+    @collection_view.reloadItemsAtIndexPaths(path)
   end
 
 end
