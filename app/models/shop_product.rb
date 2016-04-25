@@ -1,7 +1,7 @@
 class ShopProduct
 
   attr_reader :set_name, :price, :rating, :thumbnail_path, :thumbnail, :description, :screenshots,
-              :screenshot_paths, :productIdentifier, :valid, :installed
+              :screenshot_paths, :productIdentifier, :valid, :installed, :timestamp
   attr_accessor :downloading, :buying
 
   def initialize( product )
@@ -45,6 +45,10 @@ class ShopProduct
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'thumbnail_path_received:',
                                                    name: 'BackendThumbnailURLReceived',
+                                                   object: nil)
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'date_received:',
+                                                   name: 'BackendDateReceived',
                                                    object: nil)
   end
 
@@ -124,6 +128,12 @@ class ShopProduct
     return unless notification.userInfo[:sender] == self
     @screenshot_paths = notification.userInfo[:url]
     screenshots
+  end
+
+  def date_received(notification)
+    return unless notification.userInfo[:sender] == self
+    @timestamp = notification.userInfo[:date]
+    lp @timestamp
   end
 
 end

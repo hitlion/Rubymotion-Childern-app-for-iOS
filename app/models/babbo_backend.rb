@@ -17,7 +17,7 @@ class BabboBackend
   public
   # Request the identifier for all available stories. If the list is already loaded,
   # send the notification with the request source and the identifier. Else collect the
-  # identifier from the backend an send then the notificatiob
+  # identifier from the backend an send then the notification
   def request_story_identifier(sender)
     if(@identifier)
       NSNotificationCenter.defaultCenter.postNotificationName('BackendUpdateIdentifier',
@@ -39,10 +39,12 @@ class BabboBackend
   end
 
   # Request the thumbnail url for an given identifier.
-  # After the request send a notification with the sender
+  # After the request send a notification with the sender identity
   # and the thumbnails URL
   def request_thumbnail_url_for_identifier(identifier, sender: sender)
     id = get_id_for_identifier(identifier)
+    return nil unless id
+
     BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/teaser/' + id.to_s) do |response|
       if(response.body != [] && response.status_description)
         data = JSON.load(response.body.to_s)
@@ -62,10 +64,12 @@ class BabboBackend
   end
 
   # Request the screenshots url's for an given identifier.
-  # After the request send a notification with the sender
+  # After the request send a notification with the sender identity
   # and an array with the screenshots URL's
   def request_screenshots_urls_for_identifier(identifier, sender: sender)
     id = get_id_for_identifier(identifier)
+    return nil unless id
+
     BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/gallery/' + id.to_s) do |response|
 
       if(response.body != [] && response.status_description)
@@ -85,6 +89,24 @@ class BabboBackend
     end
   end
 
+  # Request the create date for a story with an given identifier.
+  # After the request send a notification with the sender's identity
+  # and the date as string
+  def request_timestamp_for_identifier(identifier, sender: sender)
+    return nil unless @identifier_data
+
+    id = get_id_for_identifier(identifier)
+    return nil unless id
+
+    data = @identifier_data.find{|data| data["nid"] == id.to_s}
+    NSNotificationCenter.defaultCenter.postNotificationName('BackendDateReceived',
+                                                            object:nil,
+                                                            userInfo: {
+                                                                :sender => sender,
+                                                                :date => data["created"]
+                                                            })
+  end
+
   private
   # Request the store data from the backend server
   # and save the data in @identifier_data.
@@ -93,7 +115,6 @@ class BabboBackend
   # call the given block after the request
   def load_story_identifier(&block)
     BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/') do |response|
-      lp response
       if(response.body != [] && response.status_description)
         data = JSON.load(response.body.to_s)
         lp data
