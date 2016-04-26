@@ -103,7 +103,6 @@ module Scene
 
     # must use this because set the alpha of the cropnode doesnt effect the children if there is a mask!=nil...
     def alpha=(value)
-      lp "Test #{value}"
       if @node_object
         @node_object.alpha = value
       end

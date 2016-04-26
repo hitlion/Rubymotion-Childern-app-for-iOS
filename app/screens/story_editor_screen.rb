@@ -68,7 +68,7 @@ class StoryEditorScreen < PM::Screen
     @editable_views = @story_bundle.load_editable_views
 
     scene  = SceneFactory.create_scene(@story_bundle, @editable_views.first, :editor)
-    @editable = @story_bundle.ruleset.editable_objects_for_screen( @story_bundle, @editable_views.first)
+    @editable = @story_bundle.ruleset.editable_objects_for_screen(@story_bundle, @editable_views.first)
     @current_view = @editable_views.first
 
     setup_editor_mode(scene)

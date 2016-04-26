@@ -78,9 +78,10 @@ class StoryEditorChangeViewBox < UIView
     return unless @hidden
     @hidden = false
 
-    lp "Show: Teststststs", force_color: :red
+
     @current_view = rmq.screen.current_view
     @available_views = rmq.screen.editable_views
+
     @index = @available_views.index(@current_view)
     rmq(self).animate(duration: 0.5, animations: ->(q){
       q.move from_bottom: 20

@@ -110,10 +110,8 @@ module Story
           if(rule.splice == :accept)
             parts = rule.path.split(":")
             path = ':' + parts[1] + ':' + parts[2]
-
             screens << path  unless(screens.include?(path))
           end
-
         end
 
         screens
