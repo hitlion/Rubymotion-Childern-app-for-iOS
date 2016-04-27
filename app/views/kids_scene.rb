@@ -70,6 +70,8 @@ class KidsScene < SKScene
     add_joints
 
     add_version_number
+
+    add_tutorial
   end
 
   def willMoveFromView(view)
@@ -393,6 +395,11 @@ class KidsScene < SKScene
     @background_audio.play
   end
 
+
+  def add_tutorial
+
+  end
+
   #################
   # Touch Event / clicked Methods
   #################
@@ -509,6 +516,7 @@ class KidsScene < SKScene
       move_rope_by_x(@center_point.x - @center_node.position.x, 0.85)
     end
   end
+
 
 
 end

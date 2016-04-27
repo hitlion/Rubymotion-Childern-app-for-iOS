@@ -5,8 +5,18 @@ class KidsScreen < PM::Screen
   def will_appear
     @player = SKView.alloc.initWithFrame(view.bounds)
     rmq(view).append(@player)
-    scene = KidsScene.alloc.initWithSize(view.size)
-    @player.presentScene(scene)
+
+
+    unless @player.scene
+      if(true)
+        tutorial = KidsSceneTutorial.alloc.initWithSize(view.size)
+        @player.presentScene(tutorial)
+      else
+        scene = KidsScene.alloc.initWithSize(view.size)
+        @player.presentScene(scene)
+      end
+    end
+
   end
 
   def will_disappear
