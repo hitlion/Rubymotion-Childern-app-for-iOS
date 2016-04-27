@@ -18,7 +18,7 @@ class ShopProduct
     end
 
     NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'bundlesChanges:',
+                                                   selector: 'bundles_changes:',
                                                    name: 'BabboBundleChanged',
                                                    object: nil)
     NSNotificationCenter.defaultCenter.addObserver(self,

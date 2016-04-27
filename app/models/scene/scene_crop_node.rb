@@ -1,6 +1,8 @@
 module Scene
 
   class CropNode < SKCropNode
+    alias :'super_runAction:' :'runAction:'
+
     include Scene::NodeHelpersMixin
 
     attr_accessor :node_object,
@@ -44,6 +46,10 @@ module Scene
       else
         return CGSizeMake(0,0)
       end
+    end
+
+    def setSize(size)
+      lp 'Size', force_color: :red
     end
 
     def size=(size)
@@ -112,6 +118,12 @@ module Scene
       if @node_object
         return @node_object.alpha
       end
+      return nil
     end
+
+    def setAlpha(value)
+      lp value
+    end
+
   end
 end

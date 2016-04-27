@@ -87,13 +87,7 @@ module JavaScript
       args = Hash.symbolicate(args)
       if args[:alpha] && args[:duration]
         action = do_fade(args[:alpha], args[:duration])
-        # if the node is a CropNode this (and only this) action must be called
-        # for the node_object else there is no effect
-        if node .is_a? Scene::CropNode
-          node.node_object.runAction(action) unless action.nil?
-        else
-          node.runAction(action) unless action.nil?
-        end
+        node.runAction(action) unless action.nil?
       end
     end
 
@@ -178,19 +172,9 @@ module JavaScript
           end
         end
       end
-      lp actions
 
-      # CropNodes cant use the fade actions in the correct way,
-      # fix this by calling the fade actions on their childnode
-      # (PictureNode or VideoNode) directly.
-      if node.is_a? Scene::CropNode
-        fade_actions = actions.select{|action| action.is_a? SKFade}
-        actions      = actions.select{|action| !action.is_a? SKFade}
-        node.node_object.runAction(SKAction.group(fade_actions))
-      end
 
       node.runAction(SKAction.group(actions))
-
       NSThread.sleepForTimeInterval(duration) unless wait == false
     end
 

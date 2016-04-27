@@ -2,6 +2,8 @@ module Scene
   class PictureNode < SKSpriteNode
     include Scene::NodeHelpersMixin
 
+    attr_accessor :mask
+
     # Create a new PictureNode bound to +story_object+
     #
     # @param [StoryBundle] bundle The {StoryBundle} containing +story_object+.
@@ -29,6 +31,11 @@ module Scene
              force_color: :yellow
         end
 
+        if story_object.mask
+          mask = UIImage.imageWithData(bundle.asset_data(story_object.mask))
+          image = image.masked(mask)
+        end
+
       texture  = SKTexture.textureWithImage(image)
       PictureNode.alloc.initWithTexture(texture).tap do |node|
         node.size     = node.calculate_node_size(story_object.size,
@@ -39,11 +46,20 @@ module Scene
         node.zPosition = story_object.layer
         node.alpha     = 1.0001 - story_object.transparency
         node.name      = story_object.path
+        node.mask      = mask
 
         if animated
           node.add_animation_series(series)
         end
       end
+    end
+
+    def new_image(image)
+      if @mask
+        image = image.masked(@mask)
+      end
+
+      self.texture = SKTexture.textureWithImage(image)
     end
 
     # @private

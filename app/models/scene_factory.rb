@@ -69,7 +69,7 @@ module SceneFactory
     lp "Converting #{story_object.type} at #{story_object.path}"
     case story_object.type
     when :picture
-      Scene::CropNode.create(bundle, story_object)
+      Scene::PictureNode.create(bundle, story_object)
     when :audio
       Scene::AudioNode.create(bundle, story_object, mode)
     when :text
@@ -78,7 +78,7 @@ module SceneFactory
       if story_object.content.downcase.end_with? '.gif'
         Scene::GIFVideoNode.create(bundle, story_object)
       else
-        Scene::CropNode.create(bundle, story_object)
+        Scene::VideoNode.create(bundle, story_object)
       end
     else
       lp "Object conversion failed for '#{story_object.path}'",

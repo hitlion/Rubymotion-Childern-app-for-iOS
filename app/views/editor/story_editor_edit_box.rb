@@ -184,8 +184,7 @@ class StoryEditorEditBox < UIView
 
   def photo_available( image, new )
     path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:picture)
-    texture = SKTexture.textureWithImage(image)
-    @node.texture = texture
+    @node.new_image(image)
 
     if(@target.changes[:object_content])
       unless(@target.content == @target.changes[:object_content][:original])
