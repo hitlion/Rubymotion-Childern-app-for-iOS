@@ -137,6 +137,7 @@ class BabboBackend
     return nil if identifier.nil? || identifier == ''
 
     data = @identifier_data.find{|data| data['field_store_id'] == identifier }
+    return nil unless data
     return data['nid']
   end
 end

@@ -16,8 +16,6 @@ module ShopViewModule
   # @init = true
   def init_view_with_delegate(delegate)
 
-
-
     @top_view_height    = 0.5
     @bottom_view_height = 0.5
 
@@ -30,8 +28,8 @@ module ShopViewModule
   def build_view
 
     NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'bundles_updated:',
-                                                   name: 'ShopBundleInformationUpdated',
+                                                   selector: 'update_thumnail:',
+                                                   name: 'ShopObjectThumbnailUpdated',
                                                    object: nil)
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'reload_shop_objects:',
@@ -52,6 +50,9 @@ module ShopViewModule
       self.contentSize = CGSizeMake(self.frame.size.width,
                                     (@top_view_height + @bottom_view_height) * self.frame.size.height)
     end
+
+    #pre-load shop
+    BabboShop.get
   end
 
   ##
@@ -89,13 +90,13 @@ module ShopViewModule
   def add_loading_label
     frame = CGRectMake(0, 0, self.frame.size.width, @top_view_height * self.frame.size.height)
 
-    @loading_label = UILabel.alloc.initWithFrame(frame)
-    @loading_label.text = 'Bitte warten, unser Shop wird gerade geladen...'
-    @loading_label.textColor = UIColor.blackColor
-    @loading_label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
-    @loading_label.textAlignment = UITextAlignmentCenter
+    @info_label = UILabel.alloc.initWithFrame(frame)
+    @info_label.text = 'Bitte warten, unser Shop wird gerade geladen...'
+    @info_label.textColor = UIColor.blackColor
+    @info_label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
+    @info_label.textAlignment = UITextAlignmentCenter
 
-    self.addSubview(@loading_label)
+    self.addSubview(@info_label)
   end
 
   ##
@@ -122,8 +123,19 @@ module ShopViewModule
     @premium_collection_view.reloadData
     @basic_view.reload_data(@basic_stories)
 
-    @loading_label.hidden = @all_stories.length > 0
-    @premium_collection_view.hidden = !@loading_label.hidden?
+    if(@all_stories.length < 1)
+      @info_label.text = 'Bitte warten, unser Shop wird gerade geladen...'
+      @info_label.hidden = false
+    else
+      if(@premium_stories == [] && @basic_stories == [])
+        @info_label.text = 'Keine weiteren Inhalte verfügbar, mehr ist auf dem Weg!'
+        @info_label.hidden = false
+      else
+        @info_label.hidden = true
+      end
+    end
+
+    @premium_collection_view.hidden = !@info_label.hidden?
   end
 
   def hide
@@ -227,21 +239,17 @@ module ShopViewModule
     bundle.clear_chache
   end
 
-  def bundles_updated(notification)
-    path = []
-    path << @cells[notification.userInfo[:identifier]]
-
-    lp path
-    if path.first
-      @premium_collection_view.reloadItemsAtIndexPaths(path)
-    else
-      @basic_view.reloadItemsWithIdentifier(notification.userInfo[:identifier])
+  def update_thumnail(notification)
+    Dispatch::Queue.main.async do
+      reload_data
     end
   end
 
   def reload_shop_objects(notification)
-    build_story_list
-    reload_data
+    Dispatch::Queue.main.async do
+      build_story_list
+      reload_data
+    end
   end
 
   def shop_request_failed(notification)

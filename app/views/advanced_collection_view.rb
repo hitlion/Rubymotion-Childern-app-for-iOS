@@ -236,8 +236,11 @@ class AdvancedCollectionView < UIView
     return if identifier.nil?
 
     path = []
-    path << @cells[identifier]
-    @collection_view.reloadItemsAtIndexPaths(path)
+    path << @cells[identifier] if @cells[identifier]
+    unless path.first.nil?
+      @collection_view.reloadItemsAtIndexPaths(path)
+    end
+
   end
 
 end

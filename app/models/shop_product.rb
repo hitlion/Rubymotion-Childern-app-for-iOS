@@ -14,7 +14,9 @@ class ShopProduct
     @buying = false
 
     StoryBundle.bundles.each do |story|
-      @installed = story.document.productIdentifier == @productIdentifier
+      if story.document.productIdentifier == @productIdentifier
+        @installed = true
+      end
     end
 
     NSNotificationCenter.defaultCenter.addObserver(self,
@@ -34,8 +36,8 @@ class ShopProduct
                                                    name: 'BackendDateReceived',
                                                    object: nil)
 
-    BabboBackend.get.request_thumbnail_url_for_identifier(@productIdentifier, sender: self)
-    BabboBackend.get.request_screenshots_urls_for_identifier(@productIdentifier, sender: self)
+    #BabboBackend.get.request_thumbnail_url_for_identifier(@productIdentifier, sender: self)
+    #BabboBackend.get.request_screenshots_urls_for_identifier(@productIdentifier, sender: self)
     BabboBackend.get.request_timestamp_for_identifier(@productIdentifier, sender: self)
   end
 
@@ -96,28 +98,37 @@ class ShopProduct
   def bundles_changes(notification)
     if notification.userInfo[:changed_bundle].document.productIdentifier == @productIdentifier
       @installed = notification.userInfo[:status] == :added
-      bundle_information_updated
+      NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleStatusChanged',
+                                                              object:nil)
+
     end
   end
 
-  # Call this after update a value of this shop product.
-  # The receiver should be implemented in the shop view.
-  # After receiving this notification the view should request the bundle information again
-  # and update the view with the new information
-  def bundle_information_updated
-    NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleInformationUpdated',
+  def send_thumbnail_updated
+    NSNotificationCenter.defaultCenter.postNotificationName('ShopObjectThumbnailUpdated',
                                                             object:nil,
                                                             userInfo: {
-                                                                identifier: @productIdentifier
+                                                                identifier: @productIdentifier,
+                                                                thumbnail: @thumbnail
                                                             })
   end
+
+  def send_screenshots_updated
+    NSNotificationCenter.defaultCenter.postNotificationName('ShopObjectScreenshotsUpdated',
+                                                            object:nil,
+                                                            userInfo: {
+                                                                identifier: @productIdentifier,
+                                                                screenshots: @screenshots
+                                                            })
+  end
+
 
   # Receiver method for the thumbnail callback.
   # Saves the given path to the thumbnail. Request loading from the path.
   def thumbnail_url_received(notification)
     return unless notification.userInfo[:sender] == self
     @thumbnail_url = notification.userInfo[:url].to_url
-    bundle_information_updated
+    load_thumbnail(@thumbnail_url)
   end
 
   # Receiver method for the screenshots callback
@@ -128,7 +139,7 @@ class ShopProduct
     urls.each do |url|
       @screenshot_urls << url.to_url
     end
-    bundle_information_updated
+    load_screenshots(@screenshot_urls)
   end
 
   # Receiver method for the timestamp callback
@@ -145,7 +156,8 @@ class ShopProduct
     return false if url.nil? || url == ""
     Dispatch::Queue.concurrent.async do
       @thumbnail = UIImage.imageWithData(NSData.dataWithContentsOfURL(url))
-      bundle_information_updated
+      lp self.set_name
+      send_thumbnail_updated
     end
 
   end
@@ -161,7 +173,7 @@ class ShopProduct
       urls.each  do |url|
         @screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(url))
       end
-      bundle_information_updated
+      send_screenshots_updated
     end
   end
 

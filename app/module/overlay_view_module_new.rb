@@ -163,8 +163,8 @@ module OverlayViewModuleNew
                                                    name: 'IAPTransactionFailed',
                                                    object: nil)
     NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'bundle_updated:',
-                                                   name: 'ShopBundleInformationUpdated',
+                                                   selector: 'screenshots_updated:',
+                                                   name: 'ShopObjectScreenshotsUpdated',
                                                    object: nil)
 
   end
@@ -297,6 +297,10 @@ module OverlayViewModuleNew
   end
 
   def relayout_with_type
+
+    # always show decription first and mark left button
+    bottom_button_line_pressed(@bottom_button_1, tag: 0)
+
     if(@type == :menu_standard)
       @image_box.image = @story.thumbnail
       @title_label.text = @story.set_name
@@ -473,10 +477,12 @@ module OverlayViewModuleNew
     end
   end
 
-  def bundle_updated (notification)
+  def screenshots_updated (notification)
     return unless @story
-    @screenshots = @story.screenshots
-    @screenshot_collection_view.reloadData
+    Dispatch::Queue.main.async do
+      @screenshots = @story.screenshots
+      @screenshot_collection_view.reloadData
+    end
   end
 
   # UICollectionView Instance Methods

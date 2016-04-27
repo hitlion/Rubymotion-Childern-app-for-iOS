@@ -13,6 +13,11 @@ class BabboShop
 
   def initialize
     NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'send_bundles_changed_notification:',
+                                                   name: 'ShopBundleStatusChanged',
+                                                   object: nil)
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'identifier_received:',
                                                    name: 'BackendUpdateIdentifier',
                                                    object: nil)
@@ -36,9 +41,7 @@ class BabboShop
             @basic_products << story
           end
         end
-
-        NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleUpdated',
-                                                              object:nil)
+        send_bundles_changed_notification (nil)
       else
         NSNotificationCenter.defaultCenter.postNotificationName('ShopRequestFailed',
                                                                 object:nil,
@@ -87,6 +90,11 @@ class BabboShop
     @iap_helper = nil
     @iap_helper = IAPHelper.new(NSSet.setWithArray(identifier))
     load_product_informations
+  end
+
+  def send_bundles_changed_notification (notification)
+    NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleUpdated',
+                                                            object:nil)
   end
 
 

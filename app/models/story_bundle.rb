@@ -101,7 +101,7 @@ class StoryBundle
     end
   end
 
-  attr_reader :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :thumbnail, :description
+  attr_reader :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :screenshot_urls, :thumbnail, :description
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -118,6 +118,11 @@ class StoryBundle
     @screenshots = nil
     @thumbnail = nil
     @description = nil
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'screenshot_urls_received:',
+                                                   name: 'BackendScreenshotURLReceived',
+                                                   object: nil)
   end
 
   def copy
@@ -302,16 +307,20 @@ class StoryBundle
     editable
   end
 
+  # This method return the screenshots for this shop object,
+  # if it is already loaded and cached from the backend.
+  # Otherwise this method send a request for the paths (URLs) to the screenshots.
+  # If the URLs are already received load the images. In both cases return nil.
+  # @return [Array <UIImage>] an Array of UIImages or +nil+ if if loading and cache is not done
   def screenshots
     if(@screenshots.nil?)
-      screenshots = []
-
-      paths = ServerBackend.get.get_screenshots_for_identifier(self.productIdentifier)
-      paths.each do |path|
-        screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(path.to_url))
+      unless @screenshot_urls
+        BabboBackend.get.request_screenshots_urls_for_identifier(@document.productIdentifier, sender:self)
+        return nil
+      else
+        load_screenshots(@screenshot_urls)
+        return nil
       end
-
-      @screenshots = screenshots
     end
 
     return @screenshots
@@ -476,6 +485,41 @@ class StoryBundle
       asset_store.register_manifest(@manifest, @checksum)
       asset_store.compact!
       lp "Cached #{asset_list.count} assets."
+    end
+  end
+
+  def send_screenshots_updated
+    NSNotificationCenter.defaultCenter.postNotificationName('ShopObjectScreenshotsUpdated',
+                                                            object:nil,
+                                                            userInfo: {
+                                                                identifier: @productIdentifier,
+                                                                screenshots: @screenshots
+                                                            })
+  end
+
+  # Receiver method for the screenshots callback
+  def screenshot_urls_received(notification)
+    return unless notification.userInfo[:sender] == self
+    urls = notification.userInfo[:url]
+    @screenshot_urls = []
+    urls.each do |url|
+      @screenshot_urls << url.to_url
+    end
+    load_screenshots(@screenshot_urls)
+  end
+
+  # Load the screenshots for this shop story
+  # @param [String] url The URL to the thumbnail for this shop object
+  # @return [Boolean] Return +true+ if the thumbnail was loading successful or false if errors occur
+  def load_screenshots(urls)
+    return false if urls.nil? || urls.empty?
+    @screenshots = []
+
+    Dispatch::Queue.concurrent.async do
+      urls.each  do |url|
+        @screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(url))
+      end
+      send_screenshots_updated
     end
   end
 end

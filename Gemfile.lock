@@ -84,6 +84,7 @@ GEM
       rake
       ruby_motion_query (>= 1.7.0)
     ruby_motion_query (1.7.0)
+    sugarcube (3.3.7)
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
@@ -113,6 +114,7 @@ DEPENDENCIES
   rake
   redcarpet
   redpotion
+  sugarcube
   yard
   yard-cucumber
   yard-rspec
