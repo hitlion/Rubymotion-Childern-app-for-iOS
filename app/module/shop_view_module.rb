@@ -27,6 +27,8 @@ module ShopViewModule
 
   def build_view
 
+    NSNotificationCenter.defaultCenter.removeObserver(self)
+
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'update_thumnail:',
                                                    name: 'ShopObjectThumbnailUpdated',

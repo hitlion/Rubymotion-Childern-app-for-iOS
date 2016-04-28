@@ -25,6 +25,8 @@ module MenuViewModule
 
   def build_view
 
+    NSNotificationCenter.defaultCenter.removeObserver(self)
+
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'bundles_changes:',
                                                    name: 'BabboBundleChanged',

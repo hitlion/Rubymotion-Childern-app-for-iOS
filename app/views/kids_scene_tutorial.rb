@@ -36,7 +36,16 @@ class KidsSceneTutorial < SKScene
 
     return if (node.nil?)
 
+    lp node.name
 
+    case node.name
+      when 'close'
+        close_tutorial
+      when 'hook'
+        toogle_hook
+      when 'check_box'
+        toogle_hook
+    end
 
   end
 
@@ -68,19 +77,22 @@ class KidsSceneTutorial < SKScene
     video_frame.name = 'video_frame'
     video_frame.zPosition = 2
 
-    video = SKSpriteNode.spriteNodeWithColor(rmq.color.blue, size:  CGSizeMake(0.8 * w, 0.8 * h))
+    video = SKVideoNode.videoNodeWithFileNamed('tutorial/video.mp4')
     video.position =  CGPointMake(0.5 * w, 0.5 * h)
     video.name = 'video'
     video.zPosition = 3
+    video.size = CGSizeMake(0.8 * w, 0.8 * h)
 
-    label_layer = SKSpriteNode.spriteNodeWithColor(rmq.color.babbo_orange, size: CGSizeMake(0.8 * w, 0.05 * h))
-    label_layer.position =  CGPointMake(0.5 * w, 0.125 * h)
+    texture = SKTexture.textureWithImageNamed('tutorial/tut_label_background.png')
+    label_layer = SKSpriteNode.spriteNodeWithTexture(texture)
+    label_layer.position =  CGPointMake(0.5 * w, 0.1325 * h)
     label_layer.name = 'layer'
     label_layer.zPosition = 4
+    label_layer.size = CGSizeMake(0.75 * w, 0.06 * h)
 
     label = SKLabelNode.labelNodeWithText('Beim nächstem Öffnen nicht erneut anzeigen')
     label.color = rmq.color.babbo_orange
-    label.position = CGPointMake(0.175 * w, 0.1125 * h)
+    label.position = CGPointMake(0.175 * w, 0.115 * h)
     label.name = 'label'
     label.zPosition = 5
     label.fontSize = TTUtil.get_font_size(:large)
@@ -95,6 +107,21 @@ class KidsSceneTutorial < SKScene
     close.zPosition = 4
     close.size = CGSizeMake(0.075 * h, 0.075 * h)
 
+    texture = SKTexture.textureWithImageNamed('tutorial/tut_checkbox.png')
+    check_box = SKSpriteNode.spriteNodeWithTexture(texture)
+    check_box.position =  CGPointMake(0.8 * w, 0.1325 * h)
+    check_box.name = 'check_box'
+    check_box.zPosition = 6
+    check_box.size = CGSizeMake(0.045 * h, 0.045 * h)
+
+    texture = SKTexture.textureWithImageNamed('tutorial/tut_hook.png')
+    hook = SKSpriteNode.spriteNodeWithTexture(texture)
+    hook.position =  CGPointMake(0.8 * w, 0.1325 * h)
+    hook.name = 'hook'
+    hook.zPosition = 7
+    hook.hidden = true
+    hook.size = CGSizeMake(0.045 * h, 0.045 * h)
+
     addChild background
     addChild layer
     addChild video_frame
@@ -102,6 +129,24 @@ class KidsSceneTutorial < SKScene
     addChild label_layer
     addChild label
     addChild close
+    addChild check_box
+    addChild hook
   end
+
+  def toogle_hook
+    hook = childNodeWithName('hook')
+    hook.hidden = !hook.hidden?
+    NSUserDefaults.standardUserDefaults.setBool(!hook.hidden?, forKey:'babbo_voco.hide_tutorial')
+    NSUserDefaults.standardUserDefaults.synchronize
+  end
+
+  def close_tutorial
+    lp 'close'
+
+    NSNotificationCenter.defaultCenter.postNotificationName('TutorialClosed',
+                                                            object:nil)
+
+  end
+
 
 end

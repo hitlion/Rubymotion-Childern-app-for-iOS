@@ -126,6 +126,8 @@ module OverlayViewModuleNew
   private
 
   def register_for_shop
+    NSNotificationCenter.defaultCenter.removeObserver(self)
+
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'receivedDownloadWaitingNotification:',
                                                    name: 'IAPDownloadWaiting',

@@ -126,9 +126,8 @@ class TabletParentScreen < PM::Screen
     end
 
     if (id == 2)
-      BabboBackend.get.request_story_identifier("Quelle")
-
-
+      NSUserDefaults.standardUserDefaults.setBool(false, forKey:'babbo_voco.hide_tutorial')
+      NSUserDefaults.standardUserDefaults.synchronize
     end
   end
 

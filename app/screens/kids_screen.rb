@@ -3,26 +3,42 @@ class KidsScreen < PM::Screen
   include OrientationModule
 
   def will_appear
+    NSNotificationCenter.defaultCenter.removeObserver(self)
+
+    NSNotificationCenter.defaultCenter.addObserver(self,
+                                                   selector: 'tutorial_closed',
+                                                   name: 'TutorialClosed',
+                                                   object: nil)
+
     @player = SKView.alloc.initWithFrame(view.bounds)
     rmq(view).append(@player)
 
-
-    unless @player.scene
-      if(true)
-        tutorial = KidsSceneTutorial.alloc.initWithSize(view.size)
-        @player.presentScene(tutorial)
-      else
-        scene = KidsScene.alloc.initWithSize(view.size)
-        @player.presentScene(scene)
-      end
-    end
-
+    @player.presentScene(get_scene)
   end
 
   def will_disappear
     @player.presentScene(nil)
     rmq(@player).remove
     @player = nil
+  end
+
+  def tutorial_closed
+    @player.presentScene(nil)
+    @player.presentScene(KidsScene.alloc.initWithSize(view.size))
+  end
+
+  def get_scene
+    return nil unless @player
+
+    unless @player.scene
+      if(NSUserDefaults.standardUserDefaults.boolForKey('babbo_voco.hide_tutorial'))
+        scene = KidsScene.alloc.initWithSize(view.size)
+      else
+        scene = KidsSceneTutorial.alloc.initWithSize(view.size)
+      end
+    end
+
+    return scene
   end
 
 end

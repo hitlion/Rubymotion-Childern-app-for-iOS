@@ -12,6 +12,9 @@ class BabboShop
   end
 
   def initialize
+
+    NSNotificationCenter.defaultCenter.removeObserver(self)
+
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'send_bundles_changed_notification:',
                                                    name: 'ShopBundleStatusChanged',
