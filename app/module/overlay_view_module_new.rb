@@ -196,7 +196,7 @@ module OverlayViewModuleNew
       @story.buying = false
     end
 
-    app.alert(title: "Kauf war erfolgreich!", message: "Download startet in wenigen Sekunden.", actions: ['OK'])
+    #app.alert(title: "Kauf war erfolgreich!", message: "Download startet in wenigen Sekunden.", actions: ['OK'])
   end
 
   def receivedIAPTransactionFailed(notification)

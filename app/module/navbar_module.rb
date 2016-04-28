@@ -30,9 +30,9 @@ module NavbarModule
   def init_view_with_delegate(delegate, titleText: titleText)
     @pos_x_back_button  = 0.00
     @pos_x_label        = 0.10
-    @pos_x_button_1     = 0.7
-    @pos_x_button_2     = 0.8
-    @pos_x_button_3     = 0.9
+    @pos_x_button_1     = 0.7 + 0.1
+    @pos_x_button_2     = 0.8 + 0.1
+    @pos_x_button_3     = 0.9 + 0.1
     @pos_x_searchbar    = 0.85
 
     @element_size       = 64
@@ -100,7 +100,7 @@ module NavbarModule
                        @element_size, @element_size)
     image = UIImage.imageNamed("icons/option.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
     button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: nil, id: 3)
-    self.addSubview(button3)
+    #self.addSubview(button3)
     #TODO: Activate option button here set nil to "button_pressed:"
 
     ####
