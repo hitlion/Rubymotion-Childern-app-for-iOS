@@ -14,7 +14,6 @@ class KidsSceneTutorial < SKScene
   end
 
   def willMoveFromView(view)
-    lp 'test'
   end
 
   ##
@@ -141,11 +140,8 @@ class KidsSceneTutorial < SKScene
   end
 
   def close_tutorial
-    lp 'close'
-
     NSNotificationCenter.defaultCenter.postNotificationName('TutorialClosed',
                                                             object:nil)
-
   end
 
 
