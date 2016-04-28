@@ -20,12 +20,14 @@ module ShopViewModule
     @bottom_view_height = 0.5
 
     @delegate           = delegate
-    @cells  = {}
+
 
     @init = true
   end
 
   def build_view
+
+    @cells  = {}
 
     NSNotificationCenter.defaultCenter.removeObserver(self)
 
@@ -216,6 +218,7 @@ module ShopViewModule
       cell.make_cell(story)
     end
 
+    @cells = {} unless @cells
     @cells[story.productIdentifier] = path
 
     cell
