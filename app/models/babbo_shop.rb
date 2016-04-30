@@ -100,5 +100,18 @@ class BabboShop
                                                             object:nil)
   end
 
+  def restore_purchases
+    return unless @iap_helper
+
+    app.alert(title: 'Achtung', message: 'Gekaufte Bundles werden wieder hergestellt. Achtung sie sollten sich in einem WLAN befinden!', actions: ['OK', 'ABBRECHEN']) do |button_tag|
+      case button_tag
+        when 'OK'
+          @iap_helper.restoreCompletedTransactions
+          app.alert(title: 'Wiederherstellen', message: 'Ihre bereits gekaufen Stories werden nun geladen und installiert.', actions: [:ok])
+        when 'ABBRECHEN'
+      end
+    end
+  end
+
 
 end

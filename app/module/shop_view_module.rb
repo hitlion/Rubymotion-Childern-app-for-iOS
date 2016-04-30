@@ -260,4 +260,8 @@ module ShopViewModule
   def shop_request_failed(notification)
     app.alert(title: "Verbindung zum Shop leider nicht möglich!", message: notification.userInfo[:description], actions: ['OK'])
   end
+
+  def restore_purchases
+    BabboShop.get.restore_purchases
+  end
 end

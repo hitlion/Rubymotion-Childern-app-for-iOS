@@ -75,7 +75,8 @@ class IAPHelper
         when SKPaymentTransactionStateFailed
           self.failedTransaction(transaction)
         when SKPaymentTransactionStateRestored
-          self.restoreTransaction(transaction)
+
+          self.completeTransaction(transaction)
         else
       end
     end
@@ -120,10 +121,10 @@ class IAPHelper
 
   end
 
-  def restoreTransaction(transaction)
-    self.provide_content(transaction.originalTransaction.payment.productIdentifier)
-    SKPaymentQueue.defaultQueue.finishTransaction(transaction)
-  end
+  #def restoreTransaction(transaction)
+  #  self.provide_content(transaction.originalTransaction.payment.productIdentifier)
+  #  SKPaymentQueue.defaultQueue.finishTransaction(transaction)
+  #end
 
   def failedTransaction(transaction)
 
@@ -157,6 +158,7 @@ class IAPHelper
   end
 
   def restoreCompletedTransactions
+    NSLog('Restore, complete Transactions')
     SKPaymentQueue.defaultQueue.restoreCompletedTransactions
   end
 

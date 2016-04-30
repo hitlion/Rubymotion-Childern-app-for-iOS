@@ -3,7 +3,8 @@ module NavbarModule
   attr_reader :pos_x_back_button, :pos_x_label, :pos_x_button_1,
               :pos_x_button_2, :pos_x_button_3, :pos_x_searchbar,
               :element_size, :icon_size, :label_width, :searchbar_width,
-              :title_text, :delegate
+              :title_text, :delegate, :button1, :button2, :button3
+
 
   ##
   # Override this method to re-design the navbar methods
@@ -30,9 +31,10 @@ module NavbarModule
   def init_view_with_delegate(delegate, titleText: titleText)
     @pos_x_back_button  = 0.00
     @pos_x_label        = 0.10
-    @pos_x_button_1     = 0.7 + 0.1
-    @pos_x_button_2     = 0.8 + 0.1
-    @pos_x_button_3     = 0.9 + 0.1
+    @pos_x_button_1     = 0.6 + 0.1
+    @pos_x_button_2     = 0.7 + 0.1
+    @pos_x_button_3     = 0.8 + 5
+    @pos_x_button_4     = 0.9
     @pos_x_searchbar    = 0.85
 
     @element_size       = 64
@@ -82,26 +84,36 @@ module NavbarModule
     # Define the first button
     frame = CGRectMake(@pos_x_button_1 * self.frame.size.width, y_pos_elements,
                        @element_size, @element_size)
-    button1 = add_button_element_with_image(UIImage.imageNamed("icons/playground.png"), displayName: "Spielplatz",
+    @button1 = add_button_element_with_image(UIImage.imageNamed("icons/playground.png"), displayName: "Spielplatz",
                                             frame: frame, action: "button_pressed:", id: 1)
-    self.addSubview(button1)
+    self.addSubview(@button1)
 
     ####
     # Define second button
     frame = CGRectMake(@pos_x_button_2 * self.frame.size.width, y_pos_elements,
                        @element_size, @element_size)
-    button2 = add_button_element_with_image(UIImage.imageNamed("icons/shop.png"), displayName: "Shop",
+    @button2 = add_button_element_with_image(UIImage.imageNamed("icons/shop.png"), displayName: "Shop",
                                             frame: frame, action: "button_pressed:", id: 2)
-    self.addSubview(button2)
+    self.addSubview(@button2)
 
     ####
     # Define third button
     frame = CGRectMake(@pos_x_button_3 * self.frame.size.width, y_pos_elements,
                        @element_size, @element_size)
     image = UIImage.imageNamed("icons/option.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
-    button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: nil, id: 3)
-    #self.addSubview(button3)
+    @button3 = add_button_element_with_image(image, displayName: "Optionen", frame: frame, action: nil, id: 3)
+    #self.addSubview(@button3)
     #TODO: Activate option button here set nil to "button_pressed:"
+
+    ####
+    # Define third button
+    frame = CGRectMake(@pos_x_button_4 * self.frame.size.width, y_pos_elements,
+                       @element_size, @element_size)
+    image = UIImage.imageNamed("icons/option.png").imageWithRenderingMode(UIImageRenderingModeAlwaysTemplate)
+    @button4 = add_button_element_with_image(image, displayName: "Restore", frame: frame, action: "button_pressed:", id: 4)
+    @button4.hidden = true
+    self.addSubview(@button4)
+
 
     ####
     # Define searchbar
@@ -186,6 +198,10 @@ module NavbarModule
       end
     end
 
+    if source.tag == 4
+      source.tintColor = rmq.color.babbo_button_grey
+    end
+
     @last_selected_button = source
   end
 
@@ -206,5 +222,18 @@ module NavbarModule
     return if (@last_selected_button.nil?)
     @last_selected_button.tintColor = rmq.color.babbo_button_grey
     @last_selected_button = nil
+  end
+
+  def hide_button(hide, id: id)
+    case id
+      when 1
+        @button1.hidden = hide
+      when 2
+        @button2.hidden = hide
+      when 3
+        @button3.hidden = hide
+      when 4
+        @button4.hidden = hide
+    end
   end
 end

@@ -100,6 +100,7 @@ class SmartphoneParentScreen < PM::Screen
       StartScreen.next_screen= :kids_menu
       StartScreen.last_screen = :parent_menu
       rmq.screen.open_root_screen(StartScreen)
+      @navbar.hide_button(true, id: 4)
     elsif (button_id == 2)
       if(@shop_view.hidden?)
         @navbar.set_title_text("Shop")
@@ -107,6 +108,7 @@ class SmartphoneParentScreen < PM::Screen
         @menu_view.hidden = true
         @navbar.show_back_button
         @options_view.hidden = true
+        @navbar.hide_button(false, id: 4)
       end
     elsif (button_id == 3)
       @options_view.hidden = !@options_view.hidden?
@@ -114,6 +116,8 @@ class SmartphoneParentScreen < PM::Screen
       @menu_view.hidden = false
       @navbar.hide_back_button
       @navbar.set_title_text("Alle Stories")
+    elsif (button_id == 4)
+      @shop_view.restore_purchases
     end
   end
 
