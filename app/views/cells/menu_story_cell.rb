@@ -16,7 +16,7 @@ class MenuStoryCell < UICollectionViewCell
       append(@background_image)
 
       layer = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, 0.75 * self.frame.size.width, 0.33 * self.frame.size.height ))
-      layer.image = layer.image = rmq.image.resource("cells/cell_layer.png")
+      layer.image = rmq.image.resource("cells/cell_layer.png")
       append(layer)
 
       @label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
