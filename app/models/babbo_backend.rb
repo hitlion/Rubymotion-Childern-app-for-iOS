@@ -46,20 +46,25 @@ class BabboBackend
     return nil unless id
 
     BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/teaser/' + id.to_s) do |response|
-      if(response.body != [] && response.status_description)
-        data = JSON.load(response.body.to_s)
-        url = data.first['field_teaser']
-        url.split(',')
+      if(response.ok?)
+        if(response.body != [] && response.status_description)
+          data = JSON.load(response.body.to_s)
+          url = data.first['field_teaser']
+          url.split(',')
+        else
+          url = nil
+        end
+
+        NSNotificationCenter.defaultCenter.postNotificationName('BackendThumbnailURLReceived',
+                                                                object:nil,
+                                                                userInfo: {
+                                                                    :sender => sender,
+                                                                    :url => url
+                                                                })
       else
-        url = nil
+        NSLog (response.error_message)
       end
 
-      NSNotificationCenter.defaultCenter.postNotificationName('BackendThumbnailURLReceived',
-                                                              object:nil,
-                                                              userInfo: {
-                                                                  :sender => sender,
-                                                                  :url => url
-                                                              })
     end
   end
 
@@ -72,19 +77,25 @@ class BabboBackend
 
     BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/gallery/' + id.to_s) do |response|
 
-      if(response.body != [] && response.status_description)
-        data = JSON.load(response.body.to_s)
-        url = data.first['field_game_gallery'].split(',')
-      else
-        url = nil
-      end
+      return unless response
 
-      NSNotificationCenter.defaultCenter.postNotificationName('BackendScreenshotURLReceived',
-                                                              object:nil,
-                                                              userInfo: {
-                                                                  :sender => sender,
-                                                                  :url => url
-                                                              })
+      if(response.ok?)
+        if(response.body != [] && response.status_description)
+          data = JSON.load(response.body.to_s)
+          url = data.first['field_game_gallery'].split(',')
+        else
+          url = nil
+        end
+
+        NSNotificationCenter.defaultCenter.postNotificationName('BackendScreenshotURLReceived',
+                                                                object:nil,
+                                                                userInfo: {
+                                                                    :sender => sender,
+                                                                    :url => url
+                                                                })
+      else
+        NSLog (response.error_message)
+      end
     end
   end
 
@@ -114,18 +125,24 @@ class BabboBackend
   # call the given block after the request
   def load_story_identifier(&block)
     BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/') do |response|
-      if(response.body != [] && response.status_description)
-        data = JSON.load(response.body.to_s)
-        @identifier_data = data
-        @identifier = []
-        @identifier_data.each do |data|
-          @identifier << data['field_store_id']
-        end
+      if(response.ok?)
+        if(response.body != [] && response.status_description)
+          data = JSON.load(response.body.to_s)
+          @identifier_data = data
+          @identifier = []
+          @identifier_data.each do |data|
+            @identifier << data['field_store_id']
+          end
 
-        block.call(true) if block
+          block.call(true) if block
+        else
+          block.call(false) if block
+        end
       else
+        NSLog (response.error_message)
         block.call(false) if block
       end
+
     end
   end
 

@@ -99,6 +99,35 @@ class StoryBundle
         app.alert(title: "Neue Story!", message: "Die Story #{story.document.set_name} wurde erfolgreich hinzugefügt.", actions: ['OK'])
       }
     end
+
+    def get_bundle_with_identifier(identifier)
+      return nil unless identifier
+
+      story = nil
+      self.bundle_list.each do |bundle|
+        if(bundle.productIdentifier)
+          story = bundle if identifier == bundle.productIdentifier
+        end
+      end
+
+      return story
+    end
+
+    def bundle_with_identifier_installed? (identifier)
+      return false unless identifier
+
+      installed = false
+
+      self.bundle_list.each do |bundle|
+        if(bundle.productIdentifier)
+          installed = true if identifier == bundle.productIdentifier
+        end
+      end
+
+      lp installed
+
+      return installed
+    end
   end
 
   attr_reader :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :screenshot_urls, :thumbnail, :description

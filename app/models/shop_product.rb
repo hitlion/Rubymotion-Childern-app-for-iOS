@@ -13,11 +13,7 @@ class ShopProduct
     @downloading = false
     @buying = false
 
-    StoryBundle.bundles.each do |story|
-      if story.document.productIdentifier == @productIdentifier
-        @installed = true
-      end
-    end
+    @installed = StoryBundle.bundle_with_identifier_installed?(@productIdentifier)
 
     NSNotificationCenter.defaultCenter.removeObserver(self)
 
