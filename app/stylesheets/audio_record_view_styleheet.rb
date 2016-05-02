@@ -15,7 +15,7 @@ class AudioRecordViewStylesheet < ApplicationStylesheet
 
   def cancel_button (st)
     st.frame = {fr: 0.05 * device.screen_width, t: 0.05 * device.screen_height, w: 0.1 * device.screen_height, h: 0.1 * device.screen_height}
-    st.background_image = rmq.image.resource('icons/ic_clear_white.png')
+    st.background_image = rmq.image.resource('babbo_icons/close_normal.png')
     st.clips_to_bounds = true
     st.corner_radius = 0.1 * device.screen_height / 2
     st.border_color = rmq.color.white
@@ -35,7 +35,7 @@ class AudioRecordViewStylesheet < ApplicationStylesheet
 
   def repeat_button (st)
     st.frame = {l: 0.85 * device.screen_width, fb: 0.05 * device.screen_height, w: 0.1 * device.screen_height, h: 0.1 * device.screen_height}
-    st.background_image = rmq.image.resource('icons/ic_replay_white.png')
+    st.background_image = rmq.image.resource('babbo_icons/restart_normal.png')
     st.clips_to_bounds = true
     st.corner_radius = 0.1 * device.screen_height / 2
     st.border_color = rmq.color.white
@@ -45,7 +45,7 @@ class AudioRecordViewStylesheet < ApplicationStylesheet
 
   def record_button (st)
     st.frame = {l: 0.75 * device.screen_width, fb: 0.05 * device.screen_height, w: 0.1 * device.screen_height, h: 0.1 * device.screen_height}
-    st.background_image = rmq.image.resource('icons/ic_mic_white.png')
+    st.background_image = rmq.image.resource('babbo_icons/record_normal.png')
     st.clips_to_bounds = true
     st.corner_radius = 0.1 * device.screen_height / 2
     st.border_color = rmq.color.white
@@ -55,7 +55,7 @@ class AudioRecordViewStylesheet < ApplicationStylesheet
 
   def play_button (st)
     st.frame = {l: 0.75 * device.screen_width, fb: 0.05 * device.screen_height, w: 0.1 * device.screen_height, h: 0.1 * device.screen_height}
-    st.background_image = rmq.image.resource('icons/ic_play_arrow_white.png')
+    st.background_image = rmq.image.resource('babbo_icons/play_normal.png')
     st.clips_to_bounds = true
     st.corner_radius = 0.1 * device.screen_height / 2
     st.border_color = rmq.color.white
@@ -65,7 +65,7 @@ class AudioRecordViewStylesheet < ApplicationStylesheet
 
   def stop_button (st)
     st.frame = {l: 0.75 * device.screen_width, fb: 0.05 * device.screen_height, w: 0.1 * device.screen_height, h: 0.1 * device.screen_height}
-    st.background_image = rmq.image.resource('icons/ic_stop_white.png')
+    st.background_image = rmq.image.resource('babbo_icons/stop_normal.png')
     st.clips_to_bounds = true
     st.corner_radius = 0.1 * device.screen_height / 2
     st.border_color = rmq.color.white

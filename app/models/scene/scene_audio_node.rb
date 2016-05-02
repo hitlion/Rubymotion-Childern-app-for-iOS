@@ -11,7 +11,7 @@ module Scene
     def self.create( bundle, story_object, mode )
       AudioNode.alloc.initWithColor(rmq.color.clear, size: [0, 0]).tap do |node|
         node.instance_eval do
-          image = rmq.image.resource('placeholder/file_music')
+          image = rmq.image.resource('babbo_icons/audio_normal.png')
           audio = bundle.asset_data(story_object.content)
           if audio.nil?
             image = rmq.image.resource('placeholder/file_warning')
@@ -33,8 +33,8 @@ module Scene
           @image = image
 
           self.name      = story_object.path
-          self.texture   = SKTexture.textureWithImage(image)
-          self.size      = image.size
+          self.texture   = SKTexture.textureWithImage(image) if image
+          self.size      = image.size if image
           self.position  = calculate_node_position(story_object.position,
                                                   self.size)
           self.zPosition = story_object.layer
