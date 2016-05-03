@@ -154,7 +154,6 @@ class ShopProduct
     return false if url.nil? || url == ""
     Dispatch::Queue.concurrent.async do
       @thumbnail = UIImage.imageWithData(NSData.dataWithContentsOfURL(url))
-      lp self.set_name
       send_thumbnail_updated
     end
 

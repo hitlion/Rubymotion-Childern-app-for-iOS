@@ -71,6 +71,9 @@ module Story
           @transparency = attribs[:transparency]
           @resize       = attribs[:resize]
           @moveable     = attribs[:moveable]
+
+          @size.width = (device.screen_height / device.screen_width) * @size.height if @size.width == -1
+          @size.height = (device.screen_width / device.screen_height) * @size.width if @size.height == -1
         end
 
         parse_events(desc[:object_event])
