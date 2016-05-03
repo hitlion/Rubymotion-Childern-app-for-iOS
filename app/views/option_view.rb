@@ -1,15 +1,25 @@
 class OptionView < UIView
 
+  attr_accessor :delegate
+
   def initWithFrame( frame )
     super.tap do
 
       @hidden = false
 
-      rmq(self).stylesheet = OptionViewTabletStylesheet
+      if device.iphone?
+        rmq(self).stylesheet = OptionViewIPhoneStylesheet
+      else
+        rmq(self).stylesheet = OptionViewTabletStylesheet
+      end
+
       rmq(self).apply_style(:root)
 
       append(UIView, :layer).on(:tap) do
         self.hide
+        if @delegate
+          @delegate.tabletOptionViewClosed(self) if @delegate.respond_to? 'tabletOptionViewClosed:'
+        end
       end
 
       options = append!(UIView, :option_background)

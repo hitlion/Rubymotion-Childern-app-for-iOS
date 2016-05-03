@@ -59,7 +59,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def left_button (st)
     st.frame = {l: 0.25 * device.screen_width, t: 0.15 * device.screen_height, w: 0.145 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
     st.text  = 'no text found'
     st.color = rmq.color.white
     st.background_color = rmq.color.babbo_button_orange

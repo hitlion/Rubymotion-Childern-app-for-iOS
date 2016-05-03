@@ -63,6 +63,7 @@ class TabletParentScreen < PM::Screen
   def setup_options
     @options_view = rmq(self.view).append!(OptionView)
     @options_view.hide
+    @options_view.delegate = WeakRef.new(self)
     @parentmenu.append(@options_view) if @options_view
   end
 

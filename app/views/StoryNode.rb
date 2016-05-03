@@ -24,7 +24,7 @@ class StoryNode < SKSpriteNode
       node.addChild frame
 
       label = SKLabelNode.labelNodeWithFontNamed(TTUtil.get_font_standard(:regular))
-      label.fontSize = TTUtil.get_font_size(:small)
+      label.fontSize = TTUtil.get_font_size(:xs)
       label.fontColor = rmq.color.black
       label.text = bundle.set_name
       label.zPosition = -1
