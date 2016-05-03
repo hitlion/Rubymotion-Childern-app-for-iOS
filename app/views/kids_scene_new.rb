@@ -12,14 +12,10 @@ class KidsSceneNew < SKScene
   def touchesBegan(touches, withEvent: event)
     super
 
-    @sum_movement = 0
-
     touch = touches.anyObject
     node = nodeAtPoint(touch.locationInNode(self))
 
     return unless node
-
-    lp node.name
 
     case node.name
       when 'parent_button'
@@ -34,14 +30,27 @@ class KidsSceneNew < SKScene
     location = touch.locationInView(self.view)
     prev_location = touch.previousLocationInView(self.view)
 
-    direction = location.x - prev_location.x
+    @sum_movement = 0 unless @sum_movement
+    @sum_movement += location.x - prev_location.x
 
-    @sum_movement += direction.abs
-    lp @sum_movement
-
-    if @sum_movement > 50
-      move_rope_by_x(1.5 * direction, 0.02)
+    if @sum_movement.abs > 75 && !@swipe_in_progress
+      direction = 1 if location.x - prev_location.x > 0
+      direction = -1 if location.x - prev_location.x < 0
+      move_rope_in_direction(direction)
     end
+  end
+
+  def touchesEnded(touches, withEvent: event)
+
+    moved = @sum_movement
+    @sum_movement = 0
+
+    touch = touches.anyObject
+    node = nodeAtPoint(touch.locationInNode(self))
+
+    return unless node
+    return if moved.abs > 74
+    node.start if node.is_a? StoryNode
   end
 
   def create_scene
@@ -69,6 +78,8 @@ class KidsSceneNew < SKScene
     bundles = StoryBundle.bundles.select { |b| b.valid? }
 
     @story_nodes = []
+
+    return unless bundles && bundles != []
 
     bundles.each_with_index do |bundle, index|
       node = StoryNode.create_with_bundle(bundle, size: CGSizeMake(0.25 * device.screen_height, 0.25 * device.screen_height))
@@ -114,6 +125,7 @@ class KidsSceneNew < SKScene
       physicsWorld.addJoint(joint)
     end
 
+    @story_nodes.first.runAction(SKAction.scaleTo(2, duration: 0.2))
 
   end
 
@@ -132,17 +144,38 @@ class KidsSceneNew < SKScene
     rmq.screen.open_root_screen(StartScreen)
   end
 
-  def move_rope_by_x(x_distance, duration)
-
+  def move_rope_in_direction(direction)
     rope = self.childNodeWithName('rope')
     return if (rope.nil? || @story_nodes.empty?)
 
     center_node = @story_nodes.find{|node| node.center == true}
 
-    return if center_node == @story_nodes.first && x_distance > 0
-    return if center_node == @story_nodes.last && x_distance < 0
+    return if center_node == @story_nodes.first && direction == 1
+    return if center_node == @story_nodes.last && direction == -1
+    return if @swipe_in_progress
 
-    rope.runAction(SKAction.moveByX(x_distance,y:0, duration: duration))
+    @swipe_in_progress = true
+
+    center_node.runAction(SKAction.scaleTo(1, duration: 0.25))
+
+    move_sequence = SKAction.sequence([SKAction.waitForDuration(0.25, withRange: 0.05),
+                                      SKAction.moveByX(direction * 0.4 * device.screen_width, y:0, duration: 0.75)])
+
+    rope.runAction(move_sequence, completion: proc{
+      rope.removeAllActions})
+
+    i = @story_nodes.index {|node| node == center_node}
+
+    @story_nodes[i].center = false
+    @story_nodes[i - direction].center = true
+
+    center_node = @story_nodes.find{|node| node.center == true}
+
+    scale_sequence = SKAction.sequence([SKAction.waitForDuration(1.35, withRange: 0.2),
+                                        SKAction.scaleTo(2, duration: 0.25)])
+
+    center_node.runAction(scale_sequence, completion: proc{
+      @swipe_in_progress = false})
   end
 
-end
+ end

@@ -124,8 +124,6 @@ class StoryBundle
         end
       end
 
-      lp installed
-
       return installed
     end
   end

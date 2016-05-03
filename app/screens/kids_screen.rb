@@ -34,7 +34,7 @@ class KidsScreen < PM::Screen
       if(NSUserDefaults.standardUserDefaults.boolForKey('babbo_voco.hide_tutorial'))
         scene = KidsSceneNew.alloc.initWithSize(view.size)
       else
-        scene = KidsSceneTutorialNew.alloc.initWithSize(view.size)
+        scene = KidsSceneTutorial.alloc.initWithSize(view.size)
       end
     end
 

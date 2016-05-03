@@ -47,6 +47,13 @@ class StoryNode < SKSpriteNode
     end
   end
 
+  def start
+    StartScreen.next_story = @bundle
+    StartScreen.next_screen = :story_player
+    StartScreen.last_screen = :kids_menu
+    rmq.screen.open_root_screen(StartScreen)
+  end
+
 
 
 end
