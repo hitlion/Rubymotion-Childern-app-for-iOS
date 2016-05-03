@@ -21,7 +21,6 @@ class KidsSceneTutorial < SKScene
       when 'check_box'
         toogle_hook
     end
-
   end
 
   def build_view
@@ -115,6 +114,4 @@ class KidsSceneTutorial < SKScene
     NSNotificationCenter.defaultCenter.postNotificationName('TutorialClosed',
                                                             object:nil)
   end
-
-
 end

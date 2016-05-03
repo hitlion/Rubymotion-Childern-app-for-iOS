@@ -21,7 +21,7 @@ class TabletParentScreen < PM::Screen
     setup_menu_view
     setup_shop_view
     #TODO: Deactivate tab bar here
-    setup_tab_bar
+    #setup_tab_bar
     setup_options
     setup_overlay
   end
@@ -61,11 +61,9 @@ class TabletParentScreen < PM::Screen
   ##
   # add options view
   def setup_options
-    frame = CGRectMake(0, NavbarHeight * @parentmenu.frame.size.height - 1,
-                       @parentmenu.frame.size.width,
-                       @parentmenu.frame.size.height - NavbarHeight * @parentmenu.frame.size.height + 1)
-    @options_view = TabletOptionView.alloc.init_with_frame(frame, delegate: WeakRef.new(self))
-    @parentmenu.addSubview(@options_view)
+    @options_view = rmq(self.view).append!(OptionView)
+    @options_view.hide
+    @parentmenu.append(@options_view) if @options_view
   end
 
   def setup_overlay
@@ -96,7 +94,6 @@ class TabletParentScreen < PM::Screen
       @navbar.hide_back_button
       @navbar.set_title_text("Alle Stories")
       @navbar.set_last_selected_button_inactive
-      @navbar.hide_button(true, id: 4)
     elsif (button_id == 1)
       StartScreen.next_screen= :kids_menu
       StartScreen.last_screen = :parent_menu
@@ -107,17 +104,18 @@ class TabletParentScreen < PM::Screen
         @shop_view.show
         @menu_view.hidden = true
         @navbar.show_back_button
-        @options_view.hidden = true
-        @navbar.hide_button(false, id: 4)
+        @options_view.hide
       end
     elsif (button_id == 3)
-      @options_view.hidden = !@options_view.hidden?
+      if @options_view.hidden?
+        @options_view.show
+      else
+        @options_view.hide
+      end
       @shop_view.hide
       @menu_view.hidden = false
       @navbar.hide_back_button
       @navbar.set_title_text("Alle Stories")
-    elsif (button_id == 4)
-      @shop_view.restore_purchases
     end
   end
 
