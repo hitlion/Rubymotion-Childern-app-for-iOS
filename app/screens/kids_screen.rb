@@ -24,7 +24,7 @@ class KidsScreen < PM::Screen
 
   def tutorial_closed
     @player.presentScene(nil)
-    @player.presentScene(KidsSceneNew.alloc.initWithSize(view.size))
+    @player.presentScene(KidsScene.alloc.initWithSize(view.size))
   end
 
   def get_scene
@@ -32,7 +32,7 @@ class KidsScreen < PM::Screen
 
     unless @player.scene
       if(NSUserDefaults.standardUserDefaults.boolForKey('babbo_voco.hide_tutorial'))
-        scene = KidsSceneNew.alloc.initWithSize(view.size)
+        scene = KidsScene.alloc.initWithSize(view.size)
       else
         scene = KidsSceneTutorial.alloc.initWithSize(view.size)
       end

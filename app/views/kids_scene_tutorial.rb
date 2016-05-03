@@ -1,32 +1,10 @@
 class KidsSceneTutorial < SKScene
 
-  #####################
-  # super class methods
-  #####################
-
-    ##
-  # called when moved to this view
-  #
   def didMoveToView(view)
     super
-
     build_view
   end
 
-  def willMoveFromView(view)
-  end
-
-  ##
-  # called once every frame
-  #
-  def update(current_time)
-    super
-
-  end
-
-  ##
-  # Called when the touch started
-  #
   def touchesBegan(touches, withEvent: event)
     super
 
@@ -34,8 +12,6 @@ class KidsSceneTutorial < SKScene
     node = nodeAtPoint(touch.locationInNode(self))
 
     return if (node.nil?)
-
-    lp node.name
 
     case node.name
       when 'close'
@@ -47,10 +23,6 @@ class KidsSceneTutorial < SKScene
     end
 
   end
-
-  #######################
-  # Methods
-  #######################
 
   def build_view
 
