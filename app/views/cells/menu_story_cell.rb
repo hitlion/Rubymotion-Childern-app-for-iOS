@@ -13,18 +13,18 @@ class MenuStoryCell < UICollectionViewCell
       @background_image.on(:tap) do
         right_button_pressed(@right_button)
       end
-      append(@background_image)
+      append(@background_image) unless @background_image.nil?
 
       layer = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, 0.75 * self.frame.size.width, 0.33 * self.frame.size.height ))
       layer.image = rmq.image.resource("cells/cell_layer.png")
-      append(layer)
+      append(layer) unless layer.nil?
 
       @label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
       @label.text = 'no text found'
       @label.textColor = rmq.color.black
       @label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
       @label.textAlignment = UITextAlignmentCenter
-      append(@label)
+      append(@label) unless @label.nil?
 
       @left_button = UIButton.alloc.initWithFrame(CGRectMake(0.025 * layer.frame.size.width,0.6 * layer.frame.size.height,
                                                             0.425 * layer.frame.size.width, 0.35 * layer.frame.size.height))
@@ -34,7 +34,7 @@ class MenuStoryCell < UICollectionViewCell
       @left_button.on(:tap) do
         left_button_pressed(@left_button)
       end
-      append(@left_button)
+      append(@left_button) unless @left_button.nil?
 
       @right_button = UIButton.alloc.initWithFrame(CGRectMake(0.50 * layer.frame.size.width,0.6 * layer.frame.size.height,
                                                              0.425 * layer.frame.size.width, 0.35 * layer.frame.size.height))
@@ -44,7 +44,7 @@ class MenuStoryCell < UICollectionViewCell
       @right_button.on(:tap) do
         right_button_pressed(@right_button)
       end
-      append(@right_button)
+      append(@right_button) unless @right_button.nil?
 
 
       @selected_story_marker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(self.bounds)- 0.05 *  self.frame.size.width,
@@ -52,7 +52,7 @@ class MenuStoryCell < UICollectionViewCell
                                                                           0.1 * self.frame.size.width, 0.05 * self.frame.size.width))
       @selected_story_marker.image = UIImage.imageNamed("Marker.png")
       hide_marker
-      append(@selected_story_marker)
+      append(@selected_story_marker) unless @selected_story_marker.nil?
 
     end
   end
