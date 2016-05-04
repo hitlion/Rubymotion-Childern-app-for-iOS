@@ -536,8 +536,7 @@ class StoryBundle
   end
 
   # Load the screenshots for this shop story
-  # @param [String] url The URL to the thumbnail for this shop object
-  # @return [Boolean] Return +true+ if the thumbnail was loading successful or false if errors occur
+  # @param [String] url The URLs to the screenshots for this shop object
   def load_screenshots(urls)
     return false if urls.nil? || urls.empty?
     @screenshots = []
