@@ -167,8 +167,11 @@ class ShopProduct
     @screenshots = []
 
     Dispatch::Queue.concurrent.async do
-      urls.each  do |url|
-        @screenshots << UIImage.imageWithData(NSData.dataWithContentsOfURL(url))
+      urls.each do |url|
+        next unless url
+        @screenshots = [] unless @screenshots
+        image = UIImage.imageWithData(NSData.dataWithContentsOfURL(url))
+        @screenshots << image if image
       end
       send_screenshots_updated
     end
