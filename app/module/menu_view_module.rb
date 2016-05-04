@@ -2,6 +2,7 @@ module MenuViewModule
   attr_reader :top_view_height, :bottom_view_height, :grouped_stories,
               :all_stories, :delegate
 
+  CELL_IDENTIFIER = 'Cell'
   ##
   # Override this method to re-design this module
   # Copy the following parts and change the standard values

@@ -203,7 +203,7 @@ class StoryEditorToolbox < UIView
       UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier: @reuseIdentifier)
     end
 
-    cell.textLabel.font = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    device.ipad? ? cell.textLabel.font = rmq.font.pad_medium : cell.textLabel.font = rmq.font.phone_medium
     cell.textLabel.adjustsFontSizeToFitWidth = true
     if(rmq.screen.player.node_for_path(@editable_objects[indexPath.row]))
       cell.textLabel.text = rmq.screen.story_bundle.object_for_path(@editable_objects[indexPath.row]).name
@@ -215,7 +215,8 @@ class StoryEditorToolbox < UIView
   end
 
   def tableView(view, heightForRowAtIndexPath: path)
-    height = TTUtil.get_font_size(:medium) + 10
+    device.ipad? ? font = rmq.font.pad_medium : font = rmq.font.phone_medium
+    height = font.pointSize
     height
   end
 

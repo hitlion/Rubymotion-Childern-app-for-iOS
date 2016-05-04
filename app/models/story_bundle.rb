@@ -392,6 +392,7 @@ class StoryBundle
   end
 
   def productIdentifier
+    return nil unless self.document
     return self.document.productIdentifier
   end
 

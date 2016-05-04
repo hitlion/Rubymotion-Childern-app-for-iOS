@@ -31,7 +31,7 @@ class ShopPremiumCell < UICollectionViewCell
     label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
     label.text = element.set_name
     label.textColor = UIColor.blackColor
-    label.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:large))
+    device.ipad? ? label.font = rmq.font.pad_large : label.font = rmq.font.phone_large
     label.textAlignment = UITextAlignmentLeft
 
 

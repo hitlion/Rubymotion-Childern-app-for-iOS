@@ -9,11 +9,7 @@ module OverlayViewModuleNew
 
       register_for_shop
 
-      if(device.iphone?)
-        rmq(self).stylesheet = OverlayViewModuleIPhoneStylesheet
-      else
-        rmq(self).stylesheet = OverlayViewModuleStylesheet
-      end
+      device.iphone? ? rmq(self).stylesheet = OverlayViewModuleIPhoneStylesheet : rmq(self).stylesheet = OverlayViewModuleStylesheet
 
       rmq(self).apply_style(:root)
 

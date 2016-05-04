@@ -50,7 +50,7 @@ class StoryEditorMoveObjectViewStylesheet < ApplicationStylesheet
 
   def accept_button (st)
     st.frame = {t:  0.02 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Bestätigen'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -59,7 +59,7 @@ class StoryEditorMoveObjectViewStylesheet < ApplicationStylesheet
 
   def deny_button (st)
     st.frame = {bp: 0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Abbrechen'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray

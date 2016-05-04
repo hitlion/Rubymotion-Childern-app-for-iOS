@@ -36,7 +36,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
   def title_label (st)
     st.frame = {l: 0.25 * device.screen_width, t: 0.02 * device.screen_height, w: 0.25 * device.screen_width, h: 0.05 * device.screen_height}
     st.background_color = rmq.color.clear
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:large))
+    st.font = rmq.font.phone_large_bold
     st.text  = 'no text found'
     st.color = rmq.color.babbo_orange
     st.text_alignment = :left
@@ -51,7 +51,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
   def date_label (st)
     st.frame = {l: 0.25 * device.screen_width, t: 0.07 * device.screen_height, w: 0.25 * device.screen_width, h: 0.05 * device.screen_height}
     st.background_color = rmq.color.clear
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'no date found'
     st.color = rmq.color.black
     st.text_alignment = :left
@@ -59,7 +59,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def left_button (st)
     st.frame = {l: 0.25 * device.screen_width, t: 0.15 * device.screen_height, w: 0.145 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
+   st.font = rmq.font.phone_small
     st.text  = 'no text found'
     st.color = rmq.color.white
     st.background_color = rmq.color.babbo_button_orange
@@ -68,7 +68,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def buying_label (st)
     st.frame = {l: 0.25 * device.screen_width, t: 0.15 * device.screen_height, w: 0.145 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
+    st.font = rmq.font.phone_small
     st.text  = 'Kauf wird abgeschlossen'
     st.color = rmq.color.white
     st.number_of_lines = 2
@@ -79,7 +79,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def right_button (st)
     st.frame = {l: 0.4175 * device.screen_width, t: 0.13 * device.screen_height, w: 0.145 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font = rmq.font.phone_small
     st.text  = 'no text found'
     st.color = rmq.color.white
     st.background_color = rmq.color.babbo_button_grey
@@ -98,7 +98,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def top_button_1 (st)
     st.frame = {l: 0 * device.screen_width, t: 0.0 * device.screen_height, w: 0.15 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font = rmq.font.phone_medium
     st.text  = 'no text found'
     st.color = rmq.color.black
     st.background_image = rmq.image.resource('button_bg_left_white.png')
@@ -106,7 +106,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def top_button_2(st)
     st.frame = {l: 0.15 * device.screen_width, t: 0.0 * device.screen_height, w: 0.15 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font = rmq.font.phone_medium
     st.text  = 'no text found'
     st.color = rmq.color.black
     st.background_image = rmq.image.resource('button_bg_middle_white.png')
@@ -114,7 +114,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def top_button_3 (st)
     st.frame = {l: 0.3 * device.screen_width, t: 0.0 * device.screen_height, w: 0.15 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font = rmq.font.phone_medium
     st.text  = 'no text found'
     st.color = rmq.color.black
     st.background_image = rmq.image.resource('button_bg_right_white.png')
@@ -123,7 +123,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
   def status_label (st)
     st.frame = {l: 0.42 * device.screen_width, fb: 0.01 * device.screen_height, fr: 0.02 * device.screen_width, h: 0.06 * device.screen_height}
     st.background_color = rmq.color.clear
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font = rmq.font.phone_medium
     st.text  = 'no status found'
     st.color = rmq.color.black
     st.text_alignment = :center
@@ -149,7 +149,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def bottom_button_1 (st)
     st.frame = {l: 0 * device.screen_width, t: 0.0 * device.screen_height, w: 0.15 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font = rmq.font.phone_medium
     st.text  = 'no text found'
     st.color = rmq.color.black
     st.background_image = rmq.image.resource('button_bg_left_grey.png')
@@ -157,7 +157,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
 
   def bottom_button_2 (st)
     st.frame = {l: 0.15 * device.screen_width, t: 0.0 * device.screen_height, w: 0.15 * device.screen_width, h: 0.06 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font = rmq.font.phone_medium
     st.text  = 'no text found'
     st.color = rmq.color.black
     st.background_image = rmq.image.resource('button_bg_right_white.png')
@@ -166,7 +166,7 @@ class OverlayViewModuleIPhoneStylesheet < ApplicationStylesheet
   def description_box (st)
     st.frame = {l: 0.02 * device.screen_width, t: 0.09 * device.screen_height, fr: 0.02 * device.screen_width, fb: 0.02 * device.screen_height}
     st.background_color = rmq.color.clear
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font = rmq.font.phone_medium
     st.text  = 'no text found'
     st.color = rmq.color.black
     st.editable = false

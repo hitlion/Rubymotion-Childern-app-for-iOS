@@ -76,7 +76,8 @@ module NavbarModule
                        @label_width * self.frame.size.width, @element_size)
     @title_label = UILabel.alloc.initWithFrame(frame)
     @title_label.text = @title_text
-    @title_label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:xl))
+
+    device.ipad? ? @title_label.font = rmq.font.pad_xl_bold : @title_label.font = rmq.font.phone_xl_bold
     self.addSubview(@title_label)
 
     ####
@@ -142,7 +143,7 @@ module NavbarModule
     label = UILabel.alloc.initWithFrame(CGRectMake(0, 0.65 * element.frame.size.height,
                                                    element.frame.size.width, 0.35 * element.frame.size.height))
     label.text = name
-    label.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
+    device.ipad? ?  label.font = rmq.font.pad_small :  label.font = rmq.font.phone_small
     label.textAlignment = UITextAlignmentCenter
 
     element.addSubview button

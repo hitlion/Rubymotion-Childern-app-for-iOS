@@ -18,7 +18,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
 
   def label (st)
     st.frame = {t:0.025 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium_bold : st.font = rmq.font.phone_medium_bold
     st.text  = 'Editierbare Objekte'
     st.color = rmq.color.black
     st.text_alignment = :center
@@ -38,7 +38,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
 
   def object_name_label (st)
     st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Object Name'
     st.color = rmq.color.babbo_orange
     st.text_alignment = :center
@@ -46,7 +46,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
 
   def move_object (st)
     st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
+    device.ipad? ? st.font = rmq.font.pad_small : st.font = rmq.font.phone_small
     st.text  = 'Objekt bewegen'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -55,7 +55,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
 
   def edit_object (st)
     st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
+    device.ipad? ? st.font = rmq.font.pad_small : st.font = rmq.font.phone_small
     st.text  = 'Objekt bearbeiten'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -64,7 +64,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
 
   def change_view (st)
     st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
+    device.ipad? ? st.font = rmq.font.pad_small : st.font = rmq.font.phone_small
     st.text  = 'Level wechseln'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -73,7 +73,7 @@ class StoryEditorToolboxStylesheet < ApplicationStylesheet
 
   def close_editor (st)
     st.frame = {bp:0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
+    device.ipad? ? st.font = rmq.font.pad_small : st.font = rmq.font.phone_small
     st.text  = 'Editor beenden'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray

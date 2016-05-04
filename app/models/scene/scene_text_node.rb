@@ -8,7 +8,7 @@ module Scene
     # @param [Scene::Object] story_object The object definition.
     def self.create( bundle, story_object )
 
-      font  = TTUtil.get_font_standard(:regular)
+      font  = rmq.font.pad_small.fontName
 
       TextNode.alloc.initWithFontNamed(font).tap do |node|
 

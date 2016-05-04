@@ -18,7 +18,7 @@ class StoryEditorEditBoxStylesheet < ApplicationStylesheet
 
   def object_name_label( st )
     st.frame = {t: 0.05 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:bold), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium_bold : st.font = rmq.font.phone_medium_bold
     st.text  = ''
     st.color = rmq.color.babbo_orange
     st.text_alignment = :center
@@ -26,7 +26,7 @@ class StoryEditorEditBoxStylesheet < ApplicationStylesheet
 
   def edit_name( st )
     st.frame = {bp: 0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Name ändern'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -35,7 +35,7 @@ class StoryEditorEditBoxStylesheet < ApplicationStylesheet
 
   def edit_content( st )
     st.frame = {bp: 0.01 * device.screen_height, l: 10, fr: 10, h: 0.075 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Inhalt ändern'
     st.color = rmq.color.white
     st.background_color = rmq.color.light_gray
@@ -44,7 +44,7 @@ class StoryEditorEditBoxStylesheet < ApplicationStylesheet
 
   def resize_width_label( st )
     st.frame = {bp: 0.01 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Breite:'
     st.text_alignment = :center
   end
@@ -57,7 +57,7 @@ class StoryEditorEditBoxStylesheet < ApplicationStylesheet
 
   def resize_height_label( st )
     st.frame = {bp: 0.02 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Höhe:'
     st.text_alignment = :center
   end
@@ -70,7 +70,7 @@ class StoryEditorEditBoxStylesheet < ApplicationStylesheet
 
   def layer_select_label( st )
     st.frame = {bp: 0.05 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Ebene:'
     st.text_alignment = :center
   end
@@ -84,7 +84,7 @@ class StoryEditorEditBoxStylesheet < ApplicationStylesheet
 
   def transparency_label( st )
     st.frame = {bp: 0.01 * device.screen_height, l: 10, fr: 10, h: 0.05 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text  = 'Transparenz:'
     st.text_alignment = :center
   end

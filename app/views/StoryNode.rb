@@ -23,8 +23,8 @@ class StoryNode < SKSpriteNode
       frame.anchorPoint = CGPointMake(0.5, 1)
       node.addChild frame
 
-      label = SKLabelNode.labelNodeWithFontNamed(TTUtil.get_font_standard(:regular))
-      label.fontSize = TTUtil.get_font_size(:xs)
+      label = SKLabelNode.labelNodeWithFontNamed(rmq.font.pad_xs.fontName)
+      device.ipad? ? label.fontSize = rmq.font.pad_xs.pointSize : label.fontSize = rmq.font.phone_xs.pointSize
       label.fontColor = rmq.color.black
       label.text = bundle.set_name
       label.zPosition = -1

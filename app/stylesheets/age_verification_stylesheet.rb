@@ -32,13 +32,12 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   def logo(st)
     st.frame = {w: 0.15 * device.screen_width, t:0, h: 0.2 * device.screen_height, centered: :horizontal}
     st.image = image.resource('logo_black')
-
   end
 
   def label1(st)
     st.frame = {below_prev: 0.025 * device.screen_height, l: 30, fr: 30, h: 0.05 * device.screen_height,  centered: :horizontal}
     st.text = 'Expertenbereich'
-    st.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size:TTUtil.get_font_size(:large))
+    device.ipad? ? st.font = rmq.font.pad_large : st.font = rmq.font.phone_large
     st.text_alignment = :center
     st.color = rmq.color.babbo_orange
   end
@@ -46,7 +45,7 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   def label2(st)
     st.frame = {below_prev:0.025 * device.screen_height, l:30, fr:30, h: 0.075 * device.screen_height,  centered: :horizontal}
     st.text = 'In welchem Jahr bist du geboren?'
-    st.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size:TTUtil.get_font_size(:small))
+    device.ipad? ? st.font = rmq.font.pad_small : st.font = rmq.font.phone_small
     st.text_alignment = :center
     st.color = rmq.color.black
   end
@@ -59,7 +58,7 @@ class AgeVerificationStylesheet < ApplicationStylesheet
     st.frame = {w: 0.15 * device.screen_width, t:0.75 * device.screen_height,  h: 0.065 * device.screen_height, centered: :horizontal}
     st.color = rmq.color.white
     st.text = 'Weiter'
-    st.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size:TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
   end
 
   def left_button(st)
@@ -70,7 +69,7 @@ class AgeVerificationStylesheet < ApplicationStylesheet
   def left_label(st)
     st.frame = {l: 0.1 * device.screen_width, w: 0.4 * device.screen_width, h: 0.05 * device.screen_height, centered: :vertical}
     st.text = 'Zurück zum Spielplatz'
-    st.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size:TTUtil.get_font_size(:medium))
+    device.ipad? ? st.font = rmq.font.pad_medium : st.font = rmq.font.phone_medium
     st.text_alignment = :center
     st.color = rmq.color.black
   end

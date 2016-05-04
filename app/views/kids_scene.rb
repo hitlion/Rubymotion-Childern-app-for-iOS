@@ -83,8 +83,8 @@ class KidsScene < SKScene
     logo.size = CGSizeMake(0.2 * device.screen_height, 0.2 * device.screen_height)
     addChild logo
 
-    version = SKLabelNode.labelNodeWithFontNamed(TTUtil.get_font_standard(:regular))
-    version.fontSize = TTUtil.get_font_size(:large)
+    version = SKLabelNode.labelNodeWithFontNamed(rmq.font.pad_large.fontName)
+    device.ipad? ? version.fontSize = rmq.font.pad_large.pointSize : version.fontSize = rmq.font.phone_large.pointSize
     version.fontColor = rmq.color.white
     version.text = app.version
     version.zPosition = 999_000

@@ -18,7 +18,7 @@ class StoryEditorChangeViewBoxStylesheet < ApplicationStylesheet
 
   def text_label (st)
     st.frame = {l: 0.35 * device.screen_width, t:0.025 * device.screen_height, w: 0.3 * device.screen_width, h: 0.2 * device.screen_height}
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:large))
+    device.ipad? ? st.font = rmq.font.pad_large : st.font = rmq.font.phone_large
     st.text  = 'Level wechseln'
     st.text_alignment = :center
   end

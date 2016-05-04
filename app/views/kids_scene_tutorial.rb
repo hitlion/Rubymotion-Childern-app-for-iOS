@@ -65,9 +65,9 @@ class KidsSceneTutorial < SKScene
     label.position = CGPointMake(0.175 * w, 0.115 * h)
     label.name = 'label'
     label.zPosition = 5
-    label.fontSize = TTUtil.get_font_size(:large)
+    labe.fontName = rmq.font.pad_large.fontName
+    device.ipad? ? label.fontSize = rmq.font.pad_large.pointSize : label.fontSize = rmq.font.phone_large.pointSize
     label.fontColor = rmq.color.white
-    label.fontName = TTUtil.get_font_standard(:bold)
     label.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft
 
     texture = SKTexture.textureWithImageNamed('babbo_icons/close.png')

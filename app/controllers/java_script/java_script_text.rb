@@ -31,7 +31,27 @@ module JavaScript
       return unless node.weakref_alive?
       args = Hash.symbolicate(args)
       node.text = args[:text] if args[:text]
-      node.fontSize = TTUtil.get_font_size(args[:size].intern) if args[:size]
+
+      size = 0
+
+      if args[:size]
+        case args[:size]
+          when 'xs'
+            device.ipad? ? size = rmq.font.pad_xs.pointSize : size = rmq.font.phone_xs.pointSize
+          when 'small'
+            device.ipad? ? size = rmq.font.pad_small.pointSize : size = rmq.font.phone_small.pointSize
+          when 'medium'
+            device.ipad? ? size = rmq.font.pad_medium.pointSize : size = rmq.font.phone_medium.pointSize
+          when 'large'
+            device.ipad? ? size = rmq.font.pad_large.pointSize : size = rmq.font.phone_large.pointSize
+          when 'xl'
+            device.ipad? ? size = rmq.font.pad_xl.pointSize : size = rmq.font.phone_xl.pointSize
+          when 'xxl'
+            device.ipad? ? size = rmq.font.pad_xxl.pointSize : size = rmq.font.phone_xxl.pointSize
+        end
+      end
+
+      node.fontSize = size
       node.hidden = false
     end
 

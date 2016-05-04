@@ -1,6 +1,6 @@
 class AdvancedCollectionView < UIView
 
-  attr_reader :visible_elements, :cell_type, :elements, :delegate, :header_text, :font_fac
+  attr_reader :visible_elements, :cell_type, :elements, :delegate, :header_text
 
   ###
   # Constants to design the layout.
@@ -36,12 +36,6 @@ class AdvancedCollectionView < UIView
     @header_text      = headerText
     @cells            = {}
 
-    if(device.ipad?)
-      @font_fac = 2
-    else
-      @font_fac = 1
-    end
-
     build_view
 
     self
@@ -64,7 +58,7 @@ class AdvancedCollectionView < UIView
     header_label = UILabel.alloc.initWithFrame(frame)
     header_label.text = @header_text
     header_label.textColor = UIColor.blackColor
-    header_label.font = UIFont.fontWithName("Enriqueta-Regular", size:13 * @font_fac)
+    device.ipad? ? header_label.font = rmq.font.pad_large : header_label.font = rmq.font.phone_large
     header_label.textAlignment = UITextAlignmentLeft
     top_view.addSubview(header_label)
 

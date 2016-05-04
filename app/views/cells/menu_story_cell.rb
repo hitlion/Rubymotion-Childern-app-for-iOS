@@ -10,9 +10,11 @@ class MenuStoryCell < UICollectionViewCell
 
       @background_image = UIImageView.alloc.initWithFrame(self.bounds)
       @background_image.backgroundColor = rmq.color.blue
+      @background_image.off
       @background_image.on(:tap) do
         right_button_pressed(@right_button)
       end
+
       append(@background_image) unless @background_image.nil?
 
       layer = UIImageView.alloc.initWithFrame(CGRectMake(0, 0, 0.75 * self.frame.size.width, 0.33 * self.frame.size.height ))
@@ -22,7 +24,8 @@ class MenuStoryCell < UICollectionViewCell
       @label = UILabel.alloc.initWithFrame(CGRectMake(0, 0, layer.frame.size.width, 0.5 * layer.frame.size.height))
       @label.text = 'no text found'
       @label.textColor = rmq.color.black
-      @label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
+      device.ipad? ? @label.font = rmq.font.pad_large : @label.font = rmq.font.phone_large_bold
+
       @label.textAlignment = UITextAlignmentCenter
       append(@label) unless @label.nil?
 
@@ -30,7 +33,9 @@ class MenuStoryCell < UICollectionViewCell
                                                             0.425 * layer.frame.size.width, 0.35 * layer.frame.size.height))
       @left_button.setBackgroundImage(rmq.image.resource("button_grey.png"), forState:UIControlStateNormal)
       @left_button.setTitle("Mehr", forState: UIControlStateNormal)
-      @left_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:medium))
+      device.ipad? ? @left_button.font = rmq.font.pad_medium : @left_button.font = rmq.font.phone_medium
+
+      @left_button.off
       @left_button.on(:tap) do
         left_button_pressed(@left_button)
       end
@@ -40,11 +45,14 @@ class MenuStoryCell < UICollectionViewCell
                                                              0.425 * layer.frame.size.width, 0.35 * layer.frame.size.height))
       @right_button.setBackgroundImage(rmq.image.resource("button_orange.png"), forState:UIControlStateNormal)
       @right_button.setTitle("Öffnen", forState: UIControlStateNormal)
-      @right_button.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:medium))
+
+      device.ipad? ? @right_button.font = rmq.font.pad_medium : @right_button.font = rmq.font.phone_medium
+      @right_button.off
       @right_button.on(:tap) do
         right_button_pressed(@right_button)
       end
       append(@right_button) unless @right_button.nil?
+
 
 
       @selected_story_marker = UIImageView.alloc.initWithFrame(CGRectMake(CGRectGetMidX(self.bounds)- 0.05 *  self.frame.size.width,
@@ -97,4 +105,5 @@ class MenuStoryCell < UICollectionViewCell
   def left_button_pressed (source)
     @delegate.menuStoryCell(self, leftButtonPressed: source) if @delegate.respond_to? 'menuStoryCell:leftButtonPressed:'
   end
+
 end

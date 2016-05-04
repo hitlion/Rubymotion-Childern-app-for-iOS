@@ -2,7 +2,7 @@ module ShopViewModule
   attr_reader :top_view_height, :bottom_view_height, :premium_stories,
               :basic_stories, :all_stories, :delegate
 
-
+  CELL_IDENTIFIER = 'Cell'
   ##
   # Override this method to re-design this module
   # Copy the following parts and change the standard values
@@ -97,7 +97,7 @@ module ShopViewModule
     @info_label = UILabel.alloc.initWithFrame(frame)
     @info_label.text = 'Bitte warten, unser Shop wird gerade geladen...'
     @info_label.textColor = UIColor.blackColor
-    @info_label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
+    device.ipad? ? @info_label.font = rmq.font.pad_large : @info_label.font = rmq.font.phone_large
     @info_label.textAlignment = UITextAlignmentCenter
 
     self.addSubview(@info_label)

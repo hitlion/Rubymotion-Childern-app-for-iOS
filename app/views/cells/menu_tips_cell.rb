@@ -24,14 +24,14 @@ class MenuTipsCell < UICollectionViewCell
     label = UILabel.alloc.initWithFrame(CGRectMake(0.0 * view.frame.size.width, 0,
                                                    0.55 * view.frame.size.width, 0.20  * view.frame.size.height))
     label.text = element.header
-    label.font = UIFont.fontWithName(TTUtil.get_font_standard(:bold), size: TTUtil.get_font_size(:large))
+    device.ipad? ? label.font = rmq.font.pad_large_bold : label.font = rmq.font.phone_large_bold
     label.textAlignment = UITextAlignmentLeft
     label.textColor = rmq.color.babbo_orange
 
     text_view = UITextView.alloc.initWithFrame(CGRectMake(0.0 * view.frame.size.width, 0.2 * view.frame.size.height,
                                                          0.55 * view.frame.size.width, 0.70 * view.frame.size.height ))
     text_view.editable = false
-    text_view.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:medium))
+    device.ipad? ? text_view.font = rmq.font.pad_medium : text_view.font = rmq.font.phone_medium
     text_view.textAlignment = UITextAlignmentLeft
 
     text_view.text = element.text

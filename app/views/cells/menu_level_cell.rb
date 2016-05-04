@@ -31,7 +31,7 @@ class MenuLevelCell < UICollectionViewCell
                                                   view.frame.size.width, view.frame.size.height / 8.0))
     name.backgroundColor = UIColor.clearColor
     name.text = element.document.set_name
-    name.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
+    device.ipad? ? name.font = rmq.font.pad_small : name.font = rmq.font.phone_small
     name.textAlignment = UITextAlignmentLeft
     name.textColor = rmq.color.babbo_orange
 
@@ -41,7 +41,7 @@ class MenuLevelCell < UICollectionViewCell
 
     time = Time.at(NSDate.dateWithNaturalLanguageString(element.document.timestamp))
     date.text = time.strftime("%d. %B %Y").to_s
-    date.font = UIFont.fontWithName(TTUtil.get_font_standard(:regular), size: TTUtil.get_font_size(:small))
+    device.ipad? ? date.font = rmq.font.pad_small : date.font = rmq.font.phone_small
     date.textAlignment = UITextAlignmentLeft
 
     view.addSubview(image)

@@ -36,7 +36,7 @@ class OptionViewIPhoneStylesheet < ApplicationStylesheet
   def name (st)
     st.frame = {l: 0.0 * device.screen_width, t: 0.25 * device.screen_height, w: 0.25 * device.screen_width, h: 0.05 * device.screen_height}
     st.background_color = rmq.color.clear
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:large))
+    st.font  = rmq.font.phone_large
     st.text  = 'Babbo-Voco'
     st.color = rmq.color.babbo_orange
     st.text_alignment = :center
@@ -46,7 +46,7 @@ class OptionViewIPhoneStylesheet < ApplicationStylesheet
   def button_1 (st)
     st.frame = {l: 0.025 * device.screen_width, t: 0.35 * device.screen_height, w: 0.2 * device.screen_width, h: 0.05 * device.screen_height}
     st.text = 'Inhalte wiederherstellen'
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:xs))
+    st.font  = rmq.font.phone_xs
     st.color = rmq.color.black
     st.background_color = rmq.color.white
     st.corner_radius =  5
@@ -57,7 +57,7 @@ class OptionViewIPhoneStylesheet < ApplicationStylesheet
   def button_2 (st)
     st.frame = {l: 0.025 * device.screen_width, t: 0.45 * device.screen_height, w: 0.2 * device.screen_width, h: 0.05 * device.screen_height}
     st.text = 'Über uns'
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:small))
+    st.font  = rmq.font.phone_small
     st.color = rmq.color.black
     st.background_color = rmq.color.white
     st.corner_radius =  15
@@ -74,7 +74,7 @@ class OptionViewIPhoneStylesheet < ApplicationStylesheet
   def version (st)
     st.frame = {l: 0.0 * device.screen_width, t: 0.75 * device.screen_height, w: 0.25 * device.screen_width, h: 0.05 * device.screen_height}
     st.background_color = rmq.color.clear
-    st.font  = rmq.font.font_with_name(TTUtil.get_font_standard(:regular), TTUtil.get_font_size(:medium))
+    st.font  = rmq.font.phone_medium
     st.text  = app.version
     st.color = rmq.color.black
     st.text_alignment = :center
