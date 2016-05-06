@@ -7,6 +7,18 @@ class KidsScene < SKScene
     physicsWorld.contactDelegate = self
 
     create_scene
+
+    self.view.on(:swipe_right) do |sender, event|
+      swipe_right(sender, event: event)
+    end
+
+    self.view.on(:swipe_left) do |sender, event|
+     swipe_left(sender, event: event)
+    end
+
+    self.view.on(:tap) do |sender, event|
+      taped(sender, event: event)
+    end
   end
 
   def willMoveFromView(view)
@@ -14,51 +26,8 @@ class KidsScene < SKScene
       @background_audio.stop
       @background_audio = nil
     end
-  end
 
-  def touchesBegan(touches, withEvent: event)
-    super
-
-    touch = touches.anyObject
-    node = nodeAtPoint(touch.locationInNode(self))
-
-    return unless node
-
-    case node.name
-      when 'parent_button'
-        parent_button_clicked(node)
-    end
-  end
-
-  def touchesMoved(touches, withEvent: event)
-    super
-
-    touch = event.touchesForView(self.view).anyObject
-    location = touch.locationInView(self.view)
-    prev_location = touch.previousLocationInView(self.view)
-
-    @sum_movement = 0 unless @sum_movement
-    @sum_movement += location.x - prev_location.x
-
-    if @sum_movement.abs > 75 && !@swipe_in_progress
-      direction = 1 if location.x - prev_location.x > 0
-      direction = -1 if location.x - prev_location.x < 0
-      move_rope_in_direction(direction)
-    end
-  end
-
-  def touchesEnded(touches, withEvent: event)
-
-    moved = @sum_movement
-    @sum_movement = 0
-
-    touch = touches.anyObject
-    node = nodeAtPoint(touch.locationInNode(self))
-
-    return unless node
-    return unless moved
-    return if moved.abs > 74
-    node.start if node.is_a? StoryNode
+    self.view.off
   end
 
   def create_scene
@@ -151,7 +120,6 @@ class KidsScene < SKScene
     end
 
     @story_nodes.first.runAction(SKAction.scaleTo(2, duration: 0.2))
-
   end
 
   def parent_button_clicked(button)
@@ -169,38 +137,105 @@ class KidsScene < SKScene
     rmq.screen.open_root_screen(StartScreen)
   end
 
-  def move_rope_in_direction(direction)
+  def scale_center_normal
+    return unless @story_nodes
+
+    center_node = @story_nodes.find{|node| node.center == true}
+    return unless center_node
+    center_node.runAction(SKAction.scaleTo(1, duration: 0.25))
+  end
+
+  def scale_center_big
+    return unless @story_nodes
+
+    center_node = @story_nodes.find{|node| node.center == true}
+    return unless center_node
+    lp center_node.xScale
+    return if center_node.xScale == 2
+
+    @story_nodes.each do |node|
+      node.runAction(SKAction.scaleTo(1, duration: 0.00))
+    end
+
+    center_node = @story_nodes.find{|node| node.center == true}
+    return unless center_node
+    center_node.runAction(SKAction.scaleTo(2, duration: 0.25))
+    lp 'scaled'
+  end
+
+  def swipe_right(sender, event: event)
+    lp 'right'
+
+    direction = 1
+    center_node = @story_nodes.find{|node| node.center == true}
+    return unless center_node
+
+    return if center_node == @story_nodes.first
+
+    if center_node.xScale == 2 && center_node.yScale == 2
+      scale_center_normal
+    end
+
     rope = self.childNodeWithName('rope')
     return if (rope.nil? || @story_nodes.empty?)
 
+    rope.runAction(SKAction.moveByX(direction * 0.4 * device.screen_width, y: 0, duration: 0.5), completion: -> {scale_center_big})
+    i = @story_nodes.index {|node| node == center_node}
+    next_node =  @story_nodes[i - direction]
+
+    return unless next_node
+
+    center_node.center = false
+    next_node.center = true
+
+    lp center_node.name
+    lp next_node.name
+  end
+
+  def swipe_left(sender, event: event)
+    lp 'left'
+
+    direction = -1
     center_node = @story_nodes.find{|node| node.center == true}
+    return unless center_node
 
-    return if center_node == @story_nodes.first && direction == 1
-    return if center_node == @story_nodes.last && direction == -1
-    return if @swipe_in_progress
+    return if center_node == @story_nodes.last
 
-    @swipe_in_progress = true
+    if center_node.xScale == 2 && center_node.yScale == 2
+      scale_center_normal
+    end
 
-    center_node.runAction(SKAction.scaleTo(1, duration: 0.25))
+    rope = self.childNodeWithName('rope')
+    return if (rope.nil? || @story_nodes.empty?)
 
-    move_sequence = SKAction.sequence([SKAction.waitForDuration(0.25, withRange: 0.05),
-                                      SKAction.moveByX(direction * 0.4 * device.screen_width, y:0, duration: 0.75)])
-
-    rope.runAction(move_sequence, completion: proc{
-      rope.removeAllActions})
+    rope.runAction(SKAction.moveByX(direction * 0.4 * device.screen_width, y: 0, duration: 0.5), completion: -> {scale_center_big})
 
     i = @story_nodes.index {|node| node == center_node}
+    next_node =  @story_nodes[i - direction]
 
-    @story_nodes[i].center = false
-    @story_nodes[i - direction].center = true
+    return unless next_node
 
-    center_node = @story_nodes.find{|node| node.center == true}
+    center_node.center = false
+    next_node.center = true
 
-    scale_sequence = SKAction.sequence([SKAction.waitForDuration(1.35, withRange: 0.2),
-                                        SKAction.scaleTo(2, duration: 0.25)])
+    lp center_node.name
+    lp next_node.name
+  end
 
-    center_node.runAction(scale_sequence, completion: proc{
-      @swipe_in_progress = false})
+  def taped(sender, event: event)
+    point = CGPointMake(event.location.x, device.screen_height - event.location.y)
+    node = nodeAtPoint(point)
+    lp node.name
+    return unless node
+
+    if node.is_a? StoryNode
+      node.start
+    else
+      case node.name
+        when 'parent_button'
+          parent_button_clicked(node)
+      end
+    end
   end
 
  end
