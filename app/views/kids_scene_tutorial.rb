@@ -65,7 +65,7 @@ class KidsSceneTutorial < SKScene
     label.position = CGPointMake(0.175 * w, 0.115 * h)
     label.name = 'label'
     label.zPosition = 5
-    labe.fontName = rmq.font.pad_large.fontName
+    label.fontName = rmq.font.pad_large.fontName
     device.ipad? ? label.fontSize = rmq.font.pad_large.pointSize : label.fontSize = rmq.font.phone_large.pointSize
     label.fontColor = rmq.color.white
     label.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft

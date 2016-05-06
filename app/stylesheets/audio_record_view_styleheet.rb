@@ -25,7 +25,7 @@ class AudioRecordViewStylesheet < ApplicationStylesheet
 
   def ok_button (st)
     st.frame = {l: 0.65 * device.screen_width,fb: 0.05 * device.screen_height, w: 0.1 * device.screen_height, h: 0.1 * device.screen_height}
-    st.background_image = rmq.image.resource('icons/ic_save_white.png')
+    st.background_image = rmq.image.resource('babbo_icons/save_normal.png')
     st.clips_to_bounds = true
     st.corner_radius = 0.1 * device.screen_height / 2
     st.border_color = rmq.color.white
