@@ -41,6 +41,9 @@ class AppDelegate < PM::Delegate
       StartScreen.next_screen = self.devmode_start_screen || nil
     end
 
+    NSUserDefaults.standardUserDefaults.setBool(true, forKey:'de.tuluh_tec.babbo_voco.show_tutorial')
+    NSUserDefaults.standardUserDefaults.synchronize
+
     open StartScreen.new
 
     # NOTE: this is not in the RMQ samples but it's required for appearance.rb.

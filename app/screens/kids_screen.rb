@@ -31,7 +31,8 @@ class KidsScreen < PM::Screen
     return nil unless @player
 
     unless @player.scene
-      if(NSUserDefaults.standardUserDefaults.boolForKey('babbo_voco.hide_tutorial'))
+      if(NSUserDefaults.standardUserDefaults.boolForKey('de.tuluh_tec.babbo_voco.hide_tutorial_ever') ||
+          NSUserDefaults.standardUserDefaults.boolForKey('de.tuluh_tec.babbo_voco.show_tutorial') == false)
         scene = KidsScene.alloc.initWithSize(view.size)
       else
         scene = KidsSceneTutorial.alloc.initWithSize(view.size)

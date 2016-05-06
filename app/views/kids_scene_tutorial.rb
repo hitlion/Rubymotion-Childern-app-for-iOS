@@ -106,12 +106,15 @@ class KidsSceneTutorial < SKScene
   def toogle_hook
     hook = childNodeWithName('hook')
     hook.hidden = !hook.hidden?
-    NSUserDefaults.standardUserDefaults.setBool(!hook.hidden?, forKey:'babbo_voco.hide_tutorial')
+    NSUserDefaults.standardUserDefaults.setBool(!hook.hidden?, forKey:'de.tuluh_tec.babbo_voco.hide_tutorial_ever')
     NSUserDefaults.standardUserDefaults.synchronize
   end
 
   def close_tutorial
     NSNotificationCenter.defaultCenter.postNotificationName('TutorialClosed',
                                                             object:nil)
+
+    NSUserDefaults.standardUserDefaults.setBool(false, forKey:'de.tuluh_tec.babbo_voco.show_tutorial')
+    NSUserDefaults.standardUserDefaults.synchronize
   end
 end
