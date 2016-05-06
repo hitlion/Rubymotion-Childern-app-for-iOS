@@ -38,28 +38,16 @@ class KidsScene < SKScene
     prev_location = touch.previousLocationInView(self.view)
 
     @sum_movement = 0 unless @sum_movement
-    x_movement = location.x - prev_location.x
-    @sum_movement += x_movement
+    @sum_movement += location.x - prev_location.x
 
-    if @sum_movement.abs > 75
-      if @swipe_active
-        move_rope_by_x(x_movement)
-      else
-        scale_center_normal
-        @swipe_active = true
-      end
-
+    if @sum_movement.abs > 75 && !@swipe_in_progress
+      direction = 1 if location.x - prev_location.x > 0
+      direction = -1 if location.x - prev_location.x < 0
+      move_rope_in_direction(direction)
     end
   end
 
   def touchesEnded(touches, withEvent: event)
-
-    if @swipe_active
-      @swipe_active = false
-      move_sequence = SKAction.sequence([SKAction.performSelector('move_center_to_mid', onTarget:self),
-                                         SKAction.performSelector('scale_center_big', onTarget:self)])
-      self.runAction(move_sequence)
-    end
 
     moved = @sum_movement
     @sum_movement = 0
@@ -181,76 +169,38 @@ class KidsScene < SKScene
     rmq.screen.open_root_screen(StartScreen)
   end
 
-  def scale_center_normal
-    center_node = @story_nodes.find{|node| node.center == true}
-    return unless center_node
-    center_node.runAction(SKAction.scaleTo(1, duration: 0.25))
-  end
-
-  def scale_center_big
-    @story_nodes.each do |node|
-      node.runAction(SKAction.scaleTo(1, duration: 0.00))
-    end
-
-    center_node = @story_nodes.find{|node| node.center == true}
-    return unless center_node
-    center_node.runAction(SKAction.scaleTo(2, duration: 0.25))
-  end
-
-  def update_center_node
-    center_node = @story_nodes.find{|node| node.center == true}
-    return unless center_node
-
-    mid_x = device.screen_width / 2
-
-    center_node.position.x < mid_x ? direction = 1 : direction = -1
-    i = @story_nodes.index {|node| node == center_node}
-    next_node =  @story_nodes[i + direction]
-
-    return unless next_node
-
-    if (center_node.position.x < mid_x && direction = -1) ||
-        (center_node.position.x > mid_x && direction = 1)
-      center_node.center = false
-      next_node.center = true
-      lp 'Update CenterNode'
-    end
-    node = @story_nodes.index{|node| node == center_node}
-    lp "CenterNode : #{node}"
-
-  end
-
-  def move_rope_by_x(x)
+  def move_rope_in_direction(direction)
     rope = self.childNodeWithName('rope')
     return if (rope.nil? || @story_nodes.empty?)
 
     center_node = @story_nodes.find{|node| node.center == true}
 
-    return if center_node == @story_nodes.first && x > 0 && center_node.position.x > device.screen_width / 2
-    return if center_node == @story_nodes.last  && x < 0 && center_node.position.x < device.screen_width / 2
+    return if center_node == @story_nodes.first && direction == 1
+    return if center_node == @story_nodes.last && direction == -1
+    return if @swipe_in_progress
 
-    move_sequence = SKAction.sequence([SKAction.moveByX(x * 3, y: 0, duration: 0.05),
-                                       SKAction.performSelector('update_center_node', onTarget:self)])
+    @swipe_in_progress = true
+
+    center_node.runAction(SKAction.scaleTo(1, duration: 0.25))
+
+    move_sequence = SKAction.sequence([SKAction.waitForDuration(0.25, withRange: 0.05),
+                                      SKAction.moveByX(direction * 0.4 * device.screen_width, y:0, duration: 0.75)])
 
     rope.runAction(move_sequence, completion: proc{
       rope.removeAllActions})
-  end
 
-  def move_center_to_mid
+    i = @story_nodes.index {|node| node == center_node}
+
+    @story_nodes[i].center = false
+    @story_nodes[i - direction].center = true
+
     center_node = @story_nodes.find{|node| node.center == true}
-    return unless center_node
 
-    mid_x = device.screen_width / 2
-    lp "Mid: #{mid_x}"
+    scale_sequence = SKAction.sequence([SKAction.waitForDuration(1.35, withRange: 0.2),
+                                        SKAction.scaleTo(2, duration: 0.25)])
 
-    move_x = mid_x - center_node.position.x
-    lp "Move: #{move_x}"
-
-    rope = self.childNodeWithName('rope')
-    return unless rope
-
-    rope.runAction(SKAction.moveByX(move_x, y: 0, duration: 1.0))
-
+    center_node.runAction(scale_sequence, completion: proc{
+      @swipe_in_progress = false})
   end
 
  end
