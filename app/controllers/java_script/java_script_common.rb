@@ -72,7 +72,14 @@ module JavaScript
       return unless node.weakref_alive?
       args = Hash.symbolicate(args)
       if args[:width] && args[:height] && args[:duration]
-        action = do_resize(CGSize.new(args[:width], args[:height]), args[:duration])
+
+        width = args[:width]
+        height = args[:height]
+
+        width = (device.screen_height / device.screen_width) * height if width == -1
+        height = (device.screen_width / device.screen_height) * width if height == -1
+
+        action = do_resize(CGSize.new(width, height), args[:duration])
         node.runAction(action) unless action.nil?
       end
     end
@@ -207,7 +214,13 @@ module JavaScript
     def do_resize( target_size, duration )
       return unless node.weakref_alive?
 
-      size = calculate_node_size(target_size,
+      width = target_size.width
+      height = target_size.height
+
+      width = (device.screen_height / device.screen_width) * height if width == -1
+      height = (device.screen_width / device.screen_height) * width if height == -1
+
+      size = calculate_node_size(CGSizeMake(width, height),
                                  node.size.width / node.size.height)
       SKAction.resizeToWidth(size.width,
                              height: size.height,
@@ -249,7 +262,14 @@ module JavaScript
       # movement with simultaneous resizing requires to
       # calculate the movement position using the final size.
       return unless node.weakref_alive?
-      final_size = calculate_node_size(target_size,
+
+      width = target_size.width
+      height = target_size.height
+
+      width = (device.screen_height / device.screen_width) * height if width == -1
+      height = (device.screen_width / device.screen_height) * width if height == -1
+
+      final_size = calculate_node_size(CGSizeMake(width, height),
                                        node.size.width / node.size.height)
 
       final_pos = calculate_node_position(target_pos, final_size)
