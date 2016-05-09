@@ -150,7 +150,6 @@ class KidsScene < SKScene
 
     center_node = @story_nodes.find{|node| node.center == true}
     return unless center_node
-    lp center_node.xScale
     return if center_node.xScale == 2
 
     @story_nodes.each do |node|
@@ -160,12 +159,9 @@ class KidsScene < SKScene
     center_node = @story_nodes.find{|node| node.center == true}
     return unless center_node
     center_node.runAction(SKAction.scaleTo(2, duration: 0.25))
-    lp 'scaled'
   end
 
   def swipe_right(sender, event: event)
-    lp 'right'
-
     direction = 1
     center_node = @story_nodes.find{|node| node.center == true}
     return unless center_node
@@ -187,14 +183,9 @@ class KidsScene < SKScene
 
     center_node.center = false
     next_node.center = true
-
-    lp center_node.name
-    lp next_node.name
   end
 
   def swipe_left(sender, event: event)
-    lp 'left'
-
     direction = -1
     center_node = @story_nodes.find{|node| node.center == true}
     return unless center_node
@@ -217,15 +208,11 @@ class KidsScene < SKScene
 
     center_node.center = false
     next_node.center = true
-
-    lp center_node.name
-    lp next_node.name
   end
 
   def taped(sender, event: event)
     point = CGPointMake(event.location.x, device.screen_height - event.location.y)
     node = nodeAtPoint(point)
-    lp node.name
     return unless node
 
     if node.is_a? StoryNode

@@ -47,7 +47,9 @@ class KidsSceneTutorial < SKScene
     video_frame.name = 'video_frame'
     video_frame.zPosition = 2
 
-    video = SKVideoNode.videoNodeWithFileNamed('tutorial/video.mp4')
+    av_item   = AVPlayerItem.playerItemWithURL(NSURL.fileURLWithPath(NSBundle.mainBundle.pathForResource('tutorial/video.mp4', ofType: nil)))
+    av_player = AVPlayer.playerWithPlayerItem(av_item)
+    video = SKVideoNode.alloc.initWithAVPlayer(av_player)
     video.position =  CGPointMake(0.5 * w, 0.5 * h)
     video.name = 'video'
     video.zPosition = 3

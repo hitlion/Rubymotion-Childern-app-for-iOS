@@ -108,7 +108,7 @@
                 object_attribute:
                   position_x: 0.11
                   position_y: 0.11
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -118,40 +118,43 @@
                   -
                     name: "click"
                     action: >
-                      /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen noch nicht gewählt wurde,
-                        starte check_win und markiere das Plättchen als schon gewählt*/
-                      if( $$.current_number == 1 && $$.triple_10 == false ) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_10 = true;
-                        $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_10);
-                        $screen.emit('check_win');
-                      }
-                      /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen bereits gewählt wurde -> Feedback*/
-                      else if( $$.current_number == 1 && $$.triple_10 == true ) {
-                        $.log('Doppelte Wahl');
-                      }
-                      /*Wenn die gesuchte Zahl ungleich 1 -> verloren*/
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen noch nicht gewählt wurde,
+                          starte check_win und markiere das Plättchen als schon gewählt*/
+                        if( $$.current_number == 1 && $$.triple_10 == false ) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_10 = true;
+                          $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_10);
+                          $screen.emit('check_win');
+                        }
+                        /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen bereits gewählt wurde -> Feedback*/
+                        else if( $$.current_number == 1 && $$.triple_10 == true ) {
+                          $.log('Doppelte Wahl');
+                        }
+                        /*Wenn die gesuchte Zahl ungleich 1 -> verloren*/
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -179,7 +182,7 @@
                 object_attribute:
                   position_x: 0.44
                   position_y: 0.20
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -189,36 +192,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 1 && $$.triple_11 == false ) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_11 = true;
-                        $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_11);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 1 && $$.triple_11 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 1 && $$.triple_11 == false ) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_11 = true;
+                          $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_11);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 1 && $$.triple_11 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -246,7 +252,7 @@
                 object_attribute:
                   position_x: 0.44
                   position_y: 0.66
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -256,36 +262,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 1 && $$.triple_12 == false ) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_12 = true;
-                        $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_12);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 1 && $$.triple_12 == true) {
-                        $.log('Doppelte Wahl');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 1 && $$.triple_12 == false ) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_12 = true;
+                          $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_12);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 1 && $$.triple_12 == true) {
+                          $.log('Doppelte Wahl');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -313,7 +322,7 @@
                 object_attribute:
                   position_x: 0.371
                   position_y: 0.45
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -323,36 +332,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_20 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_20 = true;
-                        $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_20);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_20 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_20 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_20 = true;
+                          $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_20);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_20 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -380,7 +392,7 @@
                 object_attribute:
                   position_x: 0.72
                   position_y: 0.22
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -390,36 +402,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_21 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_21 = true;
-                        $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_21);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_21 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_21 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_21 = true;
+                          $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_21);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_21 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -447,7 +462,7 @@
                 object_attribute:
                   position_x: 0.59
                   position_y: 0.75
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -457,36 +472,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_22 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_22 = true;
-                        $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_22);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_22 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_22 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_22 = true;
+                          $.log('Zähler: ' + $$.win_count + ' is true = ' + $$.triple_22);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_22 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -514,7 +532,7 @@
                 object_attribute:
                   position_x: 0.6
                   position_y: 0.54
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -524,36 +542,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_30 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_30 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_30 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_30 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_30 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_30 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -581,7 +602,7 @@
                 object_attribute:
                   position_x: 0.80
                   position_y: 0.431
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -591,36 +612,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_31 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_31 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_31 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_31 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_31 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_31 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -648,7 +672,7 @@
                 object_attribute:
                   position_x: 0.27
                   position_y: 0.81
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -658,36 +682,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_32 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_32 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_32 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_32 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_32 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_32 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -718,8 +745,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 2"
                 object_id: 21
@@ -733,8 +764,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 3"
                 object_id: 22
@@ -748,8 +783,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Gewonnen"
                 object_id: 26
@@ -772,6 +811,7 @@
                       if($$.level_count <= 1) {
                         $$.level_count ++;
                         $.log('Levelzähler: ' + $$.level_count);
+                        $$.allow_click = false;
                         $screen.emit('mix');}
                       else {
                         $.log('Nächstes Level.');
@@ -797,7 +837,7 @@
                   layer: 1
                   transparency: 0
                 object_event:
-                  at_start: "reset"
+                  at_end: "reset"
                 object_slot:
                   -
                     name: "reset"
@@ -814,6 +854,11 @@
                         { move: { x: 1.2, y: 1.2, duration: 0.01 }},
                         { layer: {l: 0, duration: 0.01 }});
                       }
+
+                      $$.tell_number();
+                      $$.show_number();
+                      $.msleep(1500);
+                      $$.resize();
 
                       $.log('nur noch 1 Leben');
                       $leben_2.concurrent({ layer: {l: 0, duration: 0.01 }});
@@ -859,7 +904,7 @@
                 object_attribute:
                   position_x: 0.9
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 1
                   transparency: 0
@@ -1003,7 +1048,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -1018,7 +1063,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -1033,7 +1078,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -1048,7 +1093,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -1063,7 +1108,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -1078,7 +1123,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -1120,7 +1165,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -1144,7 +1189,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -1168,7 +1213,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -1200,13 +1245,14 @@
                   $$.export('loose_count')._ = 0;
                   $$.export('level_count')._ = 0;
                   $$.export('level')._ = [ 1, 2, 3 ];
+                  $$.export('allow_click')._ = false;
 
                   $$.export('boxes')._ = [ $box_1, $box_2, $box_3, $box_4, $box_5, $box_6, $box_7, $box_8, $box_9 ];
 
                   $$.export('shuffle_boxes')._ = function() {
                   /*Array möglicher Positionen, die eingenommen werden können, werden gemischt*/
                   var positions = $.shuffle([
-                  {x: 0.11, y: 0.11}, {x: 0.371, y: 0.45}, {x:0.6, y:0.54}, {x: 0.03, y: 0.30},
+                  {x: 0.11, y: 0.19}, {x: 0.371, y: 0.45}, {x:0.6, y:0.54}, {x: 0.03, y: 0.37},
                   {x: 0.23, y: 0.38}, {x:0.59, y:0.32}, {x:0.44, y:0.20}, {x:0.72, y:0.22},
                   {x:0.80, y:0.431}, {x: 0.11, y: 0.62}, {x: 0.25, y: 0.77}, {x:0.87, y:0.69},
                   {x:0.44, y:0.66}, {x:0.59, y:0.75}, {x: 0.027, y: 0.81}, {x: 0.255, y: 0.14},
@@ -1238,7 +1284,7 @@
                   var i;
                   for (i=0; i<$$.boxes.length; i++) {
                   $$.boxes[i].concurrent(
-                  { resize:{ width: 0.1147, height: 0.15, duration: 1.0 }}); }
+                  { resize:{ width: -1, height: 0.15, duration: 1.0 }}); }
                   $.log('Plättchen-Größe zurück gesetzt.');
                   }
 
@@ -1246,35 +1292,38 @@
 
                   /*Radom Auswahl der gesuchten Zahl und Abspielen des jeweiligen Sounds*/
                   $$.export('choose_number')._ = function() {
-                  $$.export('current_number')._ = $.shuffle( $$.level )[0];
+                    $$.export('current_number')._ = $.shuffle( $$.level )[0];
 
-                  if ( $$.current_number == 1 ) {
-                    $$.audios[0].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 2 ) {
-                    $$.audios[1].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 3 ) {
-                    $$.audios[2].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else { $.log('Audio funzt net, Number ist: ' + $$.current_number); }
-
-                  /* add a remove() prototype to Array objects
-                   * Credits to: http://stackoverflow.com/a/3955096/12866 */
-                   function removeA(arr) {
-                   var what, a = arguments, L = a.length, ax;
-                   while (L > 1 && arr.length) {
-                        what = a[--L];
-                        while ((ax= arr.indexOf(what)) !== -1) {
-                        arr.splice(ax, 1);
+                    /* add a remove() prototype to Array objects
+                     * Credits to: http://stackoverflow.com/a/3955096/12866 */
+                     function removeA(arr) {
+                     var what, a = arguments, L = a.length, ax;
+                     while (L > 1 && arr.length) {
+                          what = a[--L];
+                          while ((ax= arr.indexOf(what)) !== -1) {
+                          arr.splice(ax, 1);
+                          }
                         }
+                        return arr;
                       }
-                      return arr;
-                    }
 
-                  $$.level= removeA( $$.level, $$.current_number );
-                  $.log('New Number: ' + $$.current_number + ' Verbleibende Zahlen: ' + $$.level);
-                  };
+                    $$.level= removeA( $$.level, $$.current_number );
+                    $.log('New Number: ' + $$.current_number + ' Verbleibende Zahlen: ' + $$.level);
+                  }
+
+                  $$.export('tell_number')._ = function() {
+                    if ( $$.current_number == 1 ) {
+                      $$.audios[0].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 2 ) {
+                      $$.audios[1].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 3 ) {
+                      $$.audios[2].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else { $.log('Audio funzt net, Number ist: ' + $$.current_number); }
+                  }
+
 
                   /* Erster Durchgang: alle drei Plättchen werden kurz vergrößert (optisches Feedback)
                     Weitere Durchgänge: Nur das Zahlen-Plättchen wird vergrößert angezeit */
@@ -1282,17 +1331,17 @@
                     if ( $$.current_number == 1 ) {
                       $.log('Show Numer 1');
                       $$.boxes[0].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 2 ) {
                       $.log('Show Numer 2');
                       $$.boxes[3].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 3 ) {
                       $.log('Show Numer 3');
                       $$.boxes[6].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                   }
 
@@ -1351,8 +1400,9 @@
                   $.msleep(1500);
                   $$.reset_number();
                   $$.choose_number();
+                  $$.tell_number();
                   $$.show_number();
-                  $.msleep(700);
+                  $.msleep(1500);
                   $$.resize();
                   "
                 variables:
@@ -1470,7 +1520,7 @@
                 object_attribute:
                   position_x: 0.11
                   position_y: 0.11
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -1480,39 +1530,42 @@
                   -
                     name: "click"
                     action: >
-                      /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen noch nicht gewählt wurde,
-                        starte check_win und markiere das Plättchen als schon gewählt*/
-                      if( $$.current_number == 1 && $$.triple_10 == false ) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_10 = true;
-                        $screen.emit('check_win');
-                      }
-                      /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen bereits gewählt wurde -> Feedback*/
-                      else if( $$.current_number == 1 && $$.triple_10 == true ) {
-                        $.log('Doppelte Wahl');
-                      }
-                      /*Wenn die gesuchte Zahl ungleich 1 -> verloren*/
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen noch nicht gewählt wurde,
+                          starte check_win und markiere das Plättchen als schon gewählt*/
+                        if( $$.current_number == 1 && $$.triple_10 == false ) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_10 = true;
+                          $screen.emit('check_win');
+                        }
+                        /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen bereits gewählt wurde -> Feedback*/
+                        else if( $$.current_number == 1 && $$.triple_10 == true ) {
+                          $.log('Doppelte Wahl');
+                        }
+                        /*Wenn die gesuchte Zahl ungleich 1 -> verloren*/
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -1540,7 +1593,7 @@
                 object_attribute:
                   position_x: 0.44
                   position_y: 0.20
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -1550,35 +1603,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 1 && $$.triple_11 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_11 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 1 && $$.triple_11 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 1 && $$.triple_11 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_11 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 1 && $$.triple_11 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -1606,7 +1662,7 @@
                 object_attribute:
                   position_x: 0.44
                   position_y: 0.66
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -1616,35 +1672,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 1 && $$.triple_12 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_12 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 1 && $$.triple_12 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 1 && $$.triple_12 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_12 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 1 && $$.triple_12 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -1672,7 +1731,7 @@
                 object_attribute:
                   position_x: 0.371
                   position_y: 0.45
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -1682,35 +1741,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_20 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_20 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_20 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_20 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_20 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_20 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -1738,7 +1800,7 @@
                 object_attribute:
                   position_x: 0.72
                   position_y: 0.22
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -1748,35 +1810,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_21 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_21 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_21 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_21 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_21 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_21 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -1804,7 +1869,7 @@
                 object_attribute:
                   position_x: 0.59
                   position_y: 0.75
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -1814,35 +1879,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_22 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_22 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_22 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_22 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_22 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_22 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -1870,7 +1938,7 @@
                 object_attribute:
                   position_x: 0.6
                   position_y: 0.54
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -1880,36 +1948,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_30 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_30 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_30 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_30 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_30 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_30 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -1937,7 +2008,7 @@
                 object_attribute:
                   position_x: 0.80
                   position_y: 0.431
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -1947,36 +2018,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_31 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_31 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_31 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_31 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_31 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_31 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -2004,7 +2078,7 @@
                 object_attribute:
                   position_x: 0.027
                   position_y: 0.81
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -2014,36 +2088,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_32 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_32 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_32 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_32 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_32 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_32 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -2071,7 +2148,7 @@
                 object_attribute:
                   position_x: 0.03
                   position_y: 0.3
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -2081,36 +2158,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 4 && $$.triple_40 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_40 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 4 && $$.triple_40 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 4 && $$.triple_40 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_40 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 4 && $$.triple_40 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -2138,7 +2218,7 @@
                 object_attribute:
                   position_x: 0.11
                   position_y: 0.62
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -2148,36 +2228,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 4 && $$.triple_41 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_41 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 4 && $$.triple_41 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 4 && $$.triple_41 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_41 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 4 && $$.triple_41 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -2205,7 +2288,7 @@
                 object_attribute:
                   position_x: 0.255
                   position_y: 0.14
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -2215,36 +2298,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 4 && $$.triple_42 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_42 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 4 && $$.triple_42 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 4 && $$.triple_42 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_42 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 4 && $$.triple_42 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -2275,8 +2361,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 2"
                 object_id: 21
@@ -2290,8 +2380,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 3"
                 object_id: 22
@@ -2305,8 +2399,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 4"
                 object_id: 23
@@ -2320,8 +2418,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Gewonnen"
                 object_id: 26
@@ -2344,6 +2446,7 @@
                       if($$.level_count <= 2) {
                         $$.level_count ++;
                         $.log('Levelzähler: ' + $$.level_count);
+                        $$.allow_click = false;
                         $screen.emit('mix');}
                       else {
                         $.log('Nächstes Level.');
@@ -2369,7 +2472,7 @@
                   layer: 1
                   transparency: 0
                 object_event:
-                  at_start: "reset"
+                  at_end: "reset"
                 object_slot:
                   -
                     name: "reset"
@@ -2386,6 +2489,11 @@
                         { move: { x: 1.2, y: 1.2, duration: 0.01 }},
                         { layer: {l: 0, duration: 0.01 }});
                       }
+
+                      $$.tell_number();
+                      $$.show_number();
+                      $.msleep(1500);
+                      $$.resize();
 
                       $.log('nur noch 1 Leben');
                       $leben_2.concurrent({ layer: {l: 0, duration: 0.01 }});
@@ -2428,7 +2536,7 @@
                 object_attribute:
                   position_x: 0.9
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 1
                   transparency: 0
@@ -2576,7 +2684,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -2591,7 +2699,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -2606,7 +2714,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -2621,7 +2729,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -2636,7 +2744,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -2651,7 +2759,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -2693,7 +2801,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -2717,7 +2825,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -2741,7 +2849,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -2777,7 +2885,7 @@
 
                   $$.export('shuffle_boxes')._ = function() {
                   var positions = $.shuffle([
-                  {x: 0.11, y: 0.11}, {x: 0.371, y: 0.45}, {x:0.6, y:0.54}, {x: 0.03, y: 0.30},
+                  {x: 0.11, y: 0.19}, {x: 0.371, y: 0.45}, {x:0.6, y:0.54}, {x: 0.03, y: 0.37},
                   {x: 0.23, y: 0.38}, {x:0.59, y:0.32}, {x:0.44, y:0.20}, {x:0.72, y:0.22},
                   {x:0.80, y:0.431}, {x: 0.11, y: 0.62}, {x: 0.25, y: 0.77}, {x:0.87, y:0.69},
                   {x:0.44, y:0.66}, {x:0.59, y:0.75}, {x: 0.027, y: 0.81}, {x: 0.255, y: 0.14},
@@ -2810,7 +2918,7 @@
                   var i;
                   for (i=0; i<$$.boxes.length; i++) {
                   $$.boxes[i].concurrent(
-                  { resize:{ width: 0.1147, height: 0.15, duration: 1.0 }}); }
+                  { resize:{ width: -1, height: 0.15, duration: 1.0 }}); }
                   $.log('Plättchen-Größe zurück gesetzt.');
                   }
 
@@ -2818,20 +2926,6 @@
 
                   $$.export('choose_number')._ = function() {
                   $$.export('current_number')._ = $.shuffle( $$.level )[0];
-
-                  if ( $$.current_number == 1 ) {
-                    $$.audios[0].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 2 ) {
-                    $$.audios[1].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 3 ) {
-                    $$.audios[2].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 4 ) {
-                    $$.audios[3].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else { $.log('Audio funzt net, Number ist: ' + $$.current_number); }
 
                   /* add a remove() prototype to Array objects
                    * Credits to: http://stackoverflow.com/a/3955096/12866 */
@@ -2850,26 +2944,42 @@
                   $.log('New Number: ' + $$.current_number + ' Verbleibende Zahlen: ' + $$.level);
                   };
 
+                  $$.export('tell_number')._ = function() {
+                    if ( $$.current_number == 1 ) {
+                      $$.audios[0].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 2 ) {
+                      $$.audios[1].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 3 ) {
+                      $$.audios[2].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 4 ) {
+                      $$.audios[3].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else { $.log('Audio funzt net, Number ist: ' + $$.current_number); }
+                  }
+
                   $$.export('show_number')._ = function() {
                     if ( $$.current_number == 1 ) {
                       $.log('Show Numer 1');
                       $$.boxes[0].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 2 ) {
                       $.log('Show Numer 2');
                       $$.boxes[3].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 3 ) {
                       $.log('Show Numer 3');
                       $$.boxes[6].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 4 ) {
                       $.log('Show Numer 4');
                       $$.boxes[9].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                   }
 
@@ -2940,8 +3050,9 @@
                   $.msleep(1500);
                   $$.reset_number();
                   $$.choose_number();
+                  $$.tell_number();
                   $$.show_number();
-                  $.msleep(700);
+                  $.msleep(1500);
                   $$.resize();
                   "
                 variables:
@@ -3059,7 +3170,7 @@
                 object_attribute:
                   position_x: 0.11
                   position_y: 0.11
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3069,39 +3180,42 @@
                   -
                     name: "click"
                     action: >
-                      /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen noch nicht gewählt wurde,
-                        starte check_win und markiere das Plättchen als schon gewählt*/
-                      if( $$.current_number == 1 && $$.triple_10 == false ) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_10 = true;
-                        $screen.emit('check_win');
-                      }
-                      /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen bereits gewählt wurde -> Feedback*/
-                      else if( $$.current_number == 1 && $$.triple_10 == true ) {
-                        $.log('Doppelte Wahl');
-                      }
-                      /*Wenn die gesuchte Zahl ungleich 1 -> verloren*/
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen noch nicht gewählt wurde,
+                          starte check_win und markiere das Plättchen als schon gewählt*/
+                        if( $$.current_number == 1 && $$.triple_10 == false ) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_10 = true;
+                          $screen.emit('check_win');
+                        }
+                        /*Wenn die gesuchte Zahl gleich 1 und dieses Plättchen bereits gewählt wurde -> Feedback*/
+                        else if( $$.current_number == 1 && $$.triple_10 == true ) {
+                          $.log('Doppelte Wahl');
+                        }
+                        /*Wenn die gesuchte Zahl ungleich 1 -> verloren*/
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3129,7 +3243,7 @@
                 object_attribute:
                   position_x: 0.44
                   position_y: 0.2
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3139,35 +3253,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 1 && $$.triple_11 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_11 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 1 && $$.triple_11 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 1 && $$.triple_11 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_11 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 1 && $$.triple_11 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3195,7 +3312,7 @@
                 object_attribute:
                   position_x: 0.44
                   position_y: 0.66
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3205,35 +3322,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 1 && $$.triple_12 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_12 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 1 && $$.triple_12 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 1 && $$.triple_12 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_12 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 1 && $$.triple_12 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3261,7 +3381,7 @@
                 object_attribute:
                   position_x: 0.371
                   position_y: 0.45
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3271,35 +3391,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_20 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_20 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_20 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_20 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_20 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_20 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3327,7 +3450,7 @@
                 object_attribute:
                   position_x: 0.72
                   position_y: 0.22
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3337,35 +3460,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_21 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_21 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_21 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_21 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_21 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_21 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3393,7 +3519,7 @@
                 object_attribute:
                   position_x: 0.59
                   position_y: 0.75
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3403,35 +3529,38 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 2 && $$.triple_22 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_22 = true;
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 2 && $$.triple_22 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 2 && $$.triple_22 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_22 = true;
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 2 && $$.triple_22 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3459,7 +3588,7 @@
                 object_attribute:
                   position_x: 0.6
                   position_y: 0.54
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3469,36 +3598,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_30 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_30 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_30 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_30 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_30 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_30 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3526,7 +3658,7 @@
                 object_attribute:
                   position_x: 0.8
                   position_y: 0.431
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3536,36 +3668,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_31 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_31 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_31 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_31 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_31 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_31 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3593,7 +3728,7 @@
                 object_attribute:
                   position_x: 0.027
                   position_y: 0.81
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3603,36 +3738,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 3 && $$.triple_32 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_32 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 3 && $$.triple_32 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 3 && $$.triple_32 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_32 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 3 && $$.triple_32 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3660,7 +3798,7 @@
                 object_attribute:
                   position_x: 0.03
                   position_y: 0.3
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3670,36 +3808,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 4 && $$.triple_40 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_40 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 4 && $$.triple_40 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 4 && $$.triple_40 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_40 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 4 && $$.triple_40 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3727,7 +3868,7 @@
                 object_attribute:
                   position_x: 0.11
                   position_y: 0.62
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3737,36 +3878,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 4 && $$.triple_41 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_41 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 4 && $$.triple_41 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 4 && $$.triple_41 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_41 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 4 && $$.triple_41 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3794,7 +3938,7 @@
                 object_attribute:
                   position_x: 0.255
                   position_y: 0.14
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3804,36 +3948,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 4 && $$.triple_42 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_42 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 4 && $$.triple_42 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 4 && $$.triple_42 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_42 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 4 && $$.triple_42 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3861,7 +4008,7 @@
                 object_attribute:
                   position_x: 0.59
                   position_y: 0.32
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3871,36 +4018,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 5 && $$.triple_50 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_50 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 5 && $$.triple_50 == true) {
-                        $.log('Doppelte Wahl');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 5 && $$.triple_50 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_50 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 5 && $$.triple_50 == true) {
+                          $.log('Doppelte Wahl');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3928,7 +4078,7 @@
                 object_attribute:
                   position_x: 0.87
                   position_y: 0.69
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -3938,36 +4088,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 5 && $$.triple_51 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_51 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 5 && $$.triple_51 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 5 && $$.triple_51 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_51 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 5 && $$.triple_51 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -3995,7 +4148,7 @@
                 object_attribute:
                   position_x: 0.71
                   position_y: 0.75
-                  size_x: 0.1147
+                  size_x: -1
                   size_y: 0.15
                   layer: 2
                   transparency: 0
@@ -4005,36 +4158,39 @@
                   -
                     name: "click"
                     action: >
-                      if( $$.current_number == 5 && $$.triple_52 == false) {
-                        $$.win_count++;
-                        $good.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        $$.triple_52 = true;
-                        $.log('Zähler: ' + $$.win_count);
-                        $screen.emit('check_win');
-                      }
-                      else if( $$.current_number == 5 && $$.triple_52 == true) {
-                        $.log('Doppelte Wahl - shake');
-                      }
-                      else {
-                        $bad.concurrent(
-                        { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
-                          layer: {l: 2, duration: 0.01 },
-                          duration: 0.03 });
-                        if ($$.loose_count == 0) {
-                          $.log('einmal Verloren');
-                          $verloren1.start();}
-                        else if ($$.loose_count == 1) {
-                          $.log('zweimal Verloren');
-                          $verloren2.start();}
-                        $.msleep(1000);
-                          $bad.concurrent(
-                          { fade: {alpha: 1, duration: 0.01 },
-                            move:{ x: 1, y: 1, duration: 0.01 },
-                            layer: {l: 0, duration: 0.01 },
+                      if($$.allow_click == true) {
+                        if( $$.current_number == 5 && $$.triple_52 == false) {
+                          $$.win_count++;
+                          $good.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
                             duration: 0.03 });
+                          $$.triple_52 = true;
+                          $.log('Zähler: ' + $$.win_count);
+                          $screen.emit('check_win');
+                        }
+                        else if( $$.current_number == 5 && $$.triple_52 == true) {
+                          $.log('Doppelte Wahl - shake');
+                        }
+                        else {
+                          $bad.concurrent(
+                          { move:{ x: $self.position_x, y: $self.position_y, duration: 0.01 },
+                            layer: {l: 2, duration: 0.01 },
+                            duration: 0.03 });
+                          if ($$.loose_count == 0) {
+                            $.log('einmal Verloren');
+                            $$.allow_click = false;
+                            $verloren1.start();}
+                          else if ($$.loose_count == 1) {
+                            $.log('zweimal Verloren');
+                            $verloren2.start();}
+                          $.msleep(1000);
+                            $bad.concurrent(
+                            { fade: {alpha: 1, duration: 0.01 },
+                              move:{ x: 1, y: 1, duration: 0.01 },
+                              layer: {l: 0, duration: 0.01 },
+                              duration: 0.03 });
+                        }
                       }
                     variables:
                       -
@@ -4065,8 +4221,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 2"
                 object_id: 21
@@ -4080,8 +4240,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 3"
                 object_id: 22
@@ -4095,8 +4259,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 4"
                 object_id: 23
@@ -4110,8 +4278,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Triple 5"
                 object_id: 24
@@ -4125,8 +4297,12 @@
                   size_y: 0.1
                   layer: 1
                   transparency: 0
-                object_event: {}
-                object_slot: []
+                object_event:
+                  at_start: "start_onclick"
+                object_slot:
+                  -
+                    name: "start_onclick"
+                    action: "$.msleep(3000); $$.allow_click = true;"
               -
                 object_name: "Audio Gewonnen"
                 object_id: 26
@@ -4149,6 +4325,7 @@
                       if($$.level_count <= 3) {
                         $$.level_count ++;
                         $.log('Levelzähler: ' + $$.level_count);
+                        $$.allow_click = false;
                         $screen.emit('mix');}
                       else {
                         $.log('Nächstes Level.');
@@ -4174,7 +4351,7 @@
                   layer: 1
                   transparency: 0
                 object_event:
-                  at_start: "reset"
+                  at_end: "reset"
                 object_slot:
                   -
                     name: "reset"
@@ -4191,6 +4368,11 @@
                         { move: { x: 1.2, y: 1.2, duration: 0.01 }},
                         { layer: {l: 0, duration: 0.01 }});
                       }
+
+                      $$.tell_number();
+                      $$.show_number();
+                      $.msleep(1500);
+                      $$.resize();
 
                       $.log('nur noch 1 Leben');
                       $leben_2.concurrent({ layer: {l: 0, duration: 0.01 }});
@@ -4233,7 +4415,7 @@
                 object_attribute:
                   position_x: 0.9
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 1
                   transparency: 0
@@ -4385,7 +4567,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -4400,7 +4582,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -4415,7 +4597,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -4430,7 +4612,7 @@
                 object_attribute:
                   position_x: 0.5
                   position_y: 0.5
-                  size_x: 0.07
+                  size_x: -1
                   size_y: 0.10
                   layer: 0
                   transparency: 0
@@ -4445,7 +4627,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -4460,7 +4642,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -4502,7 +4684,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -4526,7 +4708,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -4550,7 +4732,7 @@
                 object_attribute:
                   position_x: 0.022
                   position_y: 0.03
-                  size_x: 0.07646
+                  size_x: -1
                   size_y: 0.1
                   layer: 0
                   transparency: 1
@@ -4586,7 +4768,7 @@
 
                   $$.export('shuffle_boxes')._ = function() {
                   var positions = $.shuffle([
-                  {x: 0.11, y: 0.11}, {x: 0.371, y: 0.45}, {x:0.6, y:0.54}, {x: 0.03, y: 0.30},
+                  {x: 0.11, y: 0.19}, {x: 0.371, y: 0.45}, {x:0.6, y:0.54}, {x: 0.03, y: 0.37},
                   {x: 0.23, y: 0.38}, {x:0.59, y:0.32}, {x:0.44, y:0.20}, {x:0.72, y:0.22},
                   {x:0.80, y:0.431}, {x: 0.11, y: 0.62}, {x: 0.25, y: 0.77}, {x:0.87, y:0.69},
                   {x:0.44, y:0.66}, {x:0.59, y:0.75}, {x: 0.027, y: 0.81}, {x: 0.255, y: 0.14},
@@ -4622,7 +4804,7 @@
                   var i;
                   for (i=0; i<$$.boxes.length; i++) {
                   $$.boxes[i].concurrent(
-                  { resize:{ width: 0.1147, height: 0.15, duration: 1.0 }}); }
+                  { resize:{ width: -1, height: 0.15, duration: 1.0 }}); }
                   $.log('Plättchen-Größe zurück gesetzt.');
                   }
 
@@ -4630,23 +4812,6 @@
 
                   $$.export('choose_number')._ = function() {
                   $$.export('current_number')._ = $.shuffle( $$.level )[0];
-
-                  if ( $$.current_number == 1 ) {
-                    $$.audios[0].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 2 ) {
-                    $$.audios[1].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 3 ) {
-                    $$.audios[2].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 4 ) {
-                    $$.audios[3].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else if ( $$.current_number == 5 ) {
-                    $$.audios[4].start();
-                    $.log('Audio ' + $$.current_number); }
-                  else { $.log('Audio funzt net, Number ist: ' + $$.current_number); }
 
                   /* add a remove() prototype to Array objects
                    * Credits to: http://stackoverflow.com/a/3955096/12866 */
@@ -4663,33 +4828,52 @@
 
                   $$.level= removeA( $$.level, $$.current_number );
                   $.log('New Number: ' + $$.current_number + ' Verbleibende Zahlen: ' + $$.level);
-                  };
+                  }
+
+                  $$.export('tell_number')._ = function() {
+                    if ( $$.current_number == 1 ) {
+                      $$.audios[0].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 2 ) {
+                      $$.audios[1].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 3 ) {
+                      $$.audios[2].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 4 ) {
+                      $$.audios[3].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else if ( $$.current_number == 5 ) {
+                      $$.audios[4].start();
+                      $.log('Audio ' + $$.current_number); }
+                    else { $.log('Audio funzt net, Number ist: ' + $$.current_number); }
+                  }
 
                   $$.export('show_number')._ = function() {
                     if ( $$.current_number == 1 ) {
                       $.log('Show Numer 1');
                       $$.boxes[0].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 2 ) {
                       $.log('Show Numer 2');
                       $$.boxes[3].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 3 ) {
                       $.log('Show Numer 3');
                       $$.boxes[6].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 4 ) {
                       $.log('Show Numer 4');
                       $$.boxes[9].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                     else if ( $$.current_number == 5 ) {
                       $.log('Show Numer 5');
                       $$.boxes[12].concurrent(
-                        { resize: { width: 0.2147, height: 0.25, duration: 0.5 }});
+                        { resize: { width: -1, height: 0.25, duration: 0.5 }});
                     }
                   }
 
@@ -4772,8 +4956,9 @@
                   $.msleep(1500);
                   $$.reset_number();
                   $$.choose_number();
+                  $$.tell_number();
                   $$.show_number();
-                  $.msleep(700);
+                  $.msleep(1500);
                   $$.resize();
                   "
                 variables:
@@ -4849,7 +5034,7 @@
                 object_attribute:
                   position_x: 0.797
                   position_y: 0.3
-                  size_x: 0.153
+                  size_x: -1
                   size_y: 0.2
                   layer: 1
                   transparency: 1
@@ -4872,7 +5057,7 @@
                 object_attribute:
                   position_x: 0.05
                   position_y: 0.3
-                  size_x: 0.153
+                  size_x: -1
                   size_y: 0.2
                   layer: 1
                   transparency: 1
@@ -4964,7 +5149,7 @@
                 object_attribute:
                   position_x: 0.797
                   position_y: 0.3
-                  size_x: 0.153
+                  size_x: -1
                   size_y: 0.2
                   layer: 1
                   transparency: 1
@@ -4987,7 +5172,7 @@
                 object_attribute:
                   position_x: 0.05
                   position_y: 0.3
-                  size_x: 0.153
+                  size_x: -1
                   size_y: 0.2
                   layer: 1
                   transparency: 1
