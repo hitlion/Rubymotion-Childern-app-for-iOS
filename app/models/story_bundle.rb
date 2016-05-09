@@ -59,6 +59,8 @@ class StoryBundle
     end
 
     def delete_story(story)
+      return unless story
+
       self.bundle_list.delete(story)
 
       NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
@@ -67,7 +69,12 @@ class StoryBundle
                                                                   :changed_bundle => story,
                                                                   :status => :deleted
                                                               })
-      app.alert(title: "Story gelöscht!", message: "Die Story #{story.document.set_name} wurde erfolgreich gelöscht.", actions: ['OK'])
+      begin
+        app.alert(title: "Story gelöscht!", message: "Die Story #{story.set_name} wurde erfolgreich gelöscht.", actions: ['OK'])
+      rescue
+        app.alert(title: "Neue Story!", message: "Eine neue Story wurde hinzugefügt.", actions: ['OK'])
+      end
+
     end
 
     def reload_bundle(story, path)
@@ -76,28 +83,35 @@ class StoryBundle
     end
 
     def add_new_bundle(path)
-      autorelease_pool{
-        bundle = StoryBundle.new(path)
-        bundle.load
-        story = nil
-        if !bundle.has_changesets?
-          self.bundle_list << bundle
-          story = bundle
-        end
+      return unless path
+      return if path == ""
 
-        if bundle.has_changesets?
-          self.bundle_list << bundle.changesets
-          story = bundle.changesets
-        end
+      bundle = StoryBundle.new(path)
+      bundle.load
+      story = nil
 
-        NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
-                                                                object:nil,
-                                                                userInfo: {
-                                                                    :changed_bundle => story,
-                                                                    :status => :added
-                                                                })
-        app.alert(title: "Neue Story!", message: "Die Story #{story.document.set_name} wurde erfolgreich hinzugefügt.", actions: ['OK'])
-      }
+      self.bundle_list = [] unless self.bundle_list
+
+      unless bundle.has_changesets?
+        self.bundle_list << bundle
+        story = bundle
+      else
+        self.bundle_list << bundle.changesets
+        story = bundle.changesets
+      end
+
+
+      NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
+                                                              object:nil,
+                                                              userInfo: {
+                                                                  :changed_bundle => story,
+                                                                  :status => :added
+                                                              })
+      begin
+        app.alert(title: "Neue Story!", message: "Die Story #{story.set_name} wurde erfolgreich hinzugefügt.", actions: ['OK'])
+      rescue
+        app.alert(title: "Neue Story!", message: "Eine neue Story wurde hinzugefügt.", actions: ['OK'])
+      end
     end
 
     def get_bundle_with_identifier(identifier)
@@ -354,6 +368,7 @@ class StoryBundle
   end
 
   def set_name
+    return nil unless self.document
     return self.document.set_name
   end
 
@@ -365,6 +380,7 @@ class StoryBundle
   end
 
   def timestamp
+    return nil unless self.document
     return self.document.timestamp
   end
 

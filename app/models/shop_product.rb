@@ -94,7 +94,7 @@ class ShopProduct
   # update the installed attribute if the notification contains the identifier of
   # this shop object
   def bundles_changes(notification)
-    if notification.userInfo[:changed_bundle].document.productIdentifier == @productIdentifier
+    if notification.userInfo[:changed_bundle].productIdentifier == @productIdentifier
       @installed = notification.userInfo[:status] == :added
       NSNotificationCenter.defaultCenter.postNotificationName('ShopBundleStatusChanged',
                                                               object:nil)
@@ -163,7 +163,9 @@ class ShopProduct
   # @param [String] url The URL to the thumbnail for this shop object
   # @return [Boolean] Return +true+ if the thumbnail was loading successful or false if errors occur
   def load_screenshots(urls)
-    return false if urls.nil? || urls.empty?
+    return false unless urls
+    return false if urls.empty?
+
     @screenshots = []
 
     Dispatch::Queue.concurrent.async do
