@@ -4,6 +4,7 @@ class AppDelegate < PM::Delegate
 
   include CrashlyticsIntegration if defined? CrashlyticsIntegration
   include Devmode if defined? Devmode
+  include AppsFlyerIntegration if defined? AppsFlyerIntegration
 
   def on_load( app, options )
 
@@ -13,6 +14,7 @@ class AppDelegate < PM::Delegate
 
     self.setupDevmode if self.respond_to? :setupDevmode
     self.setupCrashlytics if self.respond_to? :setupCrashlytics
+    self.setupAppsFlyer if self.respond_to? :setupAppsFlyer
 
     root = Dir.system_path(:documents)
     bundles_data =  NSBundle.mainBundle.pathForResource('data/Bundles', ofType: nil)
@@ -50,9 +52,9 @@ class AppDelegate < PM::Delegate
     rmq.all.reapply_styles
   end
 
-  def application(application, willChangeStatusBarOrientation: new_orientation, duration: d)
-    device.orientation = new_orientation
-  end
-
+  #dont needed
+  #def application(application, willChangeStatusBarOrientation: new_orientation, duration: d)
+    #device.orientation = new_orientation
+  #end
 end
 

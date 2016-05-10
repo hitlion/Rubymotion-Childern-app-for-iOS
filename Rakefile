@@ -28,15 +28,21 @@ DEVELOPMENT_ONLY  = Dir.glob('./app/**/*+devel.rb') \
 ADHOC_BETA_ONLY   = Dir.glob('./app/**/*+beta.rb') \
                   + Dir.glob('./lib/**/*+beta.rb')
 
+RELEASE_ONLY      = Dir.glob('./app/**/*+release.rb') \
+                  + Dir.glob('./lib/**/*+release.rb')
+
 Motion::Project::App.setup do |app|
 
   app.files = Dir.glob('./lib/**/*.rb') + app.files
+
   app.development do
     app.provisioning_profile = ENV['RM_DEV_PROFILE']
     app.codesign_certificate = ENV['RM_DEV_CERTIFICATE']
 
     # for Spec tests
     app.info_plist['SPEC_HOST_PATH'] = File.absolute_path(Dir.pwd)
+
+    app.files.select! { |x| true unless RELEASE_ONLY.include? x }
   end
 
   app.release do
@@ -72,6 +78,7 @@ Motion::Project::App.setup do |app|
     pod 'IQAudioRecorderController'
     pod 'zipzap'
     pod 'SSZipArchive'
+    pod 'AppsFlyer-SDK'
   end
 
   # pods used in staging and ad-hoc releases
@@ -81,6 +88,8 @@ Motion::Project::App.setup do |app|
   end
 
   if ENV['staging'] == 'true' or app.development?
+
+    app.files.select! { |x| true unless RELEASE_ONLY.include? x }
 
     app.entitlements['get-task-allow'] = true
     #app.entitlements['beta-reports-active'] = true
@@ -109,7 +118,7 @@ Motion::Project::App.setup do |app|
   #app.codesign_certificate = 'iPhone Distribution: Tuluh Tec UG'
   #app.provisioning_profile = '/Users/administrator/Library/MobileDevice/Provisioning Profiles/01ca42c8-c169-4008-9b5e-596ca161e950.mobileprovision'
   #app.identifier = 'com.rsc.babbo'
-  app.short_version = app.version = '1.1.12'
+  app.short_version = app.version = '1.2.0'
 
   app.device_family = [:iphone, :ipad]
   app.interface_orientations = [:landscape_left, :portrait, :landscape_right]
