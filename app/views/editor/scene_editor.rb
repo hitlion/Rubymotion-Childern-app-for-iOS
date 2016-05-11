@@ -6,9 +6,6 @@ class SceneEditor < SKView
           object = object_at_location(event.location)
           lp "Editor: screen tapped at #{event.location}"
           if object
-            if(object.name.start_with? 'CN:')
-              object = object.parent
-            end
             NSNotificationCenter.defaultCenter.postNotificationName('on_editor_tap',
                                                                object: nil,
                                                                userInfo: {
