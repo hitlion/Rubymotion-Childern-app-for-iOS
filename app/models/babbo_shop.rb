@@ -25,7 +25,7 @@ class BabboShop
                                                    name: 'BackendUpdateIdentifier',
                                                    object: nil)
 
-    BabboBackend.get.request_story_identifier(self)
+    BabboBackend.get.request_story_identifier
   end
 
   def load_product_informations
@@ -84,8 +84,6 @@ class BabboShop
   end
 
   def identifier_received(notification)
-    return unless (notification.userInfo[:sender] == self)
-
     update_identifier(notification.userInfo[:identifier])
   end
 
