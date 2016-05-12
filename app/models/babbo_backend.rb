@@ -4,13 +4,20 @@ class BabboBackend
 
     # Return the shared +BabboBackend+ instance.
     def get
+
       BabboBackend.instance ||= BabboBackend.new
     end
   end
 
-  attr_reader :identifier, :identifier_data
+  attr_reader :identifier, :identifier_data, :url_session, :identifier_url, :thumbnail_url, :screenshots_url
 
   def initialize
+
+    @url_session      ||= NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration)
+    @identifier_url   ||='http://h2561319.stratoserver.net/store-assets/'
+    @screenshots_url  ||='http://h2561319.stratoserver.net/store-assets/gallery/'
+    @thumbnail_url    ||= 'http://h2561319.stratoserver.net/store-assets/teaser/'
+
     load_story_identifier
   end
 
@@ -18,23 +25,15 @@ class BabboBackend
   # Request the identifier for all available stories. If the list is already loaded,
   # send the notification with the request source and the identifier. Else collect the
   # identifier from the backend an send then the notification
-  def request_story_identifier(sender)
+  def request_story_identifier
     if(@identifier)
       NSNotificationCenter.defaultCenter.postNotificationName('BackendUpdateIdentifier',
                                                               object:nil,
                                                               userInfo: {
-                                                                  :sender => sender,
                                                                   :identifier => @identifier
                                                               })
     else
-      load_story_identifier do
-        NSNotificationCenter.defaultCenter.postNotificationName('BackendUpdateIdentifier',
-                                                                object:nil,
-                                                                userInfo: {
-                                                                    :sender => sender,
-                                                                    :identifier => @identifier
-                                                                })
-      end
+      load_story_identifier
     end
   end
 
@@ -46,28 +45,27 @@ class BabboBackend
     return nil unless id
 
     begin
-      BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/teaser/' + id.to_s) do |response|
-        if(response.ok?)
-          if(response.body != [] && response.status_description)
-            data = JSON.load(response.body.to_s)
-            url = data.first['field_teaser']
-            url.split(',')
-          else
-            url = nil
-          end
-
-          NSNotificationCenter.defaultCenter.postNotificationName('BackendThumbnailURLReceived',
-                                                                  object:nil,
-                                                                  userInfo: {
-                                                                      :sender => sender,
-                                                                      :url => url
-                                                                  })
+      task = @url_session.dataTaskWithURL(NSURL.URLWithString(@thumbnail_url + id.to_s), completionHandler: lambda {|data, response, error|
+        if(error)
+          NSLog ("Error requesting %@ : %@", @thumbnail_url, error.localizedDescription)
         else
-          NSLog (response.error_message)
+          if response.statusCode == 200
+            url = JSON.load(NSString.alloc.initWithData(data, encoding: NSUTF8StringEncoding)).first['field_teaser']
+
+            NSNotificationCenter.defaultCenter.postNotificationName('BackendThumbnailURLReceived',
+                                                                    object:nil,
+                                                                    userInfo: {
+                                                                        :sender => sender,
+                                                                        :url => url
+                                                                    })
+          else
+            NSLog ("Bad http response from %@, status code was %@", @thumbnail_url, response.statusCode)
+          end
         end
-      end
+      })
+      task.resume
     rescue
-      NSLog ('HTTP get failed with url http://h2561319.stratoserver.net/store-assets/teaser/ + id')
+      NSLog ('Error: HTTP request failed with url: %@ (loading screenshot urls)', @thumbnail_url)
     end
   end
 
@@ -79,30 +77,27 @@ class BabboBackend
     return nil unless id
 
     begin
-      BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/gallery/' + id.to_s) do |response|
-
-        return unless response
-
-        if(response.ok?)
-          if(response.body != [] && response.status_description)
-            data = JSON.load(response.body.to_s)
-            url = data.first['field_game_gallery'].split(',')
-          else
-            url = nil
-          end
-
-          NSNotificationCenter.defaultCenter.postNotificationName('BackendScreenshotURLReceived',
-                                                                  object:nil,
-                                                                  userInfo: {
-                                                                      :sender => sender,
-                                                                      :url => url
-                                                                  })
+      task = @url_session.dataTaskWithURL(NSURL.URLWithString(@screenshots_url + id.to_s), completionHandler: lambda {|data, response, error|
+        if(error)
+          NSLog ("Error requesting %@ : %@", @screenshots_url, error.localizedDescription)
         else
-          NSLog (response.error_message)
+          if response.statusCode == 200
+            urls = JSON.load(NSString.alloc.initWithData(data, encoding: NSUTF8StringEncoding)).first['field_game_gallery'].split(',')
+
+            NSNotificationCenter.defaultCenter.postNotificationName('BackendScreenshotURLReceived',
+                                                                    object:nil,
+                                                                    userInfo: {
+                                                                        :sender => sender,
+                                                                        :url => urls
+                                                                    })
+          else
+            NSLog ("Bad http response from %@, status code was %@", @screenshots_url, response.statusCode)
+          end
         end
-      end
+      })
+      task.resume
     rescue
-      NSLog ('HTTP get failed with url http://h2561319.stratoserver.net/store-assets/gallery/ + id')
+      NSLog ('Error: HTTP request failed with url: %@ (loading screenshot urls)', @screenshots_url)
     end
   end
 
@@ -129,31 +124,45 @@ class BabboBackend
   # and save the data in @identifier_data.
   # The data contains the identifier and an unique id for each story,
   # additional maybe later the release/update date
-  # call the given block after the request
-  def load_story_identifier(&block)
+  def load_story_identifier
+    @story_identifier_requested ||= false
+    return if @story_identifier_requested
+
     begin
-      BubbleWrap::HTTP.get('http://h2561319.stratoserver.net/store-assets/') do |response|
-        if(response.ok?)
-          if(response.body != [] && response.status_description)
-            data = JSON.load(response.body.to_s)
-            @identifier_data = data
+      @story_identifier_requested = true
+      task = @url_session.dataTaskWithURL(NSURL.URLWithString(@identifier_url), completionHandler: lambda {|data, response, error|
+        if(error)
+          NSLog ("Error requesting %@ : %@", @identifier_url, error.localizedDescription)
+        else
+          if response.statusCode == 200
+            NSLog ("Response is ok, update story identifer", response.statusCode )
+
+            @identifier_data = JSON.load(NSString.alloc.initWithData(data, encoding: NSUTF8StringEncoding))
+
+            @identifier = nil
             @identifier = []
+
             @identifier_data.each do |data|
               @identifier << data['field_store_id']
             end
 
-            block.call(true) if block
+            NSLog ('Backend sending notification about new identifiers')
+            NSNotificationCenter.defaultCenter.postNotificationName('BackendUpdateIdentifier',
+                                                                    object:nil,
+                                                                    userInfo: {
+                                                                        :identifier => @identifier
+                                                                    })
           else
-            block.call(false) if block
+            NSLog ("Bad http response from %@, status code was %@", @identifier_url, response.statusCode)
           end
-        else
-          NSLog (response.error_message)
-          block.call(false) if block
         end
 
-      end
+        @story_identifier_requested = false
+      })
+      task.resume
     rescue
-      NSLog ('HTTP get failed with url http://h2561319.stratoserver.net/store-assets/ (loading identifier)')
+      NSLog ('Error: HTTP request failed with url http://h2561319.stratoserver.net/store-assets/ (loading identifier)')
+      @story_identifier_requested = false
     end
   end
 

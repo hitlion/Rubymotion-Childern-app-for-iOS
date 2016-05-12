@@ -5,9 +5,6 @@ class ScenePlayer < SKView
         unless scene.nil?
           object = object_at_location(event.location)
           unless object.nil?
-            if(object.name.start_with? 'CN:')
-              object = object.parent
-            end
             JavaScript::Runtime.send_event(object.name, :on_click)
           end
         end
@@ -18,9 +15,6 @@ class ScenePlayer < SKView
           unless scene.nil?
             object = object_at_location(event.location)
             unless object.nil?
-              if(object.name.start_with? 'CN:')
-                object = object.parent
-              end
               JavaScript::Runtime.send_event(object.name, :on_swipe)
             end
           end
