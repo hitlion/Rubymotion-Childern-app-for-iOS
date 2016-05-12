@@ -31,10 +31,7 @@ class AppDelegate < PM::Delegate
       end
 
       dest = File.join(root, 'Backend')
-
-      lp NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.version')
       version = NSBundle.mainBundle.objectForInfoDictionaryKey('CFBundleShortVersionString')
-      lp version.to_s
 
       if NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.version') != version.to_s
         NSUserDefaults.standardUserDefaults.setObject(version.to_s, forKey:'de.tuluh_tec.babbo_voco.version')
