@@ -14,8 +14,8 @@ class BabboBackend
   def initialize
 
     @url_session      ||= NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration)
-    @identifier_url   ||='http://h2561319.stratoserver.net/store-assets/'
-    @screenshots_url  ||='http://h2561319.stratoserver.net/store-assets/gallery/'
+    @identifier_url   ||= 'http://h2561319.stratoserver.net/store-assets/'
+    @screenshots_url  ||= 'http://h2561319.stratoserver.net/store-assets/gallery/'
     @thumbnail_url    ||= 'http://h2561319.stratoserver.net/store-assets/teaser/'
 
     load_story_identifier
