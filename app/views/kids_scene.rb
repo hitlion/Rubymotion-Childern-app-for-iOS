@@ -70,6 +70,8 @@ class KidsScene < SKScene
     end
 
     bundles = StoryBundle.bundles.select { |b| b.valid? }
+    bundles.sort_by! { |k| k.document.timestamp}
+    bundles.reverse!
 
     @story_nodes = []
 
