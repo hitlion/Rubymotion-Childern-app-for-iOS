@@ -30,8 +30,25 @@ class AppDelegate < PM::Delegate
         end
       end
 
-      unless Dir.exist?(File.join(root, "Backend"))
-        lp "App: local backend folder doesn't exist, copy app included folder to root directory"
+      dest = File.join(root, 'Backend')
+
+      lp NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.version')
+      version = NSBundle.mainBundle.objectForInfoDictionaryKey('CFBundleShortVersionString')
+      lp version.to_s
+
+      if NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.version') != version.to_s
+        NSUserDefaults.standardUserDefaults.setObject(version.to_s, forKey:'de.tuluh_tec.babbo_voco.version')
+        NSUserDefaults.standardUserDefaults.synchronize
+
+        if Dir.exist?(dest)
+          lp 'App: New Version Delete Old Backend Folder'
+          NSFileManager.defaultManager.removeItemAtPath(dest, error:nil)
+        end
+      end
+
+
+      unless Dir.exist?(dest)
+        lp 'App: Copy backend folder'
         dest = File.join(root, 'Backend')
         unless backend_data.nil?
           NSFileManager.defaultManager.copyItemAtPath(backend_data, toPath: dest, error: nil)
