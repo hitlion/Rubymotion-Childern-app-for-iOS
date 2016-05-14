@@ -176,7 +176,6 @@ module JavaScript
     # +variables+ and +receiver+.
     def dispatch_script_block( receiver, variables, action, async = true )
       block = proc do
-        autorelease_pool do
           script_vm = nil
           unless async == true || JSContext.currentContext.nil?
             # reuse the existing VM for synchronous calls
@@ -207,7 +206,6 @@ module JavaScript
           lp "dealloc script_context"
           script_context = nil
           script_vm = nil
-        end
       end.weak!
 
       if async # Qeue async event execution
