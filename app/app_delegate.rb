@@ -43,7 +43,6 @@ class AppDelegate < PM::Delegate
         end
       end
 
-
       unless Dir.exist?(dest)
         lp 'App: Copy backend folder'
         dest = File.join(root, 'Backend')
