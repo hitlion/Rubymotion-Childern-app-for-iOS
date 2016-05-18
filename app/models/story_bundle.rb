@@ -33,8 +33,8 @@ class StoryBundle
               autorelease_pool{
                 bundle = StoryBundle.new(bundle_path)
                 bundle.load
-                weak_self.bundle_list << bundle if !bundle.has_changesets?
-                weak_self.bundle_list << bundle.changesets if bundle.has_changesets?
+                weak_self.bundle_list << bundle
+                weak_self.bundle_list += bundle.changesets if bundle.has_changesets?
                 async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
               }
             end
@@ -44,8 +44,8 @@ class StoryBundle
             autorelease_pool{
               bundle = StoryBundle.new(bundle_path)
               bundle.load
-              self.bundle_list << bundle if !bundle.has_changesets?
-              self.bundle_list << bundle.changesets if bundle.has_changesets?
+              self.bundle_list << bundle
+              self.bundle_list += bundle.changesets if bundle.has_changesets?
             }
           end
         end
@@ -58,64 +58,120 @@ class StoryBundle
       self.bundle_list
     end
 
-    def delete_story(story)
-      return unless story
+    # Delete the internal representation of the story with the given +identifier+
+    #
+    # @param [String] indetifier the bundle identifier
+    # @return [Boolean] +true+ if the changeset was reload successful, +false+ if errors occurs
+    def delete_story_with_identifier(identifier)
+      return false unless identifier
 
-      self.bundle_list.delete(story)
+      bundle = StoryBundle.get_bundle_with_identifier(identifier)
+      return false unless bundle
 
-      NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
-                                                              object:nil,
-                                                              userInfo: {
-                                                                  :changed_bundle => story,
-                                                                  :status => :deleted
-                                                              })
+      self.bundle_list.delete(bundle)
+
       begin
-        app.alert(title: "Story gelöscht!", message: "Die Story #{story.set_name} wurde erfolgreich gelöscht.", actions: ['OK'])
+        app.alert(title: "Story gelöscht!", message: "Die Story #{bundle.set_name} wurde erfolgreich gelöscht.", actions: ['OK'])
       rescue
         app.alert(title: "Neue Story!", message: "Eine neue Story wurde hinzugefügt.", actions: ['OK'])
       end
 
+      NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
+                                                              object:nil,
+                                                              userInfo: {
+                                                                  :changed_bundle => bundle,
+                                                                  :status => :deleted
+                                                              })
+      return true
     end
 
-    def reload_bundle(story, path)
-      StoryBundle.delete_story(story)
-      StoryBundle.add_new_bundle(path)
+    # Reload (delete the old and reload the modified) a story object for a given +bundle+ and +changeset_path+
+    #
+    # @param [StoryBundle] bundle The original story bundle
+    # @param [String] changeset_path The path to the new changeset file
+    # @return [Boolean] +true+ if the changeset was reload successful, +false+ if errors occurs
+    def reload_changeset(identifier, bundle, changeset_path)
+      return false unless identifier
+      return false unless bunlde
+      return false unless changeset_path
+
+      deleted = StoryBundle.delete_story_with_identifier(identifier)
+      added = StoryBundle.add_changeset(bundle, changeset_path)
+      return deleted && added
     end
 
-    def add_new_bundle(path)
-      return unless path
-      return if path == ""
+    # Add a modified story object for a given +bundle+ and +changeset_path+
+    #
+    # @param [StoryBundle] bundle The original story bundle
+    # @param [String] changeset_path The path to the new changeset file
+    # @return [Boolean] +true+ if the changeset was added successful, +false+ if errors occurs
+    def add_changeset(bundle, changeset_path)
+      return false unless bundle
+      return false unless bundle.has_changesets?
+      return false unless bundle.valid?
 
-      bundle = StoryBundle.new(path)
-      bundle.load
-      story = nil
+      control_path = File.absolute_path(File.join(bundle.path, 'SMIL'))
+      runner = Story::Changelog::Runner.new
 
-      self.bundle_list = [] unless self.bundle_list
+      path = File.join(control_path, changeset_path)
 
-      unless bundle.has_changesets?
-        self.bundle_list << bundle
-        story = bundle
-      else
-        self.bundle_list << bundle.changesets
-        story = bundle.changesets
+      return unless File.exist?(path)
+
+      change_data = File.read(path)
+      unless change_data.nil?
+        modified_story = bundle.clone
+        runner.apply(modified_story, change_data)
+        modified_story.instance_eval { @changelog = change_data }
+        self.bundle_list << modified_story
       end
-
 
       NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
                                                               object:nil,
                                                               userInfo: {
-                                                                  :changed_bundle => story,
+                                                                  :changed_bundle => modified_story,
+                                                                  :status => :added
+                                                              })
+
+      return true
+    end
+
+    # Add a new story bundle folder for a given +bundle_path+
+    #
+    # @param [String] bundle_path The path to the new installed bundle directory
+    # @return [Boolean] +true+ if the bunlde was added successful, +false+ if errors occurs
+    def load_bundle (bundle_path)
+      return false unless bundle_path
+      return false if bundle_path == ''
+      return false unless Dir.exist?(bundle_path)
+
+      bundle = StoryBundle.new(bundle_path)
+      bundle.load
+
+      self.bundle_list << bundle
+      self.bundle_list += bundle.changesets if bundle.has_changesets?
+
+      NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
+                                                              object:nil,
+                                                              userInfo: {
+                                                                  :changed_bundle => bundle,
                                                                   :status => :added
                                                               })
       begin
-        app.alert(title: "Neue Story!", message: "Die Story #{story.set_name} wurde erfolgreich hinzugefügt.", actions: ['OK'])
+        app.alert(title: "Neue Story!", message: "Die Story #{bundle.set_name} wurde erfolgreich hinzugefügt.", actions: ['OK'])
       rescue
         app.alert(title: "Neue Story!", message: "Eine neue Story wurde hinzugefügt.", actions: ['OK'])
       end
+
+      return bundle.valid?
     end
 
+    # Search the throw the installed bundles for a bundle with the given product identifier
+    #
+    # @param [String] identifier The product identifier to search for
+    # @return [StoryBundle] The bundle with the given identifier or +nil+ if no bundle exists
     def get_bundle_with_identifier(identifier)
       return nil unless identifier
+      return nil unless self.bundle_list
 
       story = nil
       self.bundle_list.each do |bundle|
@@ -127,6 +183,10 @@ class StoryBundle
       return story
     end
 
+    # Checks if a bundle with the given identifier is installed
+    #
+    # @param [String] identifier The product identifier to search for
+    # @return [Boolean] +true+ if the bundke with the given identifier is installed else +false+
     def bundle_with_identifier_installed? (identifier)
       return false unless identifier
 
@@ -166,16 +226,16 @@ class StoryBundle
                                                    object: nil)
   end
 
-  def copy
-    new = StoryBundle.new(self.path)
-    new.load
+  #def copy
+  #  new = StoryBundle.new(self.path)
+  #  new.load#
+  #
+  #   if(new.has_changesets?)
+  #     new = new.changesets
+  #   end#
 
-    if(new.has_changesets?)
-      new = new.changesets
-    end
-
-    return new
-  end
+  #   return new
+  #end
 
   # Check if this level is valid.
   # A freshly created level is always invalid and can only become
@@ -294,33 +354,23 @@ class StoryBundle
   # @return [Array<StoryBundle>] A list of modified version of this bundle
   #   matching the changesets located inside of the bundle.
   def changesets
-    changesets = nil
+    changesets = []
     return changesets unless valid?
 
     control_path = File.absolute_path(File.join(@path, 'SMIL'))
     runner = Story::Changelog::Runner.new
-    bundle = nil
 
-    i = 0
-    Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do
-      i+=1
-    end
-
-    if(i > 0)
-      name = 'changes_branch_' + i.to_s + '.js'
-      change_data = File.read(File.join(control_path, name))
-
+    Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do |change_path|
+      change_data = File.read(change_path)
       unless change_data.nil?
-        # bundle = Marshal.load(Marshal.dump(self)) # doesnt work in ios 9 or higher? body slot were missing after this
         bundle = self.clone
         runner.apply(bundle, change_data)
-        # bundle.document.dataset_id = -1 * index if bundle.document.dataset_id == self.document.dataset_id
         bundle.instance_eval { @changelog = change_data }
+        changesets << bundle
       end
     end
-
-    changesets = bundle
     changesets
+
   end
 
   # Check if the bundle contains any changesets.
