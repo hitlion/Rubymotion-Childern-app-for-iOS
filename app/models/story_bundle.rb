@@ -117,14 +117,15 @@ class StoryBundle
 
       unless change_data.nil?
         modified_story = bundle.copy
+        modified_story.changeset = changeset_path
         runner.apply(modified_story, change_data)
         modified_story.instance_eval { @changelog = change_data }
         self.bundle_list << modified_story
-        @changeset = changeset_path
       end
 
       self.bundle_list.each do |story|
-        lp story.set_name
+        lp story.set_name, force_color: :blue
+        lp story.changeset
       end
 
       NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
@@ -221,7 +222,6 @@ class StoryBundle
     @screenshots = nil
     @thumbnail = nil
     @description = nil
-    @changeset = nil
 
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'screenshot_urls_received:',
@@ -233,19 +233,21 @@ class StoryBundle
     copy = StoryBundle.new(self.path)
     copy.load
 
-    lp @changesets, force_color: :red
-    return copy unless @changesets
+    lp @changeset, force_color: :red
+    return copy unless @changeset
+
+    runner = Story::Changelog::Runner.new
 
     if(copy.has_changesets?)
-      change_data = File.read(@changesets)
+      change_data = File.read(@changeset)
       unless change_data.nil?
         runner.apply(copy, change_data)
-        bundle.instance_eval { @changelog = change_data }
+        copy.instance_eval { @changelog = change_data }
       end
       return copy
-    else
+   else
       return nil
-    end
+   end
   end
 
   # Check if this level is valid.
@@ -377,8 +379,8 @@ class StoryBundle
         bundle = self.copy
         runner.apply(bundle, change_data)
         bundle.instance_eval { @changelog = change_data }
-        @changeset = change_path
         changesets << bundle
+        bundle.changeset = change_path
       end
     end
     changesets
