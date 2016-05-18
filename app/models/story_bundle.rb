@@ -110,19 +110,21 @@ class StoryBundle
       return false unless bundle.has_changesets?
       return false unless bundle.valid?
 
-      control_path = File.absolute_path(File.join(bundle.path, 'SMIL'))
       runner = Story::Changelog::Runner.new
 
-      path = File.join(control_path, changeset_path)
+      return unless File.exist?(changeset_path)
+      change_data = File.read(changeset_path)
 
-      return unless File.exist?(path)
-
-      change_data = File.read(path)
       unless change_data.nil?
-        modified_story = bundle.clone
+        modified_story = bundle.copy
         runner.apply(modified_story, change_data)
         modified_story.instance_eval { @changelog = change_data }
         self.bundle_list << modified_story
+        @changeset = changeset_path
+      end
+
+      self.bundle_list.each do |story|
+        lp story.set_name
       end
 
       NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
@@ -202,7 +204,7 @@ class StoryBundle
     end
   end
 
-  attr_reader :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :screenshot_urls, :thumbnail, :description
+  attr_accessor :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :screenshot_urls, :thumbnail, :description, :changeset
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -219,6 +221,7 @@ class StoryBundle
     @screenshots = nil
     @thumbnail = nil
     @description = nil
+    @changeset = nil
 
     NSNotificationCenter.defaultCenter.addObserver(self,
                                                    selector: 'screenshot_urls_received:',
@@ -226,16 +229,24 @@ class StoryBundle
                                                    object: nil)
   end
 
-  #def copy
-  #  new = StoryBundle.new(self.path)
-  #  new.load#
-  #
-  #   if(new.has_changesets?)
-  #     new = new.changesets
-  #   end#
+  def copy
+    copy = StoryBundle.new(self.path)
+    copy.load
 
-  #   return new
-  #end
+    lp @changesets, force_color: :red
+    return copy unless @changesets
+
+    if(copy.has_changesets?)
+      change_data = File.read(@changesets)
+      unless change_data.nil?
+        runner.apply(copy, change_data)
+        bundle.instance_eval { @changelog = change_data }
+      end
+      return copy
+    else
+      return nil
+    end
+  end
 
   # Check if this level is valid.
   # A freshly created level is always invalid and can only become
@@ -363,9 +374,10 @@ class StoryBundle
     Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do |change_path|
       change_data = File.read(change_path)
       unless change_data.nil?
-        bundle = self.clone
+        bundle = self.copy
         runner.apply(bundle, change_data)
         bundle.instance_eval { @changelog = change_data }
+        @changeset = change_path
         changesets << bundle
       end
     end

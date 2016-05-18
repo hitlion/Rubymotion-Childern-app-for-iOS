@@ -6,19 +6,24 @@ class StoryEditorScreen < PM::Screen
   #include AudioRecorderModule
   include OrientationModule
 
-  attr_accessor :story_bundle, :edit_mode, :original_bundle, :new_files, :obsolete_files
+  attr_accessor :story_bundle, :edit_mode, :new_files, :obsolete_files, :init
   attr_reader :current_view, :editable, :editable_views, :player
 
   class << self
     attr_accessor :instance
 
-    def get( bundle, mode)
+    def get(bundle, mode)
 
       StoryEditorScreen.instance ||= StoryEditorScreen.new(nav_bar: false)
       StoryEditorScreen.instance.edit_mode = mode
       unless bundle.nil?
-        StoryEditorScreen.instance.original_bundle = bundle
-        StoryEditorScreen.instance.story_bundle = bundle.copy
+
+        if mode == :edit
+          StoryEditorScreen.instance.story_bundle = bundle
+        else
+          StoryEditorScreen.instance.story_bundle = bundle.copy
+        end
+        StoryEditorScreen.instance.init = false
         StoryEditorScreen.instance.new_files = []
         StoryEditorScreen.instance.obsolete_files = []
       end
@@ -98,7 +103,7 @@ class StoryEditorScreen < PM::Screen
   def on_appear
     # ask for new name
     if(@edit_mode == :new)
-      if(@original_bundle.document.set_name  == @story_bundle.document.set_name)
+      unless @init
         app.alert(title: "Welchen Namen und welches Titelbild soll deine neue Story haben?", message: "Bitte Namen eingeben und dann ein Foto auswählen!", style: :custom, fields: {input: {placeholder: "Neuer Name"}}) do |_, fields|
           unless fields[:input].text.empty?
             name = fields[:input].text
@@ -109,6 +114,8 @@ class StoryEditorScreen < PM::Screen
 
           rmq.screen.present_photo_chooser(WeakRef.new(self))
         end
+
+        @init = true
       end
     end
 
@@ -489,8 +496,6 @@ class StoryEditorScreen < PM::Screen
 
   def save_changes
     # edit or new story --> set paths and file
-    @path = @story_bundle.path
-
     @story_bundle.document.status = :V2
 
     if(@edit_mode == :edit)
@@ -498,33 +503,29 @@ class StoryEditorScreen < PM::Screen
     else
       lp "Editor: save edited story as new story"
 
-      dir = File.split(@story_bundle.path).first
-      source = File.split(@story_bundle.path).last
-      name = source.split('.').first
-      source_id = name.split('_')[1]
-      name = name.split('_').first
+      count = 1
+      lp @story_bundle.path
 
-      count = 0
-
-      # count how many version exists
-      Dir.glob(File.join(dir,name + '_*_*.babbo')).each_with_index do
-        count += 1
+      Dir.glob(File.join(@story_bundle.path, 'SMIL', 'changes_branch_*.js')).each do
+       count += 1
       end
 
-      @story_bundle.document.dataset_id = count+1
-      @story_bundle.document.productIdentifier = @story_bundle.document.productIdentifier + "_#{@story_bundle.document.dataset_id}"
+      name = "changes_branch_#{count}.js"
 
-      dest_name = name + '_' + count.to_s + '_' + source_id.to_s + '.babbo'
-      lp "Editor: new directory name: #{dest_name}"
-      new_path = File.join(dir, dest_name)
-      NSFileManager.defaultManager.copyItemAtPath(@path, toPath: new_path, error: nil)
-      @path = new_path
+      # set new dataset id (in numerical order, later set it to a negativ value)
+      @story_bundle.document.dataset_id = count+1
+
+      # create a new local identifier (count last value up)
+      original_identifier = @story_bundle.document.productIdentifier
+      parts = original_identifier.split('_')
+      identifier = "#{parts[0]}_#{parts[1]}_#{parts[2]}_#{parts[4]}_#{count+1}"
+      @story_bundle.document.productIdentifier = identifier
+
     end
 
     #load and save new thumbnail
-
     if(@new_thumbnail)
-      path = File.absolute_path(File.join(@path, 'SMIL', @story_bundle.document.thumbnail))
+      path = File.absolute_path(File.join(@story_bundle.path, 'SMIL', @story_bundle.document.thumbnail))
       UIImagePNGRepresentation(@new_thumbnail).writeToFile(path, atomically: true)
     end
 
@@ -533,15 +534,10 @@ class StoryEditorScreen < PM::Screen
     end
 
     @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
+    lp @story_bundle.path
+    lp name
+    base_path = File.join(@story_bundle.path, 'SMIL', name)
 
-    base_path = File.join(@path, 'SMIL')
-    count = 1
-    Dir.glob(File.join(base_path, 'changes_branch_*.js')).each_with_index do
-      count = count + 1
-    end
-
-    name = "changes_branch_#{count.to_s}.js"
-    base_path = File.join(base_path, name)
     file = File.new(base_path, "w")
     lp "Editor: create branch file #{name}"
 
@@ -563,10 +559,8 @@ class StoryEditorScreen < PM::Screen
 
     @new_files = []
 
-    if(edit_mode == :edit)
-      StoryBundle.reload_bundle(@original_bundle, @path)
-    else
-      StoryBundle.add_new_bundle(@path)
+    if(edit_mode == :new)
+      StoryBundle.add_changeset(StoryBundle.get_bundle_with_identifier(original_identifier), base_path)
     end
 
     close

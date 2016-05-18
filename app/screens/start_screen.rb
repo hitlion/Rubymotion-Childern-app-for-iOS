@@ -163,7 +163,7 @@ class StartScreen < PM::Screen
       when :story_list
         goto_story_list
       else
-        goto_kids
+        goto_parent
     end
   end
 
