@@ -123,6 +123,14 @@ module MenuViewModule
 
     @grouped_stories.sort_by! { |s| s[0].document.timestamp}
     @grouped_stories.reverse!
+
+    @grouped_stories.each do |group|
+      original = group.find {|story| story.document.status == :V1}
+      group.delete(original)
+      group.compact!
+      group.unshift(original)
+      lp original.set_name
+    end
   end
 
   ##
