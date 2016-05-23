@@ -21,7 +21,7 @@ class TabletParentScreen < PM::Screen
     setup_menu_view
     setup_shop_view
     #TODO: Deactivate tab bar here
-    #setup_tab_bar
+    setup_tab_bar
     setup_options
     setup_overlay
   end

@@ -2,7 +2,7 @@ module Story
   module Changelog
     # A Runner is a class used to apply a changelog
     # to an instance of StoryBundle to replay the described changes.
-    class Runner
+    class Remover
       # Create a new Runner instance
       def initialize
         @bundle = nil
@@ -61,56 +61,25 @@ module Story
 
       # @private
       def meta(dataset_id, set_name, thumbnail, timestamp, identifier, status)
-        lp thumbnail, force_color: :green
-        @bundle.document.dataset_id = dataset_id.to_i unless dataset_id.nil? || dataset_id == ''
-        @bundle.document.set_name   = set_name.to_s   unless set_name.nil? || set_name == ''
-        @bundle.document.thumbnail  = thumbnail.to_s  unless thumbnail.nil? || thumbnail == ''
-        @bundle.document.timestamp  = timestamp.to_s  unless timestamp.nil? || timestamp == ''
-        @bundle.document.productIdentifier = identifier.to_s unless identifier.nil? || identifier == ''
-        @bundle.document.status = status.to_sym unless status.nil? || status == ''
+        return unless thumbnail != ''
+        path = @bundle.asset_path (thumbnail)
+        lp path
+        NSFileManager.defaultManager.removeItemAtPath(path, error:nil)
       end
 
       # @private
       def copy(path)
-        object = @mapper.get_object(path)
-        return if object.nil?
 
-        parent = @mapper.get_object(object.path.split(':')[0..-2].join(':'))
-
-        if parent.nil?
-          @bundle.document.body.dup_level(object.path)
-        else
-          if parent.is_a? Story::Level
-            if parent.dup_screen(object.path)
-            end
-          elsif parent.is_a? Story::Screen
-            if parent.dup_object(object.path)
-            end
-          else
-            # FIXME: sorry?
-          end
-        end
-
-        # force a refresh of the internal path cache on next access
-        @bundle.instance_eval { @paths = nil }
       end
 
       # @private
       def change(path, args)
-        object = @mapper.get_object(path)
-        unless object.nil?
-          args.keys.each do |key|
-            next unless @property_map.has_key? key
-            mapped_key = @property_map[key]
-            if @bundle.ruleset.action_for_path(@bundle, "#{path}:#{mapped_key}") == :accept
-              lp "Updating '#{path}:#{mapped_key}' -> #{args[key]}"
-              @mapper.set_value( "#{path}:#{mapped_key}", args[key])
-            else
-              lp "Refusing '#{path}:#{mapped_key}' -> #{args[key]}"
-            end
-          end
-        end
+        return unless args[:object_content]
+        path = @bundle.asset_path(args[:object_content])
+        lp path
+        NSFileManager.defaultManager.removeItemAtPath(path, error:nil)
       end
+
     end
   end
 end

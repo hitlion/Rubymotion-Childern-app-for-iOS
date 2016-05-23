@@ -6,7 +6,7 @@ class StoryEditorScreen < PM::Screen
   #include AudioRecorderModule
   include OrientationModule
 
-  attr_accessor :story_bundle, :edit_mode, :new_files, :obsolete_files, :init
+  attr_accessor :story_bundle, :edit_mode, :new_files, :obsolete_files, :init, :new_thumbnail
   attr_reader :current_view, :editable, :editable_views, :player
 
   class << self
@@ -23,6 +23,7 @@ class StoryEditorScreen < PM::Screen
         else
           StoryEditorScreen.instance.story_bundle = bundle.copy
         end
+        StoryEditorScreen.instance.new_thumbnail = nil
         StoryEditorScreen.instance.init = false
         StoryEditorScreen.instance.new_files = []
         StoryEditorScreen.instance.obsolete_files = []
@@ -391,7 +392,8 @@ class StoryEditorScreen < PM::Screen
   def write_meta_changes(bundle)
     story = bundle.document
     res = "/* new meta informations */\n"
-    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{story.thumbnail.to_s}', '#{story.timestamp.to_s}', '#{story.productIdentifier.to_s}', '#{story.status.to_s}');\n"
+    thumbnail = @new_thumbnail ? story.thumbnail : ''
+    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{thumbnail.to_s}', '#{story.timestamp.to_s}', '#{story.productIdentifier.to_s}', '#{story.status.to_s}');\n"
     res
   end
 
@@ -517,9 +519,12 @@ class StoryEditorScreen < PM::Screen
 
       # create a new local identifier (count last value up)
       original_identifier = @story_bundle.document.productIdentifier
+      lp "Original Identifier: #{original_identifier}"
+
       parts = original_identifier.split('_')
-      identifier = "#{parts[0]}_#{parts[1]}_#{parts[2]}_#{parts[4]}_#{count+1}"
+      identifier = "#{parts[0]}_#{parts[1]}_#{parts[2]}_#{parts[3]}_#{count+1}"
       @story_bundle.document.productIdentifier = identifier
+      lp "new identifier: #{identifier}"
 
     end
 
@@ -534,25 +539,22 @@ class StoryEditorScreen < PM::Screen
     end
 
     @story_bundle.document.timestamp = Time.now.strftime("%FT%T%:z").to_s
-    lp @story_bundle.path
-    lp name
-    base_path = File.join(@story_bundle.path, 'SMIL', name)
 
-    file = File.new(base_path, "w")
-    lp "Editor: create branch file #{name}"
+    if(@edit_mode == :edit)
+      file = File.new(@story_bundle.changeset_path, "w")
+    else
+      base_path = File.join(@story_bundle.path, 'SMIL', name)
+      file = File.new(base_path, "w")
+    end
 
-    puts write_meta_changes(@story_bundle)
     file.write(write_meta_changes(@story_bundle))
 
     @story_bundle.document.body.levels.each do |l|
-      puts write_level_changes(l)
       file.write(write_level_changes(l))
       l.screens.each do |s|
         file.write(write_screen_changes(s))
-        puts write_screen_changes(s)
         s.objects.each do |o|
           file.write(write_object_changes(o))
-          puts write_object_changes(o)
         end
       end
     end
@@ -561,6 +563,8 @@ class StoryEditorScreen < PM::Screen
 
     if(edit_mode == :new)
       StoryBundle.add_changeset(StoryBundle.get_bundle_with_identifier(original_identifier), base_path)
+    else
+      StoryBundle.reload_changeset(@story_bundle.productIdentifier, @story_bundle.changeset_path)
     end
 
     close

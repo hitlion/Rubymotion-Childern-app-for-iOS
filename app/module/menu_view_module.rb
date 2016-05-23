@@ -107,6 +107,15 @@ module MenuViewModule
   def build_story_list
     @all_stories = StoryBundle.bundles.select { |b| b.valid? }
 
+    test = StoryBundle.bundles
+    test.each do |a|
+      lp a.set_name
+    end
+
+    @all_stories.each do |story|
+      lp story.set_name, force_color: :red
+    end
+
     stories = {}
 
     @all_stories.each do |s|

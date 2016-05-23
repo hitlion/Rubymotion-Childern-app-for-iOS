@@ -454,8 +454,7 @@ module OverlayViewModuleNew
     app.alert(title: "Achtung!", message: "Wollen sie diese Story wirklich löschen", actions: ['JA', 'NEIN']) do |button_tag|
       case button_tag
         when 'JA'
-          NSFileManager.defaultManager.removeItemAtPath(@story.path, error:nil)
-          StoryBundle.delete_story(@story)
+          StoryBundle.delete_story_with_identifier(@story.productIdentifier)
           hide
         when 'NEIN'
       end

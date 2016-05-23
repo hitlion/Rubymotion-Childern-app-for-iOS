@@ -58,11 +58,24 @@ class StoryBundle
       self.bundle_list
     end
 
+    # Delete the story with the given +identifier+. First delete the data representation on the hard disk then delete
+    # the data in the the internal cache
+    #
+    # @param [String] indetifier the bundle identifier
+    # @return [Boolean] +true+ if the function was successful, +false+ if errors occurs
+    def delete_story_with_identifier(identifier)
+       if delete_story_data_with_identifier(identifier)
+         delete_story_cache_with_identifier(identifier)
+         return true
+       end
+      return false
+    end
+
     # Delete the internal representation of the story with the given +identifier+
     #
     # @param [String] indetifier the bundle identifier
-    # @return [Boolean] +true+ if the changeset was reload successful, +false+ if errors occurs
-    def delete_story_with_identifier(identifier)
+    # @return [Boolean] +true+ if the function successful, +false+ if errors occurs
+    def delete_story_cache_with_identifier(identifier)
       return false unless identifier
 
       bundle = StoryBundle.get_bundle_with_identifier(identifier)
@@ -71,9 +84,9 @@ class StoryBundle
       self.bundle_list.delete(bundle)
 
       begin
-        app.alert(title: "Story gelöscht!", message: "Die Story #{bundle.set_name} wurde erfolgreich gelöscht.", actions: ['OK'])
+        app.alert(title: 'Story gelöscht!', message: "Die Story #{bundle.set_name} wurde erfolgreich gelöscht.", actions: ['OK'])
       rescue
-        app.alert(title: "Neue Story!", message: "Eine neue Story wurde hinzugefügt.", actions: ['OK'])
+        app.alert(title: 'Story gelöscht!', message: 'Eine Story wurde gelöscht.', actions: ['OK'])
       end
 
       NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
@@ -85,17 +98,58 @@ class StoryBundle
       return true
     end
 
+    # Delete the harddisk representation of the story with the given +identifier+
+    #
+    # @param [String] indetifier the bundle identifier
+    # @return [Boolean] +true+ if the function successful, +false+ if errors occurs
+    def delete_story_data_with_identifier(identifier)
+      return false unless identifier
+
+      bundle = get_bundle_with_identifier(identifier)
+      return unless bundle
+
+      if(bundle.document.status == :V1)
+        if bundle.has_changesets?
+          app.alert(title: 'Entschuldigung, diese Story kann nicht gelöscht werden!',
+                    message: 'Original Stories dürfen nur gelöscht werden, wenn keine eigenen Varianten dieser Story existieren.')
+          return false
+        else
+          NSFileManager.defaultManager.removeItemAtPath(bundle.path, error:nil)
+          return true
+        end
+      else
+
+        remover = Story::Changelog::Remover.new
+
+        return false unless File.exist?(bundle.changeset_path)
+        change_data = File.read(bundle.changeset_path)
+
+        unless change_data.nil?
+          remover.apply(bundle, change_data)
+          NSFileManager.defaultManager.removeItemAtPath(bundle.changeset_path, error:nil)
+        end
+
+        return true
+      end
+    end
+
     # Reload (delete the old and reload the modified) a story object for a given +bundle+ and +changeset_path+
     #
-    # @param [StoryBundle] bundle The original story bundle
+    # @param [String] identifier The identifier
     # @param [String] changeset_path The path to the new changeset file
     # @return [Boolean] +true+ if the changeset was reload successful, +false+ if errors occurs
-    def reload_changeset(identifier, bundle, changeset_path)
+    def reload_changeset(identifier, changeset_path)
       return false unless identifier
-      return false unless bunlde
       return false unless changeset_path
 
-      deleted = StoryBundle.delete_story_with_identifier(identifier)
+      parts = identifier.split('_')
+      original_identifier = "#{parts[0]}_#{parts[1]}_#{parts[2]}_#{parts[3]}_1"
+
+      lp original_identifier
+
+      bundle = get_bundle_with_identifier(original_identifier)
+
+      deleted = StoryBundle.delete_story_cache_with_identifier(identifier)
       added = StoryBundle.add_changeset(bundle, changeset_path)
       return deleted && added
     end
@@ -117,7 +171,7 @@ class StoryBundle
 
       unless change_data.nil?
         modified_story = bundle.copy
-        modified_story.changeset = changeset_path
+        modified_story.changeset_path = changeset_path
         runner.apply(modified_story, change_data)
         modified_story.instance_eval { @changelog = change_data }
         self.bundle_list << modified_story
@@ -125,7 +179,7 @@ class StoryBundle
 
       self.bundle_list.each do |story|
         lp story.set_name, force_color: :blue
-        lp story.changeset
+        lp story.changeset_path
       end
 
       NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
@@ -205,7 +259,7 @@ class StoryBundle
     end
   end
 
-  attr_accessor :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :screenshot_urls, :thumbnail, :description, :changeset
+  attr_accessor :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :screenshot_urls, :thumbnail, :description, :changeset_path
 
   # Initialize a new +StoryBundle+.
   # A freshly allocated +StoryBundle+ is invalid until it's
@@ -233,13 +287,14 @@ class StoryBundle
     copy = StoryBundle.new(self.path)
     copy.load
 
-    lp @changeset, force_color: :red
-    return copy unless @changeset
+    lp @changeset_path, force_color: :red
+    return copy unless @changeset_path
 
     runner = Story::Changelog::Runner.new
 
     if(copy.has_changesets?)
-      change_data = File.read(@changeset)
+      change_data = File.read(@changeset_path)
+
       unless change_data.nil?
         runner.apply(copy, change_data)
         copy.instance_eval { @changelog = change_data }
@@ -375,12 +430,15 @@ class StoryBundle
 
     Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do |change_path|
       change_data = File.read(change_path)
+      lp change_data, force_color: :purple
+      paths = change_data.scan('../content/*.*')
+      lp paths
       unless change_data.nil?
         bundle = self.copy
         runner.apply(bundle, change_data)
         bundle.instance_eval { @changelog = change_data }
         changesets << bundle
-        bundle.changeset = change_path
+        bundle.changeset_path = change_path
       end
     end
     changesets
