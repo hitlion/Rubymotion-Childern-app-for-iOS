@@ -392,7 +392,12 @@ class StoryEditorScreen < PM::Screen
   def write_meta_changes(bundle)
     story = bundle.document
     res = "/* new meta informations */\n"
-    thumbnail = @new_thumbnail ? story.thumbnail : ''
+    if (story.status == :V1)
+      thumbnail = @new_thumbnail ? story.thumbnail : ''
+    else
+      thumbnail = story.thumbnail
+    end
+
     res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{thumbnail.to_s}', '#{story.timestamp.to_s}', '#{story.productIdentifier.to_s}', '#{story.status.to_s}');\n"
     res
   end
