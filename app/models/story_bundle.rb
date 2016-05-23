@@ -257,6 +257,32 @@ class StoryBundle
 
       return installed
     end
+
+    def duplicate_edited_content_for_bundle(bundle)
+      new_files = []
+
+      bundle.document.body.levels.each do |level|
+        level.screens.each do |screen|
+          screen.objects.each do |object|
+
+            unless object.changes.empty?
+              error = nil
+              path = bundle.asset_path_for_new_item_of_type(object.type)
+              lp path
+              lp bundle.asset_path(object.content)
+              NSFileManager.defaultManager.copyItemAtPath(bundle.asset_path(object.content),
+                                                          toPath: bundle.asset_path(path),
+                                                          error: error)
+              lp error
+              object.content = path
+              new_files << bundle.asset_path(path)
+            end
+          end
+        end
+      end
+
+      return new_files
+    end
   end
 
   attr_accessor :document, :load_errors, :path, :ruleset, :changelog, :screenshots, :screenshot_urls, :thumbnail, :description, :changeset_path

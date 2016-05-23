@@ -18,15 +18,18 @@ class StoryEditorScreen < PM::Screen
       StoryEditorScreen.instance.edit_mode = mode
       unless bundle.nil?
 
-        if mode == :edit
-          StoryEditorScreen.instance.story_bundle = bundle
-        else
-          StoryEditorScreen.instance.story_bundle = bundle.copy
-        end
         StoryEditorScreen.instance.new_thumbnail = nil
         StoryEditorScreen.instance.init = false
         StoryEditorScreen.instance.new_files = []
         StoryEditorScreen.instance.obsolete_files = []
+
+        if mode == :edit
+          StoryEditorScreen.instance.story_bundle = bundle
+        else
+          StoryEditorScreen.instance.story_bundle = bundle.copy
+          StoryEditorScreen.instance.new_files += StoryBundle.duplicate_edited_content_for_bundle(StoryEditorScreen.instance.story_bundle)
+          lp StoryEditorScreen.instance.new_files
+        end
       end
       StoryEditorScreen.instance
     end
@@ -392,13 +395,7 @@ class StoryEditorScreen < PM::Screen
   def write_meta_changes(bundle)
     story = bundle.document
     res = "/* new meta informations */\n"
-    if (story.status == :V1)
-      thumbnail = @new_thumbnail ? story.thumbnail : ''
-    else
-      thumbnail = story.thumbnail
-    end
-
-    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{thumbnail.to_s}', '#{story.timestamp.to_s}', '#{story.productIdentifier.to_s}', '#{story.status.to_s}');\n"
+    res += "meta('#{story.dataset_id.to_s}', '#{story.set_name.to_s}', '#{story.thumbnail.to_s}', '#{story.timestamp.to_s}', '#{story.productIdentifier.to_s}', '#{story.status.to_s}');\n"
     res
   end
 
@@ -475,7 +472,7 @@ class StoryEditorScreen < PM::Screen
 
   # @private
   def photo_available( image, new )
-    path = rmq.screen.story_bundle.asset_path_for_new_item_of_type(:picture)
+    path = @story_bundle.asset_path_for_new_item_of_type(:picture)
     @story_bundle.document.thumbnail = path
     @new_thumbnail = image
   end
@@ -531,6 +528,11 @@ class StoryEditorScreen < PM::Screen
       @story_bundle.document.productIdentifier = identifier
       lp "new identifier: #{identifier}"
 
+      unless @new_thumbnail
+        path = @story_bundle.asset_path_for_new_item_of_type(:picture)
+        @new_thumbnail = @story_bundle.thumbnail
+        @story_bundle.document.thumbnail = path
+      end
     end
 
     #load and save new thumbnail
