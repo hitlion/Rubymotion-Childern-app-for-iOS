@@ -117,6 +117,12 @@ class StartScreen < PM::Screen
   end
 
   def on_appear(args={})
+    manager = UpdateManager.get
+    manager.call_after_update(self, 'load_bundles')
+    manager.run
+  end
+
+  def load_bundles
     # perform asynchronous loading exactly *once*
     #Dispatch.once do
     unless StartScreen.warmup_done
