@@ -55,6 +55,8 @@ class StoryBundle
           Dispatch::Queue.concurrenc.async { async_cb.call(count, count) unless async_cb.nil? }
         end
       end
+
+
       self.bundle_list
     end
 
@@ -145,8 +147,6 @@ class StoryBundle
       parts = identifier.split('_')
       original_identifier = "#{parts[0]}_#{parts[1]}_#{parts[2]}_#{parts[3]}_1"
 
-      lp original_identifier
-
       bundle = get_bundle_with_identifier(original_identifier)
 
       deleted = StoryBundle.delete_story_cache_with_identifier(identifier)
@@ -175,11 +175,6 @@ class StoryBundle
         runner.apply(modified_story, change_data)
         modified_story.instance_eval { @changelog = change_data }
         self.bundle_list << modified_story
-      end
-
-      self.bundle_list.each do |story|
-        lp story.set_name, force_color: :blue
-        lp story.changeset_path
       end
 
       NSNotificationCenter.defaultCenter.postNotificationName('BabboBundleChanged',
@@ -268,12 +263,9 @@ class StoryBundle
             unless object.changes.empty?
               error = nil
               path = bundle.asset_path_for_new_item_of_type(object.type)
-              lp path
-              lp bundle.asset_path(object.content)
               NSFileManager.defaultManager.copyItemAtPath(bundle.asset_path(object.content),
                                                           toPath: bundle.asset_path(path),
                                                           error: error)
-              lp error
               object.content = path
               new_files << bundle.asset_path(path)
             end
@@ -313,7 +305,6 @@ class StoryBundle
     copy = StoryBundle.new(self.path)
     copy.load
 
-    lp @changeset_path, force_color: :red
     return copy unless @changeset_path
 
     runner = Story::Changelog::Runner.new
@@ -456,9 +447,6 @@ class StoryBundle
 
     Dir.glob(File.join(control_path, 'changes_branch_*.js')).each_with_index do |change_path|
       change_data = File.read(change_path)
-      lp change_data, force_color: :purple
-      paths = change_data.scan('../content/*.*')
-      lp paths
       unless change_data.nil?
         bundle = self.copy
         runner.apply(bundle, change_data)

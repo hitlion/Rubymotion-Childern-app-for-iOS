@@ -17,3 +17,5 @@ gem 'redpotion'
 gem 'motion-fileutils', '~>0.1.1'
 gem 'ProMotion-iap'
 gem 'sugarcube', :require => 'sugarcube-image'
+
+#Debugger

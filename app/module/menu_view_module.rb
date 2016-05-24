@@ -129,7 +129,6 @@ module MenuViewModule
       group.delete(original)
       group.compact!
       group.unshift(original)
-      lp original.set_name
     end
   end
 
