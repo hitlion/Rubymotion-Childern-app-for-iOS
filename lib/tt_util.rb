@@ -39,6 +39,5 @@ class TTUtil
         return false if value < version_b[index]
       end
     end
-
   end
 end

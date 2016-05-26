@@ -118,6 +118,9 @@ class StartScreen < PM::Screen
 
   def on_appear(args={})
 
+    NSUserDefaults.standardUserDefaults.setObject('1.0.0', forKey:'de.tuluh_tec.babbo_voco.installed_version')
+    NSUserDefaults.standardUserDefaults.synchronize
+
     unless NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.installed_version') == app.version
       NSLog ('Update Manager: New Version, performing updates')
       manager ||= UpdateManager.get

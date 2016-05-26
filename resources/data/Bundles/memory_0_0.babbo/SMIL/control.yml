@@ -10,9 +10,9 @@
     category: 1
     branch_creator_id: 99
     creator_impressum: "Robert Schertling Erfurt Germany"
-    branch_name: "Memory"
+    branch_name: "Merk's dir"
     editor_id: null
-    set_name: "Farben-Memory"
+    set_name: "Merk dir die Farben"
     description: "../story_meta.yml"
     thumbnail: "../thumbnail.png"
     status: "V1"

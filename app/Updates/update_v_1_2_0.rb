@@ -25,6 +25,7 @@ class Update_V_1_2_0
     NSLog('Perform Update for version 1.2.0')
     @successful = true
     @successful = update_1_2_0_a && @successful
+    @successful = update_1_2_0_b && @successful
 
     update_finished
   end
@@ -163,6 +164,35 @@ class Update_V_1_2_0
     end
   end
 
+  def update_1_2_0_b
+    error = nil
+    if NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.installed_version')
+      if TTUtil.isVersion(NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.installed_version'), greaterThan: '1.2.0')
+        @results << 'Update 1.2.0_b is not necessary because pre installed version was at less 1.2.0.'
+        return true
+      end
+    end
 
+    if Dir.exist? File.join(Dir.system_path(:documents), 'Bundles', 'memory_0_0.babbo')
+      NSLog ('Memory is installed, update')
+      old_file = File.join(Dir.system_path(:documents), 'Bundles', 'memory_0_0.babbo', 'SMIL/control.yml')
+      if File.exist? old_file
+        NSFileManager.defaultManager.removeItemAtPath(old_file, error: error)
+        NSFileManager.defaultManager.copyItemAtPath(NSBundle.mainBundle.pathForResource('data/Bundles/memory_0_0.babbo/SMIL/control.yml', ofType: nil), toPath: old_file, error: error)
+      end
+    else
+      @results << 'Update 1.2.0_b is not necessary because memory is not installed'
+      return true
+    end
 
+    if error
+      @results << 'Update 1.2.0_b: Update runs with Errors.'
+      @errors << error.localizedDescription
+      return false
+    else
+      @results << 'Update 1.2.0_b: Update runs successful.'
+      return true
+    end
+
+  end
 end
