@@ -26,7 +26,8 @@ class StoryBundle
         if async_load
           weak_self = WeakRef.new(self)
           Dispatch::Queue.concurrent.async do
-            bundle_count = Dir.glob("#{bundle_root}/*.babbo").count
+            changes_branch_count = Dir.glob("#{bundle_root}/*.babbo/SMIL/changes_branch_*.js").count
+            bundle_count = changes_branch_count + Dir.glob("#{bundle_root}/*.babbo").count
             async_cb.call(bundle_count, weak_self.bundle_list.count) unless async_cb.nil?
 
             Dir.glob("#{bundle_root}/*.babbo").each do |bundle_path|

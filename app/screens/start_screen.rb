@@ -118,15 +118,13 @@ class StartScreen < PM::Screen
 
   def on_appear(args={})
 
-    NSUserDefaults.standardUserDefaults.setObject('1.0.0', forKey:'de.tuluh_tec.babbo_voco.installed_version')
-    NSUserDefaults.standardUserDefaults.synchronize
-
     unless NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.installed_version') == app.version
       NSLog ('Update Manager: New Version, performing updates')
       manager ||= UpdateManager.get
       manager.call_after_update(self, name:'load_bundles')
       manager.run
     else
+      NSLog ('Update Manager: No Updates needed')
       load_bundles
     end
   end
@@ -142,6 +140,7 @@ class StartScreen < PM::Screen
             rmq(:load_progress).get.setProgress(progress.to_f / total.to_f, animated: true)
           end
         end
+
         if total == progress
           Dispatch::Queue.main.async do
             StartScreen.warmup_done = true

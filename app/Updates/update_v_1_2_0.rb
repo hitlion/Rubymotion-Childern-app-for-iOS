@@ -38,10 +38,13 @@ class Update_V_1_2_0
   def update_1_2_0_a
 
     error = nil
-    if TTUtil.isVersion(NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.installed_version'), greaterThan: '1.2.0')
-      @results << 'Update 1.2.0_a is not necessary because pre installed version was at less 1.2.0.'
-      return true
+    if NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.installed_version')
+      if TTUtil.isVersion(NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.installed_version'), greaterThan: '1.2.0')
+        @results << 'Update 1.2.0_a is not necessary because pre installed version was at less 1.2.0.'
+        return true
+      end
     end
+
 
     update_bundles = []
 
