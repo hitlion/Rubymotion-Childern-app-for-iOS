@@ -117,9 +117,18 @@ class StartScreen < PM::Screen
   end
 
   def on_appear(args={})
-    manager = UpdateManager.get
-    manager.call_after_update(self, 'load_bundles')
-    manager.run
+
+    NSUserDefaults.standardUserDefaults.setObject('1.0.0', forKey:'de.tuluh_tec.babbo_voco.installed_version')
+    NSUserDefaults.standardUserDefaults.synchronize
+
+    unless NSUserDefaults.standardUserDefaults.stringForKey('de.tuluh_tec.babbo_voco.installed_version') == app.version
+      NSLog ('Update Manager: New Version, performing updates')
+      manager ||= UpdateManager.get
+      manager.call_after_update(self, name:'load_bundles')
+      manager.run
+    else
+      load_bundles
+    end
   end
 
   def load_bundles

@@ -9,18 +9,14 @@ class UpdateManager
     end
   end
 
-  attr_accessor :update_list, :finished_updates
+  attr_accessor :updates, :finished_updates, :results, :errors, :finished
 
   def initialize
     @finished_updates = []
+    @results = []
+    @errors = []
+    @finished = false
     create_update_list
-
-    NSNotificationCenter.defaultCenter.removeObserver(self)
-
-    NSNotificationCenter.defaultCenter.addObserver(self,
-                                                   selector: 'update_finished:',
-                                                   name: 'UpdateFinished',
-                                                   object: nil)
   end
 
 
@@ -29,16 +25,17 @@ class UpdateManager
   def create_update_list
     list = []
 
-    list << Update_V_1_2_0.get if defined? Update_V_1_2_0
+    list << Update_V_1_2_0.get(self) if defined? Update_V_1_2_0
 
-    @update_list = []
-    @update_list = list
+    @updates = []
+    @updates = list
+    @unfinished_updates = @updates.clone
   end
 
-  # After calling this Method, the manager check every update in +@update_list+
+  # After calling this Method, the manager check every update in +@updates+
   # and run it if necessary
   def run
-    @update_list.each do |update|
+    @updates.each do |update|
       update.run
     end
   end
@@ -49,16 +46,41 @@ class UpdateManager
     @name = name
   end
 
-  def update_finished (notification)
-    update = notification.userInfo[:update]
-    unless @finished_updates.include? update
-      @finished_updates << update
+  def continue_app
+    @results.each do |result|
+      NSLog('Update Manager: %@', result)
     end
 
-    if @finished_updates.length == @update_list.length
-      if @source.respond_to? @name
-        @source.send(@name)
+    if @errors.empty?
+      @finished = true
+      @source.send(@name) if @source.respond_to? @name
+    else
+      message = ''
+      @errors.each do |error|
+        message += error + "\n\n"
       end
+
+      app.alert(title: 'Update Error occurred', message: message, actions: ['OK']) do
+        @finished = true
+        @source.send(@name) if @source.respond_to? @name
+      end
+    end
+
+    NSUserDefaults.standardUserDefaults.setObject(app.version, forKey:'de.tuluh_tec.babbo_voco.installed_version')
+    NSUserDefaults.standardUserDefaults.synchronize
+
+  end
+
+  # Every update calls this Method after finishing.
+  def update_finished (id, result: result, error: error)
+    @results += result unless result.nil? || result == ''
+    @errors += error unless error.nil? || error == ''
+
+    update = @unfinished_updates.find {|update| update.id == id}
+    @unfinished_updates.delete(update) unless update.nil?
+
+    if @unfinished_updates.empty?
+      continue_app
     end
 
   end

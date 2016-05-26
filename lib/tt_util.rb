@@ -19,4 +19,26 @@ class TTUtil
     end
   end
 
+  def self.isVersion(versionA, greaterThan: versionB)
+    version_a = versionA.split('.')
+    version_b = versionB.split('.')
+
+    version_a  = version_a.collect {|i| i.to_i}
+    version_b  = version_b.collect {|i| i.to_i}
+
+    return nil unless version_a.length ==  version_b.length
+    return nil unless version_a.length == 3
+    return nil unless version_b.length == 3
+
+
+    if version_a == version_b
+      return false
+    else
+      version_a.each_with_index do |value, index|
+        return true if value > version_b[index]
+        return false if value < version_b[index]
+      end
+    end
+
+  end
 end
